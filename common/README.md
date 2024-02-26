@@ -1,0 +1,27 @@
+# (Parts of) the personal Python utils library of Daniel Paleka, repurposed for the consistency forecasting project
+Feel free to add your own utils if you don't like the setup. You can also create a PR to modify the existing ones.
+
+## .env
+Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary.
+
+## LLM API requests
+For standard queries, prefer using methods in the `llm_utils.py` module over dealing with the `openai` package directly.
+If you need a complex LLM request (e.g. logprobs), and you think it's not an one-off, implement another function in `llm_utils.py` and use that.
+
+## async
+By default, we always use async versions of LLM calls to external providers such as OpenAI.
+This is because (1) it often happens that iteration speed is bottlenecked on waiting for many requests done sequentially;
+(2) using `asyncio.Semaphore` is *so much better* than messing with threads and parallelism.
+If you're not familiar with async/await, read the Python documentation on coroutines.
+
+This means you need to run `await` when calling coroutines (`async def` functions), and define the functions that call coroutines as `async def` as well.
+Moreover, if the code is running as a Python script (and not a Jupyter notebook or similar), you need to call `asyncio.run()` somewhere in the code, otherwise you'll get an error.
+If you want to run your code both as a script and as a Jupyter/iPython notebook, you can use [`nest_asyncio`](https://github.com/erdewit/nest_asyncio).
+
+## caching requests
+To ignore caching completely, set the environment variable `NO_CACHE` to `True`.
+Essentially, run `export NO_CACHE=True` in your shell before running anything, 
+or do `NO_CACHE=True python3 your_script.py`, or `os.environ['NO_CACHE'] = 'True'` in your Jupyter notebook.
+
+Default caching uses Redis, and should work out of the box once you [install Redis](https://redis.io/docs/install/install-redis/).
+If you don't want to use Redis, but you still want to cache, use `LOCAL_CACHE=True`.
