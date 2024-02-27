@@ -16,7 +16,6 @@ def format_float(x) -> str:
 
 
 def stringify_params(*args, **kwargs):
-    # This function we don't modify, it's the hash for caching
     args_stringified = tuple(json.dumps(arg, sort_keys=True) for arg in args)
     kwargs_stringified = {
         key: json.dumps(value, sort_keys=True) for key, value in kwargs.items()
@@ -44,7 +43,7 @@ def make_json_serializable(value):
     return value
 
 
-def hash_params_readable(*args, **kwargs):
+def hash_params(*args, **kwargs):
     # Copy the arguments so we don't modify them
     args = deepcopy(args)
     kwargs = deepcopy(kwargs)
@@ -58,4 +57,3 @@ def hash_params_readable(*args, **kwargs):
     return hashlib.md5(str(str_args).encode() + str(str_kwargs).encode()).hexdigest()[
         0:8
     ]
-    # return hashlib.md5(str_params.encode()).hexdigest()[0:8]
