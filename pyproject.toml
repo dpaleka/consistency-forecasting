@@ -1,0 +1,9 @@
+[project]
+name = "src"
+version = "0.1.0"
+description = "Consistency forecasting paper development package"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+
+
