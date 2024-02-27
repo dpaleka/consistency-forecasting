@@ -3,3 +3,4 @@ ruff
 ipykernel
 scikit-learn
 openai
+matplotlib
