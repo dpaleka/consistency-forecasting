@@ -3,7 +3,7 @@
 
 # %%
 import os
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAI
 import asyncio
 from dotenv import load_dotenv
 
@@ -49,11 +49,11 @@ def is_llama2_tokenized(model: str) -> bool:
 
 
 # run with export OPENAI_LOG=debug in case you need to debug
-def init_client(model: str):
+def init_client(model: str, use_async=True):
     global client
     if is_openai(model):
         api_key = os.getenv("OPENAI_API_KEY")
-        client = AsyncOpenAI(api_key=api_key)
+        client = AsyncOpenAI(api_key=api_key) if use_async else OpenAI(api_key=api_key)
     else:
         raise NotImplementedError("Only OpenAI is supported for now")
 
@@ -71,6 +71,16 @@ async def query_api_chat(model: str, messages: list[dict[str, str]], **kwargs) -
     return response_text
 
 
+async def query_api_chat_sync(model: str, messages: list[dict[str, str]], **kwargs) -> dict:
+    global client
+    if client is None:
+        init_client(model, use_async=False)
+    response = client.chat.completions.create(model=model, messages=messages, **kwargs) 
+    response_text = response.choices[0].message.content
+    print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
+    return response_text
+
+
 @cache
 async def query_api_text(model: str, text: str, **kwargs) -> str:
     global client
@@ -78,6 +88,17 @@ async def query_api_text(model: str, text: str, **kwargs) -> str:
         init_client(model)
     print("Querying API with text:", text[:30])
     response = await client.completions.create(model=model, prompt=text, **kwargs)
+    response_text = response.choices[0].text
+    print("Text:", text[:30], "\nResponse:", response_text[:30])
+    return response_text
+
+
+async def query_api_text_sync(model: str, text: str, **kwargs) -> str:
+    global client
+    if client is None:
+        init_client(model, use_async=False)
+    print("Querying API with text:", text[:30])
+    response = client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
     print("Text:", text[:30], "\nResponse:", response_text[:30])
     return response_text
