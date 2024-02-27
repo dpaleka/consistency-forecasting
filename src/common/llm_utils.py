@@ -71,13 +71,13 @@ async def query_api_chat(model: str, messages: list[dict[str, str]], **kwargs) -
     return response_text
 
 
-async def query_api_chat_sync(model: str, messages: list[dict[str, str]], **kwargs) -> dict:
+def query_api_chat_sync(model: str, messages: list[dict[str, str]], **kwargs) -> dict:
     global client
     if client is None:
         init_client(model, use_async=False)
-    response = client.chat.completions.create(model=model, messages=messages, **kwargs) 
+    response = client.chat.completions.create(model=model, messages=messages, **kwargs)
     response_text = response.choices[0].message.content
-    print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
+    print("Text:", messages[1]["content"], "\nResponse:", response_text)
     return response_text
 
 
@@ -93,14 +93,14 @@ async def query_api_text(model: str, text: str, **kwargs) -> str:
     return response_text
 
 
-async def query_api_text_sync(model: str, text: str, **kwargs) -> str:
+def query_api_text_sync(model: str, text: str, **kwargs) -> str:
     global client
     if client is None:
         init_client(model, use_async=False)
     print("Querying API with text:", text[:30])
     response = client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
-    print("Text:", text[:30], "\nResponse:", response_text[:30])
+    print("Text:", text, "\nResponse:", response_text)
     return response_text
 
 
