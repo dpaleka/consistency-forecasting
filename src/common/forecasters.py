@@ -1,9 +1,5 @@
 from typing import Dict, Callable
-# path imports
-#import sys
-from instantiators.negation import negate_simple
 from common.llm_utils import query_api_chat_sync
-#sys.path.append("..")
 
 class Prob(float):
     def __new__(cls, value):
@@ -14,6 +10,9 @@ class Prob(float):
 Forecaster = Callable[[str], Prob]
 SentencesTemplate = Dict[str, str]
 ProbsTemplate = Dict[str, Prob]
+
+def elicit(forecaster : Forecaster, sentences : SentencesTemplate) -> ProbsTemplate:
+    return {k : forecaster(v) for k, v in sentences.items()}
 
 def gpt4caster (sentence : str) -> Prob:
     messages = [
