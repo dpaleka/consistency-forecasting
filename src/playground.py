@@ -1,5 +1,5 @@
 #%%
-from static_checks.negation import negation_template, negate_simple, negation_checker
+from static_checks.negation import negation_template, negate_simple, negation_checker, NegationChecker, gpt4caster
 
 # Instantiate some base questions
 BASE_QS = [
@@ -27,10 +27,10 @@ passed = [
     for ans in answers
 ]
 
+t=NegationChecker()
+u = t.instantiate_and_elicit_and_check(gpt4caster, BASE_QS[1])
+print(u)
+
 # Now we can make a report
 import matplotlib.pyplot as plt
 pass
-
-
-
-# %%

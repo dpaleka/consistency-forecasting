@@ -16,7 +16,7 @@ make a class and subclass it for the negation thing
 # Path: static_checks/negation.py
 
 from abc import ABC, abstractmethod
-from typing import Type, NamedTuple, Callable
+from typing import Type, Dict, NamedTuple, Callable
 # path imports
 import sys
 
@@ -31,48 +31,12 @@ class Prob(float):
             raise ValueError("Probability must be between 0 and 1.")
         return super(Prob, cls).__new__(cls, value)
 
-class ConsistencyChecker(ABC):
-    
-    @property
-    @abstractmethod
-    def Template(self, data_type) -> Type[NamedTuple]:
-        pass
-    
-    @property
-    def SentencesTemplate(self) -> Type[NamedTuple]:
-        return self.Template(str)
+Forecaster = Callable[[str], Prob]
+SentencesTemplate = Dict[str, str]
+ProbsTemplate = Dict[str, Prob]
 
-    @property
-    def ProbsTemplate(self) -> Type[NamedTuple]:
-        return self.Template(Prob)
-    
-    @property
-    @abstractmethod
-    def tolerance(self) -> float:
-        return 0.1
-    
-    @abstractmethod
-    def violation(self, answers : ProbsTemplate) -> float:
-        pass
-
-    def check(self, answers : ProbsTemplate) -> bool:
-        return self.violation(answers) < self.tolerance
-    
-    @abstractmethod
-    def instantiate(self, base_sentences : tuple[str]) -> SentencesTemplate:
-        pass
-    
-    def elicit(self, forecaster : Callable[[str], Prob], sentences : SentencesTemplate) -> ProbsTemplate:
-        return self.ProbsTemplate(**{k : forecaster(v) for k, v in sentences.items()})
-
-    def elicit_o_instantiate(self, forecaster : Callable[[str], Prob], base_sentences : tuple[str]) -> ProbsTemplate:
-        return self.elicit(forecaster, self.instantiate(base_sentences))
-    
-    def violation_o_elicit_o_instantiate(self, forecaster : Callable[[str], Prob], base_sentences : tuple[str]) -> float:
-        return self.violation(self.elicit_o_instantiate(forecaster, base_sentences))
-    
-    def check_o_elicit_o_instantiate(self, forecaster : Callable[[str], Prob], base_sentences : tuple[str]) -> float:
-        return self.check(self.elicit_o_instantiate(forecaster, base_sentences))
+def elicit(forecaster : Forecaster, sentences : SentencesTemplate) -> ProbsTemplate:
+    return {k : forecaster(v) for k, v in sentences.items()}
 
 def gpt4caster (sentence : str) -> Prob:
     messages = [
@@ -90,19 +54,60 @@ def gpt4caster (sentence : str) -> Prob:
         messages=messages,
         temperature=0.0,
     )
-    return response
+    return float(response)
+
+class ConsistencyChecker(ABC):
+    
+    def __init__(self, tolerance = 0.1):
+        self.tolerance = tolerance
+
+    @abstractmethod
+    def instantiate(self, *base_sentences : str) -> SentencesTemplate:
+        pass
+    
+    @abstractmethod
+    def violation(self, answers : ProbsTemplate) -> float:
+        pass
+
+    def check(self, answers : ProbsTemplate) -> bool:
+        return self.violation(answers) < self.tolerance
+
+    def instantiate_and_elicit(self, forecaster : Callable[[str], Prob], *base_sentences : str) -> ProbsTemplate:
+        return elicit(forecaster, self.instantiate(*base_sentences))
+    
+    def instantiate_and_elicit_and_violation(self, forecaster : Callable[[str], Prob], *base_sentences : str) -> float:
+        return self.violation(self.instantiate_and_elicit(forecaster, *base_sentences))
+    
+    def instantiate_and_elicit_and_check(self, forecaster : Callable[[str], Prob], *base_sentences : str) -> float:
+        return self.check(self.instantiate_and_elicit(forecaster, *base_sentences))
 
 
-# class NegationChecker(ConsistencyChecker):
+class NegationChecker(ConsistencyChecker):
     
-#     @property
-#     def Template(self, data_type) -> Type[NamedTuple]:
-#         class x(NamedTuple):
-#             P : data_type
-#             notP : data_type
-#         return x
+    def __init__(self, tolerance=0.1):
+        super().__init__(tolerance)
     
-    
+    def instantiate(self, base_sentence: str) -> Dict[str, str]:
+        messages = [
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. I need you to negate the question provided.  This should be done by adding / removing the word 'not' whenever possible.  Demorgan's laws should be followed with and/or negation.  It should return a question. Avoid using the word won't.",
+            },
+            {"role": "user", "content": base_sentence},
+        ]
+        response = query_api_chat_sync(
+            model="gpt-4-1106-preview",
+            messages=messages,
+            temperature=0.0,
+        )
+        sentences = {
+            "P" : base_sentence,
+            "notP" : response
+        }
+        return sentences
+
+    def violation(self, answers: ProbsTemplate) -> float:
+        return abs(answers["P"] + answers["notP"] - 1)
 
 
 
