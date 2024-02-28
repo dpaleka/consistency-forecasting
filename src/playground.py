@@ -1,5 +1,7 @@
 #%%
-from static_checks.negation import negation_template, negate_simple, negation_checker, NegationChecker, gpt4caster
+from static_checks.negation import negation_template, negate_simple, negation_checker
+from common.models import *
+from static_checks.checkers import *
 
 # Instantiate some base questions
 BASE_QS = [
