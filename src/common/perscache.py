@@ -34,6 +34,8 @@ import os
 import pickle
 from abc import ABC, abstractmethod
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 import cloudpickle
 import redis
