@@ -8,7 +8,6 @@ sys.path.append("..")
 
 
 class NegationChecker(BaseChecker):
-        
     def instantiate(self, base_sentence: str) -> SentencesTemplate:
         messages = [
             {
@@ -22,10 +21,7 @@ class NegationChecker(BaseChecker):
             messages=messages,
             temperature=0.0,
         )
-        sentences = {
-            "P" : base_sentence,
-            "notP" : response
-        }
+        sentences = {"P": base_sentence, "notP": response}
         return sentences
 
     def violation(self, answers: ProbsTemplate) -> float:
