@@ -6,10 +6,10 @@ import jsonlines
 basic_forecaster = BasicForecaster()
 negation_checker = NegationChecker()
 
-model = "meta-llama/Llama-2-70b-chat-hf"
-#model = "gpt-3.5-turbo"
+#model = "meta-llama/Llama-2-70b-chat-hf"
+model = "gpt-3.5-turbo"
 
-for line in jsonlines.open("negation-gpt-3.5-turbo.jsonl"):
+for line in jsonlines.open("src/data/negation-gpt-3.5-turbo.jsonl"):
     print("start")
     print(f"line: {line}")
     p_answer = basic_forecaster.call(line["P"], model=model)
