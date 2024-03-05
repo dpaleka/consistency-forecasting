@@ -10,20 +10,14 @@ Original file is located at
 from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 import random
-import random_dictionary
 import negation_checker
 from negation_checker import ask
 
-HF_MODEL = 'model'
-HF_MODEL_PATH = HF_MODEL.split('/')[1]
+def random_choice(d):
+  return random.choice(list(d.keys()))
 
+HF_MODEL = "hf:meta-llama/Llama-2-7b-chat"
 
-snapshot_download(HF_MODEL, local_dir=HF_MODEL_PATH)
-
-
-tokenizer = AutoTokenizer.from_pretrained(HF_MODEL_PATH, legacy=False)
-model = AutoModelForSeq2SeqLM.from_pretrained(HF_MODEL_PATH)
-pipeline = pipeline('text2text-generation', model=model, tokenizer=tokenizer, max_new_tokens=2048)
 
 def tt(i):
   result = True
@@ -31,7 +25,7 @@ def tt(i):
     t1 = pipeline('generate a statement that you think is absolutely correct, on the topic of '+random_choice(dict))
     t2 = pipeline('generate a statement that you think is absolutely correct, on the topic of '+random_choice(dict))
     temp = (ask("if "+t1+", "+"then "+t2) == 1)
-    result = result && temp
+    result = result and temp
 
   return result
 
@@ -41,7 +35,7 @@ def ff(i):
     t1 = pipeline('generate a statement that you think is absolutely wrong, on the topic of '+random_choice(dict))
     t2 = pipeline('generate a statement that you think is absolutely wrong, on the topic of '+random_choice(dict))
     temp = (ask("if "+t1+", "+"then "+t2) == 1)
-    result = result && temp
+    result = result and temp
 
   return result
 
@@ -51,7 +45,7 @@ def ft(i):
     t1 = pipeline('generate a statement that you think is absolutely wrong, on the topic of '+random_choice(dict))
     t2 = pipeline('generate a statement that you think is absolutely true, on the topic of '+random_choice(dict))
     temp = (ask("if "+t1+", "+"then "+t2) == 1)
-    result = result && temp
+    result = result and temp
 
   return result
 
@@ -61,6 +55,6 @@ def tf(i):
     t1 = pipeline('generate a statement that you think is absolutely true, on the topic of '+random_choice(dict))
     t2 = pipeline('generate a statement that you think is absolutely wrong, on the topic of '+random_choice(dict))
     temp = (ask("if "+t1+", "+"then "+t2) == 0)
-    result = result && temp
+    result = result and temp
 
   return result

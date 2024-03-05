@@ -33,7 +33,7 @@ def ask(question, model):
 def neg(statement):
    parts = statement.split(" will ")
    if len(parts) == 2:
-   transformed_statement = " won't ".join(parts)
+    transformed_statement = " won't ".join(parts)
    return transformed_statement
 
 def check(statements):
