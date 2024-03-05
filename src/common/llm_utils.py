@@ -10,6 +10,9 @@ import asyncio
 from dotenv import load_dotenv
 from typing import Union, Tuple
 from mistralai.models.chat_completion import ChatMessage
+from huggingface_hub import snapshot_download
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+
 
 from .perscache import (
     Cache,
@@ -67,6 +70,17 @@ def get_togetherai_client() -> OpenAI:
     api_key = os.getenv("TOGETHER_API_KEY")
     return OpenAI(api_key=api_key, base_url=url)
 
+@singleton_constructor
+def get_huggingface_local_client(hf_repo) -> pipeline:
+    hf_model_path = os.path.join(os.getenv("HF_MODELS_DIR"), hf_repo)
+    if not os.path.exists(hf_model_path):
+        snapshot_download(hf_repo, local_dir=hf_model_path)
+
+    tokenizer = AutoTokenizer.from_pretrained(hf_model_path, legacy=False)
+    model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_path)
+    pipeline = pipeline('text2text-generation', model=model, tokenizer=tokenizer, max_new_tokens=2048)
+    return pipeline
+
 
 def is_openai(model: str) -> bool:
     keywords = [
@@ -90,6 +104,11 @@ def is_togetherai(model: str) -> bool:
     keywords = ["together","llama","phi","orca"]
     return any(keyword in model for keyword in keywords)
 
+def is_huggingface_local(model: str) -> bool:
+    keywords = ["huggingface", "hf"]
+    return any(keyword in model for keyword in keywords)
+
+
 def get_client(model: str, use_async=True) -> Tuple[Union[AsyncOpenAI, OpenAI, MistralAsyncClient, MistralClient], str]:
     if is_openai(model):
         return (get_async_openai_client() if use_async else get_openai_client(), "openai")
@@ -102,6 +121,10 @@ def get_client(model: str, use_async=True) -> Tuple[Union[AsyncOpenAI, OpenAI, M
         url = "https://api.together.xyz/v1"
         api_key = os.getenv("TOGETHER_API_KEY")
         return (get_togetherai_client(), "togetherai") 
+    elif is_huggingface_local(model):
+        assert model.startswith("hf:")
+        model = model.split("hf:")[1]
+        return (get_huggingface_local_client(model), "huggingface_local")
     else:
         raise NotImplementedError(f"Model {model} is not supported for now")
 
@@ -164,6 +187,14 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
         print("Text:", text, "\nResponse:", response_text)
     return response_text
 
+def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
+    client, client_name = get_client(model, use_async=False)
+    if verbose:
+        print("Querying Huggingface with text:", text[:30])
+    response_text = client(text)
+    if verbose:
+        print("Text:", text, "\nResponse:", response_text)
+    return response_text
 
 
 async def parallelized_call(
