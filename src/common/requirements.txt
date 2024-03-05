@@ -1,6 +1,0 @@
-openai
-beartype
-icontract
-cloudpickle
-python-dotenv
-redis

@@ -1,8 +1,5 @@
 # Path: static_checks/Base.py
-import sys
 from abc import ABC, abstractmethod
-
-sys.path.append("..")
 
 from common.forecasters import Forecaster, SentencesTemplate, ProbsTemplate, elicit
 

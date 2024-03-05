@@ -1,4 +1,7 @@
 import json
+import aiofiles
+from typing import List
+import jsonlines
 from copy import deepcopy
 import hashlib
 
@@ -57,3 +60,16 @@ def hash_params(*args, **kwargs):
     return hashlib.md5(str(str_args).encode() + str(str_kwargs).encode()).hexdigest()[
         0:8
     ]
+
+def write_jsonl(path: str, data: List[dict], append: bool = False):
+    with jsonlines.open(path, mode='a' if append else 'w') as writer:
+        for item in data:
+            writer.write(item)
+
+
+async def write_jsonl_async(path: str, data: List[dict], append: bool = False):
+    mode = 'a' if append else 'w'
+    async with aiofiles.open(path, mode=mode) as file:
+        for item in data:
+            json_line = json.dumps(item) + "\n"
+            await file.write(json_line)
