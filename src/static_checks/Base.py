@@ -1,7 +1,7 @@
 # Path: static_checks/Base.py
 from abc import ABC, abstractmethod
 
-from common.forecasters import Forecaster, SentencesTemplate, ProbsTemplate, elicit
+from forecasters import Forecaster, SentencesTemplate, ProbsTemplate, elicit
 
 
 class BaseChecker(ABC):

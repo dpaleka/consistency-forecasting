@@ -92,7 +92,7 @@ def is_openai(model: str) -> bool:
         "davinci",
         "instruct",
         "openai",
-        "opem-ai"
+        "open-ai"
     ]
     return any(keyword in model for keyword in keywords)
 

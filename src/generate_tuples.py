@@ -37,7 +37,7 @@ model = "gpt-3.5-turbo"
 
 async def instantiate_and_write(question: str):
     result = await negation_checker.instantiate_async(question, model)
-    await write_jsonl_async(f"negation-{model}.jsonl", [result], append=True)
+    await write_jsonl_async(f"data/negation-{model}.jsonl", [result], append=True)
 
 async def main():
     await parallelized_call(instantiate_and_write, base_questions)
