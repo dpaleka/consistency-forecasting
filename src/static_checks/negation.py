@@ -1,5 +1,5 @@
 from common.llm_utils import query_api_chat_sync, query_api_chat
-from common.forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import SentencesTemplate, ProbsTemplate
 from .Base import BaseChecker
 
 
