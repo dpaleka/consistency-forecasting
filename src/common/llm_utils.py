@@ -4,8 +4,12 @@
 # %%
 import os
 from openai import AsyncOpenAI, OpenAI
+from mistralai.async_client import MistralAsyncClient
+from mistralai.client import MistralClient
 import asyncio
 from dotenv import load_dotenv
+from typing import Union, Tuple
+from mistralai.models.chat_completion import ChatMessage
 
 from .perscache import (
     Cache,
@@ -29,6 +33,40 @@ FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"]
 client = None
 load_dotenv(override=False)
 
+def singleton_constructor(get_instance_func):
+    instances = {}
+    def wrapper(*args, **kwargs):
+        if get_instance_func not in instances:
+            instances[get_instance_func] = get_instance_func(*args, **kwargs)
+        return instances[get_instance_func]
+    return wrapper
+
+@singleton_constructor
+def get_async_openai_client() -> AsyncOpenAI:
+    api_key = os.getenv("OPENAI_API_KEY")
+    return AsyncOpenAI(api_key=api_key)
+
+@singleton_constructor
+def get_openai_client() -> OpenAI:
+    api_key = os.getenv("OPENAI_API_KEY")
+    return OpenAI(api_key=api_key)
+
+@singleton_constructor
+def get_mistral_async_client() -> MistralAsyncClient:
+    api_key = os.getenv("MISTRAL_API_KEY")
+    return MistralAsyncClient(api_key=api_key)
+
+@singleton_constructor
+def get_mistral_client() -> MistralClient:
+    api_key = os.getenv("MISTRAL_API_KEY")
+    return MistralClient(api_key=api_key)
+
+@singleton_constructor
+def get_togetherai_client() -> OpenAI:
+    url = "https://api.together.xyz/v1"
+    api_key = os.getenv("TOGETHER_API_KEY")
+    return OpenAI(api_key=api_key, base_url=url)
+
 
 def is_openai(model: str) -> bool:
     keywords = [
@@ -39,73 +77,97 @@ def is_openai(model: str) -> bool:
         "curie",
         "davinci",
         "instruct",
+        "openai",
+        "opem-ai"
     ]
     return any(keyword in model for keyword in keywords)
 
+def is_mistral(model: str) -> bool:
+    if model.startswith("mistral"):
+        return True
+
+def is_togetherai(model: str) -> bool:
+    keywords = ["together","llama","phi","orca"]
+    return any(keyword in model for keyword in keywords)
+
+def get_client(model: str, use_async=True) -> Tuple[Union[AsyncOpenAI, OpenAI, MistralAsyncClient, MistralClient], str]:
+    if is_openai(model):
+        return (get_async_openai_client() if use_async else get_openai_client(), "openai")
+    elif is_mistral(model):
+        api_key = os.getenv("MISTRAL_API_KEY")
+        return (get_mistral_async_client() if use_async else get_mistral_client(), "mistral")
+    elif is_togetherai(model):
+        if use_async:
+            raise NotImplementedError("Only synchronous calls are supported for TogetherAI")
+        url = "https://api.together.xyz/v1"
+        api_key = os.getenv("TOGETHER_API_KEY")
+        return (get_togetherai_client(), "togetherai") 
+    else:
+        raise NotImplementedError(f"Model {model} is not supported for now")
 
 def is_llama2_tokenized(model: str) -> bool:
     keywords = ["Llama-2", "pythia"]
     return any(keyword in model for keyword in keywords)
 
+def _mistral_message_transform(messages):
+    mistral_messages = []
+    for message in messages:
+        mistral_message = ChatMessage(
+            role=message["role"], content=message["content"])
+        mistral_messages.append(mistral_message)
+    return mistral_messages
 
-# run with export OPENAI_LOG=debug in case you need to debug
-def init_client(model: str, use_async=True):
-    global client
-    if is_openai(model):
-        api_key = os.getenv("OPENAI_API_KEY")
-        client = AsyncOpenAI(api_key=api_key) if use_async else OpenAI(api_key=api_key)
+
+@cache
+async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> dict:
+    client, client_name = get_client(model, use_async=True)
+    if client_name == "mistral":
+        messages = _mistral_message_transform(messages)
+        response = await client.chat(model=model, messages=messages, **kwargs)
     else:
-        raise NotImplementedError("Only OpenAI is supported for now")
-
-
-@cache
-async def query_api_chat(model: str, messages: list[dict[str, str]], **kwargs) -> dict:
-    global client
-    if client is None:
-        init_client(model)
-    response = await client.chat.completions.create(
-        model=model, messages=messages, **kwargs
-    )
+        response = await client.chat.completions.create(model=model, messages=messages, **kwargs)
     response_text = response.choices[0].message.content
-    print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
+    if verbose:
+        print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
     return response_text
 
-
-def query_api_chat_sync(model: str, messages: list[dict[str, str]], **kwargs) -> dict:
-    global client
-    if client is None:
-        init_client(model, use_async=False)
-    response = client.chat.completions.create(model=model, messages=messages, **kwargs)
+def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> dict:
+    client, client_name = get_client(model, use_async=False)
+    if client_name == "mistral":
+        messages = _mistral_message_transform(messages)
+        response = client.chat(model=model, messages=messages, **kwargs)
+    else:
+        response = client.chat.completions.create(model=model, messages=messages, **kwargs)
     response_text = response.choices[0].message.content
-    print("Text:", messages[1]["content"], "\nResponse:", response_text)
+    if verbose:
+        print("Text:", messages[-1]["content"], "\nResponse:", response_text)
     return response_text
 
-
 @cache
-async def query_api_text(model: str, text: str, **kwargs) -> str:
-    global client
-    if client is None:
-        init_client(model)
-    print("Querying API with text:", text[:30])
+async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
+    client, client_name = get_client(model, use_async=True)
+    if verbose:
+        print("Querying API with text:", text[:30])
     response = await client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
-    print("Text:", text[:30], "\nResponse:", response_text[:30])
+    if verbose:
+        print("Text:", text[:30], "\nResponse:", response_text[:30])
     return response_text
 
-
-def query_api_text_sync(model: str, text: str, **kwargs) -> str:
-    global client
-    if client is None:
-        init_client(model, use_async=False)
-    print("Querying API with text:", text[:30])
+def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
+    client, client_name = get_client(model, use_async=False)
+    if verbose:
+        print("Querying API with text:", text[:30])
     response = client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
-    print("Text:", text, "\nResponse:", response_text)
+    if verbose:
+        print("Text:", text, "\nResponse:", response_text)
     return response_text
+
 
 
 async def parallelized_call(
-    func: callable,
+    func: callable, 
     data=list[str],
     max_concurrent_queries: int = 100,
 ) -> list[dict]:
@@ -126,7 +188,7 @@ async def parallelized_call(
 
     async def call_func(sem, func, datapoint):
         async with sem:
-            return await func(text=datapoint)
+            return await func(datapoint)
 
     tasks = [call_func(sem, func, d) for d in data]
     return await asyncio.gather(*tasks)
