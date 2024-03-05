@@ -1,8 +1,7 @@
 # Path: static_checks/Base.py
 from abc import ABC, abstractmethod
 
-from forecasters import Forecaster, SentencesTemplate, ProbsTemplate, elicit
-
+from forecasters import Forecaster, SentencesTemplate, ProbsTemplate
 
 class BaseChecker(ABC):
     def __init__(self, tolerance=0.1):
@@ -19,20 +18,22 @@ class BaseChecker(ABC):
     def check(self, answers: ProbsTemplate) -> bool:
         return self.violation(answers) < self.tolerance
 
-    def instantiate_and_elicit(
-        self, forecaster: Forecaster, *base_sentences: str
-    ) -> ProbsTemplate:
-        return elicit(forecaster, self.instantiate(*base_sentences))
-
     def elicit_and_violation(
         self, forecaster: Forecaster, sentences: SentencesTemplate
     ) -> float:
-        return self.violation(elicit(forecaster, sentences))
+        return self.violation(forecaster.elicit(sentences))
 
     def elicit_and_check(
         self, forecaster: Forecaster, sentences: SentencesTemplate
     ) -> bool:
-        return self.check(elicit(forecaster, sentences))
+        return self.check(forecaster.elicit(sentences))
+    
+    # below methods usually won't be used
+
+    def instantiate_and_elicit(
+        self, forecaster: Forecaster, *base_sentences: str
+    ) -> ProbsTemplate:
+        return forecaster.elicit(self.instantiate(*base_sentences))
 
     def instantiate_and_elicit_and_violation(
         self, forecaster: Forecaster, *base_sentences: str
