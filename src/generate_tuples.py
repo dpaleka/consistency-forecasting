@@ -1,4 +1,4 @@
-from static_checks import NegationChecker
+from static_checks import *
 import asyncio
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
@@ -31,16 +31,12 @@ base_questions2 = [
     "Will the Great Barrier Reef be fully restored by 2050?",
 ]
 
+base_questionss = [[x] for x in base_questions]
+base_questions_combos = list(zip(base_questions, base_questions2))
 
 negation_checker = NegationChecker()
-model = "gpt-3.5-turbo"
-
-async def instantiate_and_write(question: str):
-    result = await negation_checker.instantiate_async(question, model)
-    await write_jsonl_async(f"data/negation-{model}.jsonl", [result], append=True)
-
-async def main():
-    await parallelized_call(instantiate_and_write, base_questions)
+paraphrasal_checker = ParaphrasalChecker()
+butnot_checker = ButNotChecker()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(butnot_checker.instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
