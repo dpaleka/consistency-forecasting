@@ -34,9 +34,7 @@ base_questions2 = [
 base_questionss = [[x] for x in base_questions]
 base_questions_combos = list(zip(base_questions, base_questions2))
 
-negation_checker = NegationChecker()
-paraphrasal_checker = ParaphrasalChecker()
-butnot_checker = ButNotChecker()
-
 if __name__ == "__main__":
-    asyncio.run(butnot_checker.instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
+    asyncio.run(ButNotChecker().instantiate_and_write_many(base_questions_combos))
+    #asyncio.run(NegationChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
+    #asyncio.run(ParaphrasalChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
