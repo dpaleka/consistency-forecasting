@@ -27,7 +27,7 @@ class ButNotChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
 
-    def instantiate(self, base_sentence_1 : str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence_1 : str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_butnot = answer_sync(
             prompt = prompt, 
@@ -40,7 +40,7 @@ class ButNotChecker(BaseChecker):
         sentences = {"P": base_sentence_1, "Q_butnot_P": response_butnot, "P_or_Q" : response_or }
         return sentences
 
-    async def instantiate_async(self, base_sentence_1: str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence_1: str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_butnot = await answer(
             prompt = prompt, 

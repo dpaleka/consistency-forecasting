@@ -16,12 +16,12 @@ class ParaphrasalChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
 
-    def instantiate(self, base_sentence: str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence: str, **kwargs) -> SentencesTemplate:
         response = answer_sync(prompt = base_sentence, preface = self.preface, **kwargs)
         sentences = {"P": base_sentence, "P_alt": response}
         return sentences
 
-    async def instantiate_async(self, base_sentence: str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence: str, **kwargs) -> SentencesTemplate:
         response = await answer(prompt = base_sentence, preface = self.preface, **kwargs)
         sentences = {"P": base_sentence, "P_alt": response}
         return sentences
