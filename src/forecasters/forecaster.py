@@ -29,4 +29,4 @@ class Forecaster(ABC):
 
     @abstractmethod
     async def call_async(self, sentence: str) -> Prob:
-        pass
+        pass 

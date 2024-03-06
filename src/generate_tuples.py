@@ -1,7 +1,5 @@
 from static_checks import *
 import asyncio
-from common.utils import write_jsonl_async
-from common.llm_utils import parallelized_call
 
 base_questions = [
     "What is the probability that the Democratic party will win the US Presidential election in 2024?",
