@@ -136,6 +136,29 @@ for topic in topics:
 with open(DATA_PATH / "politics_qs_2.json", "w") as f:
     json.dump(total_questions, f, indent=4)
 
+"""
+{“title”: What is the probability that the United States will engage in a new major military conflict between 2024 and 2030”,
+“details”: “... explain what doesn’t count as new, and what counts as major, exactly. Resolves on DATE if ...”,
+“resolution_date”: 31 Dec 2030 (or 1 Jan 2023),
+ } 
+
+"""
+# python politics.py  
+# -> generates a file of question titles qtitles.json
+
+# python sanity_check.py -i qtitles.json
+# -> generates a file of qtitles_accepted.json, qtitles_rejected.json
+
+# python generate_details.py -i qtitles_accepted.json -o qdetailed.json
+# -> generates a file of full question dicts with details and resolution date, and whatever other metadata we need
+
+# we'll need human parsing in the end, but for now just make sure these steps are sane
+
+
+
+
+
+
 
 
 
