@@ -142,7 +142,7 @@ def _mistral_message_transform(messages):
 
 
 @cache
-async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> dict:
+async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
@@ -154,7 +154,7 @@ async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=Fal
         print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
     return response_text
 
-def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> dict:
+def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
@@ -167,25 +167,39 @@ def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=Fals
     return response_text
 
 @cache
-async def answer(prompt : str, preface : str | None = None, **kwargs) -> str:   
+async def answer(
+    prompt : str, 
+    preface : str | None = None, 
+    examples : list[(str, str)] = [],
+    **kwargs) -> str:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [
-        { "role": "system", "content": preface },
-        { "role": "user", "content": prompt } ]
-
+    messages = [{ "role": "system", "content": preface }]
+    for (egq, ega) in examples:
+        messages.extend([
+            { "role": "user", "content": egq}, 
+            { "role": "system", "content": ega}])
+    messages.extend([{ "role": "user", "content": prompt }])
+    
     # default kwargs
     kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
     kwargs["temperature"] = kwargs.get("temperature", 0.0)
+    
+    return await query_api_chat(messages = messages, **kwargs)    
 
-    return await query_api_chat(messages=messages, **kwargs) 
-
-def answer_sync(prompt : str, preface : str | None = None, **kwargs) -> str:
+def answer_sync(
+    prompt : str, 
+    preface : str | None = None, 
+    examples : list[(str, str)] = [],
+    **kwargs) -> str:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [
-        { "role": "system", "content": preface },
-        { "role": "user", "content": prompt } ]
+    messages = [{ "role": "system", "content": preface }]
+    for (egq, ega) in examples:
+        messages.extend([
+            { "role": "user", "content": egq}, 
+            { "role": "system", "content": ega}])
+    messages.extend([{ "role": "user", "content": prompt }])
     
     # default kwargs
     kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
