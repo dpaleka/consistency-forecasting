@@ -167,6 +167,33 @@ def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=Fals
     return response_text
 
 @cache
+async def answer(prompt : str, preface : str | None = None, **kwargs) -> str:   
+    if preface is None:
+        preface = "You are a helpful assistant."
+    messages = [
+        { "role": "system", "content": preface },
+        { "role": "user", "content": prompt } ]
+
+    # default kwargs
+    kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
+    kwargs["temperature"] = kwargs.get("temperature", 0.0)
+
+    return await query_api_chat(messages=messages, **kwargs) 
+
+def answer_sync(prompt : str, preface : str | None = None, **kwargs) -> str:
+    if preface is None:
+        preface = "You are a helpful assistant."
+    messages = [
+        { "role": "system", "content": preface },
+        { "role": "user", "content": prompt } ]
+    
+    # default kwargs
+    kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
+    kwargs["temperature"] = kwargs.get("temperature", 0.0)
+    
+    return query_api_chat_sync(messages = messages, **kwargs)    
+
+@cache
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=True)
     if verbose:
