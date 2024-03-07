@@ -8,11 +8,19 @@ BASE_QS = [
     "What is the probability that Ebola will be eradicated by 2030?",
 ]
 
-u = NegationChecker().instantiate_and_elicit_and_check(BasicForecaster(), BASE_QS[1])
-print(u)
+q_tuple = NegationChecker().instantiate_sync(BASE_QS[1])
+print(q_tuple)
 
-# Now we can make a report
-import matplotlib.pyplot as plt
-pass
+# now use forecasters
+from forecasters import ConsistentAskForecaster
+f = ConsistentAskForecaster()
+answers = {}
+for k, v in q_tuple.items():
+    answers[k] = f.call(v)
+
+violation = NegationChecker().violation(answers)
+print(violation)
+
+
 
 # %%

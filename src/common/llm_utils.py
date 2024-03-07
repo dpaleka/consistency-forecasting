@@ -7,6 +7,7 @@ from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
 import asyncio
+from dataclasses import dataclass
 from dotenv import load_dotenv
 from typing import Union, Tuple, List
 from mistralai.models.chat_completion import ChatMessage
@@ -178,19 +179,24 @@ def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=Fals
     return response_text
 
 
+@dataclass
+class QandA:
+    question: str
+    answer: str
+
 @cache
 async def answer(
     prompt : str, 
     preface : str | None = None, 
-    examples : list[(str, str)] = [],
+    examples : list[QandA] = [],
     **kwargs) -> str:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]
-    for (egq, ega) in examples:
+    for example in examples:
         messages.extend([
-            { "role": "user", "content": egq}, 
-            { "role": "system", "content": ega}])
+            { "role": "user", "content": example.question}, 
+            { "role": "system", "content": example.answer}])
     messages.extend([{ "role": "user", "content": prompt }])
     
     # default kwargs
@@ -202,15 +208,15 @@ async def answer(
 def answer_sync(
     prompt : str, 
     preface : str | None = None, 
-    examples : list[(str, str)] = [],
+    examples : list[QandA] = [],
     **kwargs) -> str:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]
-    for (egq, ega) in examples:
+    for example in examples:
         messages.extend([
-            { "role": "user", "content": egq}, 
-            { "role": "system", "content": ega}])
+            { "role": "user", "content": example.question}, 
+            { "role": "system", "content": example.answer}])
     messages.extend([{ "role": "user", "content": prompt }])
     
     # default kwargs
