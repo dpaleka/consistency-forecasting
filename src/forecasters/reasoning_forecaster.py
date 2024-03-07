@@ -12,7 +12,7 @@ class ReasoningForecaster(Forecaster):
             "I want you to first provide a reasoning for your answer, and then give me the probability.",
             "Your last sentence should be, 'The probability is: <float between 0 and 1>'",
         ])
-        self.examples = examples or [("Will Manhattan have a skyscraper a mile tall by 2030",
+        self.examples = examples or [("Will Manhattan have a skyscraper a mile tall by 2030?",
          "As of 2021, there are no skyscrapers a mile tall. There are also no plans to build any mile tall skyscraper in new york. The probability is: 0.03")]
     
     def call(self, sentence: str, **kwargs) -> Prob:
