@@ -1,6 +1,6 @@
 from .forecaster import Forecaster, Prob
 import re
-from common.llm_utils import answer, answer_sync
+from common.llm_utils import answer, answer_sync, QandA
 
 
 class BasicForecaster(Forecaster):
@@ -11,7 +11,7 @@ class BasicForecaster(Forecaster):
             "your best probability estimate for the following sentence or question resolving YES.",
             "Your answer should be a float between 0 and 1, with nothing else in your response."
         ])
-        self.examples = examples or [("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
+        self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
     
     def call(self, sentence: str, **kwargs) -> Prob:
         response = answer_sync(
