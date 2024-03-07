@@ -1,5 +1,8 @@
 # (Parts of) the personal Python utils library of Daniel Paleka, repurposed for the consistency forecasting project
-Feel free to add your own utils if you don't like the setup. You can also create a PR to modify the existing ones.
+Feel free to add your own utils if you don't like the setup. You can also create PRs to modify the existing ones.
+Try not to add code that's very specific to the consistency forecasting project; in most cases a better place for that code is in the relevant directory of that part of the project.
+
+The licensing of this code is governed by [LICENSE](LICENSE).
 
 ## .env
 Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary.
