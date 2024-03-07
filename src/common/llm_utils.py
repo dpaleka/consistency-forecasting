@@ -8,7 +8,7 @@ from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
 import asyncio
 from dotenv import load_dotenv
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from mistralai.models.chat_completion import ChatMessage
 from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
@@ -141,30 +141,42 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-@cache
-async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str:
+@cache  
+async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> Union[str, List[str]]:
     client, client_name = get_client(model, use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
         response = await client.chat(model=model, messages=messages, **kwargs)
     else:
         response = await client.chat.completions.create(model=model, messages=messages, **kwargs)
-    response_text = response.choices[0].message.content
+    n = kwargs.get('n', 1)
+    if n > 1:
+        response_text = [choice.message.content for choice in response.choices[:n]]
+    else:
+        response_text = response.choices[0].message.content
+
     if verbose:
-        print("Text:", messages[1]["content"][:30], "\nResponse:", response_text[:30])
+        print("Text:", messages[-1]["content"], "\nResponse:", response_text)
     return response_text
 
-def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str:
+def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> Union[str, List[str]]:
     client, client_name = get_client(model, use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
         response = client.chat(model=model, messages=messages, **kwargs)
     else:
         response = client.chat.completions.create(model=model, messages=messages, **kwargs)
-    response_text = response.choices[0].message.content
+
+    n = kwargs.get('n', 1)
+    if n > 1:
+        response_text = [choice.message.content for choice in response.choices[:n]]
+    else:
+        response_text = response.choices[0].message.content
+
     if verbose:
         print("Text:", messages[-1]["content"], "\nResponse:", response_text)
     return response_text
+
 
 @cache
 async def answer(
