@@ -1,0 +1,28 @@
+{
+  "prediction_market_websites": [
+    {
+      "name": "PredictIt",
+      "base_url": "https://www.predictit.org",
+      "markets_endpoint": "/api/marketdata/all/",
+      "headers": {
+        "User-Agent": "Mozilla/5.0"
+      }
+    },
+    {
+      "name": "Betfair",
+      "base_url": "https://www.betfair.com",
+      "markets_endpoint": "/exchange/plus/en/politics-betting-2378961",
+      "headers": {
+        "User-Agent": "Mozilla/5.0"
+      }
+    }
+  ],
+  "database_config": {
+    "host": "localhost",
+    "user": "your_database_user",
+    "password": "your_database_password",
+    "database": "prediction_markets"
+  },
+  "scrape_interval_seconds": 3600,
+  "log_file_path": "logs/scraper_log.txt"
+}
