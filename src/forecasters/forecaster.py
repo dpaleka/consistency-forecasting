@@ -24,9 +24,23 @@ class Forecaster(ABC):
         return {k: v for k, v in zip(keys, results)}
 
     @abstractmethod
-    def call(self, sentence: str) -> Prob:
+    def call(self, sentence: str, log: bool = False) -> Prob:
+        """
+        Calls the forecaster synchronously with a sentence to forecast.
+    
+        :param sentence: The sentence to forecast.
+        :param log: If True, logs the input sentence and the forecasted probability. Logging is recommended to be enabled by default for synchronous calls.
+        :return: The forecasted probability as a Prob object.
+        """
         pass
 
     @abstractmethod
-    async def call_async(self, sentence: str) -> Prob:
+    async def call_async(self, sentence: str, log: bool = False) -> Prob:
+        """
+        Asynchronously calls the forecaster with a sentence to forecast.
+    
+        :param sentence: The sentence to forecast.
+        :param log: If True, logs the input sentence and the forecasted probability. Logging is optional for asynchronous calls.
+        :return: The forecasted probability as a Prob object.
+        """
         pass 
