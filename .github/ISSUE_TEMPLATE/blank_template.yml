@@ -1,2 +1,6 @@
 name: Blank Issue
 description: Default issue formatting.
+body:
+- type: markdown
+  attributes:
+    value: "We want every issue assigned either at the time of creation or during the meeting after the issue is created"
