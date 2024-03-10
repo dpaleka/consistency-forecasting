@@ -16,7 +16,9 @@ class ConsistentAskForecaster(Forecaster):
         ])
         self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
     
-    def call(self, sentence: str, **kwargs) -> Prob:
+    def call(self, sentence: str, log=False, **kwargs) -> Prob:
+        if log:
+            print(f"Prompt: {sentence}\nPreface: {self.preface}")
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
         kwargs["n"] = kwargs.get("n", self.n)
         response = answer_sync(
@@ -27,6 +29,11 @@ class ConsistentAskForecaster(Forecaster):
         return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
+        if log:
+            for idx, resp in enumerate(response):
+                print(f"Response {idx+1}: {resp}")
+        if log:
+            print(f"Prompt: {sentence}\nPreface: {self.preface}")
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
         kwargs["n"] = kwargs.get("n", self.n)
         response = await answer(
@@ -47,3 +54,6 @@ class ConsistentAskForecaster(Forecaster):
                 return None
         else:
             return None
+        if log:
+            for idx, resp in enumerate(response):
+                print(f"Response {idx+1}: {resp}")
