@@ -15,7 +15,9 @@ class ReasoningForecaster(Forecaster):
         self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", 
                                            "As of 2021, there are no skyscrapers a mile tall. There are also no plans to build any mile tall skyscraper in new york. The probability is: 0.03")]
     
-    def call(self, sentence: str, **kwargs) -> Prob:
+    def call(self, sentence: str, log=False, **kwargs) -> Prob:
+        if log:
+            print(f"Prompt: {sentence}\nPreface: {self.preface}")
         response = answer_sync(
             prompt = sentence,
             preface = self.preface,
@@ -44,3 +46,9 @@ class ReasoningForecaster(Forecaster):
                 return None
         else:
             return None
+        if log:
+            print(f"Response: {response}")
+        else:
+            return None
+        if log:
+            print(f"Response: {response}")
