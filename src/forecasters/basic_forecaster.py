@@ -13,7 +13,9 @@ class BasicForecaster(Forecaster):
         ])
         self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
     
-    def call(self, sentence: str, **kwargs) -> Prob:
+    def call(self, sentence: str, log=False, **kwargs) -> Prob:
+        if log:
+            print(f"Prompt: {sentence}\nPreface: {self.preface}")
         response = answer_sync(
             prompt = sentence,
             preface = self.preface,
@@ -21,7 +23,9 @@ class BasicForecaster(Forecaster):
             **kwargs)
         return self.extract_prob(response)
 
-    async def call_async(self, sentence: str, **kwargs) -> Prob:
+    async def call_async(self, sentence: str, log=False, **kwargs) -> Prob:
+        if log:
+            print(f"Prompt: {sentence}\nPreface: {self.preface}")
         response = await answer(
             prompt = sentence,
             preface = self.preface,
@@ -40,6 +44,11 @@ class BasicForecaster(Forecaster):
                 return None
         else:
             return None
+
+
+
+        if log:
+            print(f"Response: {response}")
 
 
 
