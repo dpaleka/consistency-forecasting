@@ -1,6 +1,7 @@
 #%%
 from src.static_checks.NegChecker import *
 from forecasters import *
+from common.logger import get_logger
 
 # Instantiate some base questions
 BASE_QS = [
@@ -23,4 +24,5 @@ print(violation)
 
 
 
+# %%
 # %%
