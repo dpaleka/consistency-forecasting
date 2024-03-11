@@ -5,15 +5,15 @@ S(f(x1), f(x2)) :=  f(x1) + f(x2) = 1
 
 from common.llm_utils import answer_sync, answer
 from forecasters import SentencesTemplate, ProbsTemplate
-from .Base import BaseChecker
+from .BaseChecker import BaseChecker
 
 
-class NegationChecker(BaseChecker):
-    preface = " ".join([
-        "You are a helpful assistant. I need you to negate the question provided.",
-        "This should be done by adding / removing the word 'not' whenever possible.",
-        "Demorgan's laws should be followed with and/or negation. It should return a",
-        "question. Avoid using the word won't."])
+class NegChecker(BaseChecker):
+    preface = (
+        "You are a helpful assistant. I need you to negate the question provided. "
+        "This should be done by adding / removing the word 'not' whenever possible. "
+        "Demorgan's laws should be followed with and/or negation. It should return a "
+        "question. Avoid using the word won't.")
     
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
