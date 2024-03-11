@@ -3,7 +3,7 @@ from static_checks import *
 
 basic_forecaster = BasicForecaster()
 
-negation_checker = NegationChecker() # or NegationChecker(path = "src/data/NegationChecker.jsonl")
+negation_checker = NegChecker() # or NegationChecker(path = "src/data/NegationChecker.jsonl")
 paraphrasal_checker = ParaphrasalChecker()
 butnot_checker = ButNotChecker()
 

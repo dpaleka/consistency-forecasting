@@ -7,22 +7,18 @@ S(f(x1), f(x2), f(x3))
 
 from common.llm_utils import answer_sync, answer
 from forecasters import SentencesTemplate, ProbsTemplate
-from .Base import BaseChecker
-
+from .BaseChecker import BaseChecker
+from .OrChecker import OrChecker
 
 class ButNotChecker(BaseChecker):
 
-    preface_butnot = " ".join([
-            "You are a helpful assistant. I will give you two questions, q1 and q2.",
-            "I want you to give me a single question that expresses 'q2 but not q1'",
-            "in the most succint manner possible. Make sure your response is in the", 
-            "form of a single question, and exactly expresses 'q2 but not q1'."])
+    preface_butnot = (
+        "You are a helpful assistant. I will give you two questions, q1 and q2. "
+        "I want you to give me a single question that expresses 'q2 but not q1' "
+        "in the most succint manner possible. Make sure your response is in the " 
+        "form of a single question, and exactly expresses 'q2 but not q1'.")
 
-    preface_or = " ".join([
-            "You are a helpful assistant. I will give you two questions, q1 and q2.",
-            "I want you to give me a single question that expresses 'q1 or q2'",
-            "in the most succint manner possible. Make sure your response is in the", 
-            "form of a single question, and exactly expresses 'q1 or q2'."])
+    preface_or = OrChecker.preface
     
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
