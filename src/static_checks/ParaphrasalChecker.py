@@ -9,9 +9,9 @@ from .BaseChecker import BaseChecker
 
 
 class ParaphrasalChecker(BaseChecker):
-    preface = " ".join([
-        "You are a helpful assistant. I need you to paraphrase the question provided.",
-        "Make sure the resulting question still means exactly the same thing."])    
+    preface = (
+        "You are a helpful assistant. I need you to paraphrase the question provided. "
+        "Make sure the resulting question still means exactly the same thing.")
     
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)

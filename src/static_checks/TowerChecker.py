@@ -5,6 +5,7 @@ S(f(x1), f(x2), f(x3), f(x4))
     :=  f(x1) * f(x2) * f(x3) == f(x4)
 """
 
+import numpy as np
 from common.llm_utils import answer_sync, answer
 from forecasters import SentencesTemplate, ProbsTemplate
 from .BaseChecker import BaseChecker
@@ -15,17 +16,74 @@ from .CondChecker import CondChecker
 class TowerChecker(BaseChecker):
     preface_cond = CondChecker.preface_cond
     preface_and = AndChecker.preface
-    
+
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
-    
-    # def instantiate_sync(self, base_sentence_1: str, base_sentence_2: str, base_sentence_3: str, **kwargs) -> SentencesTemplate:
-    #     prompt_1 = self.stack(base_sentence_1, base_sentence_2)
-    #     prompt_2 = self.stack(base_sentence_1, base_sentence_2, base_sentence_3)
-        
-    #     response_1 = answer_sync(prompt=prompt_1, preface=self.preface_cond, **kwargs)
-    #     response_2 = answer_sync(prompt=prompt_2, preface=self.preface_cond, **kwargs)
-    #     response_3 = answer_sync(prompt=prompt_3, preface=self.preface_and, **kwargs)
-    #     response_4 = answer_sync(prompt=prompt_4, preface=self.preface_and, **kwargs)
-    #     sentences = {"P": base_sentence_1, "Q|P": response_1, "R|(P and Q)": response_2, "P and Q and R": response_3}
-    #     return sentences
+
+    def instantiate_sync(
+        self, base_sentence_1: str, base_sentence_2: str, base_sentence_3: str, **kwargs
+    ) -> SentencesTemplate:
+        prompt_PQ = self.stack(base_sentence_1, base_sentence_2)
+
+        response_Q_cond_P = answer_sync(
+            prompt=prompt_PQ, preface=self.preface_cond, **kwargs
+        )
+        response_P_and_Q = answer_sync(
+            prompt=prompt_PQ, preface=self.preface_and, **kwargs
+        )
+
+        prompt_P_and_Q_R = self.stack(response_P_and_Q, base_sentence_3)
+        response_R_cond_P_and_Q = answer_sync(
+            prompt=prompt_P_and_Q_R, preface=self.preface_cond, **kwargs
+        )
+
+        response_P_and_Q_and_R = answer_sync(
+            prompt=prompt_P_and_Q_R, preface=self.preface_and, **kwargs
+        )
+
+        sentences = {
+            "P": base_sentence_1,
+            "Q_given_P": response_Q_cond_P,
+            "R_given_(P_and_Q)": response_R_cond_P_and_Q,
+            "P_and_Q_and_R": response_P_and_Q_and_R,
+        }
+        return sentences
+
+    async def instantiate(
+        self, base_sentence_1: str, base_sentence_2: str, base_sentence_3: str, **kwargs
+    ) -> SentencesTemplate:
+        prompt_PQ = self.stack(base_sentence_1, base_sentence_2)
+
+        response_Q_cond_P = await answer(
+            prompt=prompt_PQ, preface=self.preface_cond, **kwargs
+        )
+        response_P_and_Q = await answer(
+            prompt=prompt_PQ, preface=self.preface_and, **kwargs
+        )
+
+        prompt_P_and_Q_R = self.stack(response_P_and_Q, base_sentence_3)
+        response_R_cond_P_and_Q = await answer(
+            prompt=prompt_P_and_Q_R, preface=self.preface_cond, **kwargs
+        )
+
+        response_P_and_Q_and_R = await answer(
+            prompt=prompt_P_and_Q_R, preface=self.preface_and, **kwargs
+        )
+
+        sentences = {
+            "P": base_sentence_1,
+            "Q_given_P": response_Q_cond_P,
+            "R_given_(P_and_Q)": response_R_cond_P_and_Q,
+            "P_and_Q_and_R": response_P_and_Q_and_R,
+        }
+        return sentences
+
+    def violation(self, answers: ProbsTemplate) -> float:
+        return abs(
+            np.log(
+                answers["P"]
+                * answers["Q_given_P"]
+                * answers["R_given_(P_and_Q)"]
+                / answers["P_and_Q_and_R"]
+            )
+        )
