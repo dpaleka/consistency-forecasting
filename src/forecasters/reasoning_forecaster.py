@@ -1,4 +1,5 @@
 from .forecaster import Forecaster, Prob
+from common.logger import get_logger
 import re
 from common.llm_utils import answer, answer_sync, QandA
 
@@ -13,6 +14,7 @@ class ReasoningForecaster(Forecaster):
             "Your last sentence should be, 'The probability is: <float between 0 and 1>'",
         ])
         self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", 
+    logger = get_logger(__name__)
                                            "As of 2021, there are no skyscrapers a mile tall. There are also no plans to build any mile tall skyscraper in new york. The probability is: 0.03")]
     
     def call(self, sentence: str, **kwargs) -> Prob:
@@ -32,6 +34,8 @@ class ReasoningForecaster(Forecaster):
         return self.extract_prob(response)
 
     def extract_prob(self, s: str) -> float:
+        logger.debug(f"Calling with sentence: {sentence}, kwargs: {kwargs}")
+        logger.info(f"Response from LLM: {response}")
         # Adjusted pattern to capture a number that follows either a colon or the word "is" with optional spaces
         pattern = r"(?:\:|is)\s*(-?\d*\.?\d+)"
         match = re.search(pattern, s)
@@ -44,3 +48,6 @@ class ReasoningForecaster(Forecaster):
                 return None
         else:
             return None
+                logger.error(f"Error converting probability: {e}")
+        else:
+            logger.warning("No probability found in response.")
