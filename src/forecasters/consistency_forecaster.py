@@ -17,6 +17,9 @@ class ConsistentAskForecaster(Forecaster):
         self.examples = examples or [QandA("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
     
     def call(self, sentence: str, **kwargs) -> Prob:
+from common.logger import get_logger
+
+    logger = get_logger(__name__)
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
         kwargs["n"] = kwargs.get("n", self.n)
         response = answer_sync(
@@ -27,6 +30,8 @@ class ConsistentAskForecaster(Forecaster):
         return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
+        logger.debug(f"Calling with sentence: {sentence}, kwargs: {kwargs}")
+        logger.info(f"Response from LLM: {response}")
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
         kwargs["n"] = kwargs.get("n", self.n)
         response = await answer(
@@ -43,7 +48,12 @@ class ConsistentAskForecaster(Forecaster):
             try:
                 return float(match.group())
             except Exception as e:
-                #TODO: log error
+                logger.error(f"Error converting probability: {e}")
                 return None
         else:
             return None
+        logger.debug(f"Calling with sentence: {sentence}, kwargs: {kwargs}")
+        logger.info(f"Response from LLM: {response}")
+        logger.info(f"Extracted probabilities: {[prob for prob in map(self.extract_prob, response) if prob is not None]}")
+        else:
+            logger.warning("No probability found in response.")
