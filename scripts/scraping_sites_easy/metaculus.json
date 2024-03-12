@@ -1,0 +1,122 @@
+[
+    {
+        "name": "Will there be a total solar eclipse on June 25, 2522?",
+        "end_date": "2522-06-26T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/111"
+    },
+    {
+        "name": "Will the Universe end?",
+        "end_date": "9999-12-31T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/161"
+    },
+    {
+        "name": "Will SpaceX land people on Mars before 2030?",
+        "end_date": "2030-01-02T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/349"
+    },
+    {
+        "name": "Will someone born before 2001 live to be 150?",
+        "end_date": "2151-01-03T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/353"
+    },
+    {
+        "name": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
+        "end_date": "2100-01-01T16:18:08Z",
+        "question_type": "continuous",
+        "url": "https://www.metaculus.com/questions/363"
+    },
+    {
+        "name": "Will human brain emulation be the first successful route to human-level digital intelligence?",
+        "end_date": "2060-01-01T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/372"
+    },
+    {
+        "name": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
+        "end_date": "2027-01-31T23:59:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/375"
+    },
+    {
+        "name": "Will there be Human-machine intelligence parity before 2040?",
+        "end_date": "2040-01-01T00:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/384"
+    },
+    {
+        "name": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
+        "end_date": "2050-01-02T04:45:08Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/397"
+    },
+    {
+        "name": "When will there be machine-kindergartner parity in LEGO construction?",
+        "end_date": "2040-01-02T18:33:24Z",
+        "question_type": "continuous",
+        "url": "https://www.metaculus.com/questions/404"
+    },
+    {
+        "name": "When will AIs program programs that can program AIs?",
+        "end_date": "2100-01-02T00:01:00Z",
+        "question_type": "continuous",
+        "url": "https://www.metaculus.com/questions/406"
+    },
+    {
+        "name": "If chess is solved before 2080, must perfect play result in white winning?",
+        "end_date": "2080-01-02T04:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/480"
+    },
+    {
+        "name": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
+        "end_date": "2030-01-01T08:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/489"
+    },
+    {
+        "name": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
+        "end_date": "2030-01-01T08:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/491"
+    },
+    {
+        "name": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
+        "end_date": "2035-01-01T08:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/492"
+    },
+    {
+        "name": "Will the first commercial hyperloop system be within the US?",
+        "end_date": "2035-01-01T08:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/513"
+    },
+    {
+        "name": "Will humans go extinct before 2100?",
+        "end_date": "2100-01-02T00:01:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/578"
+    },
+    {
+        "name": "Will there be more VR headset sales than AR headsets sales in 2025?",
+        "end_date": "2026-07-31T06:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/579"
+    },
+    {
+        "name": "Will there be at least 2\u02daC of global warming by 2100?",
+        "end_date": "2100-06-14T23:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/585"
+    },
+    {
+        "name": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
+        "end_date": "2051-01-01T17:00:00Z",
+        "question_type": "binary",
+        "url": "https://www.metaculus.com/questions/594"
+    }
+]
