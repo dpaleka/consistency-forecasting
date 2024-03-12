@@ -1,0 +1,3002 @@
+[
+    {
+        "name": "[Metaculus] Will the United States government either ban TikTok or force a sale before 2025?",
+        "end_date": "2025-01-02 12:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mirrorbot/metaculus-will-the-united-states-go"
+    },
+    {
+        "name": "Will the Swiss anti-vaccine ballot initiative \u201cFor freedom and physical integrity\u201d pass?",
+        "end_date": "2024-06-09 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jonasvollmer/will-the-swiss-antivaccine-ballot-i"
+    },
+    {
+        "name": "Will the supreme court rule in favor of the government in Diaz v. United States?",
+        "end_date": "2024-04-11 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/m2/will-the-supreme-court-rule-in-favo-b482c443d931"
+    },
+    {
+        "name": "How much will \"Dune: Part Two\" gross (domestic) during its 3rd weekend (March 15-17)?",
+        "end_date": "2024-03-23 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ziddletwix/how-much-will-dune-part-two-gross-d"
+    },
+    {
+        "name": "Will @EvilWurst upload a new Rust base video by EOY 2025?",
+        "end_date": "2026-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-evilwurse-upload-a-new-rust-ba"
+    },
+    {
+        "name": "Did the Boeing whistleblower die of natural causes?",
+        "end_date": "2024-06-12 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/gcs/did-the-boeing-whistleblower-die-of"
+    },
+    {
+        "name": "\u26bd Will Real Sociedad beat Cadiz during regular time on Fri, Mar 15, 2024? La Liga \ud83c\uddea\ud83c\uddf8",
+        "end_date": "2024-03-15 23:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-real-sociedad-beat-cadiz-duri"
+    },
+    {
+        "name": "\u26bd Will 1.FC K\u00f6ln beat RB Leipzig during regular time on Fri, Mar 15, 2024? Bundesliga \ud83c\udde9\ud83c\uddea",
+        "end_date": "2024-03-15 22:30:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-1fc-koln-beat-rb-leipzig-duri"
+    },
+    {
+        "name": "\u26bd Will Club Nacional beat Always Ready during regular time on Fri, Mar 15, 2024? Copa Libertadores \ud83c\udf0e",
+        "end_date": "2024-03-15 03:30:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-club-nacional-beat-always-rea"
+    },
+    {
+        "name": "Global Average Temperature per gistemp LOTI v4 vs 1951-1980 base period",
+        "end_date": "2024-04-10 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/christopherrandles/global-average-temperature-per-gist-9a3babc814f8"
+    },
+    {
+        "name": "If Donald Trump is elected, what will the effective US federal tax rate be for Amazon.com Inc. in tax year 2026?",
+        "end_date": "2027-01-02 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/pykess/if-donald-trump-is-elected-what-wil"
+    },
+    {
+        "name": "If Joe Biden is elected, what will the effective US federal tax rate be for Amazon.com Inc. in tax year 2026?",
+        "end_date": "2027-01-02 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/pykess/if-joe-biden-is-elected-what-will-t"
+    },
+    {
+        "name": "\ud83e\udd8d VS \ud83e\udd8e: How much will GODZILLA X KONG gross during its domestic opening weekend?",
+        "end_date": "2024-04-07 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ziddletwix/-vs-how-much-will-godzilla-x-kong-g"
+    },
+    {
+        "name": "How much does it cost someone to buy the blood of Jesus from the Pope? 1 penny or closer to 1000 dollars?",
+        "end_date": "2024-03-16 04:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jacobfd46/how-much-does-it-cost-someone-to-bu"
+    },
+    {
+        "name": "\u22653 doomers wanting bans on open source LLMs will be posted in the comments",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/singer/3-doomers-wanting-bans-on-open-sour"
+    },
+    {
+        "name": "Will OpenAI release GPT-4.5 and GPT-5 and open source GPT-4 this week?",
+        "end_date": "2024-03-18 10:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jim/will-openai-release-gpt45-and-gpt5"
+    },
+    {
+        "name": "How many seats will the Conservative Party win in the next UK general election?",
+        "end_date": "2025-01-30 07:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/anthem/how-many-seats-will-the-conservativ-89c852a83f80"
+    },
+    {
+        "name": "If Trump wins, will the US enter a recession before 2027?",
+        "end_date": "2027-02-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-trump-wins-will-the-us-enter-a-r"
+    },
+    {
+        "name": "If Biden wins, will the US enter a recession before 2027?",
+        "end_date": "2027-02-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-biden-wins-will-the-us-enter-a-r"
+    },
+    {
+        "name": "How many states will Donald Trump win in the 2024 Presidential election? [November 5th]",
+        "end_date": "2024-11-01 23:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/lion/how-many-states-will-donald-trump-w"
+    },
+    {
+        "name": "How many states will Joe Biden win in the 2024 Presidential election? [November 5th]",
+        "end_date": "2024-11-01 23:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/lion/how-many-states-will-joe-biden-win-312074bcad58"
+    },
+    {
+        "name": "How many views will Destiny receive on March 12, 2024?",
+        "end_date": "2024-03-14 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/brycebowemd39/how-many-views-will-destiny-receive"
+    },
+    {
+        "name": "Will bitcoin's price ($) exceed the earth-moon distance (mi) before 2030?",
+        "end_date": "2030-01-01 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jonathanray/will-bitcoins-price-exceed-the-eart"
+    },
+    {
+        "name": "What will be the highest like count of any ACX post in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/what-will-be-the-highest-like-count"
+    },
+    {
+        "name": "Number of major incidents involving Boeing planes until end of 2025",
+        "end_date": "2025-12-31 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/vitorbosshard/number-of-major-incidents-involving"
+    },
+    {
+        "name": "How many ACX posts will there be in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-acx-posts-will-there-be-in"
+    },
+    {
+        "name": "How many electric vehicles will Rivian Automotive Unc deliver in 2024?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/omarb/how-many-electric-vehicles-will-riv"
+    },
+    {
+        "name": "Will someone disrupt the global semiconductor supply chain by disrupting high-purity quartz mines by EOY 2028?",
+        "end_date": "2029-01-01 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/noah1/will-someone-disrupt-the-global-sem"
+    },
+    {
+        "name": "How many regular season points will Nikola Jokic have at the end of his career?",
+        "end_date": "2046-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-regular-season-points-will-61f877b2cc44"
+    },
+    {
+        "name": "How many regular season points will Luka Doncic have at the end of his career?",
+        "end_date": "2046-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-regular-season-points-will-bc48744d4aa8"
+    },
+    {
+        "name": "How many regular season points will Steph Curry have at the end of his career?",
+        "end_date": "2036-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-regular-season-points-will-fc15fa1aa08a"
+    },
+    {
+        "name": "(Numeric Market) Will Nvidia close at 850 on March 18th?",
+        "end_date": "2024-03-19 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/keenenwatts/numeric-market-will-nvidia-close-at"
+    },
+    {
+        "name": "How many regular season points will LeBron James have at the end of his career?",
+        "end_date": "2032-03-19 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-regular-season-points-will"
+    },
+    {
+        "name": "Will Bitcoin fall to $60K before reaching $85K?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/juliafe02/will-bitcoin-fall-to-60k-before-rea"
+    },
+    {
+        "name": "How many games will the NBA finals last?",
+        "end_date": "2024-03-11 23:05:53",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/how-many-games-will-the-nba-finals"
+    },
+    {
+        "name": "Will Manifold still offer their new Numeric question type a month from today?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-manifold-still-offer-their-new"
+    },
+    {
+        "name": "What will be the largest point total by any player in the 2024 NBA playoffs?",
+        "end_date": "2024-07-19 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/what-will-be-the-largest-point-tota"
+    },
+    {
+        "name": "Does the World Government/Imu have the Ancient Weapon: Uranus?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tsaitama/does-the-world-governmentimu-have-t"
+    },
+    {
+        "name": "Will I not buy sweets and soft drinks until the end of the year?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/redcat/will-i-not-buy-sweets-and-soft-drin"
+    },
+    {
+        "name": "What will RFK's vote share be in the 2024 election?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/what-will-rfks-vote-share-be-in-the"
+    },
+    {
+        "name": "What will Biden's vote share be in the 2024 election?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/what-will-bidens-vote-share-be-in-t-a5c5543fd4c1"
+    },
+    {
+        "name": "What will Trump's vote share be in the 2024 election?",
+        "end_date": "2024-11-30 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/semioticrivalry/what-will-trumps-vote-share-be-in-t-eb4aaf710cc0"
+    },
+    {
+        "name": "Will the One Piece manga reach 1776 chapters?",
+        "end_date": "2032-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-one-piece-manga-reach-1776"
+    },
+    {
+        "name": "How many chapters will One Piece have when it ends?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/how-many-chapters-will-one-piece-ha-62e75c58d342"
+    },
+    {
+        "name": "In which chapter will Luffy find the One Piece?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/in-which-chapter-will-luffy-find-th"
+    },
+    {
+        "name": "In what year will a human die on Mars?",
+        "end_date": "2101-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/in-what-year-will-a-human-die-on-ma"
+    },
+    {
+        "name": "In what year will a human walk on Mars?",
+        "end_date": "2101-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/in-what-year-will-a-human-walk-on-m"
+    },
+    {
+        "name": "What will Jimmy carters age in days be when he dies",
+        "end_date": "2025-01-01 07:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/jamesf/what-will-jimmy-carters-age-in-days"
+    },
+    {
+        "name": "Will police or courts determine that foul play was involved in the death of Boeing whistleblower John Barnett?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lumi/will-police-or-courts-determine-tha"
+    },
+    {
+        "name": "Will Rivian Automotive Inc deliver more than 55k electric vehicles in 2024?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/omarb/will-rivian-automotive-inc-deliver-e3e13b63ab5f"
+    },
+    {
+        "name": "Will Apple still be developing the Vision Pro (or successor) after 2030?",
+        "end_date": "2036-01-01 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/chris/will-apple-still-be-developing-the"
+    },
+    {
+        "name": "How many Pokemon creatures will there be at the end of 2029?",
+        "end_date": "2030-01-01 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/how-many-poke-mon-creatures-will-th"
+    },
+    {
+        "name": "What will the price of Ethereum ETH be at the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/what-will-the-price-of-ethereum-eth"
+    },
+    {
+        "name": "Will Bitcoin be above 72k at 23:59 PM ET march 11",
+        "end_date": "2024-03-13 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bitcoinbitcoin/will-bitcoin-be-above-72k-at-2359-p"
+    },
+    {
+        "name": "What will the price of Bitcoin BTC be at the end of August 2024?",
+        "end_date": "2024-09-01 04:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/what-will-the-price-of-bitcoin-be-a-da81a7856eae"
+    },
+    {
+        "name": "What will the Nvidia stock price be at the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/what-will-the-nvidia-stock-price-be"
+    },
+    {
+        "name": "What will the price of Bitcoin BTC be at the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "number",
+        "url": "https://manifold.markets/strutheo/what-will-the-price-of-bitcoin-be-a"
+    },
+    {
+        "name": "Will Rivian Automotive Inc deliver more than 100k electric vehicles in 2024?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/omarb/will-rivian-automotive-inc-deliver"
+    },
+    {
+        "name": "Will there be a second season of \u201cDune: Prophecy\u201d announced by the end of 2025?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/hwh/will-there-be-a-second-season-of-du"
+    },
+    {
+        "name": "What events in 2024 will be held for @danman314 TET (trending events tournament)",
+        "end_date": "2025-01-01 07:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/jamesf/what-events-in-2024-will-danman314"
+    },
+    {
+        "name": "Let's play chess!",
+        "end_date": "2024-03-17 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/bobbylee/lets-play-chess"
+    },
+    {
+        "name": "Will any country ban cash/ physical currency by 2030?",
+        "end_date": "2031-01-01 02:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/gugra/will-any-country-ban-cash-physical"
+    },
+    {
+        "name": "Which former U.S. President will live longer?",
+        "end_date": "2050-01-02 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nfl/which-world-leader-will-live-longer-94088017d1db"
+    },
+    {
+        "name": "Live NBA Matchups Monday, March 11th",
+        "end_date": "2024-03-14 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/reemarkable/live-nba-matchups-monday-march-11th"
+    },
+    {
+        "name": "Next Star Wars mainline film (Episode X?) \ud83e\ude90\ud83d\udc7e [Megamarket/Prop bets]",
+        "end_date": "2030-01-02 07:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/henrithunberg/next-star-wars-mainline-film-episod"
+    },
+    {
+        "name": "Did you know Jesus Christ had a sister named Judah?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jacobfd46/did-you-jesus-christ-had-a-sister-n"
+    },
+    {
+        "name": "Will Sizewell C nuclear power station go ahead?",
+        "end_date": "2025-01-01 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/alh/will-sizewell-c-nuclear-power-stati"
+    },
+    {
+        "name": "Will the share of population exposed to high levels of air pollution fall below 15% by 2030?",
+        "end_date": "2032-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fe_mey/will-the-share-of-population-expose"
+    },
+    {
+        "name": "[WORK IN PROGRESS] If climate change is solved by 2065, what will I attribute the victory to?",
+        "end_date": "2065-01-02 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/michaelwheatley/work-in-progress-if-climate-change"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Nero?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-c6176187da54"
+    },
+    {
+        "name": "Will TfL's planned Bakerloo Line extension to Lewisham go ahead?",
+        "end_date": "2030-01-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/alh/will-tfls-planned-bakerloo-line-ext"
+    },
+    {
+        "name": "Who will win the NFC West in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-nfc-west-in-the-20-9e150382dc59"
+    },
+    {
+        "name": "Who will win the NFC South in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-nfc-south-in-the-2-2ec6ea81d4d2"
+    },
+    {
+        "name": "Who will win the NFC North in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-nfc-north-in-the-2-740449c058ba"
+    },
+    {
+        "name": "Who will win the NFC East in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-nfc-east-in-the-20-02c0f282b01d"
+    },
+    {
+        "name": "Who will win the AFC West in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-afc-west-in-the-20-796d9e09ac58"
+    },
+    {
+        "name": "Who will win the AFC South in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-afc-south-in-the-2-8948811ed451"
+    },
+    {
+        "name": "Who will win the AFC North in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-afc-north-in-the-2-a95f265aef3d"
+    },
+    {
+        "name": "Who will win the AFC East in the 2024-25 NFL season?",
+        "end_date": "2025-01-06 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/who-will-win-the-afc-east-in-the-20-33439da0e00e"
+    },
+    {
+        "name": "How much did your septoplasty for a deviated septum resolve the issue?",
+        "end_date": "N/A",
+        "question_type": "bountied_question",
+        "url": "https://manifold.markets/thewabisabi/how-much-did-your-septoplasty-for-a"
+    },
+    {
+        "name": "Which driver will be the winner of the 2024 Food City 500?",
+        "end_date": "2024-03-17 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ovals/which-driver-will-be-the-winner-of-446e83c7a6d4"
+    },
+    {
+        "name": "Which of these will get a standalone Vision Pro app before EOY 2024?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/henrithunberg/which-of-these-will-get-a-standalon"
+    },
+    {
+        "name": "HUD Secretary Fudge is resigning. Will any other Biden cabinet members resign this year?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bruce54df/hud-secretary-fudge-is-resigning-wi"
+    },
+    {
+        "name": "Will TfL's planned DLR Extension to Thamesmead go ahead?",
+        "end_date": "2030-01-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/alh/will-tfls-planned-dlr-extension-to"
+    },
+    {
+        "name": "Will I survive another minute?",
+        "end_date": "2024-03-11 20:18:17",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fim789/will-i-survive-another-minute"
+    },
+    {
+        "name": "Will Donald Trump say something negative about Jimmy Carter within 1 week of his death?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/panfilo/will-donald-trump-say-something-neg"
+    },
+    {
+        "name": "Which world leader will live longer?",
+        "end_date": "2050-01-02 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nfl/which-world-leader-will-live-longer"
+    },
+    {
+        "name": "Which manufacturer will the car that wins the Food City 500 represent?",
+        "end_date": "2024-03-17 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ovals/which-manufacturer-will-the-car-tha"
+    },
+    {
+        "name": "\ud83e\ude87Which artists will get a Tiny Desk Concert on NPR before EOY 2027? [ADD RESPONSES]",
+        "end_date": "2028-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/which-artists-will-get-a-tiny-desk"
+    },
+    {
+        "name": "If Biden is elected, will there be an executive order or legislation focused on AI before the 2026 midterms?",
+        "end_date": "2026-11-03 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/nathanscott/if-biden-is-elected-will-there-be-a-82eff624bd35"
+    },
+    {
+        "name": "Will there be an AI-music-generation web UI with at least 5000 stars on GitHub by the end of 2024?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tulip/will-there-be-an-aimusicgeneration"
+    },
+    {
+        "name": "Will Denis Villeneuve\u2019s next film be related to Dune?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mattyb/will-denis-villeneuves-next-film-be"
+    },
+    {
+        "name": "Manifold Ranks the 2024 NFL Draft Class",
+        "end_date": "2025-02-10 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexandermiller/manifold-ranks-the-2024-nfl-draft-c"
+    },
+    {
+        "name": "Which MLB division will have the most total wins by team during the 2024 regular season?",
+        "end_date": "2024-11-03 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/lbeesley/which-mlb-division-will-have-the-mo"
+    },
+    {
+        "name": "Will I survive another hour?",
+        "end_date": "2024-03-11 20:14:35",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fim789/will-i-survive-another-hour-fd37d74b9b56"
+    },
+    {
+        "name": "Will \"Notes from a Prompt Factory\" make the top fifty posts in LessWrong's 2024 Annual Review?",
+        "end_date": "2026-02-01 01:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lesswrong/will-notes-from-a-prompt-factory-ma"
+    },
+    {
+        "name": "(Quick resolving trade) will Bitcoin hit 73,000 by 8pm tomorrow",
+        "end_date": "2024-03-13 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/andrewcrosse/quick-resolving-trade-will-bitcoin"
+    },
+    {
+        "name": "If Trump is elected, will there be an executive order or legislation focused on AI before the 2026 midterms?",
+        "end_date": "2026-11-03 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/nathanscott/if-trump-is-elected-will-there-be-a-01a15c4aa239"
+    },
+    {
+        "name": "Will Tesla's market capitalization surpass $1 trillion by the end of 2024?",
+        "end_date": "2025-01-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/gugra/will-teslas-market-capitalization-s"
+    },
+    {
+        "name": "What will the Manifold Team get done this week?",
+        "end_date": "2024-03-19 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/jamesgrugett/what-will-the-manifold-team-get-don-96ccacc991de"
+    },
+    {
+        "name": "[Let's play] Civilization VI (Turn 35)",
+        "end_date": "2024-03-12 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/komplexkonjugat/lets-play-civilization-vi-turn-35"
+    },
+    {
+        "name": "\ud83c\udf29\ufe0f\u2728\ud83d\udcda What will happen in Stormlight 5?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/koadma/-what-will-happen-in-stormlight-5"
+    },
+    {
+        "name": "Will James get 3+ meaningful pieces of anonymous feedback in a month?",
+        "end_date": "2024-04-11 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/austin/will-james-get-3-meaningful-pieces"
+    },
+    {
+        "name": "Who is the buyer in Sweden's secret arms deal?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tbdmatrix/who-is-the-buyer-in-swedens-secret"
+    },
+    {
+        "name": "Which movie from 2024 will win the Oscar for Best Actress at the 97th Academy Awards?",
+        "end_date": "2025-03-21 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/which-movie-from-2024-will-win-the-da24cf7b38df"
+    },
+    {
+        "name": "Which movie from 2024 will win the Oscar for Best Actor at the 97th Academy Awards?",
+        "end_date": "2025-03-21 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/which-movie-from-2024-will-win-the-8b365bd89e56"
+    },
+    {
+        "name": "Will Reddit IPO before Grok is open sourced by xAI?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-reddit-ipo-before-grok-is-open"
+    },
+    {
+        "name": "When will xAI open source Grok? (exact date, ET)",
+        "end_date": "2024-03-19 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ammonlam/when-will-xai-open-source-grok-exac"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before the end of 2025?",
+        "end_date": "2026-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo-eb498a6dc6a1"
+    },
+    {
+        "name": "Will the Netflix Bioshock adaptation release before EOY 2026?",
+        "end_date": "2027-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-netflix-bioshock-adaptatio"
+    },
+    {
+        "name": "Which movie from 2024 will win the Oscar for Best Picture at the 97th Academy Awards?",
+        "end_date": "2025-03-21 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/which-movie-from-2024-will-win-the"
+    },
+    {
+        "name": "How much will Alien: Romulus (2024) gross at the worldwide box office?",
+        "end_date": "2025-02-02 14:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tripping/how-much-will-alien-romulus-2024-gr"
+    },
+    {
+        "name": "Will the attempted gentrification of Caerphilly, Wales last until 2025?",
+        "end_date": "2025-01-02 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/theallmemeingeye/will-the-attempted-gentrification-o"
+    },
+    {
+        "name": "Will there be a Book of Mormon movie or series based off the Broadway Musical before EOY 2029?",
+        "end_date": "2030-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-a-book-of-mormon-movi"
+    },
+    {
+        "name": "How much will Despicable Me 4 (2024) gross at the worldwide box office?",
+        "end_date": "2025-01-02 14:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tripping/how-much-will-despicable-me-4-2024"
+    },
+    {
+        "name": "How many coins are in this jar?",
+        "end_date": "N/A",
+        "question_type": "bountied_question",
+        "url": "https://manifold.markets/quroe/how-many-coins-are-in-this-jar"
+    },
+    {
+        "name": "Which book review will win the ACX Book Review Contest?",
+        "end_date": "2024-07-01 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/michaelwheatley/which-book-review-will-win-the-acx-e4ceca1e2f54"
+    },
+    {
+        "name": "Will there be an incident with hidden cameras in AirBNB after they have banned cameras?",
+        "end_date": "2024-05-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/walterjr/will-there-be-an-incident-with-hidd"
+    },
+    {
+        "name": "Will I beat Nelson in chess.com?",
+        "end_date": "2024-03-11 17:28:54",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fim789/will-i-beat-nelson-in-chesscom"
+    },
+    {
+        "name": "Will General Butt Naked die before Book of Mormon leaves Broadway?",
+        "end_date": "2081-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-general-butt-naked-die-before"
+    },
+    {
+        "name": "Who will win the Manifold Book Review Contest?",
+        "end_date": "2024-05-03 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/michaelwheatley/who-will-win-the-manifold-book-revi"
+    },
+    {
+        "name": "Will Jimmy Ch\u00e9rizier AKA Barbecue become the de facto leader of Haiti till the end of year ?",
+        "end_date": "2025-01-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/gugra/will-jimmy-cherizier-aka-barbecue-b"
+    },
+    {
+        "name": "How much will Kingdom of the Planet of the Apes (2024) gross at the worldwide box office?",
+        "end_date": "2025-01-02 14:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tripping/how-much-will-kingdom-of-the-planet"
+    },
+    {
+        "name": "How much will Godzilla x Kong: The New Empire (2024) gross at the worldwide box office?",
+        "end_date": "2025-01-02 14:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tripping/how-much-will-godzilla-x-kong-the-n"
+    },
+    {
+        "name": "The Artemis mission will not take any human being to the moon in 2026",
+        "end_date": "2024-04-10 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/xanlor/the-artemis-mission-will-not-take-a"
+    },
+    {
+        "name": "If \"Grok\" weights are released before April 11, will this include the weights of Grok-1? (rather than just Grok-0)",
+        "end_date": "2024-04-12 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/harlan/if-grok-weights-are-released-before"
+    },
+    {
+        "name": "Will Joe Biden publicly call for Netanyahu's Resignation before the US election?",
+        "end_date": "2024-11-04 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/kaleem/will-joe-biden-publicly-call-for-ne"
+    },
+    {
+        "name": "Which extinct species will be brought back to life by 2037?",
+        "end_date": "2037-01-01 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nikstar/which-extinct-species-will-be-broug"
+    },
+    {
+        "name": "Will @Joshua hold the biggest Yes bet on this market when it closes?",
+        "end_date": "2024-03-25 20:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/creature/will-joshua-hold-the-biggest-yes-be"
+    },
+    {
+        "name": "Which of these are major culture war topics in 2029? (Inspired by Nathan Young)",
+        "end_date": "2030-01-02 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/davek/what-is-the-primary-culture-war-top"
+    },
+    {
+        "name": "\ud83c\uddfa\ud83c\uddf8 If Biden wins, will the US electoral democracy index fall below 0.80 by 2025?",
+        "end_date": "2026-11-02 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/probajoelistic/-if-trump-loses-will-the-us-elector"
+    },
+    {
+        "name": "\ud83c\uddfa\ud83c\uddf8 If Trump wins, will the US electoral democracy index fall below 0.80 by 2025?",
+        "end_date": "2026-11-02 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/probajoelistic/-if-trump-wins-will-the-us-electora"
+    },
+    {
+        "name": "Is accepting your loved one for who/what they are now more important than pushing them to improve?",
+        "end_date": "2024-04-10 15:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/simoneromeo/is-accepting-your-loved-one-for-who"
+    },
+    {
+        "name": "Is accepting yourself for who/what you are now more important than pushing yourself to improve?",
+        "end_date": "2024-04-10 15:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/simoneromeo/is-accepting-yourself-for-whowhat-y"
+    },
+    {
+        "name": "Will Jonas Vingegaard win every single event that he participates in during 2024?",
+        "end_date": "2024-10-21 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/egroj/will-jonas-vingegaard-win-every-sin"
+    },
+    {
+        "name": "Will @jacksonpolack reach 1M mana profit by the end of the Autumnal Equinox? (Sept 23)",
+        "end_date": "2024-09-24 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-jacksonpolack-reach-1m-mana-pr"
+    },
+    {
+        "name": "Will @Joshua reach 1M mana profit by the end of the International Day of Peace? (Sept 21)",
+        "end_date": "2024-09-22 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-joshua-reach-1m-mana-profit-by"
+    },
+    {
+        "name": "Will Biden and Trump have a public debate in 2024 before the election?",
+        "end_date": "2024-12-11 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-biden-and-trump-have-a-public"
+    },
+    {
+        "name": "Will Chat GPT 4.5 or 5 release before the end of March Madness?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-chat-gpt-45-or-5-release-befor-72bce3611aba"
+    },
+    {
+        "name": "If Biden Wins, will the USA pass more Ukraine aid at least once before the 2026 midterm elections?",
+        "end_date": "2027-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/if-biden-wins-will-the-usa-pass-mor"
+    },
+    {
+        "name": "If Trump Wins, will the USA pass more Ukraine aid at least once before the 2026 midterm elections?",
+        "end_date": "2027-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/if-trump-wins-will-the-usa-pass-mor"
+    },
+    {
+        "name": "Will Linear A (Minoan Script Language) be deciphered by EOY 2029?",
+        "end_date": "2030-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-linear-a-minoan-script-languag"
+    },
+    {
+        "name": "Will I log back into this app before March 30, 2024 (same time as Swastiki, ON, \ud83c\udde8\ud83c\udde6)?",
+        "end_date": "2024-04-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/ice/will-i-log-back-into-this-app-befor"
+    },
+    {
+        "name": "An error-correcting quantum computer will be commercially available by 2025.",
+        "end_date": "2024-04-10 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/xanlor/an-errorcorrecting-quantum-computer"
+    },
+    {
+        "name": "Donald Trump may have defamed E. Jean Carroll again on March 9, 2024.  Will Carroll sue Trump yet again for defamation?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bruce54df/donald-trump-may-have-defamed-e-jea"
+    },
+    {
+        "name": "Will TikTok be banned in the USA before Cinco de Mayo 2025?",
+        "end_date": "2025-05-06 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-tiktok-be-banned-in-the-usa-be-db7bcccdb0c8"
+    },
+    {
+        "name": "Will OpenAI publicly state that they are giving AI a board observer seat or greater on their board by 2030?",
+        "end_date": "2031-01-02 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/davek/will-openai-publicly-state-that-the"
+    },
+    {
+        "name": "Joe Biden and Donald Trump destroy a ''super Tuesday'' with hardly any room for surprises\n2024",
+        "end_date": "2024-04-11 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/juancamilolopezlopez/joe-biden-and-donald-trump-destroy"
+    },
+    {
+        "name": "Will TikTok be banned in the USA before the election is called?",
+        "end_date": "2024-12-16 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-tiktok-be-banned-in-the-usa-be"
+    },
+    {
+        "name": "Which bird Pok\u00e9mon will Manifold think is the cutest? [ADD RESPONSES]",
+        "end_date": "2024-04-01 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/clark/which-bird-pokemon-will-manifold-th"
+    },
+    {
+        "name": "Do you use the Manifold Discord server?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/tonypepperoni/do-you-use-the-manifold-discord-ser"
+    },
+    {
+        "name": "Will AMD's (NASDAQ Ticker: $AMD) stock price close above $207.39 per share on March 15, 2024?",
+        "end_date": "2024-03-16 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/goncalom/will-amds-nasdaq-ticker-amd-stock-p-f21432532f5a"
+    },
+    {
+        "name": "Will NVIDIA\u2019s (NASDAQ Ticker: $NVDA) stock price close above $875.28 per share on March 15, 2024?",
+        "end_date": "2024-03-16 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/goncalom/will-nvidias-nasdaq-ticker-nvda-sto-c915d234a070"
+    },
+    {
+        "name": "Which US President holds the current world record for fastest time to US Presidency?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/cos/which-us-president-holds-the-curren"
+    },
+    {
+        "name": "Who will win the 2024 MLS Golden Boot?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/charlie/who-will-win-the-2024-mls-golden-bo"
+    },
+    {
+        "name": "Will Christopher Nolan have a new film release in theaters before EOY 2026?",
+        "end_date": "2027-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-christopher-nolan-have-a-new-f"
+    },
+    {
+        "name": "Will the OpenAI board have at least 9 members at the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/zvimowshowitz/will-the-openai-board-have-at-least"
+    },
+    {
+        "name": "Will the full report of the investigation of Sam Altman be released to the public in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/zvimowshowitz/will-the-full-report-of-the-investi"
+    },
+    {
+        "name": "[Polymarket] Will Trump tweet again by April 1?",
+        "end_date": "2024-04-01 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/guuber3/polymarket-will-trump-tweet-again-b"
+    },
+    {
+        "name": "Will Chat GPT 4.5 or 5 release before Reddit IPOs?",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-chat-gpt-45-or-5-release-befor"
+    },
+    {
+        "name": "What will be true about Christopher Nolan\u2019s next film?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/mattyb/what-will-be-true-about-christopher"
+    },
+    {
+        "name": "Will poll creation cost 50Mana or less for over a week in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/ammonlam/will-poll-creation-cost-50mana-or-l"
+    },
+    {
+        "name": "Will poll creation cost 10Mana or less for over a week in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/ammonlam/will-poll-creation-cost-10mana-or-l"
+    },
+    {
+        "name": "Will the Nile Crocodile (Crocodylus niloticus) become extinct in the current century?",
+        "end_date": "2099-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/extinctionrisk/will-the-nile-crocodile-crocodylus"
+    },
+    {
+        "name": "[Polymarket] OpenAI settlement with NYT by end of 2024?",
+        "end_date": "2025-01-05 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/guuber3/polymarket-openai-settlement-with-n"
+    },
+    {
+        "name": "Will the Red Panda (Ailurus fulgens) become extinct in the current century?",
+        "end_date": "2099-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/extinctionrisk/will-the-red-panda-ailurus-fulgens"
+    },
+    {
+        "name": "What will Nvidia's closing price be at the end of 2024?",
+        "end_date": "2024-12-31 22:00:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tonypepperoni/what-will-nvidias-closing-price-be"
+    },
+    {
+        "name": "Bitcoin: Will all-time high happen at the halving day?",
+        "end_date": "2024-04-22 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lightningbee/bitcoin-will-alltime-high-happen-at"
+    },
+    {
+        "name": "2025-02-28 Will the S&P 500 (GSPC) close above $5,069.76?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-the-sp-500-gspc-close"
+    },
+    {
+        "name": "2025-02-28 Will the Nasdaq Composite (IXIC) close above $15,947.74?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-the-nasdaq-composite"
+    },
+    {
+        "name": "2025-02-28 Will ETH close above $3,385.70?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-eth-close-above-33857"
+    },
+    {
+        "name": "2025-02-28 Will NVDA close above $776.59?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-nvda-close-above-7765"
+    },
+    {
+        "name": "2025-02-28 Will TSLA close above $202.04?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-tsla-close-above-2020"
+    },
+    {
+        "name": "2025-02-28 Will MSTR close above $962.95?",
+        "end_date": "2025-02-28 14:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mrn267/20250228-will-mstr-close-above-9629"
+    },
+    {
+        "name": "At the end of September will Joe Biden's favorability be higher than Trump's on FiveThirtyEight?",
+        "end_date": "2024-10-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/at-the-end-of-september-will-joe-bi"
+    },
+    {
+        "name": "Asian Stock (Nifty + 3): How Will Each Of The Indian Indices Close On March 12 Compared To Its Close On March 11?",
+        "end_date": "2024-03-12 18:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/greybox/asian-stock-nifty-3-how-will-each-o-2de9337c8507"
+    },
+    {
+        "name": "Will Ethereum (ETH) price surpass $4,500 before the end of June 2024?",
+        "end_date": "2024-03-11 13:39:28",
+        "question_type": "binary",
+        "url": "https://manifold.markets/ammonlam/will-ethereum-eth-price-surpass-450-1c2b80babf1c"
+    },
+    {
+        "name": "Do you think Sam Harris his position on Hamas/Israel is wrong?",
+        "end_date": "2024-03-11 13:49:55",
+        "question_type": "binary",
+        "url": "https://manifold.markets/thewabisabi/do-you-think-sam-harris-his-positio"
+    },
+    {
+        "name": "Will the Orca, a.k.a. Killer Whale (Orcinus orca) become extinct in the current century?",
+        "end_date": "2099-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/extinctionrisk/will-the-orca-aka-killer-whale-orci"
+    },
+    {
+        "name": "Will xAI open source Grok within a month, before the end of Apr 11? (Musk tweeted)",
+        "end_date": "2024-04-12 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jacksonpolack/will-xai-open-source-grok-within-a"
+    },
+    {
+        "name": "Will we learn about the Truth of the World in One Piece Chapter 1110?",
+        "end_date": "2024-03-18 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/aae643/will-we-learn-about-the-truth-of-th"
+    },
+    {
+        "name": "How will my phone screentime vary ? (Resolves to variation rate + .5)",
+        "end_date": "2024-03-18 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mich/how-will-my-phone-screentime-vary-r"
+    },
+    {
+        "name": "How long will the return trip from Vibeclipse take?",
+        "end_date": "2024-04-10 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tjade273/how-long-will-the-return-trip-from"
+    },
+    {
+        "name": "Will the Muskox (Ovibos moschatus) become extinct in the current century?",
+        "end_date": "2099-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/extinctionrisk/will-the-muskox-ovibos-moschatus-be"
+    },
+    {
+        "name": "Will there be peace agreement between Azerbaijan and Armenia by the end of 2024",
+        "end_date": "2024-12-31 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jellybean/will-there-be-peace-agreement-betwe"
+    },
+    {
+        "name": "Are women as smart as men (on average)?",
+        "end_date": "2024-12-31 11:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jim/are-women-as-smart-as-men-on-averag"
+    },
+    {
+        "name": "Will \"When is Goodhart catastrophic?\" make the top fifty posts in LessWrong's 2023 Annual Review?",
+        "end_date": "2025-02-01 01:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lesswrong/will-when-is-goodhart-catastrophic"
+    },
+    {
+        "name": "Will GPT-4's successor be released this week?",
+        "end_date": "2024-03-18 10:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jim/will-gpt4s-successor-be-released-th-751763f11a84"
+    },
+    {
+        "name": "Which country is eliminated first in the Rational Ottawa Diplomacy game?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/marktwse/which-country-is-eliminated-first-i"
+    },
+    {
+        "name": "Will xAI open source Grok this week ?",
+        "end_date": "2024-03-19 02:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/gugra/will-xai-open-source-groq-this-week"
+    },
+    {
+        "name": "What movie poster is ChatGPT recreating with this image? Part 5",
+        "end_date": "2024-03-26 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/veryseriousposter/what-movie-poster-is-chatgpt-recrea-fd0118d141f1"
+    },
+    {
+        "name": "Will the Great White Shark (Carcharodon carcharias) become extinct in the current century?",
+        "end_date": "2099-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/extinctionrisk/will-the-great-white-shark-carcharo"
+    },
+    {
+        "name": "Open answer: How many electoral votes will Biden* win in 2024?",
+        "end_date": "2024-12-21 12:21:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ml12d1/open-answer-how-many-electoral-vote"
+    },
+    {
+        "name": "What will be the main constraint to AI development in 2028?",
+        "end_date": "2029-01-01 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/what-will-be-the-main-constraint-to"
+    },
+    {
+        "name": "Will we see someone live to 120 years old by 2030?",
+        "end_date": "2031-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jdilla/will-we-see-someone-live-to-120-yea"
+    },
+    {
+        "name": "Will any more MPs defect to Reform UK by the end of April?",
+        "end_date": "2024-05-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/simongrayson/will-any-more-mps-defect-to-reform-6af568feead7"
+    },
+    {
+        "name": "Will any more MPs defect to Reform UK before the next general election?",
+        "end_date": "2024-11-01 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/simongrayson/will-any-more-mps-defect-to-reform"
+    },
+    {
+        "name": "What will be the most valuable startup that Nvidia invested in, by the end of 2024?",
+        "end_date": "2025-01-01 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/what-will-be-the-most-valuable-star"
+    },
+    {
+        "name": "taigo88wiki",
+        "end_date": "2024-12-31 17:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/taigo88wiki/taigo88wiki"
+    },
+    {
+        "name": "Is Manifold a social medium?",
+        "end_date": "2024-04-10 21:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/schwabilismus/is-manifold-a-social-medium"
+    },
+    {
+        "name": "In how many startups will Nvidia invest in 2024?",
+        "end_date": "2025-01-01 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/in-how-many-startups-will-nvidia-in"
+    },
+    {
+        "name": "Six Nations Round 5: Wales v Italy, March 16th 14.15pm. Who will win?",
+        "end_date": "2024-03-16 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/gobnaitolunacy/six-nations-round-5-wales-v-italy-m"
+    },
+    {
+        "name": "Recommend me ways to plan my centenary decathlon.",
+        "end_date": "N/A",
+        "question_type": "bountied_question",
+        "url": "https://manifold.markets/schwabilismus/recommend-me-ways-to-plan-my-centen"
+    },
+    {
+        "name": "Who's the smartest person alive?",
+        "end_date": "2026-12-31 11:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/jim/whos-the-smartest-person-on-earth"
+    },
+    {
+        "name": "Will an AI Tutor (LLM personalized for each student) replace conventional teaching by 2035?",
+        "end_date": "2035-01-01 13:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/elf/will-an-ai-tutor-llm-personalized-f"
+    },
+    {
+        "name": "What will Trump do in his second term? (if he wins)",
+        "end_date": "2025-01-01 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/gordanknott/what-will-trump-do-in-his-second-te"
+    },
+    {
+        "name": "Will xAI open source Grok on or before March 17, 2024?",
+        "end_date": "2024-03-18 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/juliafe02/will-xai-open-source-grok-on-or-bef"
+    },
+    {
+        "name": "[90% pledge] Will I continue to work out?",
+        "end_date": "2024-03-18 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/schwabilismus/90-pledge-will-i-continue-to-work-o-31e38554f7c5"
+    },
+    {
+        "name": "Will xAI open source Grok within a week, before the end of March 17? (Musk tweeted)",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jacksonpolack/musk-this-week-xai-will-open-source"
+    },
+    {
+        "name": "Which of these options is the most conscious, or the most likely to be conscious?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/trevorandersen/which-of-these-options-is-the-most"
+    },
+    {
+        "name": "Will the last digit of the March 12th S&P500 close be 4 or higher?",
+        "end_date": "2024-03-14 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/sylv/will-the-last-digit-of-the-march-12"
+    },
+    {
+        "name": "Will someone tell me how to navigate to my own net worth graph?",
+        "end_date": "2024-03-19 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/sylv/will-someone-tell-me-how-to-navigat"
+    },
+    {
+        "name": "Will Bitcoin hit $74K in March 2024?",
+        "end_date": "2024-03-31 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/btcat/will-bitcoin-hit-74k-in-march-2024"
+    },
+    {
+        "name": "When will Starship first deploy a commercial satellite to orbit?",
+        "end_date": "2027-01-01 13:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nat/when-will-starship-first-deploy-a-c"
+    },
+    {
+        "name": "When will Starship first deploy a Starlink satellite to orbit?",
+        "end_date": "2026-01-01 13:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nat/when-will-starship-first-deploy-a-s"
+    },
+    {
+        "name": "When will Bitcoin pass $75,000?",
+        "end_date": "2024-12-01 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simongrayson/when-will-bitcoin-pass-75000"
+    },
+    {
+        "name": "Will I return to this app before July 1st?",
+        "end_date": "2024-07-02 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/yewnevano/will-i-return-to-this-app-before-ju"
+    },
+    {
+        "name": "At the end of June will Joe Biden's favorability be higher than Trump's on FiveThirtyEight?",
+        "end_date": "2024-07-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/at-the-end-of-june-will-joe-bidens"
+    },
+    {
+        "name": "Will RFK Jr. be polling above 10% on October 1st, 2024?",
+        "end_date": "2024-10-03 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/semioticrivalry/will-rfk-jr-be-polling-above-10-on"
+    },
+    {
+        "name": "Will RFK Jr. participate in a presidential debate in 2024?",
+        "end_date": "2024-11-06 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/semioticrivalry/will-rfk-jr-participate-in-a-presid"
+    },
+    {
+        "name": "Result of Sri Lanka tour of Bangladesh 3rd ODI",
+        "end_date": "2024-03-17 18:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/isuruudana/result-of-sri-lanka-tour-of-banglad-ad3c0579cac7"
+    },
+    {
+        "name": "How many Eukaryotic species do you think there are?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/joshuabartlett/how-many-eukaryotic-species-do-you"
+    },
+    {
+        "name": "Result of Sri Lanka tour of Bangladesh 2nd ODI",
+        "end_date": "2024-03-14 18:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/isuruudana/result-of-sri-lanka-tour-of-banglad-e76dc076c2f7"
+    },
+    {
+        "name": "Result of Sri Lanka tour of Bangladesh 1st ODI",
+        "end_date": "2024-03-13 18:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/isuruudana/result-of-sri-lanka-tour-of-banglad"
+    },
+    {
+        "name": "Will the Oscars Best Picture winner for 2024 pass the Bechdel Test? (awarded in 2025)",
+        "end_date": "2025-04-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-oscars-best-picture-winner-ec9e5f1b2d20"
+    },
+    {
+        "name": "If Trump wins, what will the US unemployment rate be at the end of 2026?",
+        "end_date": "2027-02-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-trump-wins-what-will-the-us-jobs"
+    },
+    {
+        "name": "If Biden wins, what will the US unemployment rate be at the end of 2026?",
+        "end_date": "2027-02-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-biden-wins-what-will-the-us-jobs"
+    },
+    {
+        "name": "Will the Oscars Best Picture winner for 2025 pass the Bechdel Test? (awarded in 2026)",
+        "end_date": "2026-04-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-oscars-best-picture-winner-f2a0e387e629"
+    },
+    {
+        "name": "Will the Oscars Best Picture winner for 2026 pass the Bechdel Test? (awarded in 2027)",
+        "end_date": "2027-04-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-oscars-best-picture-winner-e9db0212d00c"
+    },
+    {
+        "name": "Digital games in 2035 will mostly be...?",
+        "end_date": "2036-01-01 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/digital-games-in-2035-will-mostly-b"
+    },
+    {
+        "name": "What will be true about the next Oscars Academy Award Best Actress winner in 2025? [ADD RESPONSES]",
+        "end_date": "2025-03-12 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/what-will-be-true-about-the-next-os-e5b3d93e4138"
+    },
+    {
+        "name": "What will be true about the Oscar Best Picture winner at the 97th Academy Awards? (Films from 2024) [ADD RESPONSES]",
+        "end_date": "2025-03-21 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/what-will-be-true-about-the-oscar-b-f2187c34a894"
+    },
+    {
+        "name": "What will be true about the next Oscars Academy Award Best Actor winner in 2025? [ADD RESPONSES]",
+        "end_date": "2025-03-12 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/what-will-be-true-about-the-next-os-6800300ae4ab"
+    },
+    {
+        "name": "How and when should TET markets close?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/danman314/how-and-when-should-tet-markets-clo"
+    },
+    {
+        "name": "2024-25 NFL Awards Jersey Numbers",
+        "end_date": "2025-02-09 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/vibhav/202425-nfl-awards-jersey-numbers"
+    },
+    {
+        "name": "Will anything be done about Tencent or Vanguard?",
+        "end_date": "2025-01-01 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/keenenwatts/will-anything-be-done-about-tencent"
+    },
+    {
+        "name": "Will the CDC have any information on CHS by 2026?",
+        "end_date": "2025-12-31 23:20:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/keenenwatts/will-the-cdc-have-any-information-o"
+    },
+    {
+        "name": "Will I lift weights today?",
+        "end_date": "2024-03-12 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/benjaminikuta/will-i-lift-weights-today-87da485e2090"
+    },
+    {
+        "name": "Will Bitcoin hit $73K in March 2024?",
+        "end_date": "2024-03-31 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/btcat/will-bitcoin-hit-73k-in-march-2024"
+    },
+    {
+        "name": "Will Bitcoin hit $72K in March 2024?",
+        "end_date": "2024-03-11 22:13:38",
+        "question_type": "binary",
+        "url": "https://manifold.markets/btcat/will-bitcoin-hit-72k-in-march-2024-2c5ce417ca0c"
+    },
+    {
+        "name": "Will Bitcoin hit $71K in March 2024?",
+        "end_date": "2024-03-11 08:23:38",
+        "question_type": "binary",
+        "url": "https://manifold.markets/btcat/will-bitcoin-hit-71k-in-march-2024"
+    },
+    {
+        "name": "On which days will I work more than 5 hours this week?",
+        "end_date": "2024-03-18 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/bayesian/on-which-days-will-i-work-more-than-86182af9d9c9"
+    },
+    {
+        "name": "If Trump wins, will multiple protestors die in Washington DC?",
+        "end_date": "2027-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-trump-wins-will-multiple-protest"
+    },
+    {
+        "name": "If Biden wins, will multiple protestors die in Washington DC?",
+        "end_date": "2027-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-biden-wins-will-multiple-protest"
+    },
+    {
+        "name": "Daily 4 sided dice roll",
+        "end_date": "2024-03-12 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/flabyn/daily-4-sided-dice-roll-0f165d4b0dbe"
+    },
+    {
+        "name": "Will the federal reserve raise interest rates at any time from March to November of '24?",
+        "end_date": "2024-12-01 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/nickallen/will-the-federal-reserve-raise-inte-dd921dcf545a"
+    },
+    {
+        "name": "Will Jimmy Carter be alive at the end of the day on March 11?",
+        "end_date": "2024-03-12 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jcdm/will-jimmy-carter-be-alive-at-the-e-6dadb3ee7ff9"
+    },
+    {
+        "name": "If Biden wins, will active-duty military be used to control protests/riots in DC?",
+        "end_date": "2027-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-biden-wins-will-activeduty-milit"
+    },
+    {
+        "name": "If Trump wins, will active-duty military be used to control protests/riots in DC?",
+        "end_date": "2027-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-trump-wins-will-activeduty-milit"
+    },
+    {
+        "name": "Will the \u201cI\u2019m Just Ken\u201d YouTube video get 5 million views in the first week?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/mattyb/will-the-im-just-ken-youtube-video"
+    },
+    {
+        "name": "Will the Community movie complete shooting by August 31, 2024?",
+        "end_date": "2024-09-02 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/herzog/will-the-community-movie-complete-s"
+    },
+    {
+        "name": "Will the market cap of NVDA surpass MSFT before September 2024?",
+        "end_date": "2024-08-31 14:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/esusatyo/will-the-market-cap-of-nvda-surpass-c68426a28bee"
+    },
+    {
+        "name": "If Trump wins, what will US bond yields be at the end of 2025?",
+        "end_date": "2026-01-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-trump-wins-what-will-us-bond-yie"
+    },
+    {
+        "name": "Will May 2024 be the hottest May on record globally? (Tie counts)",
+        "end_date": "2024-06-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-may-2024-be-the-hottest-april"
+    },
+    {
+        "name": "If Biden wins, what will US bond yields be at the end of 2025?",
+        "end_date": "2026-01-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/peterf/if-biden-wins-what-will-us-bond-yie"
+    },
+    {
+        "name": "Will Elon Musk resolve a dispute via \"trial by video game pwnage\" by EOY 2031?",
+        "end_date": "2032-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-elon-musk-resolve-a-dispute-vi"
+    },
+    {
+        "name": "How many total games will the Vancouver Canucks play in the 2024 NHL playoffs?",
+        "end_date": "2024-04-21 07:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/thomasthordarson/how-many-total-games-will-the-vanco"
+    },
+    {
+        "name": "Who will be the first Jet Lag guest to appear in three seasons?",
+        "end_date": "2030-12-31 15:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/joshuawilkes/who-will-be-the-first-jet-lag-guest"
+    },
+    {
+        "name": "\ud83d\udd25\ud83d\udca7\ud83c\udf3fPICK YOUR STARTER: Which Pokemon do you Choose?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/which-pokemon-starter-do-you-choose"
+    },
+    {
+        "name": "Will Joe Biden get caught on a hot microphone crop dusting before October 31st, 2024?",
+        "end_date": "2024-11-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/billrutherford/will-joe-biden-get-caught-on-a-hot"
+    },
+    {
+        "name": "Will President Biden address the Knesset (Israeli parliament) before the election?",
+        "end_date": "2024-11-06 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jonahweissman/will-president-biden-address-the-kn"
+    },
+    {
+        "name": "Will Andrej Karpathy hire bodyguards or food tasters by EOY 2029?",
+        "end_date": "2030-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-andrej-karpathy-hire-bodyguard"
+    },
+    {
+        "name": "Will Nintendo legally go after Palworld before the end of April 6th 2024?",
+        "end_date": "2024-04-07 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-nintendo-legally-go-after-palw-39ed365e9010"
+    },
+    {
+        "name": "Will there be an Israel-Hamas ceasefire announced before the end of April 3rd?",
+        "end_date": "2024-04-04 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-an-israelhamas-ceasef-bf8b32eeda29"
+    },
+    {
+        "name": "Will Sam win Season Ten of Jet Lag: The Game?",
+        "end_date": "2024-04-10 15:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/joshuawilkes/will-sam-win-season-ten-of-jet-lag"
+    },
+    {
+        "name": "Jet Lag: The Game Season Ten Truth Statements",
+        "end_date": "2024-07-31 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/joshuawilkes/jet-lag-the-game-season-ten-truth-s-2dde48cbddc5"
+    },
+    {
+        "name": "Will the \"Machinocene\" be designated as a new geological epoch by 2060?",
+        "end_date": "2061-01-01 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/hadean/will-the-machinocene-be-designated"
+    },
+    {
+        "name": "Will \"Hooray for stepping out of the limelight\" make the top fifty posts in LessWrong's 2023 Annual Review?",
+        "end_date": "2025-02-01 01:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lesswrong/will-hooray-for-stepping-out-of-the"
+    },
+    {
+        "name": "Which Days will Destiny Play Any Games?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/awholeturkey/which-days-will-destiny-play-any-ga-6fb091305f7f"
+    },
+    {
+        "name": "Will Destiny be live anywhere?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/awholeturkey/will-destiny-be-live-anywhere-61b085f65977"
+    },
+    {
+        "name": "Which days will Destiny stream this week?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/awholeturkey/which-days-will-destiny-stream-this-f2121019e1ba"
+    },
+    {
+        "name": "Will Yann LeCun remain chief AI scientist at Meta until 2026?",
+        "end_date": "2026-01-02 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/harrisondurland/will-yann-lecun-remain-chief-ai-sci"
+    },
+    {
+        "name": "Who will be Chief Minister of the Australian Capital Territory after the 2024 Legislative Assembly election?",
+        "end_date": "2024-11-30 13:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/andrewdonnellan/who-will-be-chief-minister-of-the-a"
+    },
+    {
+        "name": "Who will be the guests on the Within Reason Podcast with Alex O'Connor in 2024? \ud83e\ude90\ud83c\udf99\ufe0f",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/sowelison/who-will-appear-on-the-within-reaso"
+    },
+    {
+        "name": "2030 \u2013 5. AI-driven job loss will be one of the most widely discussed political and social issues.",
+        "end_date": "2030-12-31 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/henrithunberg/2030-5-aidriven-job-loss-will-be-on"
+    },
+    {
+        "name": "2030 \u2013 4. \u201cAgents\u201d and \u201cAGI\u201d will be outdated terms that are no longer widely used.",
+        "end_date": "2030-12-31 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/henrithunberg/2030-4-agents-and-agi-will-be-outda"
+    },
+    {
+        "name": "2030 \u2013 3. Over one hundred thousand humanoid robots will be deployed in the real world.",
+        "end_date": "2030-12-31 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/henrithunberg/2030-3-over-one-hundred-thousand-hu"
+    },
+    {
+        "name": "2030 \u2013 2. We interact with a wide range of AIs in our daily lives as naturally as we interact with other humans today",
+        "end_date": "2030-12-31 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/henrithunberg/2030-2-we-interact-with-a-wide-rang"
+    },
+    {
+        "name": "2030 \u2013 1. Nvidia\u2019s market capitalization will be meaningfully lower + Intel\u2019s will be meaningfully higher, than today",
+        "end_date": "2030-12-31 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/henrithunberg/2030-1-nvidias-market-capitalizatio"
+    },
+    {
+        "name": "\u26bd Will Kazakhstan beat Turkmenistan during regular time on Thu, Mar 14, 2024? Friendlies \ud83c\udf0e",
+        "end_date": "2024-03-14 16:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-kazakhstan-beat-turkmenistan"
+    },
+    {
+        "name": "\u26bd Will Colo Colo beat Sportivo Trinidense during regular time on Thu, Mar 14, 2024? Copa Libertadores \ud83c\udf0e",
+        "end_date": "2024-03-14 03:30:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-colo-colo-beat-sportivo-trini"
+    },
+    {
+        "name": "\u26bd Will RB Bragantino beat Botafogo during regular time on Thu, Mar 14, 2024? Copa Libertadores \ud83c\udf0e",
+        "end_date": "2024-03-14 03:30:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/franklinbaldo/-will-rb-bragantino-beat-botafogo-d"
+    },
+    {
+        "name": "In 10 years, will any of @OfficialLoganK  / Logan GPT's predictions about the year 2034 be a reality?",
+        "end_date": "2035-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/in-10-years-will-any-of-officiallog"
+    },
+    {
+        "name": "Will Dronabinol prove effective for CHS after initial success?",
+        "end_date": "2026-04-20 22:20:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/keenenwatts/will-dronabinol-prove-effective-for"
+    },
+    {
+        "name": "At the end of 2026 what will be the oldest Manifold market that is still open? [ADD RESPONSES]",
+        "end_date": "2027-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/at-the-end-of-2026-what-will-be-the"
+    },
+    {
+        "name": "Will the announced title of Villeneuve's 3rd Dune movie contain \"Messiah\"?",
+        "end_date": "2030-01-01 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/zq4z82w/will-the-announced-title-of-villene"
+    },
+    {
+        "name": "Will Punz make a response by March 17, 2024?",
+        "end_date": "2024-03-12 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/traitor/will-punz-make-a-response-by-march"
+    },
+    {
+        "name": "Will Baker Mayfield be on the Bucs on June 1, 2025?",
+        "end_date": "2025-06-03 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/sethwalder/will-baker-mayfield-be-on-the-bucs"
+    },
+    {
+        "name": "Will the new Numerical question type coming to Manifold cost the same as a Yes/No question on release?",
+        "end_date": "2024-03-11 22:17:38",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-new-numerical-question-typ"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Kanye West?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-ff3f9a7121e6"
+    },
+    {
+        "name": "Is Manifold better-calibrated than financial markets on questions about future asset prices?",
+        "end_date": "2034-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/michaeldickens/is-manifold-bettercalibrated-than-f"
+    },
+    {
+        "name": "\ud83e\ude79Which people that have burned a bridge with Destiny will repair it before the end of his career? [ADD RESPONSES]",
+        "end_date": "2061-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/which-people-who-have-burned-a-brid"
+    },
+    {
+        "name": "Will undoctored evidence of a recovered Kate Middleton be available before July 1, 2024?",
+        "end_date": "2024-07-02 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/kevinburke/will-undoctored-evidence-of-a-recov"
+    },
+    {
+        "name": "Will LLMs estimate someone's dif in estimated income after either candidate wins the US presidency by EOY 2028?",
+        "end_date": "2029-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-llms-be-able-to-estimate-someo"
+    },
+    {
+        "name": "Is Israel currently carrying out genocide against the Palestinians in Gaza?",
+        "end_date": "2024-03-18 10:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jim/is-israel-currently-carrying-out-ge"
+    },
+    {
+        "name": "By 2060, will humanity achieve Type I status on the Kardashev scale through global energy harnessing?",
+        "end_date": "2061-01-02 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/latte_horse/by-2060-will-humanity-achieve-type"
+    },
+    {
+        "name": "Will there be any break between Kagurabachi chapters 25 and 26?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dwax/will-there-be-any-break-between-kag-f7f172010e7d"
+    },
+    {
+        "name": "What will happen wrt tiktok in the US by EOY?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nyanotech/what-happen-wrt-tiktok-in-the-us-by"
+    },
+    {
+        "name": "Will the majority of LSU and South Carolina bench players be suspended for Game 1 of the 2024 Women's NCAA Tournament?",
+        "end_date": "2024-04-10 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/kevinburke/will-the-majority-of-lsu-and-south"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo-9f189acf8fa4"
+    },
+    {
+        "name": "Which musical artist suggested by Manifold will be my favorite?",
+        "end_date": "2024-05-01 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/shump/which-musical-artist-suggested-by-m"
+    },
+    {
+        "name": "Will BTC mining be profitable on 1st May 2024 with $0.05 kwatt*hour, 3000 watt consumption and 100 TH?",
+        "end_date": "2024-05-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fedorshabashev/will-btc-mining-be-profitable-on-1s"
+    },
+    {
+        "name": "What music should I listen to?  Up to 7,500 in bounties!",
+        "end_date": "N/A",
+        "question_type": "bountied_question",
+        "url": "https://manifold.markets/shump/what-music-should-i-listen-to-up-to"
+    },
+    {
+        "name": "Will the 11foot8+8 bridge claim ANOTHER victim in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-the-11foot88-bridge-claim-anot-65ce47ddc0f9"
+    },
+    {
+        "name": "Does Manifold meditate?",
+        "end_date": "2024-04-10 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/suzumebatchi/does-manifold-meditate"
+    },
+    {
+        "name": "Image Geolocation Market Bounty",
+        "end_date": "N/A",
+        "question_type": "bountied_question",
+        "url": "https://manifold.markets/retr0id/image-geolocation-market-bounty"
+    },
+    {
+        "name": "If Trump loses will there be wide scale civic unrest?",
+        "end_date": "2024-12-16 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jimausman/if-trump-loses-will-there-be-wide-s"
+    },
+    {
+        "name": "Do you meditate regularly? (Equal than or greater to once a week.)",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/suzumebatchi/do-you-meditate-regularly-equal-tha"
+    },
+    {
+        "name": "Who will win the 2024 NCAA Women's Basketball Tournament?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/kevinburke/who-will-win-the-2024-ncaa-womens-b"
+    },
+    {
+        "name": "Which color is the Sun?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/cyfralcoot/which-color-is-the-sun"
+    },
+    {
+        "name": "Will No Labels field a non-politician (eg a celebrity) for president in 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-no-labels-field-a-nonpoliticia"
+    },
+    {
+        "name": "Will there be news in 2024 of someone finding a fairy at their door?",
+        "end_date": "2025-01-01 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/sgq/will-there-be-news-in-2024-of-someo-9364fc2c75d8"
+    },
+    {
+        "name": "Will Moldova apply for EU membership by the end of 2025?",
+        "end_date": "2026-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-moldova-apply-for-eu-membershi"
+    },
+    {
+        "name": "How many organizations will have released a GPT-4-level chatbot by the end of 2024?",
+        "end_date": "2025-01-02 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/sammarks/how-many-organizations-will-have-re"
+    },
+    {
+        "name": "If the No Labels candidates wins the presidency, will they appoint a left-leaning justice to the supreme court?",
+        "end_date": "2030-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/if-the-no-labels-candidates-wins-th"
+    },
+    {
+        "name": "[Let's play] Civilization VI (Turn 34)",
+        "end_date": "2024-03-11 13:22:27",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/komplexkonjugat/lets-play-civilization-vi-turn-33-05eb1826cbe4"
+    },
+    {
+        "name": "Will the product of the version numbers of all major AI language models released in 2024 be greater than 1000?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dominic/will-the-product-of-the-version-num"
+    },
+    {
+        "name": "Will total US immigration to Canada for years 2025-2028 exceed that of years 2021-2024?",
+        "end_date": "2029-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-total-us-immigration-to-canada"
+    },
+    {
+        "name": "Will \"no labels\" collect more votes than the Democrat in the 2024 presidential election in at least 10 states?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-no-labels-collect-more-votes-t-a44356e4227c"
+    },
+    {
+        "name": "Will \"\"Diamondoid bacteria\" nanobots: deadly threat...\" make the top fifty posts in LessWrong's 2023 Annual Review?",
+        "end_date": "2025-02-01 01:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lesswrong/will-diamondoid-bacteria-nanobots-d"
+    },
+    {
+        "name": "Will Michael Pollan of \"How to Change your Mind\" fame support the \"no labels\" ticket for 2024 presidential?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-michael-pollan-of-how-to-chang"
+    },
+    {
+        "name": "Will Jimmy Carter survive the 11th week of 2024 (Mar 10 - 16)",
+        "end_date": "2024-03-17 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jcdm/will-jimmy-carter-survive-the-11th"
+    },
+    {
+        "name": "Will Bill Ackman support the \"no labels\" candidate for 2024 presidential?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-bill-ackman-support-the-no-lab"
+    },
+    {
+        "name": "Will \"no labels\" collect more votes than the Democrat in the 2024 presidential election in at least 5 states?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-no-labels-collect-more-votes-t"
+    },
+    {
+        "name": "Will Sam Altman support the \"no labels\" candidate for 2024 presidential?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-sam-altman-support-the-no-labe"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or King Leopold II of Belgium?",
+        "end_date": "2024-03-11 05:33:22",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-9e081e25d35c"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Genghis Khan?",
+        "end_date": "2024-03-11 18:53:26",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-5defea66cd63"
+    },
+    {
+        "name": "Which Representatives will vote for the TikTok ban?",
+        "end_date": "2024-03-15 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/charliebauer/which-representatives-will-vote-for"
+    },
+    {
+        "name": "\ud83c\udfacWho will win an Oscar before the end of their career? [ADD RESPONSES]",
+        "end_date": "2121-03-31 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/who-will-win-an-oscar-before-the-en"
+    },
+    {
+        "name": "Will Manchester United beat Liverpool on April 7th?",
+        "end_date": "2024-04-07 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/kpprd/will-manchester-united-beat-liverpo"
+    },
+    {
+        "name": "Will Prince Harry be deported from the United States?",
+        "end_date": "2071-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/spencercomin/will-prince-harry-be-deported-from"
+    },
+    {
+        "name": "Will a major Atlantic hurricane (Cat. 3+) make landfall on a US Gulf State during the 2024 Atlantic hurricane season?",
+        "end_date": "2024-12-02 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lbeesley/will-a-major-atlantic-hurricane-cat"
+    },
+    {
+        "name": "Will I be in bed by midnight every night except (at most) one night before March 22, 2024?",
+        "end_date": "2024-03-22 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/misha/will-i-be-in-bed-by-midnight-for-al"
+    },
+    {
+        "name": "Will Arsenal beat Manchester City on March 31st?",
+        "end_date": "2024-03-31 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/kpprd/will-arsenal-beat-manchester-city-o"
+    },
+    {
+        "name": "In which month Minecraft 1.21 Java edition will come out?",
+        "end_date": "2024-12-31 21:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/cyfralcoot/in-which-month-minecraft-121-java-e"
+    },
+    {
+        "name": "Will Dune: Part 2 break $1b globally?",
+        "end_date": "2024-05-02 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/spiffysmolz/will-dune-part-2-break-1b-globally"
+    },
+    {
+        "name": "Is Candace Owens lying about her student loans being over 6 figures and/or misrepresenting her family financial history?",
+        "end_date": "2025-01-01 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/cd8e12/is-candace-owens-lying-about-her-st"
+    },
+    {
+        "name": "Will someone upload or find a YouTube supercut of 'bygones' from Ally McBeal?",
+        "end_date": "2024-03-11 20:46:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/zvimowshowitz/will-someone-upload-or-find-a-youtu"
+    },
+    {
+        "name": "Will there be an FDA approved cure for ALS (Lou Gehrig Disease) by EOY 2032?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-an-fda-approved-cure-0725d5d83e51"
+    },
+    {
+        "name": "Will there be an FDA approved cure for Type 2 Diabetes by EOY 2032?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-an-fda-approved-cure-af66277b1144"
+    },
+    {
+        "name": "Will there be an FDA approved cure for Type 1 Diabetes by EOY 2032?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-an-fda-approved-cure-c54594843fb9"
+    },
+    {
+        "name": "Will there be an FDA approved cure for Huntington's disease by EOY 2032?",
+        "end_date": "2033-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-there-be-an-fda-approved-cure"
+    },
+    {
+        "name": "Will I eat at most 1600 Calories each day this week?",
+        "end_date": "2024-03-17 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/phaen/will-i-eat-at-most-1600-calories-ea"
+    },
+    {
+        "name": "Will Al Pacino get a star on the Hollywood Walk of Fame by EOY 2030?",
+        "end_date": "2031-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-al-pacino-get-a-star-on-the-ho"
+    },
+    {
+        "name": "Will Robert De Niro get a star on the Hollywood Walk of Fame by EOY 2030?",
+        "end_date": "2031-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-robert-de-niro-get-a-star-on-t"
+    },
+    {
+        "name": "Will Leonardo Di Caprio get a star on the Hollywood Walk of Fame by EOY 2030?",
+        "end_date": "2031-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-leonardo-di-caprio-get-a-star"
+    },
+    {
+        "name": "Will Clint Eastwood get a star on the Hollywood Walk of Fame by EOY 2030?",
+        "end_date": "2031-01-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-clint-eastwood-get-a-star-on-t"
+    },
+    {
+        "name": "Gary Marcus 2024 predictions",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alexlitz/gary-marcus-2024-predictions"
+    },
+    {
+        "name": "If Trump wins, what will the Democracy Index be for the US at the end of his presidency?",
+        "end_date": "2028-01-01 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/santiago/if-trump-wins-what-will-the-democra"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Pennywise (clown from IT)?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-c98e0fd08a70"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Alex Jones?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-a1cea6886367"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Marjorie Taylor Greene?",
+        "end_date": "2024-03-11 05:24:13",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-c7c55c87c5c8"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Benito Mussolini?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-c71c3334bde0"
+    },
+    {
+        "name": "Will Minecraft 1.21 come out in June 2024?",
+        "end_date": "2024-06-01 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/cyfralcoot/will-minecraft-121-come-out-in-june"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or David Duke?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-ebb1e5584c84"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Ayatollah Ali Khamenei?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-251a8650a0ff"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Jeffrey Epstein?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-8697499e8416"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Thanos?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-bc08172fe3fe"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Xi Jinping?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-3ad9cc605280"
+    },
+    {
+        "name": "Will El Salvador participate in an intervention in Haiti before the end of 2025?",
+        "end_date": "2026-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/arky/will-el-salvador-participate-in-an"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Emperor Palpatine?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-00bcb210f8a9"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or a paperclip maximizing AGI?",
+        "end_date": "2024-04-10 03:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-08792c00e161"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Putin?",
+        "end_date": "2024-03-11 23:49:07",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-af50c9eb61e8"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Kim Jong Un?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-c5b01098a30b"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Stalin?",
+        "end_date": "2024-03-11 00:54:13",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-32b1d0c1bd70"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Mao Zedong?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w-e165ed639c65"
+    },
+    {
+        "name": "If you had to vote in an election, would you rather vote for Donald Trump or Adolf Hitler?",
+        "end_date": "2024-03-11 00:52:53",
+        "question_type": "poll",
+        "url": "https://manifold.markets/strutheo/if-you-had-to-vote-in-an-election-w"
+    },
+    {
+        "name": "Which of the following will happen in the 2024 Presidential election? [ADD YOUR OWN ANSWERS (**see note**)]",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/catehall/which-of-the-following-will-happen-2a96f8769055"
+    },
+    {
+        "name": "Are you tired of seeing markets on Jimmy Carter\u2019s death?",
+        "end_date": "2024-04-10 06:59:00",
+        "question_type": "poll",
+        "url": "https://manifold.markets/davids/are-you-tired-of-seeing-markets-on"
+    },
+    {
+        "name": "If Biden wins, will the US homicide rate decrease?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-biden-wins-will-the-us-homicide"
+    },
+    {
+        "name": "Which players will win a Ballon d'Or before the end of their career?",
+        "end_date": "3000-01-18 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/nfl/which-players-will-win-a-ballon-dor"
+    },
+    {
+        "name": "If Trump wins, will the US homicide rate decrease?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-trump-wins-will-the-us-homicide"
+    },
+    {
+        "name": "How many sitting Conservative MP's will NOT contest the 2024 UK General Election? (As of March 10th 2024: 59)",
+        "end_date": "2024-09-18 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/harryhayfield/how-many-sitting-conservative-mps-w"
+    },
+    {
+        "name": "Six  Nations - who will have the biggest winning margin in week 5?",
+        "end_date": "2024-03-16 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simongrayson/six-nations-who-will-have-the-bigge-04b160a6f14e"
+    },
+    {
+        "name": "In Oldschool Runescape, will it be possible to fight a monster higher-level than Verzik Vitur by the end of 2025?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tulip/in-oldschool-runescape-will-it-be-p"
+    },
+    {
+        "name": "Will llama 3 be created in 2 months?",
+        "end_date": "2024-05-11 07:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/abhinavsrinivas/will-llama-3-be-created-in-2-months"
+    },
+    {
+        "name": "Will Caleb Hammer reach 1.5M subscribers on Youtube before Blue Monday 2025? (Jan 20)",
+        "end_date": "2025-01-21 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-caleb-hammer-reach-2m-subscrib-4b2de4074082"
+    },
+    {
+        "name": "Will there be news in 2024 of someone finding a walrus at their door?",
+        "end_date": "2025-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tulip/will-there-be-news-in-2024-of-someo"
+    },
+    {
+        "name": "Rouge AI before 2028",
+        "end_date": "2024-03-10 16:22:58",
+        "question_type": "binary",
+        "url": "https://manifold.markets/camilleperrin/rouge-ai-before-2028"
+    },
+    {
+        "name": "Will at least one American soldier die because of the temporary port activity in Gaza ,  until the end of June?",
+        "end_date": "2024-07-01 21:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/carmelhadar/will-at-least-one-american-soldier"
+    },
+    {
+        "name": "What will ECB announce for interest rates on September 12?",
+        "end_date": "2024-07-18 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/marktwse/what-will-ecb-announce-for-interest-3bc3dc3c81b1"
+    },
+    {
+        "name": "When will Hinkley Point C nuclear power station be finished?",
+        "end_date": "2030-01-01 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alh/when-will-hinkley-point-c-nuclear-p"
+    },
+    {
+        "name": "When will the next Haitian general election occur?",
+        "end_date": "2028-01-02 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tetraspace/when-will-the-next-haitian-general"
+    },
+    {
+        "name": "Will Apple release its own AI-powered chatbot by the end of 2024?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/omarb/will-apple-deliver-an-aipowered-cha"
+    },
+    {
+        "name": "Who will the Prime Minister of Haiti be on April 1st 2024?",
+        "end_date": "2024-04-01 22:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tetraspace/who-will-the-prime-minister-of-hait-4b683a07db9a"
+    },
+    {
+        "name": "Who will the Prime Minister of Haiti be on January 1st 2025?",
+        "end_date": "2025-01-01 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tetraspace/who-will-the-prime-minister-of-hait"
+    },
+    {
+        "name": "Will Juvenile Life Without Parole (JLWOP) sentencing become a major political priority for either party before 2030?",
+        "end_date": "2030-01-02 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/hyperstition/will-juvenile-life-without-parole-j"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #2 seed beat the #15 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-2-seed-beat-the-15-seed-i-b84b08d8f635"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #7 seed beat the #10 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-7-seed-beat-the-10-seed-i-3cccb2f85230"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #3 seed beat the #14 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-3-seed-beat-the-14-seed-i-2e27f0382c13"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #6 seed beat the #11 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-6-seed-beat-the-11-seed-i-8fde34d601e4"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #8 seed beat the #9 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-8-seed-beat-the-9-seed-in-aee46c2ff514"
+    },
+    {
+        "name": "Which topics will be discussed on the Lex Fridman podcast episode with Sam Altman?",
+        "end_date": "2024-04-09 18:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/firstuserhere/which-topics-will-be-discussed-on-t"
+    },
+    {
+        "name": "Will Daniel Ricciardo remain an RB driver for the entire 2024 Formula 1 season?",
+        "end_date": "2024-12-09 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/adamsnyder/will-daniel-ricciardo-remain-an-rb"
+    },
+    {
+        "name": "When will Donald Trump debate Joe Biden?",
+        "end_date": "2024-11-06 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simongrayson/when-will-donald-trump-debate-joe-b-520fb55751b3"
+    },
+    {
+        "name": "When will Donald Trump debate Joe Biden?",
+        "end_date": "2024-03-10 15:27:10",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simongrayson/when-will-donald-trump-debate-joe-b"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #4 seed beat the #13 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-4-seed-beat-the-13-seed-i-8c2ed24e3b1f"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #5 seed beat the #12 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-5-seed-beat-the-12-seed-i-f86ffe2a30d1"
+    },
+    {
+        "name": "test stonk",
+        "end_date": "N/A",
+        "question_type": "stonk",
+        "url": "https://manifold.markets/abhinavsrinivas/test-stonk-f3bd3fc37bcf"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #2 seed beat the #15 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-2-seed-beat-the-15-seed-i-8d78b4090a3a"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #7 seed beat the #10 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-7-seed-beat-the-10-seed-i-91e5b7c88629"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #8 seed beat the #9 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-3-seed-beat-the-14-seed-i-a4d7f9071874"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #3 seed beat the #14 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-3-seed-beat-the-14-seed-i-21e052b0518f"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #6 seed beat the #11 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-6-seed-beat-the-11-seed-i-79ef853ac2a9"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #4 seed beat the #13 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-4-seed-beat-the-13-seed-i-2ac42a0c510c"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #5 seed beat the #12 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-5-seed-beat-the-12-seed-i-70d40fd00695"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #1 seed beat the #16 seed in the South region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-8-seed-beat-the-9-seed-in-ddee4c110891"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #1 seed beat the #16 seed in the East region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-1-seed-beat-the-16-seed-i-3e50f9911157"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #2 seed beat the #15 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-2-seed-beat-the-15-seed-i-6cb20677d5cb"
+    },
+    {
+        "name": "Will I get into the 2nd stage of the CLR summer research fellowship admission?",
+        "end_date": "2024-03-13 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/logaems/will-i-get-into-the-2nd-stage-of-th"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #7 seed beat the #10 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-7-seed-beat-the-10-seed-i-a594d772cc19"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #3 seed beat the #14 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-3-seed-beat-the-14-seed-i-ca220a50fc65"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #6 seed beat the #11 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-6-seed-beat-the-11-seed-i-54f0b452681e"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #4 seed beat the #13 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-4-seed-beat-the-13-seed-i-1997b608af7b"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #5 seed beat the #12 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-5-seed-beat-the-12-seed-i-4ecb8ae13c59"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #8 seed beat the #9 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-8-seed-beat-the-9-seed-in-0819b7fc5716"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #1 seed beat the #16 seed in the West region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-1-seed-beat-the-16-seed-i-7d8c3d6ad15a"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #2 seed beat the #15 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-2-seed-beat-the-15-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #7 seed beat the #10 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-7-seed-beat-the-10-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #3 seed beat the #14 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-3-seed-beat-the-14-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #6 seed beat the #11 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-6-seed-beat-the-11-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #4 seed beat the #13 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-4-seed-beat-the-13-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #5 seed beat the #12 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-5-seed-beat-the-12-seed-i"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #8 seed beat the #9 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-8-seed-beat-the-9-seed-in"
+    },
+    {
+        "name": "\ud83c\udfc0 Will the #1 seed beat the #16 seed in the Midwest region? (Men's March Madness 2024)",
+        "end_date": "2024-03-24 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/dglid/-will-the-1-seed-beat-the-16-seed-i"
+    },
+    {
+        "name": "Will we get Rouge AI before 2031?",
+        "end_date": "2031-03-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/remni/will-we-get-rouge-ai-before-2031"
+    },
+    {
+        "name": "What office will Katie Porter run for in 2026?",
+        "end_date": "2024-03-10 14:41:48",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/jaydaiitm/what-office-will-katie-porter-run-f-9791bf05cc2d"
+    },
+    {
+        "name": "When will this Congress pass a new Ukraine aid deal?",
+        "end_date": "2025-01-05 00:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/alh/when-will-this-congress-pass-a-new"
+    },
+    {
+        "name": "What office will Katie Porter run for in 2026?",
+        "end_date": "2026-11-03 17:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/jaydaiitm/what-office-will-katie-porter-run-f"
+    },
+    {
+        "name": "Will the sequel to The Super Mario Bros. Movie gross more than $1 Billion worldwide?",
+        "end_date": "2027-03-03 13:29:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tripping/will-the-sequel-to-the-super-mario-0ee4a05ccf45"
+    },
+    {
+        "name": "Will the sequel to The Super Mario Bros. Movie gross more worldwide at the box office than the first film?",
+        "end_date": "2027-03-03 13:29:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/tripping/will-the-sequel-to-the-super-mario-30262a185dea"
+    },
+    {
+        "name": "Will my pc work first time?",
+        "end_date": "2024-03-14 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/charliefrench/will-my-pc-work-first-time"
+    },
+    {
+        "name": "Will independence supporting parties maintain a majority of seats in Scotland in the next UK general election?",
+        "end_date": "2025-02-01 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/xiaobai/will-independence-supporting-partie-04b313935beb"
+    },
+    {
+        "name": "Will Dune: Prophecy be released before December 2024?",
+        "end_date": "2024-11-30 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/arbitrary/will-dune-prophecy-be-released-befo"
+    },
+    {
+        "name": "Will the LK-99 market be below 4% for the day?\n",
+        "end_date": "2024-04-11 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/ammonlam/will-there-be-over-20000mana-of-4-n"
+    },
+    {
+        "name": "When will the next probe successfully descend in the Venusian atmosphere?",
+        "end_date": "2034-01-01 23:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/olegeterevsky/when-will-the-next-probe-successful-45fed400e274"
+    },
+    {
+        "name": "Will any model from Flowers Labs reach top 10 in LMSYS leaderboard by the end of April 2024?",
+        "end_date": "2024-04-30 19:29:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/axr/will-any-model-from-flowers-labs-re"
+    },
+    {
+        "name": "Will we get AGI before 1M humanoid robots are manufactured?",
+        "end_date": "2100-03-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/remni/will-we-get-agi-before-1m-humanoid"
+    },
+    {
+        "name": "Will Claude Opus be ranked in the top 20 on the Chatbot Arena Leaderboard two years from today (3/10/24)?",
+        "end_date": "2026-03-11 03:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/veryseriousposter/will-claude-opus-be-ranked-in-the-t"
+    },
+    {
+        "name": "Will Bibi Netanyahu address the 118th Congress?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-bibi-netanyahu-address-the-118"
+    },
+    {
+        "name": "What movie poster is ChatGPT recreating with this picture? Part 4",
+        "end_date": "2024-03-25 03:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/veryseriousposter/what-movie-poster-is-chatgpt-recrea-c018eee59246"
+    },
+    {
+        "name": "Will Donald Trump travel outside the US during 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-donald-trump-travel-outside-th"
+    },
+    {
+        "name": "What foreign leaders will Trump host at Mar-a-Lago by the end of 2028?",
+        "end_date": "2029-01-01 05:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/bte/what-foreign-leaders-will-trump-hos"
+    },
+    {
+        "name": "Will Kim Jong-Un visit Mar-a-Lago by the end of 2028?",
+        "end_date": "2029-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-kim-jongun-visit-maralago-by-t"
+    },
+    {
+        "name": "Which milestones in biomedical engineering will be achieved by 2030?",
+        "end_date": "2031-01-01 15:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/which-milestones-in-biomedical-engi"
+    },
+    {
+        "name": "Will 1M humanoid robots be manufactured before a human walks on the Moon again?",
+        "end_date": "2100-03-02 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/remni/will-1m-humanoid-robots-be-manufact-5272497e9ab8"
+    },
+    {
+        "name": "Will Vladimir Putin visit Mar-a-Lago by the end of 2028?",
+        "end_date": "2029-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-vladimir-putin-visit-maralago"
+    },
+    {
+        "name": "Will Donald Trump visit Israel by the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-donald-trump-visit-israel-by-t"
+    },
+    {
+        "name": "Will Donald Trump visit Ukraine before the end of 2024?",
+        "end_date": "2025-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-donald-trump-visit-ukraine-bef"
+    },
+    {
+        "name": "Will Speaker Johnson visit Ukraine before the end of the 118th Congress?",
+        "end_date": "2025-01-07 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bte/will-speaker-johnson-visit-ukraine"
+    },
+    {
+        "name": "Will Belarus acquire nuclear weapons before 2031?",
+        "end_date": "2031-03-01 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/remni/will-belarus-acquire-nuclear-weapon"
+    },
+    {
+        "name": "Will blocking myself from Social media reduce my phone time?",
+        "end_date": "2024-03-17 22:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/schwabilismus/will-blocking-myself-from-social-me"
+    },
+    {
+        "name": "Will there be high-speed rail between Sydney and Melbourne by 2050?",
+        "end_date": "2050-01-01 16:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/ikajoh/will-there-be-highspeed-rail-betwee"
+    },
+    {
+        "name": "\ud83d\udcc8 Considering the current $BTC (Bitcoin) cycle, what is your prediction for its new all-time high price?",
+        "end_date": "2025-12-31 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/quadrifold/-considering-the-current-btc-bitcoi"
+    },
+    {
+        "name": "Will the market cap of NVDA surpass AAPL in one of the end of day values before September 2024?",
+        "end_date": "2024-09-30 14:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/esusatyo/will-the-market-cap-of-nvda-surpass"
+    },
+    {
+        "name": "Will \"Orthogonal: A new agent foundations alignment...\" make the top fifty posts in LessWrong's 2023 Annual Review?",
+        "end_date": "2025-02-01 01:00:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/lesswrong/will-orthogonal-a-new-agent-foundat"
+    },
+    {
+        "name": "If Trump wins, will he or any member of his cabinet criticize the Constitution by the 2026 midterms?",
+        "end_date": "2026-11-04 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jbosc/if-trump-wins-will-he-or-any-member"
+    },
+    {
+        "name": "If Biden wins, will he or any member of his cabinet criticize the Constitution by the 2026 midterms?",
+        "end_date": "2026-11-04 20:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/jbosc/if-biden-wins-will-he-or-any-member"
+    },
+    {
+        "name": "If Trump wins, will there be an attempt on his life by midterms?",
+        "end_date": "2026-11-03 10:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/norespect/if-trump-wins-will-there-be-an-atte"
+    },
+    {
+        "name": "If Biden wins, will there be an attempt on his life by midterms?",
+        "end_date": "2025-11-03 10:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/norespect/if-biden-wins-will-there-be-an-atte"
+    },
+    {
+        "name": "Will there be more than 7 companies with market cap of > $1T by the end of 2024?",
+        "end_date": "2024-12-31 13:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/esusatyo/will-there-be-more-than-7-companies"
+    },
+    {
+        "name": "Is Cannabinoid Hyperemesis Syndrome Caused by an Overstimulation of the CB1 Receptors?",
+        "end_date": "2026-04-20 22:20:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/keenenwatts/is-cannabinoid-hyperemesis-syndrome"
+    },
+    {
+        "name": "If Trump wins the 2024 US presidential election, will cannabis be decriminalized or legalized by the midterms?",
+        "end_date": "2026-11-04 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/athena/if-trump-wins-the-2024-us-president"
+    },
+    {
+        "name": "If Biden wins the 2024 US presidential election, will cannabis be decriminalized or legalized by the midterms?",
+        "end_date": "2026-11-04 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/athena/if-biden-wins-the-2024-us-president"
+    },
+    {
+        "name": "Will Biden outperform Bitcoin?",
+        "end_date": "2024-11-06 06:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/andrewg/will-biden-outperform-bitcoin"
+    },
+    {
+        "name": "Is genetic variation greater within racial groups than it is between them?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jim/is-genetic-variation-greater-within"
+    },
+    {
+        "name": "Are you racist?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/tumbles/did-this-poll-take-up-space-on-your"
+    },
+    {
+        "name": "are you racist?",
+        "end_date": "N/A",
+        "question_type": "poll",
+        "url": "https://manifold.markets/jim/are-you-racist"
+    },
+    {
+        "name": "If Trump wins, will we still have Daylight Savings Time?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-trump-wins-will-we-still-have-da"
+    },
+    {
+        "name": "If Biden wins, will we still have Daylight Savings Time?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-biden-wins-will-we-still-have-da"
+    },
+    {
+        "name": "Will Bakkt declare bankruptcy before the end of 2025?",
+        "end_date": "2026-01-01 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/wompwomp/will-bakkt-declare-bankruptcy-befor"
+    },
+    {
+        "name": "Will there be a major violent incident around the new Gaza port in 2024?",
+        "end_date": "2024-12-31 23:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/fedor/will-there-be-a-major-violent-incid"
+    },
+    {
+        "name": "Which of these U.S. states will swing Republican from 2020 to 2024?",
+        "end_date": "2024-12-06 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/thepurplebull/which-of-these-us-states-will-swing"
+    },
+    {
+        "name": "UCI World Tour Relegation Watch 2023-2025: Which teams will be WorldTeams in 2026?",
+        "end_date": "2026-01-01 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/eliza/uci-world-tour-relegation-watch-202"
+    },
+    {
+        "name": "When will Zam's wormhole video come out?",
+        "end_date": "2024-12-31 09:10:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/hearts/when-will-zams-wormhole-video-come"
+    },
+    {
+        "name": "If Leonardo DiCaprio has a girlfriend after Vittoria Ceretti, will she be less than half DiCaprio's age at the time?",
+        "end_date": "2051-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/if-leonardo-dicaprio-has-a-girlfrie"
+    },
+    {
+        "name": "If Trump wins, will at least 20 NATO members reach the 2% target for defense spending in 2025?",
+        "end_date": "2026-01-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/timothyjohnson5c16/if-trump-wins-will-at-least-20-nato"
+    },
+    {
+        "name": "If Biden wins, will at least 20 NATO members reach the 2% target for defense spending in 2025?",
+        "end_date": "2026-01-02 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/timothyjohnson5c16/if-biden-wins-will-at-least-20-nato"
+    },
+    {
+        "name": "Will I lift weights today?",
+        "end_date": "2024-03-11 04:11:11",
+        "question_type": "binary",
+        "url": "https://manifold.markets/benjaminikuta/will-i-lift-weights-today-4b3c8638ec12"
+    },
+    {
+        "name": "Will Caleb Hammer reach 2M subscribers on Youtube before Blue Monday 2025? (Jan 20)",
+        "end_date": "2025-01-21 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-caleb-hammer-reach-2m-subscrib"
+    },
+    {
+        "name": "Who will Sean O'Malley have a fight with before he retires?",
+        "end_date": "2050-03-04 14:29:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/tripping/who-will-sean-omalley-have-a-fight"
+    },
+    {
+        "name": "Who will win the  Saturday, March 16, 2024 Chess.com bullet brawl?",
+        "end_date": "2024-03-18 06:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/boltonbailey/who-will-win-the-saturday-march-16"
+    },
+    {
+        "name": "Soccer - Sporting KC vs San Jose - Who will win?",
+        "end_date": "2024-03-17 04:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/brycebowemd39/soccer-sporting-kc-vs-san-jose-who"
+    },
+    {
+        "name": "If Trump wins, will the US suicide rate decrease between his inauguration and the 2026 Midterms?",
+        "end_date": "2026-11-04 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/theallmemeingeye/if-trump-wins-will-the-us-suicide-r"
+    },
+    {
+        "name": "If Biden wins, will the US suicide rate decrease between his inauguration and the 2026 Midterms?",
+        "end_date": "2026-11-04 00:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/theallmemeingeye/if-biden-wins-will-the-us-suicide-r"
+    },
+    {
+        "name": "\ud83e\udea6Who will be featured in the Oscars \"In Memoriam\" segment this year? [ADD RESPONSES]",
+        "end_date": "2024-03-11 04:47:07",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/strutheo/who-will-be-featured-in-the-oscars"
+    },
+    {
+        "name": "Will Chris get to bed by 10:45pm at least 3 times this week?",
+        "end_date": "2024-03-17 00:24:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/emile/will-chris-get-to-bed-by-1045pm-at-b542c52b279a"
+    },
+    {
+        "name": "Will Destiny reach 1M subscribers on Youtube before Blue Monday 2025? (Jan 20)",
+        "end_date": "2025-01-21 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-reach-1m-subscribers-o-c5eb8d43d51b"
+    },
+    {
+        "name": "If Biden is elected, will there be a ceasefire in Ukraine before the 2026 midterms?",
+        "end_date": "2026-11-04 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/arky/if-biden-is-elected-will-there-be-a-661b053b75e6"
+    },
+    {
+        "name": "If Trump is elected, will there be a ceasefire in Ukraine before the 2026 midterms?",
+        "end_date": "2026-11-04 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/arky/if-trump-is-elected-will-there-be-a-40ca39e5dcec"
+    },
+    {
+        "name": "If Trump wins, will marijuana be federally rescheduled from Schedule 1 drug?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-trump-wins-will-marijuana-be-fed"
+    },
+    {
+        "name": "If Biden wins, will marijuana be federally rescheduled from a Schedule 1 drug?",
+        "end_date": "2026-11-03 08:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/bluedragon/if-biden-wins-will-marijuana-be-fed"
+    },
+    {
+        "name": "Will Destiny reach 1M subscribers on Youtube before Jimmy Carter dies?",
+        "end_date": "2028-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-reach-1m-subscribers-o-4df5efbb172f"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before the One Piece manga ends?",
+        "end_date": "2061-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo-97225cf99327"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before Luffy finds the One Piece?",
+        "end_date": "2061-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo-eaa21b297c6d"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before he reaches 1M subscribers on Youtube?",
+        "end_date": "2061-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo-6244cae90a8c"
+    },
+    {
+        "name": "Will Destiny talk to Joe Rogan before he talks to AOC?",
+        "end_date": "2061-01-01 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/strutheo/will-destiny-talk-to-joe-rogan-befo"
+    },
+    {
+        "name": "When will antimatter reactors be created for space travel?",
+        "end_date": "2151-01-01 16:59:00",
+        "question_type": "multiple_choice",
+        "url": "https://manifold.markets/simoneromeo/when-will-antimatter-reactors-be-cr"
+    },
+    {
+        "name": "Will Bitcoin outperform Altcoins in 2024?",
+        "end_date": "2025-01-02 05:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/putcallparity/will-bitcoin-outperform-altcoins-in"
+    },
+    {
+        "name": "Will April 2024 be the hottest April on record globally? (Tie counts)",
+        "end_date": "2024-05-01 04:59:00",
+        "question_type": "binary",
+        "url": "https://manifold.markets/stochasticcockatoo/will-april-2024-be-the-hottest-apri-9996b4ffbbae"
+    }
+]

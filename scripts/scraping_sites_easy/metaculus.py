@@ -18,11 +18,18 @@ def fetch_live_questions_with_dates(api_url):
         raise Exception(f"Failed to fetch the API: {api_url}")
 
     questions_data = response.json()
+
+    
     # Assuming the response structure and that 'resolution_date' is the key for the resolution date
     # Adjust the key based on actual API response structure
+
+        
     questions_info = [{
         'name': question['title'],
-        'end_date': question.get('resolve_time')
+        'end_date': question.get('resolve_time'),
+        'question_type': question.get('possibilities')['type'],
+        'url': f"https://www.metaculus.com/questions/{question['id']}"  # Constructing the URL using question ID
+
     } for question in questions_data.get('results', [])]
         
         
@@ -35,11 +42,14 @@ def fetch_live_questions_with_dates(api_url):
     } for market in data['markets']]
     """
 
+    return questions_info
+"""
+    
     return {
         "api_url": api_url,
         "markets": questions_info
     }
-
+"""
 
 if __name__ == "__main__":
     api_url = "https://www.metaculus.com/api2"
@@ -50,5 +60,8 @@ if __name__ == "__main__":
         
         # Convert the data to JSON and print
         print(json.dumps(data, indent=4))
+        with open('metaculus.json', 'w') as json_file:
+            json.dump(data, json_file, indent=4)
+
     except Exception as e:
         print(f"Error: {e}")
