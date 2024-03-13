@@ -18,6 +18,6 @@ Feel free to add more utils in `utils.py`, `llm_utils.py`, or other files, as yo
 The preferred way to test anything is either from `playground.py`, or creating a new file / Jupyter notebook in the `src` directory.
 Running the files with actual logic in them may run into Python import / path issues.
 
-## Data Format
-TODO discuss during one of the meetings, figure out early
+## Data Formats
+Currently being discussed in the [Datatypes design doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit). 
 
