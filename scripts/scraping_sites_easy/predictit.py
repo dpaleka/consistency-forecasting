@@ -10,6 +10,8 @@ def scrape_website(url):
     data = response.json()
 
     market_info = []
+    print(data)
+    exit()
     for market in data['markets']:
         # Extract the end date or set it to None if not available/applicable
 
