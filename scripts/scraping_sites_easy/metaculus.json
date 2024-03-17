@@ -1,122 +1,1051 @@
 [
     {
-        "name": "Will there be a total solar eclipse on June 25, 2522?",
-        "end_date": "2522-06-26T00:00:00Z",
+        "id": 111,
+        "text": "Will there be a total solar eclipse on June 25, 2522?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/111"
+        "resolution_date": "2522-06-26T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/111",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 141,
+                    "slug": "united-states",
+                    "name": "United States",
+                    "link_id": 11949,
+                    "num_questions": 1718
+                },
+                {
+                    "id": 210,
+                    "slug": "nasa",
+                    "name": "NASA",
+                    "link_id": 11950,
+                    "num_questions": 122
+                },
+                {
+                    "id": 563,
+                    "slug": "moon",
+                    "name": "Moon",
+                    "link_id": 11952,
+                    "num_questions": 55
+                },
+                {
+                    "id": 95,
+                    "slug": "earth",
+                    "name": "Earth",
+                    "link_id": 11948,
+                    "num_questions": 49
+                },
+                {
+                    "id": 548,
+                    "slug": "africa",
+                    "name": "Africa",
+                    "link_id": 11951,
+                    "num_questions": 17
+                },
+                {
+                    "id": 2196,
+                    "slug": "oregon",
+                    "name": "Oregon",
+                    "link_id": 42596,
+                    "num_questions": 17
+                },
+                {
+                    "id": 1230,
+                    "slug": "south-carolina",
+                    "name": "South Carolina",
+                    "link_id": 37320,
+                    "num_questions": 7
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will the Universe end?",
-        "end_date": "9999-12-31T00:00:00Z",
+        "id": 161,
+        "text": "Will the Universe end?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/161"
+        "resolution_date": "9999-12-31T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/161",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 128,
+                    "slug": "physics",
+                    "name": "Physics",
+                    "link_id": 13283,
+                    "num_questions": 395
+                },
+                {
+                    "id": 304,
+                    "slug": "astronomy",
+                    "name": "Astronomy",
+                    "link_id": 73294,
+                    "num_questions": 168
+                },
+                {
+                    "id": 136,
+                    "slug": "astrophysics",
+                    "name": "Astrophysics",
+                    "link_id": 13284,
+                    "num_questions": 79
+                },
+                {
+                    "id": 1766,
+                    "slug": "cosmology",
+                    "name": "Cosmology",
+                    "link_id": 40973,
+                    "num_questions": 34
+                },
+                {
+                    "id": 1810,
+                    "slug": "observable-universe",
+                    "name": "Observable universe",
+                    "link_id": 40974,
+                    "num_questions": 4
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will SpaceX land people on Mars before 2030?",
-        "end_date": "2030-01-02T00:00:00Z",
+        "id": 349,
+        "text": "Will SpaceX land people on Mars before 2030?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/349"
+        "resolution_date": "2030-01-02T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/349",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 184,
+                    "slug": "elon-musk",
+                    "name": "Elon Musk",
+                    "link_id": 27681,
+                    "num_questions": 153
+                },
+                {
+                    "id": 485,
+                    "slug": "spacex-reusable-launch-system-development-program",
+                    "name": "SpaceX reusable launch system",
+                    "link_id": 27682,
+                    "num_questions": 130
+                },
+                {
+                    "id": 1365,
+                    "slug": "spacex",
+                    "name": "SpaceX",
+                    "link_id": 75197,
+                    "num_questions": 108
+                },
+                {
+                    "id": 564,
+                    "slug": "colonization-of-mars",
+                    "name": "Colonization of Mars",
+                    "link_id": 27683,
+                    "num_questions": 70
+                },
+                {
+                    "id": 1768,
+                    "slug": "spacex-mars-transportation-infrastructure",
+                    "name": "SpaceX Mars transportation infrastructure",
+                    "link_id": 40982,
+                    "num_questions": 5
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will someone born before 2001 live to be 150?",
-        "end_date": "2151-01-03T00:00:00Z",
+        "id": 353,
+        "text": "Will someone born before 2001 live to be 150?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/353"
+        "resolution_date": "2151-01-03T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/353",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
     },
     {
-        "name": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "end_date": "2100-01-01T16:18:08Z",
+        "id": 363,
+        "text": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
+        "resolution_criteria": null,
         "question_type": "continuous",
-        "url": "https://www.metaculus.com/questions/363"
+        "resolution_date": "2100-01-01T16:18:08Z",
+        "url": "https://www.metaculus.com/questions/363",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 1506,
+                    "slug": "lockheed-martin",
+                    "name": "Lockheed Martin",
+                    "link_id": 87710,
+                    "num_questions": 5
+                },
+                {
+                    "id": 3404,
+                    "slug": "lockheed-martin-p-791",
+                    "name": "Lockheed Martin P-791",
+                    "link_id": 47077,
+                    "num_questions": 5
+                },
+                {
+                    "id": 1022,
+                    "slug": "national-ignition-facility",
+                    "name": "National Ignition Facility",
+                    "link_id": 34304,
+                    "num_questions": 4
+                },
+                {
+                    "id": 4325,
+                    "slug": "iter",
+                    "name": "ITER",
+                    "link_id": 49245,
+                    "num_questions": 3
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will human brain emulation be the first successful route to human-level digital intelligence?",
-        "end_date": "2060-01-01T00:00:00Z",
+        "id": 372,
+        "text": "Will human brain emulation be the first successful route to human-level digital intelligence?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/372"
+        "resolution_date": "2060-01-01T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/372",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 142,
+                    "slug": "medicine",
+                    "name": "Medicine",
+                    "link_id": 6847,
+                    "num_questions": 1442
+                },
+                {
+                    "id": 542,
+                    "slug": "biology",
+                    "name": "Biology",
+                    "link_id": 6849,
+                    "num_questions": 193
+                },
+                {
+                    "id": 36,
+                    "slug": "philosophy",
+                    "name": "Philosophy",
+                    "link_id": 6851,
+                    "num_questions": 133
+                },
+                {
+                    "id": 714,
+                    "slug": "neuroscience",
+                    "name": "Neuroscience",
+                    "link_id": 6850,
+                    "num_questions": 71
+                },
+                {
+                    "id": 1644,
+                    "slug": "robin-hanson",
+                    "name": "Robin Hanson",
+                    "link_id": 40646,
+                    "num_questions": 16
+                },
+                {
+                    "id": 2300,
+                    "slug": "mind-uploading",
+                    "name": "Mind uploading",
+                    "link_id": 43199,
+                    "num_questions": 11
+                },
+                {
+                    "id": 2303,
+                    "slug": "brain-preservation-foundation",
+                    "name": "Brain Preservation Foundation",
+                    "link_id": 43202,
+                    "num_questions": 5
+                },
+                {
+                    "id": 3377,
+                    "slug": "anatomy",
+                    "name": "Anatomy",
+                    "link_id": 69977,
+                    "num_questions": 4
+                },
+                {
+                    "id": 2301,
+                    "slug": "the-age-of-em",
+                    "name": "The Age of Em",
+                    "link_id": 43200,
+                    "num_questions": 3
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
-        "end_date": "2027-01-31T23:59:00Z",
+        "id": 375,
+        "text": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/375"
+        "resolution_date": "2027-01-31T23:59:00Z",
+        "url": "https://www.metaculus.com/questions/375",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 311,
+                    "slug": "european-union",
+                    "name": "European Union",
+                    "link_id": 3126,
+                    "num_questions": 241
+                },
+                {
+                    "id": 408,
+                    "slug": "germany",
+                    "name": "Germany",
+                    "link_id": 3128,
+                    "num_questions": 104
+                },
+                {
+                    "id": 55,
+                    "slug": "france",
+                    "name": "France",
+                    "link_id": 3123,
+                    "num_questions": 103
+                },
+                {
+                    "id": 2802,
+                    "slug": "italy",
+                    "name": "Italy",
+                    "link_id": 45082,
+                    "num_questions": 54
+                },
+                {
+                    "id": 173,
+                    "slug": "brexit",
+                    "name": "Brexit",
+                    "link_id": 3124,
+                    "num_questions": 48
+                },
+                {
+                    "id": 237,
+                    "slug": "netherlands",
+                    "name": "Netherlands",
+                    "link_id": 3125,
+                    "num_questions": 42
+                },
+                {
+                    "id": 393,
+                    "slug": "belgium",
+                    "name": "Belgium",
+                    "link_id": 3127,
+                    "num_questions": 17
+                },
+                {
+                    "id": 2803,
+                    "slug": "luxembourg",
+                    "name": "Luxembourg",
+                    "link_id": 45083,
+                    "num_questions": 14
+                },
+                {
+                    "id": 2804,
+                    "slug": "withdrawal-from-the-european-union",
+                    "name": "Withdrawal from the European Union",
+                    "link_id": 45084,
+                    "num_questions": 5
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will there be Human-machine intelligence parity before 2040?",
-        "end_date": "2040-01-01T00:00:00Z",
+        "id": 384,
+        "text": "Will there be Human-machine intelligence parity before 2040?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/384"
+        "resolution_date": "2040-01-01T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/384",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 858,
+                    "slug": "ethics",
+                    "name": "Ethics",
+                    "link_id": 6872,
+                    "num_questions": 102
+                },
+                {
+                    "id": 37,
+                    "slug": "linguistics",
+                    "name": "Linguistics",
+                    "link_id": 83270,
+                    "num_questions": 101
+                },
+                {
+                    "id": 774,
+                    "slug": "deepmind",
+                    "name": "DeepMind",
+                    "link_id": 6871,
+                    "num_questions": 93
+                },
+                {
+                    "id": 150,
+                    "slug": "microsoft",
+                    "name": "Microsoft",
+                    "link_id": 6869,
+                    "num_questions": 83
+                },
+                {
+                    "id": 1012,
+                    "slug": "psychology",
+                    "name": "Psychology",
+                    "link_id": 6873,
+                    "num_questions": 60
+                },
+                {
+                    "id": 1251,
+                    "slug": "education",
+                    "name": "Education",
+                    "link_id": 37387,
+                    "num_questions": 43
+                },
+                {
+                    "id": 670,
+                    "slug": "alphago",
+                    "name": "AlphaGo",
+                    "link_id": 83271,
+                    "num_questions": 17
+                },
+                {
+                    "id": 606,
+                    "slug": "literature",
+                    "name": "Literature",
+                    "link_id": 85920,
+                    "num_questions": 16
+                },
+                {
+                    "id": 6538,
+                    "slug": "computer-vision",
+                    "name": "Computer vision",
+                    "link_id": 85917,
+                    "num_questions": 7
+                },
+                {
+                    "id": 2542,
+                    "slug": "atari",
+                    "name": "Atari",
+                    "link_id": 44206,
+                    "num_questions": 4
+                },
+                {
+                    "id": 3948,
+                    "slug": "machine-translation",
+                    "name": "Machine translation",
+                    "link_id": 85918,
+                    "num_questions": 4
+                },
+                {
+                    "id": 2539,
+                    "slug": "algorithmic-bias",
+                    "name": "Algorithmic bias",
+                    "link_id": 44203,
+                    "num_questions": 3
+                },
+                {
+                    "id": 10981,
+                    "slug": "tensorflow",
+                    "name": "TensorFlow",
+                    "link_id": 85919,
+                    "num_questions": 3
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
-        "end_date": "2050-01-02T04:45:08Z",
+        "id": 397,
+        "text": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/397"
+        "resolution_date": "2050-01-02T04:45:08Z",
+        "url": "https://www.metaculus.com/questions/397",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 1012,
+                    "slug": "psychology",
+                    "name": "Psychology",
+                    "link_id": 25860,
+                    "num_questions": 60
+                },
+                {
+                    "id": 347,
+                    "slug": "sociology",
+                    "name": "Sociology",
+                    "link_id": 25859,
+                    "num_questions": 43
+                },
+                {
+                    "id": 159,
+                    "slug": "2022-fifa-world-cup",
+                    "name": "2022 FIFA World Cup",
+                    "link_id": 25858,
+                    "num_questions": 11
+                },
+                {
+                    "id": 3608,
+                    "slug": "robocup",
+                    "name": "RoboCup",
+                    "link_id": 47617,
+                    "num_questions": 4
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "When will there be machine-kindergartner parity in LEGO construction?",
-        "end_date": "2040-01-02T18:33:24Z",
+        "id": 404,
+        "text": "When will there be machine-kindergartner parity in LEGO construction?",
+        "resolution_criteria": null,
         "question_type": "continuous",
-        "url": "https://www.metaculus.com/questions/404"
+        "resolution_date": "2040-01-02T18:33:24Z",
+        "url": "https://www.metaculus.com/questions/404",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 515,
+                    "slug": "engineering",
+                    "name": "Engineering",
+                    "link_id": 7997,
+                    "num_questions": 109
+                },
+                {
+                    "id": 589,
+                    "slug": "robotics",
+                    "name": "Robotics",
+                    "link_id": 7998,
+                    "num_questions": 86
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "When will AIs program programs that can program AIs?",
-        "end_date": "2100-01-02T00:01:00Z",
+        "id": 406,
+        "text": "When will AIs program programs that can program AIs?",
+        "resolution_criteria": null,
         "question_type": "continuous",
-        "url": "https://www.metaculus.com/questions/406"
+        "resolution_date": "2100-01-02T00:01:00Z",
+        "url": "https://www.metaculus.com/questions/406",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 33,
+                    "slug": "machine-learning",
+                    "name": "Machine learning",
+                    "link_id": 8006,
+                    "num_questions": 237
+                },
+                {
+                    "id": 1292,
+                    "slug": "software-engineering",
+                    "name": "Software engineering",
+                    "link_id": 85119,
+                    "num_questions": 49
+                },
+                {
+                    "id": 7688,
+                    "slug": "wolframalpha",
+                    "name": "WolframAlpha",
+                    "link_id": 56504,
+                    "num_questions": 3
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "If chess is solved before 2080, must perfect play result in white winning?",
-        "end_date": "2080-01-02T04:00:00Z",
+        "id": 480,
+        "text": "If chess is solved before 2080, must perfect play result in white winning?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/480"
+        "resolution_date": "2080-01-02T04:00:00Z",
+        "url": "https://www.metaculus.com/questions/480",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 1105,
+                    "slug": "game-theory",
+                    "name": "Game theory",
+                    "link_id": 35332,
+                    "num_questions": 17
+                },
+                {
+                    "id": 1850,
+                    "slug": "chess",
+                    "name": "Chess",
+                    "link_id": 35334,
+                    "num_questions": 6
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
-        "end_date": "2030-01-01T08:00:00Z",
+        "id": 489,
+        "text": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/489"
+        "resolution_date": "2030-01-01T08:00:00Z",
+        "url": "https://www.metaculus.com/questions/489",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 141,
+                    "slug": "united-states",
+                    "name": "United States",
+                    "link_id": 16453,
+                    "num_questions": 1718
+                },
+                {
+                    "id": 311,
+                    "slug": "european-union",
+                    "name": "European Union",
+                    "link_id": 16454,
+                    "num_questions": 241
+                },
+                {
+                    "id": 1167,
+                    "slug": "paris-agreement",
+                    "name": "Paris Agreement",
+                    "link_id": 36639,
+                    "num_questions": 28
+                },
+                {
+                    "id": 1813,
+                    "slug": "paris",
+                    "name": "Paris",
+                    "link_id": 36640,
+                    "num_questions": 8
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
-        "end_date": "2030-01-01T08:00:00Z",
+        "id": 491,
+        "text": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/491"
+        "resolution_date": "2030-01-01T08:00:00Z",
+        "url": "https://www.metaculus.com/questions/491",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 93,
+                    "slug": "china",
+                    "name": "China",
+                    "link_id": 10815,
+                    "num_questions": 493
+                },
+                {
+                    "id": 253,
+                    "slug": "environmental-science",
+                    "name": "Environmental science",
+                    "link_id": 10817,
+                    "num_questions": 197
+                },
+                {
+                    "id": 1107,
+                    "slug": "chemistry",
+                    "name": "Chemistry",
+                    "link_id": 35377,
+                    "num_questions": 136
+                },
+                {
+                    "id": 639,
+                    "slug": "energy",
+                    "name": "Energy",
+                    "link_id": 10819,
+                    "num_questions": 117
+                },
+                {
+                    "id": 216,
+                    "slug": "climate-change-denial",
+                    "name": "Climate change denial",
+                    "link_id": 10816,
+                    "num_questions": 107
+                },
+                {
+                    "id": 8009,
+                    "slug": "climatology",
+                    "name": "Climatology",
+                    "link_id": 81649,
+                    "num_questions": 80
+                },
+                {
+                    "id": 1431,
+                    "slug": "gross-domestic-product",
+                    "name": "Gross domestic product",
+                    "link_id": 35379,
+                    "num_questions": 58
+                },
+                {
+                    "id": 615,
+                    "slug": "geology",
+                    "name": "Geology",
+                    "link_id": 10818,
+                    "num_questions": 28
+                },
+                {
+                    "id": 1167,
+                    "slug": "paris-agreement",
+                    "name": "Paris Agreement",
+                    "link_id": 35378,
+                    "num_questions": 28
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
-        "end_date": "2035-01-01T08:00:00Z",
+        "id": 492,
+        "text": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/492"
+        "resolution_date": "2035-01-01T08:00:00Z",
+        "url": "https://www.metaculus.com/questions/492",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 141,
+                    "slug": "united-states",
+                    "name": "United States",
+                    "link_id": 2137,
+                    "num_questions": 1718
+                },
+                {
+                    "id": 93,
+                    "slug": "china",
+                    "name": "China",
+                    "link_id": 2136,
+                    "num_questions": 493
+                },
+                {
+                    "id": 18,
+                    "slug": "russia",
+                    "name": "Russia",
+                    "link_id": 2133,
+                    "num_questions": 425
+                },
+                {
+                    "id": 174,
+                    "slug": "united-kingdom",
+                    "name": "United Kingdom",
+                    "link_id": 2139,
+                    "num_questions": 348
+                },
+                {
+                    "id": 8,
+                    "slug": "israel",
+                    "name": "Israel",
+                    "link_id": 2138,
+                    "num_questions": 154
+                },
+                {
+                    "id": 389,
+                    "slug": "india",
+                    "name": "India",
+                    "link_id": 2140,
+                    "num_questions": 135
+                },
+                {
+                    "id": 55,
+                    "slug": "france",
+                    "name": "France",
+                    "link_id": 2132,
+                    "num_questions": 103
+                },
+                {
+                    "id": 82,
+                    "slug": "north-korea",
+                    "name": "North Korea",
+                    "link_id": 2134,
+                    "num_questions": 87
+                },
+                {
+                    "id": 88,
+                    "slug": "united-nations",
+                    "name": "United Nations",
+                    "link_id": 2135,
+                    "num_questions": 79
+                },
+                {
+                    "id": 610,
+                    "slug": "pakistan",
+                    "name": "Pakistan",
+                    "link_id": 2141,
+                    "num_questions": 54
+                },
+                {
+                    "id": 41,
+                    "slug": "international-atomic-energy-agency",
+                    "name": "International Atomic Energy Agency",
+                    "link_id": 2131,
+                    "num_questions": 20
+                },
+                {
+                    "id": 1327,
+                    "slug": "treaty-on-the-non-proliferation-of-nuclear-weapons",
+                    "name": "Treaty on the Non-Proliferation of Nuclear Weapons",
+                    "link_id": 38373,
+                    "num_questions": 15
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will the first commercial hyperloop system be within the US?",
-        "end_date": "2035-01-01T08:00:00Z",
+        "id": 513,
+        "text": "Will the first commercial hyperloop system be within the US?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/513"
+        "resolution_date": "2035-01-01T08:00:00Z",
+        "url": "https://www.metaculus.com/questions/513",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 141,
+                    "slug": "united-states",
+                    "name": "United States",
+                    "link_id": 3899,
+                    "num_questions": 1718
+                },
+                {
+                    "id": 93,
+                    "slug": "china",
+                    "name": "China",
+                    "link_id": 3898,
+                    "num_questions": 493
+                },
+                {
+                    "id": 18,
+                    "slug": "russia",
+                    "name": "Russia",
+                    "link_id": 3897,
+                    "num_questions": 425
+                },
+                {
+                    "id": 184,
+                    "slug": "elon-musk",
+                    "name": "Elon Musk",
+                    "link_id": 3900,
+                    "num_questions": 153
+                },
+                {
+                    "id": 467,
+                    "slug": "new-york-state",
+                    "name": "New York (state)",
+                    "link_id": 3901,
+                    "num_questions": 49
+                },
+                {
+                    "id": 2005,
+                    "slug": "washington-dc",
+                    "name": "Washington, D.C.",
+                    "link_id": 35778,
+                    "num_questions": 37
+                },
+                {
+                    "id": 1123,
+                    "slug": "nevada",
+                    "name": "Nevada",
+                    "link_id": 35777,
+                    "num_questions": 14
+                },
+                {
+                    "id": 2319,
+                    "slug": "dubai",
+                    "name": "Dubai",
+                    "link_id": 43279,
+                    "num_questions": 7
+                },
+                {
+                    "id": 2318,
+                    "slug": "hyperloop",
+                    "name": "Hyperloop",
+                    "link_id": 43278,
+                    "num_questions": 5
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will humans go extinct before 2100?",
-        "end_date": "2100-01-02T00:01:00Z",
+        "id": 578,
+        "text": "Will humans go extinct before 2100?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/578"
+        "resolution_date": "2100-01-02T00:01:00Z",
+        "url": "https://www.metaculus.com/questions/578",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 1918,
+                    "slug": "human-extinction",
+                    "name": "Human extinction",
+                    "link_id": 4209040,
+                    "num_questions": 12
+                },
+                {
+                    "id": 766,
+                    "slug": "global-catastrophic-risk",
+                    "name": "Global catastrophic risk",
+                    "link_id": 4209041,
+                    "num_questions": 9
+                },
+                {
+                    "id": 3991,
+                    "slug": "extinction",
+                    "name": "Extinction",
+                    "link_id": 4209039,
+                    "num_questions": 8
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will there be more VR headset sales than AR headsets sales in 2025?",
-        "end_date": "2026-07-31T06:00:00Z",
+        "id": 579,
+        "text": "Will there be more VR headset sales than AR headsets sales in 2025?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/579"
+        "resolution_date": "2026-07-31T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/579",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 1779,
+                    "slug": "ios",
+                    "name": "IOS",
+                    "link_id": 41003,
+                    "num_questions": 11
+                },
+                {
+                    "id": 1777,
+                    "slug": "microsoft-hololens",
+                    "name": "Microsoft HoloLens",
+                    "link_id": 41001,
+                    "num_questions": 4
+                },
+                {
+                    "id": 1778,
+                    "slug": "pok%C3%A9mon-go",
+                    "name": "Pok\u00e9mon Go",
+                    "link_id": 41002,
+                    "num_questions": 4
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will there be at least 2\u02daC of global warming by 2100?",
-        "end_date": "2100-06-14T23:00:00Z",
+        "id": 585,
+        "text": "Will there be at least 2\u02daC of global warming by 2100?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/585"
+        "resolution_date": "2100-06-14T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/585",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 141,
+                    "slug": "united-states",
+                    "name": "United States",
+                    "link_id": 16625,
+                    "num_questions": 1718
+                },
+                {
+                    "id": 210,
+                    "slug": "nasa",
+                    "name": "NASA",
+                    "link_id": 16626,
+                    "num_questions": 122
+                },
+                {
+                    "id": 1167,
+                    "slug": "paris-agreement",
+                    "name": "Paris Agreement",
+                    "link_id": 36641,
+                    "num_questions": 28
+                }
+            ]
+        },
+        "resolution": null
     },
     {
-        "name": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
-        "end_date": "2051-01-01T17:00:00Z",
+        "id": 594,
+        "text": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
+        "resolution_criteria": null,
         "question_type": "binary",
-        "url": "https://www.metaculus.com/questions/594"
+        "resolution_date": "2051-01-01T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/594",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [
+                {
+                    "id": 564,
+                    "slug": "colonization-of-mars",
+                    "name": "Colonization of Mars",
+                    "link_id": 11926,
+                    "num_questions": 70
+                },
+                {
+                    "id": 563,
+                    "slug": "moon",
+                    "name": "Moon",
+                    "link_id": 11925,
+                    "num_questions": 55
+                },
+                {
+                    "id": 95,
+                    "slug": "earth",
+                    "name": "Earth",
+                    "link_id": 11923,
+                    "num_questions": 49
+                },
+                {
+                    "id": 562,
+                    "slug": "international-space-station",
+                    "name": "International Space Station",
+                    "link_id": 11924,
+                    "num_questions": 25
+                }
+            ]
+        },
+        "resolution": null
     }
 ]
