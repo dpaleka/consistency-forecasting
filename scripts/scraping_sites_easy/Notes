@@ -1,0 +1,38 @@
+What is missing:
+
+
+predictit
+Resolution criteria is displayed on actual website but not on API
+https://www.predictit.org/markets/detail/6867/Which-party-will-win-the-2024-US-presidential-election%22,
+
+resolution_date parameter exists in api but is usually empty
+
+notemuch additional metadata
+
+
+manifold
+resolution criteria exists neither exists on website nor on API
+https://manifold.markets/firstuserhere/which-country-will-win-the-most-med
+
+not much additional metadata
+
+
+metaculus
+resolution criteria exists on website but not in API
+https://www.metaculus.com/questions/111/will-there-be-a-total-solar-eclipse-on-june-25-2522/
+
+decent amount of additional metadata if useful
+
+
+Overall:
+Resolution criteria looks like it's tricky to get from the api but the data is out there if we want to manually scrape the website by urls.  
+I tried doing this but did not make much headway since it involves manually combing through the html tags I would assume.
+Generally resolution is also just a tab whether it is open or not (questions are generally open)
+
+For each parameter the apis each could have slightly different names and formatting.
+For example,
+dates
+question types: polls, continuous exist on one but not others
+Resolution: returns "Open" or false, meaning the same thing.
+
+Not sure if it's worth the effort to completely standardize these things
