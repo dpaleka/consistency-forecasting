@@ -1,92 +1,197 @@
 [
     {
-        "name": "Which party will win the 2024 U.S. presidential election?",
-        "end_date": "NA",
+        "id": 6867,
+        "text": "Which party will win the 2024 U.S. presidential election?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/6867/Which-party-will-win-the-2024-US-presidential-election"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/6867/Which-party-will-win-the-2024-US-presidential-election",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Will a woman be elected U.S. president in 2024?",
-        "end_date": "NA",
+        "id": 7013,
+        "text": "Will a woman be elected U.S. president in 2024?",
+        "resolution_criteria": "No description available",
         "question_type": "binary",
-        "url": "https://www.predictit.org/markets/detail/7013/Will-a-woman-be-elected-US-president-in-2024"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7013/Will-a-woman-be-elected-US-president-in-2024",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Who will win the 2024 Republican presidential nomination?",
-        "end_date": "NA",
+        "id": 7053,
+        "text": "Who will win the 2024 Republican presidential nomination?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/7053/Who-will-win-the-2024-Republican-presidential-nomination"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7053/Who-will-win-the-2024-Republican-presidential-nomination",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Who will win the 2024 Democratic presidential nomination?",
-        "end_date": "NA",
+        "id": 7057,
+        "text": "Who will win the 2024 Democratic presidential nomination?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/7057/Who-will-win-the-2024-Democratic-presidential-nomination"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7057/Who-will-win-the-2024-Democratic-presidential-nomination",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Will Joe Biden resign during his first term?",
-        "end_date": "2025-01-20T11:59:00",
+        "id": 7136,
+        "text": "Will Joe Biden resign during his first term?",
+        "resolution_criteria": "No description available",
         "question_type": "binary",
-        "url": "https://www.predictit.org/markets/detail/7136/Will-Joe-Biden-resign-during-his-first-term"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7136/Will-Joe-Biden-resign-during-his-first-term",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Which state will hold the first Democratic primary for the 2024 nominee?",
-        "end_date": "NA",
+        "id": 7158,
+        "text": "Which state will hold the first Democratic primary for the 2024 nominee?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/7158/Which-state-will-hold-the-first-Democratic-primary-for-the-2024-nominee"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7158/Which-state-will-hold-the-first-Democratic-primary-for-the-2024-nominee",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Will Kamala Harris be the 47th US president?",
-        "end_date": "NA",
+        "id": 7419,
+        "text": "Will Kamala Harris be the 47th US president?",
+        "resolution_criteria": "No description available",
         "question_type": "binary",
-        "url": "https://www.predictit.org/markets/detail/7419/Will-Kamala-Harris-be-the-47th-US-president"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7419/Will-Kamala-Harris-be-the-47th-US-president",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Who will win the 2024 US presidential election?",
-        "end_date": "NA",
+        "id": 7456,
+        "text": "Who will win the 2024 US presidential election?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/7456/Who-will-win-the-2024-US-presidential-election"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7456/Who-will-win-the-2024-US-presidential-election",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Will Kamala Harris be on the 2024 Democratic ticket?",
-        "end_date": "NA",
+        "id": 7629,
+        "text": "Will Kamala Harris be on the 2024 Democratic ticket?",
+        "resolution_criteria": "No description available",
         "question_type": "binary",
-        "url": "https://www.predictit.org/markets/detail/7629/Will-Kamala-Harris-be-on-the-2024-Democratic-ticket"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/7629/Will-Kamala-Harris-be-on-the-2024-Democratic-ticket",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Who will win the 2024 Republican vice presidential nomination?",
-        "end_date": "NA",
+        "id": 8069,
+        "text": "Who will win the 2024 Republican vice presidential nomination?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8069/Who-will-win-the-2024-Republican-vice-presidential-nomination"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8069/Who-will-win-the-2024-Republican-vice-presidential-nomination",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Which party will win the 2024 US Senate election in Arizona?",
-        "end_date": "NA",
+        "id": 8070,
+        "text": "Which party will win the 2024 US Senate election in Arizona?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8070/Which-party-will-win-the-2024-US-Senate-election-in-Arizona"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8070/Which-party-will-win-the-2024-US-Senate-election-in-Arizona",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Which party will win Georgia in the 2024 presidential election?",
-        "end_date": "NA",
+        "id": 8072,
+        "text": "Which party will win Georgia in the 2024 presidential election?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8072/Which-party-will-win-Georgia-in-the-2024-presidential-election"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8072/Which-party-will-win-Georgia-in-the-2024-presidential-election",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Which party will win the 2024 US Senate election in Ohio?",
-        "end_date": "NA",
+        "id": 8075,
+        "text": "Which party will win the 2024 US Senate election in Ohio?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8075/Which-party-will-win-the-2024-US-Senate-election-in-Ohio"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8075/Which-party-will-win-the-2024-US-Senate-election-in-Ohio",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "Which party will win Wisconsin in the 2024 presidential election?",
-        "end_date": "NA",
+        "id": 8076,
+        "text": "Which party will win Wisconsin in the 2024 presidential election?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8076/Which-party-will-win-Wisconsin-in-the-2024-presidential-election"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8076/Which-party-will-win-Wisconsin-in-the-2024-presidential-election",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     },
     {
-        "name": "What will be the Electoral College margin in the 2024 presidential election?",
-        "end_date": "NA",
+        "id": 8077,
+        "text": "What will be the Electoral College margin in the 2024 presidential election?",
+        "resolution_criteria": "No description available",
         "question_type": "multiple_choice",
-        "url": "https://www.predictit.org/markets/detail/8077/What-will-be-the-Electoral-College-margin-in-the-2024-presidential-election"
+        "resolution_date": "Unknown",
+        "url": "https://www.predictit.org/markets/detail/8077/What-will-be-the-Electoral-College-margin-in-the-2024-presidential-election",
+        "data_source": "predictit",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": "Open"
     }
 ]

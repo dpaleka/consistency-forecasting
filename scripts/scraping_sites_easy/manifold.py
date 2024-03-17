@@ -17,22 +17,39 @@ def scrape_manifold_markets(api_url):
     data = response.json()
     
     # Extract relevant data from each market
-    market_info = [{
-        'name': market['question'],
-        'end_date': datetime.fromtimestamp(market['closeTime'] / 1000).strftime('%Y-%m-%d %H:%M:%S') if market.get('closeTime') else 'N/A',
-        'question_type': market.get('outcomeType').lower(),
-        'url':market.get('url').lower(),
-    } for market in data]
+    market_info = []
+    for market in data:
+
+
+        try:
+            resolution_date = 'N/A'
+            if market.get('closeTime'):
+                timestamp = market['closeTime'] / 1000
+                # Ensure the timestamp is within a reasonable range (e.g., after year 1970)
+                if timestamp > 0:
+                    resolution_date = datetime.fromtimestamp(timestamp).strftime('%B %d, %Y')
+        except Exception as e:
+            print(f"Error processing market {market['id']}: {e}")
+            resolution_date = 'Error processing date'
+        
+        market_info.append({
+            'id': market['id'],
+            'text': market['question'],
+            'resolution_criteria': market.get('description', 'N/A'),
+            'question_type': market.get('outcomeType', '').lower(),
+            'resolution_date': resolution_date,
+            'url': market.get('url', '').lower(),
+            'data_source': 'manifold',
+            'metadata': {'topics': market.get('tags', [])},
+            'resolution': market.get('isResolved', None)
+        })
     
-    return market_info
-"""
     return {
         "api_url": api_url,
         "markets": market_info
     }
-"""
+
 if __name__ == "__main__":
-    #api_url = "https://api.manifold.markets/v0/markets?limit=10"
     api_url = "https://api.manifold.markets/v0/markets"
     
     try:
