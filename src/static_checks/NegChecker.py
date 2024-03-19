@@ -47,7 +47,7 @@ class NegChecker(BaseChecker):
         response = answer_sync(
             prompt=prompt, preface=self.preface, examples=self.examples, **kwargs
         )
-        sentences = {"P": base_sentence, "notP": Sentence.from_str(response)}
+        sentences = {"P": base_sentence, "notP": Sentence.from_str(response, question_type=base_sentence.question_type)}
         return sentences
 
     async def instantiate(self, base_sentence: Sentence, **kwargs) -> SentencesTemplate:
@@ -55,7 +55,7 @@ class NegChecker(BaseChecker):
         response = await answer(
             prompt=prompt, preface=self.preface, examples=self.examples, **kwargs
         )
-        sentences = {"P": base_sentence, "notP": Sentence.from_str(response)}
+        sentences = {"P": base_sentence, "notP": Sentence.from_str(response, question_type=base_sentence.question_type)}
         return sentences
 
     def violation(self, answers: ProbsTemplate) -> float:

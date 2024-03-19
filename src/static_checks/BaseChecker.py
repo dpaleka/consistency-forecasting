@@ -40,7 +40,8 @@ class BaseChecker(ABC):
 
     async def instantiate_and_write(self, *base_sentences: list[Sentence], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
-        await write_jsonl_async(self.path, [result], append=True)
+        result_serial = {k: v.to_dict() for k, v in result.items()}
+        await write_jsonl_async(self.path, [result_serial], append=True)
 
     async def instantiate_and_write_many(
         self, base_sentencess: list[list[Sentence]], **kwargs

@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil import parser
 import re
 from typing import Dict
 
@@ -30,10 +31,10 @@ class Sentence:
         body: str,  # aka "resolution_criteria"
         resolution_date: datetime | None,
         question_type: QuestionType,
-        data_source: str | None,  # e.g. synthetic, metaculus, manifold, predictit
-        url: str | None,
-        metadata: dict,  # for example, topics : list[str]
-        resolution: str | None,  # some questions may already have been resolved
+        data_source: str | None = None,  # e.g. synthetic, metaculus, manifold, predictit
+        url: str | None  = None,
+        metadata: dict = None,  # for example, topics : list[str]
+        resolution: str | None = None,  # some questions may already have been resolved
     ):
         # self.id = TODO
         self.title = title
@@ -91,13 +92,13 @@ class Sentence:
         question_type: QuestionType,
         **kwargs,  # url, data_source, metadata, resolution
     ) -> "Sentence":
-        title = re.search(r"TITLE: (.*?)\n", string).group(1)
+        title = re.search(r"TITLE:(.*?)", string).group(1)
         resolution_date = re.search(r"RESOLUTION DATE: (.*?)\n", string).group(1)
-        body = re.search(r"DETAILS:\n(.*?)$", string, re.DOTALL).group(1)
+        body = re.search(r"DETAILS:(.*?)$", string, re.DOTALL).group(1)
         return cls(
             title=title,
             body=body,
-            resolution_date=resolution_date,
+            resolution_date=parser.parse(resolution_date),
             question_type=question_type,
             **kwargs,
         )
