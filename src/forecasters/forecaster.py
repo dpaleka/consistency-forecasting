@@ -17,9 +17,9 @@ class Forecaster(ABC):
     def elicit(self, sentences: SentencesTemplate) -> ProbsTemplate:
         return {k: self.call(v) for k, v in sentences.items()}
 
-    async def elicit_async(self, sentences: SentencesTemplate) -> ProbsTemplate:
+    async def elicit_async(self, sentences: SentencesTemplate, **kwargs) -> ProbsTemplate:
         keys, values = zip(*sentences.items())
-        tasks = [self.call_async(v) for v in values]
+        tasks = [self.call_async(v, **kwargs) for v in values]
         results = await asyncio.gather(*tasks)
         return {k: v for k, v in zip(keys, results)}
 
