@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Dict
 import asyncio
-from dataclasses import dataclass
-
+import re
 
 class Prob(float):
     def __new__(cls, value):
@@ -29,23 +28,22 @@ class QuestionType(str):
 class Sentence:
     def __init__(
         self,
-        id : str, # TODO: change to ID
         title: str, # aka "text"
         body: str, # aka "resolution_criteria"
-        question_type: QuestionType,
         resolution_date: datetime | None,
-        url: str | None,
+        question_type: QuestionType,
         data_source: str | None, # e.g. synthetic, metaculus, manifold, predictit
+        url: str | None,
         metadata: dict, # for example, topics : list[str]
         resolution: str | None, # some questions may already have been resolved
     ):
-        self.id = id
+        # self.id = TODO
         self.title = title
         self.body = body
-        self.question_type = question_type
         self.resolution_date = resolution_date
-        self.url = url
+        self.question_type = question_type
         self.data_source = data_source
+        self.url = url
         self.metadata = metadata
         self.resolution = resolution
 
@@ -54,6 +52,24 @@ class Sentence:
             f"TITLE: {self.title}\n"
             f"RESOLUTION DATE: {self.resolution_date}\n"
             f"DETAILS:\n{self.body}")
+    
+    @classmethod
+    def from_str(
+        cls,
+        string: str,
+        question_type: QuestionType,
+        **kwargs # url, data_source, metadata, resolution
+        ) -> "Sentence":
+        title = re.search(r"TITLE: (.*?)\n", string).group(1)
+        resolution_date = re.search(r"RESOLUTION DATE: (.*?)\n", string).group(1)
+        body = re.search(r"DETAILS:\n(.*?)$", string, re.DOTALL).group(1)
+        return cls(
+            title=title,
+            body=body,
+            resolution_date=resolution_date,
+            question_type=question_type,
+            **kwargs
+        )
 
 
 SentencesTemplate = Dict[str, Sentence]
