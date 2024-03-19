@@ -4,7 +4,7 @@ from static_checks import *
 from common.datatypes import *
 import asyncio
 
-base_question = Sentence(
+base_question = ForecastingQuestion(
     title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
     body="Resolves YES if the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025. Resolves NO otherwise.",
     resolution_date=datetime(2025, 1, 1),

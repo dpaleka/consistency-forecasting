@@ -17,14 +17,14 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def instantiate_sync(
-        self, *base_sentences: list[Sentence], **kwargs
-    ) -> SentencesTemplate:
+        self, *base_sentences: list[ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestionTemplate:
         pass
 
     @abstractmethod
     async def instantiate(
-        self, *base_sentences: list[Sentence], **kwargs
-    ) -> SentencesTemplate:
+        self, *base_sentences: list[ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestionTemplate:
         pass
 
     @abstractmethod
@@ -32,19 +32,19 @@ class BaseChecker(ABC):
         pass
 
     # stack base sentences into a single prompt
-    def stack(*base_sentences: list[Sentence]) -> str:
+    def stack(*base_sentences: list[ForecastingQuestion]) -> str:
         return "\n".join(
             f"SENTENCE {i}:\n {base_sentence}"
             for i, base_sentence in enumerate(base_sentences)
         )
 
-    async def instantiate_and_write(self, *base_sentences: list[Sentence], **kwargs):
+    async def instantiate_and_write(self, *base_sentences: list[ForecastingQuestion], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
-        result_serial = {k: v.to_dict() for k, v in result.items()} # serialize Sentences into dicts
+        result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
         await write_jsonl_async(self.path, [result_serial], append=True)
 
     async def instantiate_and_write_many(
-        self, base_sentencess: list[list[Sentence]], **kwargs
+        self, base_sentencess: list[list[ForecastingQuestion]], **kwargs
     ):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
             *base_sentences, **kwargs
@@ -55,12 +55,12 @@ class BaseChecker(ABC):
         return self.violation(answers) < self.tolerance
 
     def elicit_and_violation(
-        self, forecaster: Forecaster, sentences: SentencesTemplate
+        self, forecaster: Forecaster, sentences: ForecastingQuestionTemplate
     ) -> float:
         return self.violation(forecaster.elicit(sentences))
 
     def elicit_and_check(
-        self, forecaster: Forecaster, sentences: SentencesTemplate
+        self, forecaster: Forecaster, sentences: ForecastingQuestionTemplate
     ) -> bool:
         return self.check(forecaster.elicit(sentences))
 
@@ -68,7 +68,7 @@ class BaseChecker(ABC):
         for line in jsonlines.open(self.path):
             print("START")
             print(f"line: {line}")
-            line_obj = {k: Sentence.from_dict(v) for k, v in line.items()}
+            line_obj = {k: ForecastingQuestion.from_dict(v) for k, v in line.items()}
             answers = forecaster.elicit(line_obj)
             print(answers)
             if not all(answers.values()):

@@ -7,7 +7,7 @@ S(f(x1), f(x2), f(x3), f(x4))
 
 import numpy as np
 from common.llm_utils import answer_sync, answer
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTemplate, ProbsTemplate
 from .BaseChecker import BaseChecker
 from .AndChecker import AndChecker
 from .CondChecker import CondChecker
@@ -22,7 +22,7 @@ class TowerChecker(BaseChecker):
 
     def instantiate_sync(
         self, base_sentence_1: str, base_sentence_2: str, base_sentence_3: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTemplate:
         prompt_PQ = self.stack(base_sentence_1, base_sentence_2)
 
         response_Q_cond_P = answer_sync(
@@ -51,7 +51,7 @@ class TowerChecker(BaseChecker):
 
     async def instantiate(
         self, base_sentence_1: str, base_sentence_2: str, base_sentence_3: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTemplate:
         prompt_PQ = self.stack(base_sentence_1, base_sentence_2)
 
         response_Q_cond_P = await answer(

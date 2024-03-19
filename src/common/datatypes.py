@@ -24,19 +24,20 @@ class QuestionType(str):
         return self.exp_answers.get(self, None)
 
 
-class Sentence:
+class ForecastingQuestion:
     def __init__(
         self,
+        id: str, # unique id
         title: str,  # aka "text"
         body: str,  # aka "resolution_criteria"
-        resolution_date: datetime | None,
         question_type: QuestionType,
+        resolution_date: datetime | None,
         data_source: str | None = None,  # e.g. synthetic, metaculus, manifold, predictit
         url: str | None  = None,
         metadata: dict = None,  # for example, topics : list[str]
         resolution: str | None = None,  # some questions may already have been resolved
     ):
-        # self.id = TODO
+        self.id = id
         self.title = title
         self.body = body
         self.resolution_date = resolution_date
@@ -48,7 +49,7 @@ class Sentence:
 
     def to_dict(self) -> dict:
         return {
-            # "id": self.id, # TODO
+            "id": self.id,
             "title": self.title,
             "body": self.body,
             "resolution_date": (
@@ -62,9 +63,9 @@ class Sentence:
         }
     
     @classmethod
-    def from_dict(cls, d: dict) -> "Sentence":
+    def from_dict(cls, d: dict) -> "ForecastingQuestion":
         return cls(
-            # id=d["id"],
+            id=d["id"],
             title=d["title"],
             body=d["body"],
             resolution_date=(
@@ -84,6 +85,7 @@ class Sentence:
             f"TITLE: {self.title}\n"
             f"RESOLUTION DATE: {self.resolution_date}\n"
             f"DETAILS:\n{self.body}"
+            f"ID:\n{self.id}"
         )
 
     @classmethod
@@ -92,10 +94,11 @@ class Sentence:
         string: str,
         question_type: QuestionType,
         **kwargs,  # url, data_source, metadata, resolution
-    ) -> "Sentence":
+    ) -> "ForecastingQuestion":
         title = re.search(r"TITLE:(.*?)", string).group(1)
         resolution_date = re.search(r"RESOLUTION DATE: (.*?)\n", string).group(1)
         body = re.search(r"DETAILS:(.*?)$", string, re.DOTALL).group(1)
+        id = re.search(r"ID:(.*?)$", string, re.DOTALL).group(1)
         return cls(
             title=title,
             body=body,
@@ -105,5 +108,5 @@ class Sentence:
         )
 
 
-SentencesTemplate = Dict[str, Sentence]
+ForecastingQuestionTemplate = Dict[str, ForecastingQuestion]
 ProbsTemplate = Dict[str, Prob]
