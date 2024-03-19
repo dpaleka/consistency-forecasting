@@ -24,7 +24,9 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
+        probs = [float(prob) for prob in map(self.extract_prob, response) if prob is not None]
+        r = Prob(np.mean(probs)) if len(probs) > 0 else None
+        return r
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
@@ -34,14 +36,16 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
+        probs = [float(prob) for prob in map(self.extract_prob, response) if prob is not None]
+        r = Prob(np.mean(probs)) if len(probs) > 0 else None
+        return r
 
-    def extract_prob(self, s: str) -> float:
+    def extract_prob(self, s: str) -> Prob:
         pattern = r"-?\d*\.?\d+"
         match = re.search(pattern, s)
         if match:
             try:
-                return float(match.group())
+                return Prob(float(match.group()))
             except Exception as e:
                 #TODO: log error
                 return None
