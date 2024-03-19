@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 import asyncio
+from dataclasses import dataclass
 
 class Prob(float):
     def __new__(cls, value):
@@ -8,6 +9,19 @@ class Prob(float):
             raise ValueError("Probability must be between 0 and 1.")
         return super(Prob, cls).__new__(cls, value)
 
+@dataclass
+class SentenceTemplate(str):
+    id: str # TODO: change to ID
+    title: str # aka "text"
+    body: str # aka "resolution_criteria"
+    question_type: str # TODO: change to QuestionType
+    resolution_date: str # TODO: change to some date type
+    url: str | None
+    data_source : str # usually one of “synthetic”, “metaculus”, “manifold”, “predictit”
+    metadata : dict # for example, topics : list[str]
+    resolution : str # some questions may already have been resolved
+    
+    
 
 SentencesTemplate = Dict[str, str]
 ProbsTemplate = Dict[str, Prob]
