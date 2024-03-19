@@ -3,7 +3,7 @@ import jsonlines
 from abc import ABC, abstractmethod
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
-from forecasters import Forecaster, SentencesTemplate, ProbsTemplate
+from forecasters import Forecaster, Sentence, SentencesTemplate, ProbsTemplate
 
 class BaseChecker(ABC):
     def __init__(self, tolerance=0.1, path = None):
@@ -14,11 +14,11 @@ class BaseChecker(ABC):
             self.path = path
 
     @abstractmethod
-    def instantiate_sync(self, *base_sentences: str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, *base_sentences: list[Sentence], **kwargs) -> SentencesTemplate:
         pass
 
     @abstractmethod
-    async def instantiate(self, *base_sentences: str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, *base_sentences: list[Sentence], **kwargs) -> SentencesTemplate:
         pass
 
     @abstractmethod
@@ -26,14 +26,15 @@ class BaseChecker(ABC):
         pass
     
     # stack base sentences into a single prompt
-    def stack(*base_sentences : str) -> str:
+    def stack(*base_sentences : list[Sentence]) -> str:
+        # TODO: fix
         return "\n".join(f"q{i}: {base_sentence}" for i, base_sentence in enumerate(base_sentences))
     
-    async def instantiate_and_write(self, *base_sentences : list[str], **kwargs):
+    async def instantiate_and_write(self, *base_sentences : list[Sentence], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
         await write_jsonl_async(self.path, [result], append=True)
     
-    async def instantiate_and_write_many(self, base_sentencess : list[list[str]], **kwargs):
+    async def instantiate_and_write_many(self, base_sentencess : list[list[Sentence]], **kwargs):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(*base_sentences, **kwargs)
         await parallelized_call(_instantiate_and_write, base_sentencess)
     
