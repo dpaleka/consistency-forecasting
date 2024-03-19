@@ -5,8 +5,9 @@ from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
 from forecasters import Forecaster, Sentence, SentencesTemplate, ProbsTemplate
 
+
 class BaseChecker(ABC):
-    def __init__(self, tolerance=0.1, path = None):
+    def __init__(self, tolerance=0.1, path=None):
         self.tolerance = tolerance
         if path is None:
             self.path = f"src/data/{self.__class__.__name__}.jsonl"
@@ -14,30 +15,40 @@ class BaseChecker(ABC):
             self.path = path
 
     @abstractmethod
-    def instantiate_sync(self, *base_sentences: list[Sentence], **kwargs) -> SentencesTemplate:
+    def instantiate_sync(
+        self, *base_sentences: list[Sentence], **kwargs
+    ) -> SentencesTemplate:
         pass
 
     @abstractmethod
-    async def instantiate(self, *base_sentences: list[Sentence], **kwargs) -> SentencesTemplate:
+    async def instantiate(
+        self, *base_sentences: list[Sentence], **kwargs
+    ) -> SentencesTemplate:
         pass
 
     @abstractmethod
     def violation(self, answers: ProbsTemplate) -> float:
         pass
-    
+
     # stack base sentences into a single prompt
-    def stack(*base_sentences : list[Sentence]) -> str:
-        # TODO: fix
-        return "\n".join(f"q{i}: {base_sentence}" for i, base_sentence in enumerate(base_sentences))
-    
-    async def instantiate_and_write(self, *base_sentences : list[Sentence], **kwargs):
+    def stack(*base_sentences: list[Sentence]) -> str:
+        return "\n".join(
+            f"SENTENCE {i}:\n {base_sentence}"
+            for i, base_sentence in enumerate(base_sentences)
+        )
+
+    async def instantiate_and_write(self, *base_sentences: list[Sentence], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
         await write_jsonl_async(self.path, [result], append=True)
-    
-    async def instantiate_and_write_many(self, base_sentencess : list[list[Sentence]], **kwargs):
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(*base_sentences, **kwargs)
+
+    async def instantiate_and_write_many(
+        self, base_sentencess: list[list[Sentence]], **kwargs
+    ):
+        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
+            *base_sentences, **kwargs
+        )
         await parallelized_call(_instantiate_and_write, base_sentencess)
-    
+
     def check(self, answers: ProbsTemplate) -> bool:
         return self.violation(answers) < self.tolerance
 
@@ -50,8 +61,8 @@ class BaseChecker(ABC):
         self, forecaster: Forecaster, sentences: SentencesTemplate
     ) -> bool:
         return self.check(forecaster.elicit(sentences))
-    
-    def test(self, forecaster : Forecaster, **kwargs):
+
+    def test(self, forecaster: Forecaster, **kwargs):
         for line in jsonlines.open(self.path):
             print("START")
             print(f"line: {line}")
@@ -62,7 +73,7 @@ class BaseChecker(ABC):
                 continue
             loss = self.violation(answers)
             res_bool = self.check(answers)
-            res = { True : "Passed", False : "Failed"}[res_bool]
+            res = {True: "Passed", False: "Failed"}[res_bool]
             print(f"Violation: {loss}")
             print(f"Check result: {res}")
             print("")
