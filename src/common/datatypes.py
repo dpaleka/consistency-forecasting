@@ -61,6 +61,7 @@ class Sentence:
             "resolution": self.resolution,
         }
     
+    @classmethod
     def from_dict(cls, d: dict) -> "Sentence":
         return cls(
             # id=d["id"],

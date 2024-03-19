@@ -40,7 +40,7 @@ class BaseChecker(ABC):
 
     async def instantiate_and_write(self, *base_sentences: list[Sentence], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
-        result_serial = {k: v.to_dict() for k, v in result.items()}
+        result_serial = {k: v.to_dict() for k, v in result.items()} # serialize Sentences into dicts
         await write_jsonl_async(self.path, [result_serial], append=True)
 
     async def instantiate_and_write_many(
@@ -68,7 +68,8 @@ class BaseChecker(ABC):
         for line in jsonlines.open(self.path):
             print("START")
             print(f"line: {line}")
-            answers = forecaster.elicit(line)
+            line_obj = {k: Sentence.from_dict(v) for k, v in line.items()}
+            answers = forecaster.elicit(line_obj)
             print(answers)
             if not all(answers.values()):
                 print("ERROR: Some answers are None!")
