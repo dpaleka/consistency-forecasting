@@ -1,5 +1,6 @@
-from .forecaster import Forecaster, Prob
+from .forecaster import Forecaster
 import re
+from common.datatypes import *
 from common.llm_utils import answer, answer_sync, QandA
 
 

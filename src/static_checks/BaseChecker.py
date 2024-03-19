@@ -3,7 +3,8 @@ import jsonlines
 from abc import ABC, abstractmethod
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
-from forecasters import Forecaster, Sentence, SentencesTemplate, ProbsTemplate
+from common.datatypes import *
+from forecasters import Forecaster
 
 
 class BaseChecker(ABC):
