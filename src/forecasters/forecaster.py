@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Dict
 import asyncio
 from dataclasses import dataclass
@@ -9,21 +10,35 @@ class Prob(float):
             raise ValueError("Probability must be between 0 and 1.")
         return super(Prob, cls).__new__(cls, value)
 
+class QuestionType(str):
+    def __new__(cls, value):
+        if value not in ["binary", "conditional_binary"]:
+            raise ValueError("Question type must be one of 'binary', 'conditional_binary'.")
+        return super(QuestionType, cls).__new__(cls, value)
+    
+    exp_answers = {
+        "binary": Prob,
+        "conditional_binary": Prob
+    }
+    
+    def expected_answer_type(self) -> str:
+        return self.exp_answers.get(self, None)
+
 @dataclass
 class SentenceTemplate(str):
     id: str # TODO: change to ID
     title: str # aka "text"
     body: str # aka "resolution_criteria"
-    question_type: str # TODO: change to QuestionType
-    resolution_date: str # TODO: change to some date type
+    question_type: QuestionType
+    resolution_date: datetime | None
     url: str | None
-    data_source : str # usually one of “synthetic”, “metaculus”, “manifold”, “predictit”
+    data_source : str | None # usually one of “synthetic”, “metaculus”, “manifold”, “predictit”
     metadata : dict # for example, topics : list[str]
-    resolution : str # some questions may already have been resolved
+    resolution : str | None # some questions may already have been resolved
     
     
 
-SentencesTemplate = Dict[str, str]
+SentencesTemplate = Dict[str, SentenceTemplate]
 ProbsTemplate = Dict[str, Prob]
 
 class Forecaster(ABC):
