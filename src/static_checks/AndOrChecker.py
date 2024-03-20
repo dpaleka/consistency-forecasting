@@ -6,7 +6,7 @@ S(f(x1), f(x2), f(x3), f(x4))
 """
 
 from common.llm_utils import answer_sync, answer
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTuple, ProbsTuple
 from .BaseChecker import BaseChecker
 from .AndChecker import AndChecker
 from .OrChecker import OrChecker
@@ -19,7 +19,7 @@ class AndOrChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
     
-    def instantiate_sync(self, base_sentence_1: str, base_sentence_2: str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence_1: str, base_sentence_2: str, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_and = answer_sync(
             prompt=prompt, preface=self.preface_and, **kwargs
@@ -30,7 +30,7 @@ class AndOrChecker(BaseChecker):
         sentences = {"P": base_sentence_1, "Q": base_sentence_2, "P_and_Q" : response_and, "P_or_Q" : response_or }
         return sentences
     
-    async def instantiate(self, base_sentence_1: str, base_sentence_2: str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence_1: str, base_sentence_2: str, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_and = await answer(
             prompt=prompt, preface=self.preface_and, **kwargs
@@ -41,5 +41,5 @@ class AndOrChecker(BaseChecker):
         sentences = {"P": base_sentence_1, "Q": base_sentence_2, "P_and_Q" : response_and, "P_or_Q" : response_or }
         return sentences
     
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
