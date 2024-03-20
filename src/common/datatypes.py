@@ -2,6 +2,7 @@ from datetime import datetime
 from dateutil import parser
 import re
 from typing import Dict
+from uuid import uuid4, UUID
 
 class Prob(float):
     def __new__(cls, value):
@@ -27,7 +28,6 @@ class QuestionType(str):
 class ForecastingQuestion:
     def __init__(
         self,
-        id: str, # unique id
         title: str,  # aka "text"
         body: str,  # aka "resolution_criteria"
         question_type: QuestionType,
@@ -36,8 +36,9 @@ class ForecastingQuestion:
         url: str | None  = None,
         metadata: dict = None,  # for example, topics : list[str]
         resolution: str | None = None,  # some questions may already have been resolved
+        id: UUID = None,
     ):
-        self.id = id
+        self.id = id if id else uuid4()
         self.title = title
         self.body = body
         self.resolution_date = resolution_date

@@ -24,13 +24,13 @@ async def process_questions_from_file(file_path: str, data_source: str, max_ques
 async def main():
     file_path = 'data/politics_qs_2.json'
     data_source = 'synthetic'
-    max_questions = None
+    max_questions = 5
 
     forecasting_questions = await process_questions_from_file(file_path, data_source, max_questions)
 
     data_to_write = [asdict(fq) for fq in forecasting_questions]
 
-    await write_jsonl_async('data/politics_qs_1_formated.jsonl', data_to_write)
+    await write_jsonl_async('data/politics_qs_2_formated.jsonl', data_to_write)
 
 if __name__ == "__main__":
     asyncio.run(main())
