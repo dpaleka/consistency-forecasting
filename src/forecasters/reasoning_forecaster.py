@@ -1,7 +1,7 @@
-from .forecaster import Forecaster, Prob
 import re
+from common.datatypes import *
 from common.llm_utils import answer, answer_sync, QandA
-
+from .forecaster import Forecaster
 
 class ReasoningForecaster(Forecaster):
 

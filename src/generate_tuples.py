@@ -1,38 +1,22 @@
+#%%
+
 from static_checks import *
+from common.datatypes import *
 import asyncio
 
-base_questions = [
-    "What is the probability that the Democratic party will win the US Presidential election in 2024?",
-    "What is the probability that Ebola will be eradicated by 2030?",
-    "Will Ebola be erradicated by 2030?",
-    "Will the Democratic party win the US Presidential election in 2024?"
-    "Will New York City have a skyscraper a mile tall by 2030?",
-    "Will the US have a skyscraper a mile tall by 2030?",
-    "Will there be a remake of the movie Titanic by 2030?",
-]
+base_question = ForecastingQuestion(
+    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+    body="Resolves YES if the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025. Resolves NO otherwise.",
+    resolution_date=datetime(2025, 1, 1),
+    question_type=QuestionType("binary"),
+    data_source="https://www.coindesk.com/price/bitcoin",
+    url="https://www.coindesk.com/price/bitcoin",
+    metadata={"currency": "USD"},
+    resolution="YES",
+)
 
-base_questions2 = [
-    "What is the probability of achieving net-zero carbon emissions globally by 2050?",
-    "Will artificial intelligence pass the Turing Test by 2025?",
-    "What are the chances that self-driving cars will be the standard mode of transportation in major cities by 2035?",
-    "Is it likely that a cure for Alzheimer's disease will be discovered by 2040?",
-    "Will the global population reach 10 billion by 2050?",
-    "What is the probability of a manned Mars landing by 2040?",
-    "Can renewable energy sources supply 80% of the world's energy needs by 2040?",
-    "Will quantum computing become mainstream in technology by 2030?",
-    "Is it probable that the Arctic will have ice-free summers by 2040?",
-    "What are the chances of a significant asteroid impact on Earth in the next 100 years?",
-    "Will lab-grown meat replace traditional livestock farming as the primary source of protein worldwide by 2040?",
-    "What is the likelihood of a global water crisis by 2040?",
-    "Will virtual reality classrooms become the predominant form of education by 2030?",
-    "Is there a high probability of discovering extraterrestrial life by 2050?",
-    "Will the Great Barrier Reef be fully restored by 2050?",
-]
-
-base_questionss = [[x] for x in base_questions]
-base_questions_combos = list(zip(base_questions, base_questions2))
-
-if __name__ == "__main__":
-    asyncio.run(ButNotChecker().instantiate_and_write_many(base_questions_combos))
-    #asyncio.run(NegationChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
-    #asyncio.run(ParaphrasalChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
+#asyncio.run(ButNotChecker().instantiate_and_write_many(base_questions_combos))
+asyncio.run(NegChecker().instantiate_and_write_many([[base_question]], model="gpt-3.5-turbo"))
+#asyncio.run(ParaphrasalChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
+    
+#%%

@@ -1,8 +1,8 @@
-from .forecaster import Forecaster, Prob
 import numpy as np
 import re
+from common.datatypes import *
 from common.llm_utils import answer, answer_sync, QandA
-
+from .forecaster import Forecaster
 
 class ConsistentAskForecaster(Forecaster):
 
@@ -24,7 +24,8 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
+        mean = np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]) if response else None
+        return Prob(mean)
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
@@ -34,14 +35,15 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        return Prob(np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]))
+        mean = np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]) if response else None
+        return Prob(mean)
 
     def extract_prob(self, s: str) -> float:
         pattern = r"-?\d*\.?\d+"
         match = re.search(pattern, s)
         if match:
             try:
-                return float(match.group())
+                return Prob(float(match.group()))
             except Exception as e:
                 #TODO: log error
                 return None

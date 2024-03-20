@@ -1,23 +1,13 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 import asyncio
-
-class Prob(float):
-    def __new__(cls, value):
-        if not (0.0 <= value <= 1.0):
-            raise ValueError("Probability must be between 0 and 1.")
-        return super(Prob, cls).__new__(cls, value)
-
-
-SentencesTemplate = Dict[str, str]
-ProbsTemplate = Dict[str, Prob]
+from common.datatypes import *
 
 class Forecaster(ABC):
 
-    def elicit(self, sentences: SentencesTemplate) -> ProbsTemplate:
+    def elicit(self, sentences: ForecastingQuestionTuple) -> ProbsTuple:
         return {k: self.call(v) for k, v in sentences.items()}
 
-    async def elicit_async(self, sentences: SentencesTemplate) -> ProbsTemplate:
+    async def elicit_async(self, sentences: ForecastingQuestionTuple) -> ProbsTuple:
         keys, values = zip(*sentences.items())
         tasks = [self.call_async(v) for v in values]
         results = await asyncio.gather(*tasks)
@@ -29,4 +19,4 @@ class Forecaster(ABC):
 
     @abstractmethod
     async def call_async(self, sentence: str) -> Prob:
-        pass 
+        pass
