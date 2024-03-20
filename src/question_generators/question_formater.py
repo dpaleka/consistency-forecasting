@@ -3,6 +3,7 @@ import asyncio
 import uuid
 from common.llm_utils import answer
 from typing import Optional
+import datetime
 
 resolution_criteria_date_prompt = """
 I want you to help me craft a resolution criteria and an appropiate resolution date for a forecasting question.
@@ -72,39 +73,42 @@ Question: {question}
 """
 
 
-async def get_criteria_and_date(question: str) -> (str, str): #(critera, date)
-    prompt = resolution_criteria_date_prompt.format(question=question)
-    r = await answer(prompt)
+
+#TODO(ALejandro): Improve parse, request json.
+async def get_criteria_and_date(question: str) -> (str, str):
+    prompt = resolution_criteria_date_prompt.format(question=question)  # Assuming definition elsewhere
+    r = await answer(prompt)  
     parts = r.split("---")
     cleaned_parts = [part.strip("-") for part in parts]
     if len(cleaned_parts) != 2:
-        raise ValueError("Error when parsing response from get_criterieria_and_date")
-    resolution_criteria, date = cleaned_parts
-    return resolution_criteria, date
-    
+        raise ValueError("Error when parsing response from get_criteria_and_date")
+    resolution_criteria, date_str = cleaned_parts
+    return resolution_criteria, date_str
 
-async def from_string(question: str, data_source: str, question_type: Optional[str] = None):
+async def from_string(question: str, data_source: str, question_type: Optional[str] = None, url: Optional[str] = None, metadata: Optional[dict] = None) -> ForecastingQuestion:
     if not question_type:
-        question_type = "Binary"
-    
+        question_type = "binary"
+
     for attempt in range(3):
         try:
-            resolution_criteria, resolution_date = await get_criteria_and_date(question)
-            break  # Exit the loop if successful
+            resolution_criteria, resolution_date_str = await get_criteria_and_date(question)
+            break  
         except Exception as e:
             print(f"An error has occurred: {e}")
-            if attempt == 2:  # This was the last attempt
-                raise  # Re-raise the last exception after the final attempt
-            await asyncio.sleep(1)  # Optional: wait a bit before retrying
-    
-    # Generate a unique ID for the question
-    question_id = str(uuid.uuid4())
+            if attempt == 2:  
+                raise  
+            await asyncio.sleep(1)  
 
-    return ForecastingQuestion(
-        id=question_id,
-        text=question,
-        resolution_criteria=resolution_criteria,
-        question_type=question_type,
-        resolution_date=resolution_date,
-        data_source=data_source
-    )
+    question_dict = {
+        "id": str(uuid.uuid4()),
+        "title": question,
+        "body": resolution_criteria,
+        "resolution_date": resolution_date_str,  # ISO 8601 format string expected
+        "question_type": question_type,
+        "data_source": data_source,
+        "url": url,
+        "metadata": metadata,
+        "resolution": None, 
+    }
+
+    return ForecastingQuestion.from_dict(question_dict)
