@@ -6,7 +6,7 @@ S(f(x1), f(x2), f(x3))
 """
 
 from common.llm_utils import answer_sync, answer
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTuple, ProbsTuple
 from .BaseChecker import BaseChecker
 from .OrChecker import OrChecker
 
@@ -23,7 +23,7 @@ class ButNotChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
 
-    def instantiate_sync(self, base_sentence_1 : str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence_1 : str, base_sentence_2 : str, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_butnot = answer_sync(
             prompt = prompt, 
@@ -36,7 +36,7 @@ class ButNotChecker(BaseChecker):
         sentences = {"P": base_sentence_1, "Q_butnot_P": response_butnot, "P_or_Q" : response_or }
         return sentences
 
-    async def instantiate(self, base_sentence_1: str, base_sentence_2 : str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence_1: str, base_sentence_2 : str, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response_butnot = await answer(
             prompt = prompt, 
@@ -49,5 +49,5 @@ class ButNotChecker(BaseChecker):
         sentences = { "P": base_sentence_1, "Q_butnot_P": response_butnot, "P_or_Q" : response_or }
         return sentences
 
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return abs(answers["P"] + answers["Q_butnot_P"] - answers["P_or_Q"])

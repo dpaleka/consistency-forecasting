@@ -189,7 +189,7 @@ async def answer(
     prompt : str, 
     preface : str | None = None, 
     examples : list[QandA] = [],
-    **kwargs) -> str:
+    **kwargs) -> Union[str, List[str]]:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]
@@ -209,7 +209,7 @@ def answer_sync(
     prompt : str, 
     preface : str | None = None, 
     examples : list[QandA] = [],
-    **kwargs) -> str:
+    **kwargs) -> Union[str, List[str]]:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]

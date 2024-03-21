@@ -6,7 +6,7 @@ S(f(x1), f(x2))
 """
 
 from common.llm_utils import answer_sync, answer
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTuple, ProbsTuple
 from .BaseChecker import BaseChecker
 from .AndChecker import AndChecker
 
@@ -18,7 +18,7 @@ class SymmetryAndChecker(BaseChecker):
 
     def instantiate_sync(
         self, base_sentence_1: str, base_sentence_2: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTuple:
         prompt_1 = self.stack(base_sentence_1, base_sentence_2)
         prompt_2 = self.stack(base_sentence_2, base_sentence_1)
         response_1 = answer_sync(prompt=prompt_1, preface=self.preface, **kwargs)
@@ -28,7 +28,7 @@ class SymmetryAndChecker(BaseChecker):
 
     async def instantiate(
         self, base_sentence_1: str, base_sentence_2: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTuple:
         prompt_1 = self.stack(base_sentence_1, base_sentence_2)
         prompt_2 = self.stack(base_sentence_2, base_sentence_1)
         response_1 = await answer(prompt=prompt_1, preface=self.preface, **kwargs)
@@ -36,5 +36,5 @@ class SymmetryAndChecker(BaseChecker):
         sentences = {"P_and_Q": response_1, "Q_and_P": response_2}
         return sentences
 
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return abs(answers["P_and_Q"] - answers["Q_and_P"])
