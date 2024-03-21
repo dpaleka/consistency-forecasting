@@ -4,7 +4,7 @@ S(f(x1), f(x2)) :=  f(x1) == f(x2)
 """
 
 from common.llm_utils import answer, answer_sync
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTuple, ProbsTuple
 from .BaseChecker import BaseChecker
 
 
@@ -16,15 +16,15 @@ class ParaphrasalChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
 
-    def instantiate_sync(self, base_sentence: str, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence: str, **kwargs) -> ForecastingQuestionTuple:
         response = answer_sync(prompt = base_sentence, preface = self.preface, **kwargs)
         sentences = {"P": base_sentence, "P_alt": response}
         return sentences
 
-    async def instantiate(self, base_sentence: str, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence: str, **kwargs) -> ForecastingQuestionTuple:
         response = await answer(prompt = base_sentence, preface = self.preface, **kwargs)
         sentences = {"P": base_sentence, "P_alt": response}
         return sentences
 
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return abs(answers["P"] - answers["P_alt"])

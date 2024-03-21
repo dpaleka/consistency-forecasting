@@ -42,21 +42,21 @@ class NegChecker(BaseChecker):
     def __init__(self, tolerance=0.1):
         super().__init__(tolerance)
 
-    def instantiate_sync(self, base_sentence: Sentence, **kwargs) -> SentencesTemplate:
+    def instantiate_sync(self, base_sentence: ForecastingQuestion, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence)
         response = answer_sync(
             prompt=prompt, preface=self.preface, examples=self.examples, **kwargs
         )
-        sentences = {"P": base_sentence, "notP": Sentence.from_str(response, question_type=base_sentence.question_type)}
+        sentences = {"P": base_sentence, "notP": ForecastingQuestion.from_str(response, question_type=base_sentence.question_type)}
         return sentences
 
-    async def instantiate(self, base_sentence: Sentence, **kwargs) -> SentencesTemplate:
+    async def instantiate(self, base_sentence: ForecastingQuestion, **kwargs) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence)
         response = await answer(
             prompt=prompt, preface=self.preface, examples=self.examples, **kwargs
         )
-        sentences = {"P": base_sentence, "notP": Sentence.from_str(response, question_type=base_sentence.question_type)}
+        sentences = {"P": base_sentence, "notP": ForecastingQuestion.from_str(response, question_type=base_sentence.question_type)}
         return sentences
 
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return abs(answers["P"] + answers["notP"] - 1)

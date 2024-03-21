@@ -4,10 +4,10 @@ from common.datatypes import *
 
 class Forecaster(ABC):
 
-    def elicit(self, sentences: SentencesTemplate) -> ProbsTemplate:
+    def elicit(self, sentences: ForecastingQuestionTuple) -> ProbsTuple:
         return {k: self.call(v) for k, v in sentences.items()}
 
-    async def elicit_async(self, sentences: SentencesTemplate, **kwargs) -> ProbsTemplate:
+    async def elicit_async(self, sentences: ForecastingQuestionTuple) -> ProbsTuple:
         keys, values = zip(*sentences.items())
         tasks = [self.call_async(v, **kwargs) for v in values]
         results = await asyncio.gather(*tasks)

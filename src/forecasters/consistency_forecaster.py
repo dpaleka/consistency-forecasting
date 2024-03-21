@@ -24,9 +24,8 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        probs = [float(prob) for prob in map(self.extract_prob, response) if prob is not None]
-        r = Prob(np.mean(probs)) if len(probs) > 0 else None
-        return r
+        mean = np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]) if response else None
+        return Prob(mean)
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
         kwargs["temperature"] = kwargs.get("temperature", self.temperature)
@@ -36,9 +35,8 @@ class ConsistentAskForecaster(Forecaster):
             preface = self.preface,
             examples = self.examples,
             **kwargs)
-        probs = [float(prob) for prob in map(self.extract_prob, response) if prob is not None]
-        r = Prob(np.mean(probs)) if len(probs) > 0 else None
-        return r
+        mean = np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]) if response else None
+        return Prob(mean)
 
     def extract_prob(self, s: str) -> Prob:
         pattern = r"-?\d*\.?\d+"

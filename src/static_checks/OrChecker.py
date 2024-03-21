@@ -6,7 +6,7 @@ S(f(x1), f(x2), f(x3))
 """
 
 from common.llm_utils import answer_sync, answer
-from forecasters import SentencesTemplate, ProbsTemplate
+from forecasters import ForecastingQuestionTuple, ProbsTuple
 from .BaseChecker import BaseChecker
 
 class OrChecker(BaseChecker):
@@ -22,7 +22,7 @@ class OrChecker(BaseChecker):
 
     def instantiate_sync(
         self, base_sentence_1: str, base_sentence_2: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response = answer_sync(prompt=prompt, preface=self.preface, **kwargs)
         sentences = {"P": base_sentence_1, "Q": base_sentence_2, "P_or_Q": response}
@@ -30,13 +30,13 @@ class OrChecker(BaseChecker):
 
     async def instantiate(
         self, base_sentence_1: str, base_sentence_2: str, **kwargs
-    ) -> SentencesTemplate:
+    ) -> ForecastingQuestionTuple:
         prompt = self.stack(base_sentence_1, base_sentence_2)
         response = await answer(prompt=prompt, preface=self.preface, **kwargs)
         sentences = {"P": base_sentence_1, "Q": base_sentence_2, "P_or_Q": response}
         return sentences
 
-    def violation(self, answers: ProbsTemplate) -> float:
+    def violation(self, answers: ProbsTuple) -> float:
         return max(
             max(answers["P"], answers["Q"]) - answers["P_or_Q"],
             answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
