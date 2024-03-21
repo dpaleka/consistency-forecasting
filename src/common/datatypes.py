@@ -50,7 +50,7 @@ class ForecastingQuestion:
 
     def to_dict(self) -> dict:
         return {
-            "id": self.id,
+            "id": str(self.id),
             "title": self.title,
             "body": self.body,
             "resolution_date": (
@@ -66,7 +66,7 @@ class ForecastingQuestion:
     @classmethod
     def from_dict(cls, d: dict) -> "ForecastingQuestion":
         return cls(
-            id=d["id"],
+            id=UUID(d["id"]),
             title=d["title"],
             body=d["body"],
             resolution_date=(
