@@ -9,7 +9,7 @@ class Forecaster(ABC):
 
     async def elicit_async(self, sentences: ForecastingQuestionTuple) -> ProbsTuple:
         keys, values = zip(*sentences.items())
-        tasks = [self.call_async(v, **kwargs) for v in values]
+        tasks = [self.call_async(v) for v in values]
         results = await asyncio.gather(*tasks)
         return {k: v for k, v in zip(keys, results)}
 
