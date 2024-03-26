@@ -1,26 +1,29 @@
 #%%
-from src.static_checks.NegChecker import *
-from forecasters import *
+import json
+from common.llm_utils import query_api_chat_sync
 
-# Instantiate some base questions
-BASE_QS = [
-    "What is the probability that the Democratic party will win the US Presidential election in 2024?",
-    "What is the probability that Ebola will be eradicated by 2030?",
+model = "gpt-3.5-turbo"
+messages = [
+    {
+        "role": "system",
+        "content": """\
+Generate a question about the politics of the United States between 2024 and 2030.
+Give the answer in the JSON object format.
+Example: {"question": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
+Answer type should always be Prob.
+"""
+    },
+    {
+        "role": "user",
+        "content": "United States",
+    },
 ]
+response = query_api_chat_sync(model, messages, response_format={"type": "json_object"})
+print(response)
 
-q_tuple = NegChecker().instantiate_sync(BASE_QS[1])
-print(q_tuple)
+response_dict = json.loads(response)
 
-# now use forecasters
-from forecasters import ConsistentAskForecaster
-f = ConsistentAskForecaster()
-answers = {}
-for k, v in q_tuple.items():
-    answers[k] = f.call(v)
-
-violation = NegChecker().violation(answers)
-print(violation)
-
+print(json.dumps(response_dict, indent=4))
 
 
 # %%

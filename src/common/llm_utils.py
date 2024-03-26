@@ -245,6 +245,9 @@ async def answer(
     return await query_api_chat(messages=messages, **kwargs)
 
 
+
+
+
 def answer_sync(
     prompt: str, preface: str | None = None, examples: list[QandA] = [], **kwargs
 ) -> str | List[str]:
