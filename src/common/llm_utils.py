@@ -6,7 +6,9 @@ import os
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
+import instructor
 import asyncio
+from pydantic import BaseModel
 from dataclasses import dataclass
 from dotenv import load_dotenv
 from typing import Union, Tuple, List
@@ -189,7 +191,7 @@ async def answer(
     prompt : str, 
     preface : str | None = None, 
     examples : list[QandA] = [],
-    **kwargs) -> Union[str, List[str]]:
+    **kwargs) -> str | List[str]:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]
@@ -209,7 +211,7 @@ def answer_sync(
     prompt : str, 
     preface : str | None = None, 
     examples : list[QandA] = [],
-    **kwargs) -> Union[str, List[str]]:
+    **kwargs) -> str | List[str]:
     if preface is None:
         preface = "You are a helpful assistant."
     messages = [{ "role": "system", "content": preface }]
