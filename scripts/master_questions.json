@@ -246,74 +246,6 @@
         },
         "resolution": false
     },
-
-TODO
-
-    {
-        "id": "f8PHAbgeRsBKzYDC8mJv",
-        "text": "What will be true of Anthropic's best LLM by EOY 2025?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/bayesian/what-will-be-true-of-anthropics-bes",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "PBfu71siB4otphCrpNG0",
-        "text": "\u26be MLB 2024: Full Season : Which Teams Will Win Their Matchup? (Part 1)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/sircryptomind/-mlb-2024-full-season-which-teams-w",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "IZyLan8uHrDXIM0geVho",
-        "text": "Will @jim get accepted into the partner programme this month?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/jim/will-jim-get-accepted-into-the-part",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "a3JmBsGnFMn0vAbMqmG3",
-        "text": "Will Tunisian Dinar (TND) trade above 0.32 USD on March 31st ?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 31, 2024",
-        "url": "https://manifold.markets/raed667/will-tunisian-dinar-tnd-trade-above",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "xLINE5BO8n8rRBrCUzwu",
-        "text": "Will a bookmark page on Manifold be successful, if implemented?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2026",
-        "url": "https://manifold.markets/bayesian/will-a-bookmark-page-on-manifold-be",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
     {
         "id": "mt6v6P4HMo8KlF1q6Fo3",
         "text": "will Kai\u2019s Said still be the president of Tunisia by 01 June 2024",
@@ -379,19 +311,7 @@ TODO
         },
         "resolution": false
     },
-    {
-        "id": "OZieZc628byWyB1WXRC4",
-        "text": "When will Manifold repeat this Sam Altman CEO market mistake?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 02, 2030",
-        "url": "https://manifold.markets/bayesian/when-will-manifold-repeat-this-sam",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
+
     {
         "id": "sOktKDZO8wRdmVxzIOxC",
         "text": "Top 3 Video Generation Models by Company/Organization EOY 2024",
@@ -432,38 +352,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "nDlPVjpWkUYFSNinVyrz",
-        "text": "This market will never resolve. get your daily streak points here",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 24, 3000",
-        "url": "https://manifold.markets/drugsornot/this-market-will-never-resolve-get",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "xP4sZs0bvQ7YqBwV4rQp",
         "text": "Will there be more than two different leaders of the WTA rankings (single) in 2024?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "December 21, 2024",
         "url": "https://manifold.markets/sorintanasenicola/will-there-be-more-than-two-differe",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "FNBM7cbdjJKCtwSox7Wp",
-        "text": "Will I encounter serious difficulties travelling to or entering New Zealand?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 25, 2024",
-        "url": "https://manifold.markets/fion/will-i-encounter-serious-difficulti",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -483,6 +377,8 @@ TODO
         },
         "resolution": true
     },
+    TODO
+
     {
         "id": "oh28fbxwwlVxJ4ku9Hb2",
         "text": "Steph Curry vs Jayson Tatum: Who will finish the regular season with higher points per game?",
@@ -640,51 +536,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "Xk7yRFHIoIrtVvELfxWa",
-        "text": "\u00bfDe estas Cryptos de IA, cual prefieres para holdear?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/fernandoromeo/de-estas-cryptos-de-ia-cual-prefier",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "ilQ29kN79Ato18iwddTZ",
         "text": "Who will be Google's CEO in 2026?",
         "resolution_criteria": "N/A",
         "question_type": "multiple_choice",
         "resolution_date": "January 01, 2027",
         "url": "https://manifold.markets/simoneromeo/who-will-be-googles-ceo-in-2026",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "yXFOhxRvTrkTqOC1bHp4",
-        "text": "\u00bfCuanto va a llegar el precio de BTC (Bitcoin)?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/fernandoromeo/cuanto-va-a-llegar-el-precio-de-btc",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "ycF2ebp9Ws1WrizyhjG2",
-        "text": "\u00bfCual de estas Altcoins Consideras que es la mejor?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/fernandoromeo/cual-de-estas-altcoins-consideras-q",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -705,38 +562,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "ZMdBmVwFNLhiEsbONIYR",
-        "text": "\u00bfQuien sera el proximo presidente de Argentina?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/fernandoromeo/quien-sera-el-proximo-presidente-de",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "eAR4NHtdlF8Hrt4nYgDn",
         "text": "Will someone in the US be executed for child sex crimes by 2030?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2030",
         "url": "https://manifold.markets/noah1/will-someone-in-the-us-be-executed",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "c2gQEjAosANmRxeofEYS",
-        "text": "Will the Senate vote on HR 7251 (banning TikTok as long as it\u2019s Chinese owned) by the end of March?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/simongrayson/will-the-senate-vote-on-hr-7251-ban",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -770,51 +601,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "eohUh2TDS2eZejl4YoPN",
-        "text": "Vladimir Putin exact election result %?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/nikstar/vladimir-putin-election-exact-resul",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "JKrL5r4h8pDgZZoCnayP",
-        "text": "Will \"OpenAI: Facts from a Weekend\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-openai-facts-from-a-weekend-ma",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "dWtmLME39AxBvZOUWgrM",
         "text": "Which team will be the #1 overall seed in the 2024 men\u2019s March Madness tournament?",
         "resolution_criteria": "N/A",
         "question_type": "multiple_choice",
         "resolution_date": "March 17, 2024",
         "url": "https://manifold.markets/dglid/which-team-will-be-the-1-overall-se",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "1o5SbO2eokAEwKteGD1X",
-        "text": "\ud83c\udfd2 Will the Carolina Hurricanes beat the Ottawa Senators on March 17th, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/dglid/-will-the-carolina-hurricanes-beat",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -835,116 +627,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "Lr8bpl0V9BFj9vAWtWlV",
-        "text": "Which peak human skills will smart robots have by 2026?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2027",
-        "url": "https://manifold.markets/simoneromeo/which-peak-human-skills-will-smart",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "aNSu8UXPmRjgZ6vAS9IO",
-        "text": "When will OpenAI release video generation model to general public?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "October 01, 2024",
-        "url": "https://manifold.markets/olegeterevsky/when-will-openai-release-video-gene",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "laCqclU8vZKquvoBjMZf",
-        "text": "\ud83c\udfd2 Will the Carolina Hurricanes or the Ottawa Senators win on March 17, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/dglid/-will-the-carolina-hurricanes-or-th",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "SnTSWes37EPjzr6XwxR3",
-        "text": "[Polymarket] Will X remove likes + reposts counter in March?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/guuber3/polymarket-will-x-remove-likes-repo",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "7cwVkzqjgJ88QxT7mj4B",
-        "text": "What will be true of OpenAI's next major LLM release (GPT-4.5 or GPT-5)?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 31, 2024",
-        "url": "https://manifold.markets/soli/what-will-be-true-of-openais-next-m",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "GxZbbqGG3qhADHIpausy",
         "text": "Will a VR/AR headset sell more units than the highest-selling game console (~155m units) before 2030?  \ud83c\udfae\ud83d\udd79\ufe0f \ud83d\udc7e\ud83d\udda5\ufe0f",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2030",
         "url": "https://manifold.markets/elf/will-a-vrar-headset-sell-more-units",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "qmkoyi9I3tIR2wDjSQj8",
-        "text": "The most popular Wikipedia article in April 2024? (excl. past winners)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 03, 2024",
-        "url": "https://manifold.markets/itstomekk/the-most-popular-wikipedia-article-538e34f14ed8",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "mANDj5mPITIdKxYkURsx",
-        "text": "Will Fireship's next YouTube video be on an AI topic?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/barna/will-fireships-next-youtube-video-b",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "wcn3YzG3oMTKMNYQnLH6",
-        "text": "Will a notable person die on March 18th, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/lukres/will-a-notable-person-die-on-march",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -991,32 +679,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "HkdnpTJBkY5iMBBJp5sK",
-        "text": "Asian Stock (Nifty + 3): How Will Each Of The Indian Indices Close On March 18 Compared To Its Close On March 15?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/greybox/asian-stock-nifty-3-how-will-each-o-f859c53a3d82",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "YokDqHl1DrfaP5ycNOxJ",
-        "text": "1go88com",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/1go88com/1go88com",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "Z10M2vcxtVclhGocg65m",
         "text": "Will Destiny have more subscribers than HasanAbi at any point before EOY 2027?",
         "resolution_criteria": "N/A",
@@ -1030,51 +692,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "nPGmXlJxcDQgQWqL2Obw",
-        "text": "Will \"Davidad's Bold Plan for Alignment: An In-Dept...\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-davidads-bold-plan-for-alignme",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "sNwzIg0pc58vo02cfsFl",
-        "text": "Will SOL reach 200 by next Friday? (22.03.2024)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 22, 2024",
-        "url": "https://manifold.markets/davideberweger/will-sol-reach-200-by-next-friday-2",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "prACPHfVYzn4lTpH0LOq",
         "text": "Will the number of time zones on Earth change by 2030?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 02, 2031",
         "url": "https://manifold.markets/themightysalmon/will-the-number-of-time-zones-on-ea",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "i66erTVsa5HRbmfInYn2",
-        "text": "mb66 works",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/mb66works/mb66-works",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1134,71 +757,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "fpKoABw3NTncB6jPpJQQ",
-        "text": "what will be true of goblin's \"Love Is Blind\" Rimworld run",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/goblinodds/what-will-be-true-of-goblins-love-i",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "xE43xSQFAkniDhzQA0sH",
-        "text": "What is considered \u201cTypical\u201d sexuality, in your opinion? Which is closest to what you believe ?",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/joshuabartlett/what-is-considered-typical-sexualit",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "DJejvt2Bms3hdxFnRsch",
-        "text": "Which States Will Joe Biden Win in 2024? (ADD ANSWERS)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 08, 2024",
-        "url": "https://manifold.markets/vibhav/which-states-will-joe-biden-win-in",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "C0lRNrmSW2wpNQaACKtf",
-        "text": "2024 Presidential Election Prop Bets",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 08, 2024",
-        "url": "https://manifold.markets/vibhav/2024-presidential-election-prop-bet",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "V6fnX913vPaw1OdEQ9Oc",
-        "text": "Have you heard of the \u201c bird\u201d vs \u201c monkey\u201d model of categorizing conceptions of sex/sexual preferences and interests",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/joshuabartlett/have-you-heard-of-the-bird-vs-monke",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "8GNh1AcZWnsi0jTTMvRl",
         "text": "Which political party in Oregon will win Secretary of State?",
         "resolution_criteria": "N/A",
@@ -1212,181 +770,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "3Uvk3vZlIs3H6ki8fFan",
-        "text": "Are you familiar with the \u201c bird\u201dvs\u201cmonkey\u201d modelofdifferentpatternsin sexualinterests/approaches to conceptualizing sex",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/joshuabartlett/are-you-familiar-with-the-birdvsmon",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "FM2TrQBFro3INVS9ceNC",
         "text": "Will a US retailer get sued over defective eclipse glasses sold in 2024?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/jgyou/will-a-us-retailer-be-sued-for-sell",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "QwECvgeAgA2HLq7keaUX",
-        "text": "Will Magi make top 8 at a major during 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/tumbles/will-magi-make-top-8-at-a-major-dur",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "N6CUN8D8wBDRrzMRs9U9",
-        "text": "Do you consider \u2018Zionist\u2019 a slur? \ud83c\uddee\ud83c\uddf1\ud83e\udd2c",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "March 25, 2024",
-        "url": "https://manifold.markets/sowelison/do-you-consider-zionist-a-slur-8d2acf3a2da3",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "LIuWGZG4nN6WPZ2Lh9QP",
-        "text": "Will Jimmy Carter be alive at the end of the day on March 17?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/jcdm/will-jimmy-carter-be-alive-at-the-e-6fa2e8fae098",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "B1qrpv2C2gZjWJqu1Fly",
-        "text": "\ud83c\udfc0NBA Basketball Games Live\ud83c\udfc0 (Sunday, March 17)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/reemarkable/nba-basketball-games-live-sunday-ma",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "CAj4WdTp6M7hb7HLc7b8",
-        "text": "Will Jimmy Carter survive the 12th week of 2024 (Mar 17 - 23)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 24, 2024",
-        "url": "https://manifold.markets/jcdm/will-jimmy-carter-survive-the-12th",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "zsNdl4qx67xzFoP4E8sY",
-        "text": "Do you consider \u2018Zionist\u2019 a slur? \ud83c\uddee\ud83c\uddf1\ud83e\udd2c",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/sowelison/do-you-consider-zionist-a-slur",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "S0Nu3CQKLbVeMZjVA1t9",
-        "text": "Will Chris get to bed by 10:45pm at least 3 times this week?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 24, 2024",
-        "url": "https://manifold.markets/emile/will-chris-get-to-bed-by-1045pm-at-450ca25d9590",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "HghNyS2jo2Q5sgM69y5t",
-        "text": "Bitcoin will goo skyrocket by the end of April this year",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/roderick/bitcoin-will-goo-skyrocket-by-the-e",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "VFHWTkDnCIlNaBRcNKuE",
-        "text": "\ud83e\ude99 Crypto: How Will These 10 Cryptocurrencies Close On Sun. Mar. 17th Compared To Its Close On Sat. Mar. 16th?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/sircryptomind/-crypto-how-will-these-10-cryptocur-a14a5f566911",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "KIY7QjmzEtL6GFNJH9RN",
-        "text": "Will I make MOP 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 16, 2024",
-        "url": "https://manifold.markets/pseudonymousbosche24f/will-i-make-mop-2024",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "nPlABx3a6J6F2cYrG1Nc",
-        "text": "Recommend me a podcast to listen to.",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/clementine/recommend-me-a-podcast-to-listen-to",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "YxRXiLf584CFJUjY4vbh",
-        "text": "Recommend me a good anime movie to watch. On Crunchyroll.",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/clementine/recommend-me-a-good-anime-movie-to",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1446,64 +835,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "CCfxaS3HST58qp6fd9KJ",
-        "text": "Professional Women's Hockey League (PWHL) \ud83c\udfd2 Regular Season Matches",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/keenenwatts/professional-womens-hockey-league-p",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "yi5CLp7JgIQM7D4mqLoO",
-        "text": "Will Bitcoin hit $70K again in March 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 31, 2024",
-        "url": "https://manifold.markets/predyx_markets/will-bitcoin-hit-70k-again-in-march",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Qp6i3Ij6WG2J7YWxTAjp",
-        "text": "How many non-power conference teams will make the Sweet 16?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 25, 2024",
-        "url": "https://manifold.markets/wilsonkime/how-many-nonpower-conference-teams",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "F7luiIKzfZssbXApw1KH",
         "text": "Who will be sworn in as the Chief Minister of Maharashtra after the 2024 Maharashtra Legislative Assembly election?",
         "resolution_criteria": "N/A",
         "question_type": "multiple_choice",
         "resolution_date": "December 31, 2024",
         "url": "https://manifold.markets/unown/who-will-be-the-chief-minister-of-m",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "8kAGH1q1WqLnBd9cRvCR",
-        "text": "\ud83d\udc7b Will \"Ghostbusters: Frozen Empire\" gross >$50 million during its opening weekend?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 30, 2024",
-        "url": "https://manifold.markets/ziddletwix/-will-ghostbusters-frozen-empire-gr-ce1ee671cd3e",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1537,51 +874,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "3bFgDna8gP4r34zMyHFd",
-        "text": "Weekend Box Office Number 1\u2019s [Q2]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "July 02, 2024",
-        "url": "https://manifold.markets/mattyb/weekend-box-office-number-1s-q2",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "zjAw7ejYZGkZD7TBGeQG",
-        "text": "Will Sam Altman tweet before April?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/joshua/will-sam-altman-tweet-before-april",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
         "id": "Ssyr80LArOVl6jjwkWa1",
         "text": "Will \"3 Body Problem\" be streamed >50% as many hours as \"Avatar: The Last Airbender\" during its first week?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "April 16, 2024",
         "url": "https://manifold.markets/ziddletwix/will-3-body-problem-be-streamed-50",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "cJW5PuGKyX9pdu2EhMZK",
-        "text": "Will Lex Fridman release an interview with Sam Altman by the end of March?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/mikasa/will-lex-fridman-release-an-intervi",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1615,45 +913,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "3LOJ9TPObOOIbbblW5yn",
-        "text": "When will the next user-visible advance come to IMAX?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/mattyb/when-will-the-next-uservisible-adva",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "N8IklBczPXkOJ9us96jn",
-        "text": "\u26bd Will Porto Velho beat Uni\u00e3o Cacoalense during regular time on Wed, Mar 20, 2024? Rondoniense \ud83c\udde7\ud83c\uddf7",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 21, 2024",
-        "url": "https://manifold.markets/franklinbaldo/-will-porto-velho-beat-uniao-cacoal",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "7vpq30hHuJTPiSYDW18C",
-        "text": "\u26bd Will El Salvador beat Bonaire during regular time on Wed, Mar 20, 2024? Friendlies \ud83c\udf0e",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 21, 2024",
-        "url": "https://manifold.markets/franklinbaldo/-will-el-salvador-beat-bonaire-duri",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "vSOMeW3eaAQzvsBWV4vz",
         "text": "\u26bd Will San Marino beat St. Kitts and Nevis during regular time on Wed, Mar 20, 2024? Friendlies \ud83c\udf0e",
         "resolution_criteria": "N/A",
@@ -1679,19 +938,7 @@ TODO
         },
         "resolution": false
     },
-    {
-        "id": "xUyA2jCrqkrtQo0FbPjN",
-        "text": "H\u00f6lder-like inequality for Schatten norms",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/gregrosent/holderlike-inequality-for-schatten",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
+
     {
         "id": "ajYFNbOEs5qA2byceCU9",
         "text": " Tyson, Jake Paul fight! . How many rounds until Jake goes to??\ud83d\ude34\ud83d\ude34\ud83d\ude34\ud83d\ude34\ud83d\ude34",
@@ -1699,45 +946,6 @@ TODO
         "question_type": "multiple_choice",
         "resolution_date": "April 16, 2024",
         "url": "https://manifold.markets/captainhowdy/if-the-tyson-jake-paul-fight-actual",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "A2EvhZKYUln3RGj31Sro",
-        "text": "Ilya Sutskever OpenAI status fully clear by mid 2024",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "July 01, 2024",
-        "url": "https://manifold.markets/ernie/ilya-sutskever-openai-status-fully",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "gppGFMtNDVZi4LyiNfBx",
-        "text": "Which country will be the first to create the first true AGI as defined by Manifold?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2101",
-        "url": "https://manifold.markets/strutheo/which-country-will-be-the-first-to-f84b91188c92",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "yLSFtnpwgjZpsLxu3Lir",
-        "text": "What country was this photo taken in?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/simoj/what-country-was-this-photo-taken-i",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1758,19 +966,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "gQ8KHhOSHXTPkp14PjIk",
-        "text": "Will I successfully complex bash a problem on the 2024 USAMO?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "May 02, 2024",
-        "url": "https://manifold.markets/linustang/will-i-successfully-complex-bash-a",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "CVfztCX1MsRr1XvdXaxB",
         "text": "Which country will be the first to have a human walk on mars?",
         "resolution_criteria": "N/A",
@@ -1784,64 +979,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "ouJPIMLnficmfMWaGJmM",
-        "text": "What will Vegapunks message be about?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/lgw/what-will-vegapunks-message-be-abou",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "NwbpMicW0pQr4DAVuD2z",
         "text": "Will the current record for most expensive domain name be broken by the end of 2030? ($30M)",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2031",
         "url": "https://manifold.markets/strutheo/will-the-current-record-for-most-ex",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "zV7kGCe6af2M8ncnCbP7",
-        "text": "What words will appear in Ilya Sutskever's first tweet upon returning to Twitter?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/joshua/what-words-will-appear-in-ilya-suts",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "wNll2L9qYkckuz5NdgK2",
-        "text": "Will SomeOrdinaryGamers video investigation into Keffals release before the end of April 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "May 01, 2024",
-        "url": "https://manifold.markets/strutheo/will-someordinarygamers-video-inves",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "4MiU6n4WNxI7Z6wXWKu0",
-        "text": "Will the close price of Gold (XAU/USD) be higher than the previous day? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-the-close-price-of-gold-xauusd",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1868,32 +1011,6 @@ TODO
         "question_type": "multiple_choice",
         "resolution_date": "October 09, 2024",
         "url": "https://manifold.markets/ziddletwix/which-nba-player-will-be-next-to-sc",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "OA2g7XoNVaBO6ZQbbqGx",
-        "text": "\ud83e\udea6Who will be featured in the Oscars In Memoriam segment in 2025? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 01, 2025",
-        "url": "https://manifold.markets/strutheo/who-will-be-featured-in-the-oscars-9ed4334a6438",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "F4E5ghgqEx6ED4gs095x",
-        "text": "Will the close price of MicroStrategy (NASDAQ: MSTR) be higher than the previous day? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-the-close-price-of-microstrate",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1953,168 +1070,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "lYepjQSd8hhR085bS021",
-        "text": "Will the close price of Apple (NASDAQ: AAPL) be higher than the previous day? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-the-close-price-of-nvidia-nasd-d6059f0524ac",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "5wr0DlpEOrZojoGJUe3p",
-        "text": "Will \"I still think it's very unlikely we're observ...\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-i-still-think-its-very-unlikel",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "FeVvxohO0dtgqEyDJQen",
-        "text": "Will the close price of Nvidia (NASDAQ: NVDA) be higher than the previous day? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-the-close-price-of-nvidia-nasd",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "QS3yF9jB2RhC6pP1YvnB",
         "text": "Will tumblr re-tighten its restrictions on porn in 2024?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/tulip/will-tumblr-retighten-its-restricti",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "TVk2aVN8KDExy3LSrFR8",
-        "text": "Which category will I place in on USAMO 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 02, 2024",
-        "url": "https://manifold.markets/linustang/which-category-will-i-place-in-on-u-fa78348d215d",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "JUXr0zC4JuV2BZ74MzX9",
-        "text": "Who will be the Cinderella team(s) in this year's men's March Madness basketball tournament?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 25, 2024",
-        "url": "https://manifold.markets/dglid/who-will-be-the-cinderella-teams-in",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "xkcuiBVGCAtQANdiIYXF",
-        "text": "How far will the furthest Cinderella team(s)  - double-digit seed - go in the 2024 men's March Madness tournament?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 09, 2024",
-        "url": "https://manifold.markets/dglid/how-far-will-the-furthest-cinderell",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "1QtP53VlSMOz4qBf8b67",
-        "text": "Will \"Toward a Broader Definition of Adverse Selection\" make the top fifty posts in LessWrong's 2024 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2026",
-        "url": "https://manifold.markets/lesswrong/will-toward-a-broader-definition-of",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "LjlctDSLPXNhIsbixMZo",
-        "text": "Will the S&P 500 index close higher on Mar. 22 than it closed on Mar. 15--(5117.09)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/jimfix/will-the-sp-500-index-close-higher-517649b342b0",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "xRXvV7eLk6sUvnLM6ofQ",
-        "text": "[Let's play] Civilization VI (Turn 40)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/komplexkonjugat/lets-play-civilization-vi-turn-40",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "oaASkNdVkglBf2wqwEfa",
-        "text": "Chance an (ethical) pro hax0r for St4nf0rd and more!",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "June 02, 2024",
-        "url": "https://manifold.markets/johnsmithcf7b/chance-an-ethical-pro-hax0r-for-st4",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "iX3oyoFxHYY2GqF47nmQ",
-        "text": "After Dartmouth and the NLRB memo, at what other college or university will students unionize? (ADD RESPONSES)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2040",
-        "url": "https://manifold.markets/bluedragon/after-dartmouth-and-the-nlrb-memo-a",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "cuG8UDlGcLPzdt63WKgv",
-        "text": "What meme is ChatGPT recreating with this image? Part 3",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 31, 2024",
-        "url": "https://manifold.markets/veryseriousposter/what-meme-is-chatgpt-recreating-wit",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2135,155 +1096,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "d0UNsqy7sOGnhizL5iOp",
-        "text": "Will tau lead over pi when the linked poll gets a hundred votes?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/komplexkonjugat/will-tau-lead-over-pi-when-the-link",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "vynOveSTvB0El4d3E8jm",
-        "text": "How many shower alerts will Aella post in March 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 02, 2024",
-        "url": "https://manifold.markets/schneefackel/how-many-shower-alerts-will-aella-p",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "gEHIDndptKQJhjLDS2xF",
         "text": "Will the scientific journal \"Nature\" explicitly endorse Joe Biden for president in 2024?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "November 11, 2024",
         "url": "https://manifold.markets/ziddletwix/will-the-scientific-journal-nature-cb4fdac90110",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "7nGOI4zOUTBKTva1uXeT",
-        "text": "Approval Voting: Hank Green asks, who are the best famous people?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/joshua/approval-voting-hank-green-asks-who",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "D8nayiQYg1cTJjqXABII",
-        "text": "Where was this photo taken? [\ud83c\udfcd\ufe0f\ud83e\udea8]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/arbitrary/where-was-this-photo-taken",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "XoGAsf7MADtI2IrmN4AP",
-        "text": "Will Bitcoin hit $71K in March 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/ccat/will-bitcoin-hit-71k-in-march-2024-ca1bebb9c03a",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "91mUaePn2DjTqqzC8pjo",
-        "text": "Will Bitcoin hit $72K in March 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/ccat/will-bitcoin-hit-72k-in-march-2024-37c879bbedbb",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "0jxTsclSc2RxaZ6FJEUc",
-        "text": "How much of the popular vote will Joe Biden win in the 2024 United States Presidential election?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 11, 2026",
-        "url": "https://manifold.markets/tripping/how-much-of-the-popular-vote-will-j",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "EMs33h7UGicKRWv6MNQ6",
-        "text": "How much of the popular vote will Donald Trump win in the 2024 United States Presidential election?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 11, 2026",
-        "url": "https://manifold.markets/tripping/how-much-of-the-popular-vote-will-d",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "4YZN7IOnC3BLmfn1GAhq",
-        "text": "Is Kristian Andersen a fraud?",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/kristianandersen/is-kristian-andersen-a-fraud",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "1qCevBu8ApAMeAEb6sBu",
-        "text": "Is any Silly Roon Tweet from 2024 actually cool insider info about OpenAI?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/joshua/is-any-nonsensical-roon-tweet-from",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "5ESmN1jmILrRyjKKVVTg",
-        "text": "Will Bitcoin reach $72K or higher again by the end of the upcoming Bitcoin halving?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 22, 2024",
-        "url": "https://manifold.markets/strutheo/will-bitcoin-reach-above-72k-again",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2304,51 +1122,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "tkLB7D9UEMVJGSDhtBPV",
-        "text": "Will Vaush still be streaming regularly at the end of 2025?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2026",
-        "url": "https://manifold.markets/strutheo/will-vaush-still-be-streaming-regul",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "dgV27axRPfYTIA7AbcF0",
         "text": "will bitcoin will hit 75k by April 2024",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "April 16, 2024",
         "url": "https://manifold.markets/syedkhaled/will-bitcoin-will-hit-75k-by-april",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "BzsYCmPhnsTzBiyhFUoN",
-        "text": "How many points will Seba get on his driving exam?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/raresdobre/how-many-points-will-seba-get-on-hi",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "tOdcwev12gNF0WsdfYJl",
-        "text": "Will \"The \u2018 petertodd\u2019 phenomenon\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-the-petertodd-phenomenon-make",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2375,32 +1154,6 @@ TODO
         "question_type": "multiple_choice",
         "resolution_date": "November 11, 2026",
         "url": "https://manifold.markets/tripping/how-much-of-the-popular-vote-will-r-8838a594cb5d",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "guOQDPzKQ0gQXAyojrm9",
-        "text": "Will these players win Ultimate singles at Collision 2024? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/strutheo/who-will-win-ultimate-singles-at-co",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "NNN0SqodXYNbCR8woQU6",
-        "text": "Will these players win Melee singles at Collision 2024? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/strutheo/who-will-win-melee-singles-at-colli-085a7ae48085",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2447,19 +1200,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "wciCPmN5ONpvCZTUZKOU",
-        "text": "J88",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 24, 2024",
-        "url": "https://manifold.markets/j88play/j88",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "zogJzyKjiK8glJR1Oqi8",
         "text": "Will a Top Level Domain (TLD) other than .com be in the top 20 most expensive domain names before the end of 2028?",
         "resolution_criteria": "N/A",
@@ -2479,19 +1219,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 01, 2029",
         "url": "https://manifold.markets/strutheo/will-the-gumby-reboot-release-befor",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "tP5eQtSF1MbD4AUoZini",
-        "text": "Will I get a manifold partner badge before April?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/franklinbaldo/will-i-get-a-manifold-partner-badge",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2525,97 +1252,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "PDqkQt1An4ZzDzTqvlNe",
-        "text": "\ud83c\udfa8 Which companies will have a significant logo or brand redesign before the end of 2033? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2034",
-        "url": "https://manifold.markets/strutheo/-which-brand-will-have-a-significan",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "VQEuhxmfzKwelHlzXxph",
-        "text": "Which big brand's NFT project will last through March 2025?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 01, 2025",
-        "url": "https://manifold.markets/ainsarch/which-big-brands-nft-project-will-l",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "V28GpCzAd2SFUcCaGDim",
-        "text": "Do you think every market should also have a Metaculus-style aggregated forecast built in?",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/joshua/do-you-think-every-market-should-al-e0c640cd0c45",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "S94hlVZKiABoMBfH9S0S",
-        "text": "Will Oldschool Runescape's proposed God Alignment Prayers be released before or simultaneously with While Guthix Sleeps?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/tulip/will-oldschool-runescapes-proposed",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "l5CDR57WoSLv8UKBViMQ",
-        "text": "Will Manifold outperform Metaculus in the 2024 ACX Contest?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/joshua/do-you-think-every-market-should-al",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "0TNFB810EOjgiq87zTWg",
-        "text": "\u26bd Will Ji-Paran\u00e1 beat Uni\u00e3o Cacoalense during regular time on Sat, Mar 16, 2024? Rondoniense \ud83c\udde7\ud83c\uddf7",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/franklinbaldo/-will-jiparana-beat-uniao-cacoalens-fcee6e0baa4a",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "84EDtqObr1Mf1piIjKIw",
-        "text": "Will @firstuserhere walk 100k steps in a day again before the end of 2040?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2041",
-        "url": "https://manifold.markets/strutheo/will-firstuserhere-walk-100k-steps",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "HgJMt09pD5JnPNTt7rUY",
         "text": "Will the winner of the 2024 US Presidential Election also win the popular vote?",
         "resolution_criteria": "N/A",
@@ -2635,19 +1271,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "March 18, 2024",
         "url": "https://manifold.markets/lazy/is-lucci-kod-or-will-the-fight-stil",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "jIDIpfE7smpGB9qEHe7n",
-        "text": "How will global GDP be distributed among the countries in 2050? [add responses]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2050",
-        "url": "https://manifold.markets/jan53274/how-will-global-gdp-be-distributed",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2681,19 +1304,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "blPjPZjiVSc56ofpPGry",
-        "text": "Will a Manifold user have a Rabbit R1 in hand and able to post photo verification by the end of April 20th?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 21, 2024",
-        "url": "https://manifold.markets/strutheo/will-a-manifold-user-have-a-rabbit",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "ATT0soXcpIUMrCVN2coB",
         "text": "Will SpaceX attempt a 'catch' with the 'chopsticks' on Starship's sixth 'orbital' test flight?",
         "resolution_criteria": "N/A",
@@ -2713,19 +1323,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/ammonlam/will-there-be-news-reporting-that-a",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "vAq62cHSXLM1hhNkCOKC",
-        "text": "Will the Fertility Crisis be solved by Fertility Technology ( Artificial Wombs,  Embryo Selection, Robot Nannies etc.)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2065",
-        "url": "https://manifold.markets/elf/will-the-fertility-crisis-be-solved",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2772,19 +1369,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "ME8CpISZbci4ntaQGFVX",
-        "text": "Among the current four emperors who is most likely to drop out of the race to the one piece first",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/mugiwaraplus/among-the-current-four-emperors-who",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "JhqjhbqDiTevKvBPsel2",
         "text": "When will the Gaza floating pier become operational? \u2693\ufe0f\ud83c\uddf5\ud83c\uddf8",
         "resolution_criteria": "N/A",
@@ -2811,84 +1395,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "BWd5rjLLXFTdSNTgIj7O",
-        "text": "Of the people who stay in Masters in Season 11 (March), who will have the lowest profit?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 02, 2024",
-        "url": "https://manifold.markets/mattyb/of-the-people-who-stay-in-masters-i",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "uWt8rKXAT7KyIDH0JK8k",
-        "text": "Has over 500 USD worth of mana been sold within the last three days? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/ammonlam/has-over-500-mana-been-sold-within",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "WcOcfYOeRQFlbMgNkiIW",
-        "text": "What is your opinion of Zionism? \ud83c\uddee\ud83c\uddf1\u2049\ufe0f",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "March 24, 2024",
-        "url": "https://manifold.markets/sowelison/what-is-your-opinion-of-zionism",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "2AauZUhwkAvSyTBUdTeD",
-        "text": "How many monthly active Users will Manifold reach before the end of 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/ammonlam/how-many-monthly-active-users-will-c4d18a19df5e",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "gLq6MIzXK1odmaeFLaeW",
-        "text": "How many monthly active Users will Manifold reach in April 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 02, 2024",
-        "url": "https://manifold.markets/ammonlam/how-many-monthly-active-users-will",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "r3pCMVUV6vLR5ndLrs12",
-        "text": "Will GPT be the no.1 LLM today? (Daily Market)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/ammonlam/will-gpt-be-the-no1-llm-today-daily",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "ITU11Y9SvgdWYB3FZDZ4",
         "text": "When will EVs become cheaper to produce than ICE?",
         "resolution_criteria": "N/A",
@@ -2902,51 +1408,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "wyjckM3RJ9daycV4LeHR",
-        "text": "How long will I spend 3D printing a part for a broken salad spinner?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 15, 2024",
-        "url": "https://manifold.markets/fwbt/how-long-will-i-spend-3d-printing-a-78616ed86252",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "ug1kl0vLpZplEh7dv8B0",
         "text": "Will any LLM outrank GPT-4 by 150 Elo in LMSYS chatbot arena before 2025?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 02, 2025",
         "url": "https://manifold.markets/bobbill/will-any-llm-outrank-gpt4-by-150-el",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "S1cji1TcHbmI9rFUzEmP",
-        "text": "Which country will lose territory to a newly founded country by 2050? [add responses]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2050",
-        "url": "https://manifold.markets/jan53274/which-country-will-lose-territory-t",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "P1Xc0toaBrZ9W4Wl6S2M",
-        "text": "2024 Czech EU elections: Will voting for Pirates be more influential than voting for STAN?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "June 07, 2024",
-        "url": "https://manifold.markets/hominidan/2024-czech-eu-elections-will-voting",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -2973,32 +1440,6 @@ TODO
         "question_type": "multiple_choice",
         "resolution_date": "January 01, 2040",
         "url": "https://manifold.markets/elf/when-will-chinas-stock-market-beat",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "6PUsGXBStBbiIGIBcpkZ",
-        "text": "Resolved today? https://manifold.markets/Joeb4b0/will-robinhood-hood-reach-a-20-shar-2d1abe745fb3?r=QV9NY0NhcnRoeQ",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 16, 2024",
-        "url": "https://manifold.markets/mccarthy/resolved-today-httpsmanifoldmarkets",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "G7UYgEKi2gYFkznt9zxg",
-        "text": "What Film Studio will Christopher Nolan work with for his next Movie? \ud83c\udf7f \ud83c\udfa5\ud83c\udfac\ud83c\udf9e\ufe0f",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2028",
-        "url": "https://manifold.markets/elf/what-film-studio-will-christopher-n",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3058,32 +1499,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "7prrwEmRy8FK9z9XaSTK",
-        "text": "Which companies will outrank or tie with OpenAI on ChatBot Arena in 2024? (>= week)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/soli/which-companies-will-outrank-or-tie",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "1WMXfbut25dOHgktOZhe",
-        "text": "Which companies will achieve a higher ELO rating than OpenAI on ChatBot Arena in 2024? ( >= week)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/soli/which-companies-will-achieve-a-high",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "7U9CVh8guSMprkr1b3Yv",
         "text": "Will Anthropic achieve an ELO rating higher than OpenAI\u2019s best model on ChatBot Arena in 2024? (for >= 1 week)",
         "resolution_criteria": "N/A",
@@ -3110,103 +1525,12 @@ TODO
         "resolution": false
     },
     {
-        "id": "V1hKOEWNYMdx7QjY8EGn",
-        "text": "Which companies will outrank OpenAI on ChatBot Arena in 2024? (>= week)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/soli/which-companies-will-outrank-openai",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Il71NEJA3s4TxEf82EPi",
-        "text": "Total value of crypto stolen/scammed between Mar 16th and Apr 15th as tracked by Molly White/W3IGG",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 15, 2024",
-        "url": "https://manifold.markets/martinmodrak/total-value-of-crypto-stolenscammed-6f7e431825f2",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "21Q0ITAxPH6eNyDYE9Ma",
-        "text": "Is this either Luffy or Quagmire? (Fortnite trailer speculation)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "June 01, 2024",
-        "url": "https://manifold.markets/strutheo/is-this-either-luffy-or-quagmire-fo",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "sEMOwBHvOntRxCId2rD3",
-        "text": "If there is a One Piece collaboration with Fortnite what will be in it? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2036",
-        "url": "https://manifold.markets/strutheo/if-there-is-a-one-piece-collaborati",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "4EO2PcZF9UHnSF5FbwGW",
-        "text": "Would Manifold prefer to live under permanent Daylight Savings Time, or permanent Standard time?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 30, 2024",
-        "url": "https://manifold.markets/themightysalmon/would-manifold-prefer-to-live-under",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "l6u8krLxwMazidXcOxYC",
-        "text": "What would happen in Minecraft 1.21? [Add answers]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/cyfralcoot/what-would-happen-in-minecraft-121",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "Bi9LDtGNb5em1kCaJ6pP",
         "text": "Will a Top Level Domain (TLD) other than .com be in the top 10 most expensive domain names before the end of 2028?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2029",
         "url": "https://manifold.markets/strutheo/will-a-top-level-domain-tld-other-t-280cb42a5c60",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "hJbD4Gy5Lu2ychCsnzmk",
-        "text": "Daily coinflip",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 18, 2024",
-        "url": "https://manifold.markets/traveel/daily-coinflip-4a8469de8b21",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3233,58 +1557,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "June 20, 2024",
         "url": "https://manifold.markets/strutheo/at-the-end-of-juneteenth-will-joe-b",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "8JLUKhfL83GGWs7YZBi0",
-        "text": "Does Mana have fractionals?",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/elmerfudd/does-mana-have-fractionals",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "e14cleJtUCOmNa5p49JQ",
-        "text": "\ud83c\udfc0NBA Basketball Games Live\ud83c\udfc0 (Saturday, March 16)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/reemarkable/nba-basketball-games-live-saturday",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "nTPkmOVxmi7jgoOGqnJR",
-        "text": "Will \"Model, Care, Execution\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-model-care-execution-make-the",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "ks9QWT87lycap58gWTk9",
-        "text": "\ud83c\udf10Which of these domain names will point to an actual website at the end of 2027? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2028",
-        "url": "https://manifold.markets/strutheo/which-of-these-domain-names-will-po",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3344,19 +1616,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "vcalEtKpsT3Vilo1nu4L",
-        "text": "Which states will suffer tornado destruction between the dates of March 15 and August 1, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "August 02, 2024",
-        "url": "https://manifold.markets/suzumebatchi/which-states-will-suffer-tornado-de",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "FnMGaEIV4J3xlWElgzh6",
         "text": "Will the record for most expensive NFT be broken before the end of 2028? ($69.3M)",
         "resolution_criteria": "N/A",
@@ -3376,19 +1635,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 01, 2027",
         "url": "https://manifold.markets/strutheo/will-one-piece-feature-a-direct-ref",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "PnDThmAgAnVa8Wf27ITw",
-        "text": "Will I lift weights today?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 16, 2024",
-        "url": "https://manifold.markets/benjaminikuta/will-i-lift-weights-today-fbbc8dc4d3fd",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3435,19 +1681,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "pG6rOroLFRJXDkKk4S19",
-        "text": "Formula 1: Which drivers will be part of the Mercedes driver lineup for the 2025 season?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 23, 2025",
-        "url": "https://manifold.markets/predict/formula-1-which-drivers-will-be-par",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "OkoIL2HtxbrjBRdxfm9R",
         "text": "Will Noam Chompsky die in the next 30 days?",
         "resolution_criteria": "N/A",
@@ -3487,32 +1720,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "oVzwswoUng6kCnCTUXlT",
-        "text": "Verified User Reviews of Bostrom's \"Deep Utopia: Life and Meaning in a Solved World\"",
-        "resolution_criteria": "N/A",
-        "question_type": "bountied_question",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/adamk/verified-user-reviews-of-bostroms-d",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "loHg5z1eRE2mE5ZDLoBx",
-        "text": "Will we learn about Logia Awakening by the end of 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/onepieceexplained/will-we-learn-about-logia-awakening",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "BVdiduk0fmFJ1uEoZcGk",
         "text": "Will the One Piece x Fortnite collaboration happen in 2024?",
         "resolution_criteria": "N/A",
@@ -3532,71 +1739,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/onepieceexplained/will-any-us-politician-reference-on",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "qmeRmEcryBEcZUhffpqN",
-        "text": "Which of these problems will seem noticeably less bad by the end of the month?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 02, 2024",
-        "url": "https://manifold.markets/april/which-of-these-problems-will-seem-n",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "6R47mZj15mX68mc5gmqh",
-        "text": "Will we see another flashback of the Rocks Pirate by the end of 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/onepieceexplained/will-we-see-another-flashback-of-th",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Gn9LR1bqBvDH5V4EzgaL",
-        "text": "\ud83d\udd34Live: Will I score 1M chips in a single hand of Balatro today on stream?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 16, 2024",
-        "url": "https://manifold.markets/strutheo/live-will-i-score-1m-chips-in-a-sin-b15962c831f6",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
-    },
-    {
-        "id": "UaLH9MKJtYjZfU4OoFOX",
-        "text": "Poll: Do you think every market should also have a poll built in?",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "N/A",
-        "url": "https://manifold.markets/joshua/poll-do-you-think-every-market-shou",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "BDN8bZLXiZ6z9qwrMmGs",
-        "text": "Will I get into an Ivy League?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 06, 2025",
-        "url": "https://manifold.markets/lsdsearch4god/will-i-get-into-an-ivy-league",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3643,32 +1785,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "UfeS1v5Eb4Cqn6da1rI3",
-        "text": "Will Ilya Sutskever reappear before 2025?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/ooe133/will-ilya-sutskever-reappear-before",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "hM8wYjrkm3HvZijpBhaU",
-        "text": "Will Ilya Sutskever be replaced by a body double?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 23, 2036",
-        "url": "https://manifold.markets/ooe133/will-ilya-sutskever-be-replaced-by",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "tgDegEk1tepJmmR2DhUd",
         "text": "Will Discord IPO before Luffy finds the One Piece?",
         "resolution_criteria": "N/A",
@@ -3688,19 +1804,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 01, 2029",
         "url": "https://manifold.markets/strutheo/will-discord-ipo-before-grand-theft",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "IMcrHz6ZMxUPJOWr3Wh7",
-        "text": "Which one will become commercially viable first by the year 2074?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 30, 2024",
-        "url": "https://manifold.markets/aurosargento/which-one-will-become-commercially",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3760,71 +1863,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "AkOOrpJxjOVKsvAFgQiG",
-        "text": "Will Ron DeSantis get 3% or more of the vote in any upcoming Republican presidential primary or caucus?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "July 01, 2024",
-        "url": "https://manifold.markets/markhamill/will-ron-desantis-get-3-or-more-of",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "cfptOOZNLUsqHBScE7gr",
-        "text": "\ud83c\udf10Which social platforms will reach 500M or more users by the end of 2030? [ADD RESPONSES]",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2031",
-        "url": "https://manifold.markets/strutheo/which-social-platforms-will-reach-5",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Hv9dMvMyKig2l5MgOkNu",
-        "text": "[short fuse] What vote share will Matt Dolan get in the Ohio Republican Senate primary on March 19, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 21, 2024",
-        "url": "https://manifold.markets/markhamill/short-fuse-what-vote-share-will-mat",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "jB7onSoPp5ikiVqz4jFi",
-        "text": "[short fuse] What vote share will Bernie Moreno get in the Ohio Republican Senate primary on March 19, 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 21, 2024",
-        "url": "https://manifold.markets/markhamill/short-fuse-what-vote-share-will-ber",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "xWhj9vLpMvqLEM1iN7uo",
-        "text": "\ud83c\udf10 Which of the fifty most-visited websites today will still be in the top 50 in a decade? (2024-2034)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2035",
-        "url": "https://manifold.markets/strutheo/-which-of-the-fifty-mostvisited-web",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "C12QXPtpaDiW3FaHnFK7",
         "text": "How many Boeing commercial aircraft models will be grounded in the US for at least one week in 2024?",
         "resolution_criteria": "N/A",
@@ -3844,58 +1882,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "January 02, 2035",
         "url": "https://manifold.markets/ediblehat/will-the-most-popular-alcoholic-dri",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "VOj9Al4wdVI3NxqQ0K7P",
-        "text": ">10% of companies (>12 months old) from AIM's Founding to Give get into YC before EOY 2030?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2031",
-        "url": "https://manifold.markets/henrithunberg/10-of-companies-12-months-old-from",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "42xEnh1f3cguFPqXqWxq",
-        "text": "How many copies of Acheron will I pull?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 15, 2024",
-        "url": "https://manifold.markets/kylewan/how-many-copies-of-acheron-will-i-p",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "HCUHtz8TYdpHmJYGnjNu",
-        "text": "Any company from AIM's Founding to Give's first batch get into YC before EOY 2027?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2028",
-        "url": "https://manifold.markets/henrithunberg/any-company-from-aims-founding-to-g-958be0958aee",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Hy6iXNvnHBvfJPrHwqMK",
-        "text": "Any company from AIM's Founding to Give's first batch lead to an exit with donations >$1M before EOY 2036?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "January 01, 2037",
-        "url": "https://manifold.markets/henrithunberg/any-company-from-aims-founding-to-g",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -3929,19 +1915,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "t8pEkiHRJlHcTTlX6cj4",
-        "text": "Will Manifold \"hit 15k DAU (7-day average) by Sept 30th\" 2024? (lol)",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "September 30, 2024",
-        "url": "https://manifold.markets/codeandsolder/will-manifold-hit-15k-dau-7day-aver",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "14znxtPdFKk7x8zsJIGE",
         "text": "Will Advanced Micro Devices (NASDAQ: AMD) close higher at the end of March than February?",
         "resolution_criteria": "N/A",
@@ -3961,19 +1934,6 @@ TODO
         "question_type": "binary",
         "resolution_date": "March 29, 2024",
         "url": "https://manifold.markets/keenenwatts/will-costco-nasdaq-cost-close-highe-eafd6cfd2dc0",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "oo6oUMHTYK7tWwVz5t0G",
-        "text": "Will \"Consciousness as intrinsically valued interna...\" make the top fifty posts in LessWrong's 2023 Annual Review?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "February 01, 2025",
-        "url": "https://manifold.markets/lesswrong/will-consciousness-as-intrinsically",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -4020,45 +1980,6 @@ TODO
         "resolution": false
     },
     {
-        "id": "9GVKJTiCCemoVRKKb0my",
-        "text": "Will Tesla (NASDAQ: TSLA) close higher than $163.57 on March 22?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 22, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-tesla-nasdaq-tsla-close-higher",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "EQRNeqJMfTiME76WZqrL",
-        "text": "Will Facebook/Meta (NASDAQ: META) close higher than $484.10 on March 22?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 22, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-facebookmeta-nasdaq-meta-close",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "I2XmRWwoFWdFye1DBMYQ",
-        "text": "Will Costco (NASDAQ: COST) close higher than $725.63 on March 22?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-costco-nasdaq-cost-close-highe",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "18GtpFltHb89luPJrQW3",
         "text": "Will MicroStrategy (NASDAQ: MSTR) close higher than  $1,782.36 on March 22?",
         "resolution_criteria": "N/A",
@@ -4084,32 +2005,7 @@ TODO
         },
         "resolution": false
     },
-    {
-        "id": "W1ZeR2DZyGreVrovmoER",
-        "text": "Will Bitcoin hit $73K in March 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/ccat/will-bitcoin-hit-73k-in-march-2024-d8efdfe31ace",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "I9H9f8WxHRKZ5pkHxYYb",
-        "text": "Will Nvidia (NASDAQ: NVDA) close higher than $878.36 on March 22?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 22, 2024",
-        "url": "https://manifold.markets/keenenwatts/will-nvidia-nasdaq-nvda-close-highe",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
+
     {
         "id": "Gpt7Old3v4GJnad1zKF6",
         "text": "Will \"The Eras Tour\" be streamed for more minutes in its first week on Disney+ than the highest total for \"Suits\"?",
@@ -4123,6 +2019,9 @@ TODO
         },
         "resolution": false
     },
+
+    TODO
+
     {
         "id": "OT0AN6ThQrXJA4zS9hBM",
         "text": "Will \u201cThe Eras Tour (Taylor\u2019s Version)\u201d have more streaming minutes in its first week on Disney+ than \u201cHamilton\u201d?",
