@@ -1,14 +1,14 @@
-""" Where f(x) is the model,
-R(x1, x2)       :=  x2 == ¬x1
-S(f(x1), f(x2)) :=  f(x1) + f(x2) = 1
-"""
-
 from common.llm_utils import answer_sync, answer, QandA
 from common.datatypes import *
 from .BaseChecker import BaseChecker
 
 
 class NegChecker(BaseChecker):
+    """Where f(x) is the forecaster,
+    R(x1, x2)       :=  x2 == ¬x1
+    S(f(x1), f(x2)) :=  f(x1) + f(x2) = 1
+    """
+    
     preface = (
         "You are a helpful assistant. I will give you a forecasting question with Yes/No "
         "answer, in the format: \n\n"

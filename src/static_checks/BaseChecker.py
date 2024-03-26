@@ -41,6 +41,8 @@ class BaseChecker(ABC):
     async def instantiate_and_write(self, *base_sentences: list[ForecastingQuestion], **kwargs):
         result = await self.instantiate(*base_sentences, **kwargs)
         result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
+        if kwargs.get("verbose", True):
+            print(f"Writing tuple to {self.path}: {result_serial}")
         await write_jsonl_async(self.path, [result_serial], append=True)
 
     async def instantiate_and_write_many(
