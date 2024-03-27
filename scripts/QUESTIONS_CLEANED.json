@@ -1,18 +1,5 @@
 [
     {
-        "id": "6cFkU3c09aR7zgcx1EY0",
-        "text": "Which country will win the most medals at 2024 summer Olympics (Paris)?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "July 25, 2024",
-        "url": "https://manifold.markets/firstuserhere/which-country-will-win-the-most-med",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "3FMR4PrjwMMdpBm51ikS",
         "text": "Paris Olympics 2024: Will the USA win the most medals?",
         "resolution_criteria": "N/A",
@@ -169,51 +156,12 @@
         "resolution": false
     },
     {
-        "id": "5VoKKPxWyFFVGu9MW8q7",
-        "text": "If Trump and Biden don't debate, who will chicken out?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/jacksonpolack/if-trump-and-biden-dont-debate-who",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "TB81w6CB2JqNLII3h8c8",
-        "text": "What will be the state of the 'Rwanda' bill by the local elections on the 2nd of May 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 03, 2024",
-        "url": "https://manifold.markets/joeym4/what-will-be-the-state-of-the-rwand",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "AiMfpj7mIodw6kJmPn6d",
         "text": "Will Sh\u014dgun have a RottenTomatoes score >=99% when the season completes?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "April 24, 2024",
         "url": "https://manifold.markets/mattyb/will-shogun-have-a-rottentomatoes-s",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "JqoNimpuyr2yFhfjMnsW",
-        "text": "Golf: Who will win the 2024 THE PLAYERS Championship?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 19, 2024",
-        "url": "https://manifold.markets/kurt/golf-who-will-win-the-2024-the-play",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -234,38 +182,12 @@
         "resolution": false
     },
     {
-        "id": "NL5MdBuGMtSyZkK1LaI4",
-        "text": "Which political party will win Oregon State Treasurer?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 05, 2024",
-        "url": "https://manifold.markets/rne/which-political-party-will-win-oreg",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "mt6v6P4HMo8KlF1q6Fo3",
         "text": "will Kai\u2019s Said still be the president of Tunisia by 01 June 2024",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "June 01, 2024",
         "url": "https://manifold.markets/raed667/will-kais-said-still-be-the-preside",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "tDLOlvyDIlmv7iAfaZ7g",
-        "text": "What will Americans say is the most important problem in November 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 01, 2024",
-        "url": "https://manifold.markets/arky/what-will-americans-say-is-the-most",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -311,33 +233,6 @@
         },
         "resolution": false
     },
-
-    {
-        "id": "sOktKDZO8wRdmVxzIOxC",
-        "text": "Top 3 Video Generation Models by Company/Organization EOY 2024",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/sss19971997/top-3-video-generation-models-by-co",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "3BZXnuR4fkTks5LSerbl",
-        "text": "Top 3 Multimodal Vision2Language Model by EOY 2024? (by Organization/Company)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/sss19971997/top-3-multimodal-vision2language-mo",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
     {
         "id": "RcRNH2IO1Zgv1uSXO7TZ",
         "text": "Will \"The Idea of You\" (inspired by Harry Styles fan fic) have a Metacritic score >70?",
@@ -377,8 +272,6 @@
         },
         "resolution": true
     },
-    TODO
-
     {
         "id": "oh28fbxwwlVxJ4ku9Hb2",
         "text": "Steph Curry vs Jayson Tatum: Who will finish the regular season with higher points per game?",
@@ -412,19 +305,6 @@
         "question_type": "binary",
         "resolution_date": "August 13, 2024",
         "url": "https://manifold.markets/mint/will-there-be-an-olympics-ceasefire",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "uXZszqXkV92448CgFwiL",
-        "text": "What will be the top 5 ranking for the Kia NBA Most Valuable Player Award? (Resolves to %)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "June 14, 2024",
-        "url": "https://manifold.markets/ziddletwix/what-will-be-the-top-5-ranking-for",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -471,19 +351,6 @@
         "resolution": false
     },
     {
-        "id": "CQGdinsEb7fChv1vxQYI",
-        "text": "What is your opinion of Benjamin Netanyahu? \ud83d\udc68\ud83c\udffc\u200d\ud83e\uddb3\ud83c\uddee\ud83c\uddf1",
-        "resolution_criteria": "N/A",
-        "question_type": "poll",
-        "resolution_date": "March 25, 2024",
-        "url": "https://manifold.markets/sowelison/what-is-your-opinion-of-benjamin-ne",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "KmEdGIGKGfNtzBKVGrfd",
         "text": "Will GPT-4 become free on ChatGPT when OpenAI releases GPT-4.5/GPT-5?",
         "resolution_criteria": "N/A",
@@ -495,19 +362,6 @@
             "topics": []
         },
         "resolution": false
-    },
-    {
-        "id": "eeDxRnEDzalGAlsLNhg6",
-        "text": "Will Anthony be able to win over 200 profit in the next 3 months?",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/ammonlam/will-anthony-be-able-to-win-over-20",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": true
     },
     {
         "id": "xcKoGrgFMCLIFNXoEvEU",
@@ -529,19 +383,6 @@
         "question_type": "binary",
         "resolution_date": "October 02, 2024",
         "url": "https://manifold.markets/peteoh/will-the-ny-yankees-win-the-world-s",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "ilQ29kN79Ato18iwddTZ",
-        "text": "Who will be Google's CEO in 2026?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2027",
-        "url": "https://manifold.markets/simoneromeo/who-will-be-googles-ceo-in-2026",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -594,19 +435,6 @@
         "question_type": "binary",
         "resolution_date": "January 01, 2026",
         "url": "https://manifold.markets/ammonlam/will-a-company-by-barak-raise-2mil",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "dWtmLME39AxBvZOUWgrM",
-        "text": "Which team will be the #1 overall seed in the 2024 men\u2019s March Madness tournament?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 17, 2024",
-        "url": "https://manifold.markets/dglid/which-team-will-be-the-1-overall-se",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -705,38 +533,12 @@
         "resolution": false
     },
     {
-        "id": "SozY6WYJYqxzL21WdPCq",
-        "text": "Which NATO countries will officially send soldiers to fight in Ukraine before the end of 2025?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2025",
-        "url": "https://manifold.markets/ukaszbartoszcze/which-nato-countries-will-officiall",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "XMHCFl1Et3cIvzKtoivn",
         "text": "In 2024, will Gallup polling indicate that more than 0.5% of Americans believe AI is the most important problem?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/arky/in-2024-will-gallup-polling-indicat",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "zr5xt7zPf0WGpVq2Tv7S",
-        "text": "2023-24 NBA Coach of the Year?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 26, 2024",
-        "url": "https://manifold.markets/cloontia/202324-nba-coach-of-the-year",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -757,38 +559,12 @@
         "resolution": false
     },
     {
-        "id": "8GNh1AcZWnsi0jTTMvRl",
-        "text": "Which political party in Oregon will win Secretary of State?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 16, 2024",
-        "url": "https://manifold.markets/rne/which-political-party-in-oregon-wil",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "FM2TrQBFro3INVS9ceNC",
         "text": "Will a US retailer get sued over defective eclipse glasses sold in 2024?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 01, 2025",
         "url": "https://manifold.markets/jgyou/will-a-us-retailer-be-sued-for-sell",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "NxrmPJiCXuKvbPoEIwq8",
-        "text": "Which teams will make the 2024 NBA Western Conference Finals?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 22, 2024",
-        "url": "https://manifold.markets/wilsonkime/which-teams-will-make-the-2024-nba-5f5a574b902c",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -822,45 +598,6 @@
         "resolution": false
     },
     {
-        "id": "SffmZy1SNKLIrvm1GPKD",
-        "text": "Which teams will make the 2024 NBA Eastern Conference Finals?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 22, 2024",
-        "url": "https://manifold.markets/wilsonkime/which-teams-will-make-the-2024-nba",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "F7luiIKzfZssbXApw1KH",
-        "text": "Who will be sworn in as the Chief Minister of Maharashtra after the 2024 Maharashtra Legislative Assembly election?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/unown/who-will-be-the-chief-minister-of-m",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "9U3uXSUTGY2yaMEeZW8I",
-        "text": "Tour de France 2024 Winner",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "July 23, 2024",
-        "url": "https://manifold.markets/speaksfortrees/tour-de-france-2024-winner",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "UzuIGUYNHaIvyJK9NZvB",
         "text": "Will OpenAI have a new name by the end of 2025?",
         "resolution_criteria": "N/A",
@@ -880,32 +617,6 @@
         "question_type": "binary",
         "resolution_date": "April 16, 2024",
         "url": "https://manifold.markets/ziddletwix/will-3-body-problem-be-streamed-50",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "sZ1d6eSowsfp2r4JfN0O",
-        "text": "How will the S&P 500 perform across Q2 and Q3?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "October 01, 2024",
-        "url": "https://manifold.markets/mattyb/how-will-the-sp-500-perform-across",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "EZl3qRAEyCryGaBdhRTG",
-        "text": "When will the next user-visible advance come to IMAX?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2040",
-        "url": "https://manifold.markets/mattyb/when-will-the-next-uservisible-adva-3804486cb8cc",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -938,20 +649,6 @@
         },
         "resolution": false
     },
-
-    {
-        "id": "ajYFNbOEs5qA2byceCU9",
-        "text": " Tyson, Jake Paul fight! . How many rounds until Jake goes to??\ud83d\ude34\ud83d\ude34\ud83d\ude34\ud83d\ude34\ud83d\ude34",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "April 16, 2024",
-        "url": "https://manifold.markets/captainhowdy/if-the-tyson-jake-paul-fight-actual",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
     {
         "id": "vObkewGDMzzjMJ0HM9Bu",
         "text": "Will SpaceX be the first company or organization to get a human to walk on mars?",
@@ -959,19 +656,6 @@
         "question_type": "binary",
         "resolution_date": "January 01, 2101",
         "url": "https://manifold.markets/strutheo/will-spacex-be-the-first-companyorg",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "CVfztCX1MsRr1XvdXaxB",
-        "text": "Which country will be the first to have a human walk on mars?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2101",
-        "url": "https://manifold.markets/strutheo/which-country-will-be-the-first-to-a9d233d4f963",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -998,32 +682,6 @@
         "question_type": "binary",
         "resolution_date": "January 01, 2034",
         "url": "https://manifold.markets/guillaume/will-irreversible-longterm-health-c",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "jm1jX1YUUXZkKuJ0wrJB",
-        "text": "Which NBA player will be NEXT to score >= 50 points in a single game? \ud83c\udfc0",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "October 09, 2024",
-        "url": "https://manifold.markets/ziddletwix/which-nba-player-will-be-next-to-sc",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "Y9p0PzxUGjojVGLuSy1C",
-        "text": "Is any Silly Roon Tweet from 2024 *so far* actually cool insider info about OpenAI? [Resolves by April 1st]",
-        "resolution_criteria": "N/A",
-        "question_type": "binary",
-        "resolution_date": "April 01, 2024",
-        "url": "https://manifold.markets/joshua/is-any-silly-roon-tweet-from-2024-s",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1148,19 +806,6 @@
         "resolution": false
     },
     {
-        "id": "a4VjV6XmkF3EiO2hx0ik",
-        "text": "How much of the popular vote will Robert F. Kennedy Jr. win in the 2024 United States Presidential election?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "November 11, 2026",
-        "url": "https://manifold.markets/tripping/how-much-of-the-popular-vote-will-r-8838a594cb5d",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "mv6HWN6YJ0ThbHAHyDzP",
         "text": "Will a new supreme court justice be nominated in the lame duck session if democrats lose the presidency or senate?",
         "resolution_criteria": "N/A",
@@ -1219,19 +864,6 @@
         "question_type": "binary",
         "resolution_date": "January 01, 2029",
         "url": "https://manifold.markets/strutheo/will-the-gumby-reboot-release-befor",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "4JwV9Iid57dqwCk79qkr",
-        "text": "Who will win the FIRST round in the Slovakian presidential election?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "March 23, 2024",
-        "url": "https://manifold.markets/weezing/who-will-win-the-first-round-in-the",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1369,19 +1001,6 @@
         "resolution": false
     },
     {
-        "id": "JhqjhbqDiTevKvBPsel2",
-        "text": "When will the Gaza floating pier become operational? \u2693\ufe0f\ud83c\uddf5\ud83c\uddf8",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/sowelison/when-will-the-gaza-floating-pier-be",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "THFyk7XTvRYE5FPr6zh6",
         "text": "Will Roma beat Milan during regular time on Thu, Apr 11, 2024? - Europa League",
         "resolution_criteria": "N/A",
@@ -1395,38 +1014,12 @@
         "resolution": false
     },
     {
-        "id": "ITU11Y9SvgdWYB3FZDZ4",
-        "text": "When will EVs become cheaper to produce than ICE?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2029",
-        "url": "https://manifold.markets/simoneromeo/when-will-evs-become-cheaper-to-pro",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "ug1kl0vLpZplEh7dv8B0",
         "text": "Will any LLM outrank GPT-4 by 150 Elo in LMSYS chatbot arena before 2025?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "January 02, 2025",
         "url": "https://manifold.markets/bobbill/will-any-llm-outrank-gpt4-by-150-el",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "jiRF9GEL1csRQ3olFsVe",
-        "text": "What, if any, prison sentence will Binance\u2019s \u201cCZ\u201d get when his sentencing actually happens (currently April 30th 2024)",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "May 01, 2024",
-        "url": "https://manifold.markets/pjfkh/what-if-any-prison-sentence-will-bi",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1466,19 +1059,6 @@
         "question_type": "binary",
         "resolution_date": "January 01, 2026",
         "url": "https://manifold.markets/singer/will-a-company-get-sued-for-giving",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "raiVqdV74eyZUplSPRPC",
-        "text": "Who will have the best LLM at the end of 2024 (as decided by ChatBot Arena Ranks)?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "December 31, 2024",
-        "url": "https://manifold.markets/soli/who-will-have-the-best-llm-at-the-e",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1759,32 +1339,6 @@
         "resolution": true
     },
     {
-        "id": "SEkMPX5OleGguMKSG4OM",
-        "text": "When will Stand with Trump Gofundme reach 1.5 millions donation?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/ammonlam/when-will-stand-with-trump-gofundme-e04b16e76d5c",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "RxcdHJZuFJ7V3atwGlun",
-        "text": "When will Stand with Trump Gofundme reach 2 millions donation?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/ammonlam/when-will-stand-with-trump-gofundme",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "tgDegEk1tepJmmR2DhUd",
         "text": "Will Discord IPO before Luffy finds the One Piece?",
         "resolution_criteria": "N/A",
@@ -1837,38 +1391,12 @@
         "resolution": false
     },
     {
-        "id": "dZadhSPswBNaPbNfAidu",
-        "text": "When will Bitcoin next suffer a 50% drawdown from its most recent peak?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "Error processing date",
-        "url": "https://manifold.markets/harrisonnathan/when-will-bitcoin-next-suffer-a-50",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "inZIVmsv5YSM9ywb1jqs",
         "text": "Will Biden get less than 80% of the vote in any upcoming Democratic presidential primary or caucus?",
         "resolution_criteria": "N/A",
         "question_type": "binary",
         "resolution_date": "July 01, 2024",
         "url": "https://manifold.markets/markhamill/will-biden-get-less-than-80-of-the",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
-        "id": "C12QXPtpaDiW3FaHnFK7",
-        "text": "How many Boeing commercial aircraft models will be grounded in the US for at least one week in 2024?",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 02, 2025",
-        "url": "https://manifold.markets/harrisonnathan/how-many-boeing-commercial-aircraft",
         "data_source": "manifold",
         "metadata": {
             "topics": []
@@ -1941,19 +1469,6 @@
         "resolution": false
     },
     {
-        "id": "e3Gp19L2v5tM3LoiD6NM",
-        "text": "Who will win the $500,000 Magnus Carlsen, Buettner Chess 960 freestyle event.",
-        "resolution_criteria": "N/A",
-        "question_type": "multiple_choice",
-        "resolution_date": "January 01, 2025",
-        "url": "https://manifold.markets/bobbill/who-will-the-500000-magnus-carlsen",
-        "data_source": "manifold",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": false
-    },
-    {
         "id": "klucxstOCKr2RknrtPIb",
         "text": "Which will be first before April 30th, 2024:  Ceasefire or Rafah Ground Invasion?",
         "resolution_criteria": "N/A",
@@ -2005,7 +1520,6 @@
         },
         "resolution": false
     },
-
     {
         "id": "Gpt7Old3v4GJnad1zKF6",
         "text": "Will \"The Eras Tour\" be streamed for more minutes in its first week on Disney+ than the highest total for \"Suits\"?",
@@ -2013,6 +1527,487 @@
         "question_type": "binary",
         "resolution_date": "April 15, 2024",
         "url": "https://manifold.markets/ziddletwix/will-the-eras-tour-be-streamed-for",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "OT0AN6ThQrXJA4zS9hBM",
+        "text": "Will \u201cThe Eras Tour (Taylor\u2019s Version)\u201d have more streaming minutes in its first week on Disney+ than \u201cHamilton\u201d?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 15, 2024",
+        "url": "https://manifold.markets/ziddletwix/will-the-eras-tour-taylors-version",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "MYzEbrQ6EJolyINOmcJv",
+        "text": "Will Trump announce his running mate before the end of May Day? (May 1st)",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "May 02, 2024",
+        "url": "https://manifold.markets/strutheo/will-trump-announce-his-running-mat-c1245c0277b9",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "b1DYvYTV9Govt0b9nPGC",
+        "text": "Will Elon Musk and Mark Zuckerberg ever fight?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2125",
+        "url": "https://manifold.markets/ammonlam/will-elon-musk-and-mark-zuckerberg-b67e1bee7239",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "deIVzVwhNHhXf5z77DyT",
+        "text": "Will Donald Trump or Joe Biden visit an abortion clinic before election day?",
+        "resolution_criteria": "N/A",
+        "question_type": "multiple_choice",
+        "resolution_date": "November 06, 2024",
+        "url": "https://manifold.markets/mattyb/will-donald-trump-or-joe-biden-visi",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "X5Vt0gImXpukCoSjwGnO",
+        "text": "Will the R21 malaria vaccine be distributed in 15 countries before July 1st, 2025?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 02, 2026",
+        "url": "https://manifold.markets/1daysooner/will-r21-be-distributed-in-15-count",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "3bRJTtK3PsqMKERm9Fye",
+        "text": "Will the number of children vaccinated with 3 doses of the R21 malaria vaccine reach 5M before January 1st, 2025?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "July 02, 2025",
+        "url": "https://manifold.markets/1daysooner/will-the-number-of-children-vaccina",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "OMfjsAXK5bdu4PiqzKbT",
+        "text": "Will it be confirmed that >2M doses of the R21 malaria vaccine are delivered in a single month before January 1st, 2025?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2025",
+        "url": "https://manifold.markets/1daysooner/will-it-be-confirmed-that-the-numbe",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "fLpitakMLcj5WMkCt9OK",
+        "text": "Will a gag order be issued on Fani Willis limiting mentioning the Trump election interference case in public?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "March 23, 2025",
+        "url": "https://manifold.markets/danman314/will-a-gag-order-be-issued-on-fani",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "kgfySjz4riIOZskKETsM",
+        "text": "Will there be another new member of the Straw Hat Pirates before the end of One Piece?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2031",
+        "url": "https://manifold.markets/strutheo/will-there-be-a-new-member-of-the-s",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "2SD38QKZhTP411C5Ju4C",
+        "text": "Will Kozuki Momonosuke die before the end of One Piece?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2036",
+        "url": "https://manifold.markets/strutheo/will-kozuki-momonosuke-die-before-t",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "4ZbxT4XdjCZhDZ5eUXbl",
+        "text": "Will Taylor Swift use an electric plane for the majority of her air travel by 2035?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 02, 2036",
+        "url": "https://manifold.markets/fe_mey/will-taylor-swifts-use-an-electric",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "NsgZLbr1HkTTQVfnKFVW",
+        "text": "Will any Mr Beast video posted in 2024 exceed 300M views?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/pym/will-any-mr-beast-video-posted-in-2",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "5ZUOfksqs3Oxj9R14ELY",
+        "text": "Will GPT 4.5 eliminate at least 100 million jobs before 2027?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2027",
+        "url": "https://manifold.markets/franklinbaldo/will-gpt-45-eliminate-at-least-100",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "NGvr47J6cdXsrELqtCcg",
+        "text": "Will France officially send their troops to Ukraine by June 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2025",
+        "url": "https://manifold.markets/jakehatchett/will-france-officially-send-their-t",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "TEmbnEtq8LqBmlvyDURP",
+        "text": "Will Kanye West release Vultures 2 on May 3rd?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "May 05, 2024",
+        "url": "https://manifold.markets/orbitny/will-kanye-west-release-vultures-2-b8225a325f79",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "65rsTFG9dYpqZM91n7zR",
+        "text": "Will Travis Kelce and Taylor Swift break up before the end of 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2025",
+        "url": "https://manifold.markets/bte/will-travis-kelce-and-taylor-swift-5ab3b1279864",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "uwctcJd8LTLi2GjNFdYU",
+        "text": "Bitcoin (BTC) price reaches $200,000 in 2024",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/bitcoin-btc-price-reaches-200000-in",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "PS7u7UWIpI6RwifYI0Mk",
+        "text": "Will 2024 be the deadliest Mount Everest season ever?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "June 09, 2024",
+        "url": "https://manifold.markets/pym/will-2024-be-the-deadliest-mount-ev",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "mcJzlWiDTGH8UremDeZx",
+        "text": "Will Meta announce integration of a LLaMA model for businesses on Whatsapp, in 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/will-meta-announce-integration-of-a",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "XvnJHeNu789nvw5kiYFs",
+        "text": "Apple announces a new product in the Apple Vision lineup in 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/apple-announces-a-new-product-in-th",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "Eut6AZbWmOw0as4KvzrM",
+        "text": "Average number of employees at Fortune 500 companies drops by at least 10% by April, 2025?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/average-number-of-employees-at-fort-cbf822479df4",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "0gVVuwvB6Uuy2R85KN2j",
+        "text": "Average number of employees at Fortune 500 companies drops by at least 5% by April, 2025?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/average-number-of-employees-at-fort",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "NyBoaD2sOt3le4mMxJ8j",
+        "text": "Donald Trump will trip or fall on camera before the US presidential elections in 2024",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/donald-trump-will-trip-and-fall-on",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "syFhUnPCmPNoYwFkPtCn",
+        "text": "Will the next Chat GPT version 4.5 or 5 release before Passover starts?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 23, 2024",
+        "url": "https://manifold.markets/strutheo/will-the-next-chat-gpt-version-45-o",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "ABNv7OfuO03cbxTDjOzd",
+        "text": "Yann LeCun is demoted or fired as Meta Chief AI Scientist in 2024",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/yann-lecun-is-demoted-or-fired-as-m",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "HHm5kIs1RXHghlVRXAsy",
+        "text": "Will George RR Martin publish Winds of Winter in 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/will-george-rr-martin-publish-winds",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "z9tbU88DtxdQbXI5K7pT",
+        "text": "Will Artemis 2, the first crewed mission to the moon since 1972, happen before 2026?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "March 15, 2024",
+        "url": "https://manifold.markets/firstuserhere/will-artemis-2-the-first-crewed-mis",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": true
+    },
+    {
+        "id": "IqKTh46dwiQQhhWgQlXC",
+        "text": "Will Venezuela leave BRICS in 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/will-venezuela-leave-brics-in-2024",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "3y11gU5AyRV1dK0y5nXP",
+        "text": "Will any US state ban cultivated meat by the end of 2028?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2029",
+        "url": "https://manifold.markets/shump/will-any-us-state-ban-cultivated-me",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "UGQbDfucar8zCZVGlqn9",
+        "text": "Champions League quarter finals - will Barcelona qualify over PSG?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 18, 2024",
+        "url": "https://manifold.markets/simongrayson/champions-league-quarter-finals-wil-520b00739021",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "kIbIcSAMQlkyOsPNhBj9",
+        "text": "Champions League quarter finals - will Manchester City qualify over Real Madrid?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 18, 2024",
+        "url": "https://manifold.markets/simongrayson/champions-league-quarter-finals-wil-0992b20f339c",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "NQ2zzCSFD9ODbQHgdzVp",
+        "text": "Champions League quarter finals - will Atletico Madrid qualify over Borussia Dortmund?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 18, 2024",
+        "url": "https://manifold.markets/simongrayson/champions-league-quarter-finals-wil-55891440528d",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "cXzeuoPuOHnoxFoqms4s",
+        "text": "Champions League quarter finals - will Arsenal qualify over Bayern Munich?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "April 18, 2024",
+        "url": "https://manifold.markets/simongrayson/champions-league-quarter-finals-wil",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "sMo1RhwrFX7nqh3RKaVK",
+        "text": "New Eminem album in 2024?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "December 31, 2024",
+        "url": "https://manifold.markets/firstuserhere/new-eminem-album-in-2024",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "88hmXJTPkavDim6fGQfR",
+        "text": "Will the Line Item Veto be brought back in the US before 2050?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 02, 2050",
+        "url": "https://manifold.markets/jonathanray/will-the-line-item-veto-be-brought",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "eU8TBGvghOeK4XVh1Xr4",
+        "text": "Rapprochement between Elon Musk and establishment media before 2030?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "January 01, 2030",
+        "url": "https://manifold.markets/jonathanray/rapprochement-between-elon-musk-and",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": false
+    },
+    {
+        "id": "FGRvf1AYlZg0r57xaZhY",
+        "text": "Will George Galloway run to be Mayor of Greater Manchester?",
+        "resolution_criteria": "N/A",
+        "question_type": "binary",
+        "resolution_date": "May 04, 2024",
+        "url": "https://manifold.markets/simongrayson/will-george-galloway-run-to-be-mayo",
         "data_source": "manifold",
         "metadata": {
             "topics": []
