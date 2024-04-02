@@ -51,5 +51,5 @@ class ForecastingQuestion(BaseModel):
         return exp_answers[self.question_type]
 
 
-# ForecastingQuestionTuple = dict[str, ForecastingQuestion]
-# ProbsTuple = dict[str, Prob]
+ForecastingQuestionTuple = dict[str, ForecastingQuestion]
+ProbsTuple = dict[str, Prob]

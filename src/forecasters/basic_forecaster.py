@@ -22,27 +22,17 @@ class BasicForecaster(Forecaster):
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
+            response_model=sentence.expected_answer_type(),
             **kwargs
         )
-        return self.extract_prob(response)
+        return response
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
+            response_model=sentence.expected_answer_type(),
             **kwargs
         )
         return self.extract_prob(response)
-
-    def extract_prob(self, s: str) -> float:
-        pattern = r"-?\d*\.?\d+"
-        match = re.search(pattern, s)
-        if match:
-            try:
-                return Prob(float(match.group()))
-            except Exception as e:
-                # TODO: log error
-                return None
-        else:
-            return None
