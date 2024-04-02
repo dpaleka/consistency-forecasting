@@ -50,28 +50,38 @@ def singleton_constructor(get_instance_func):
 @singleton_constructor
 def get_async_openai_client() -> AsyncOpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return AsyncOpenAI(api_key=api_key)
+    _client = AsyncOpenAI(api_key=api_key)
+    client = instructor.from_openai(_client)
+    return client
 
 @singleton_constructor
 def get_openai_client() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return OpenAI(api_key=api_key)
+    _client = OpenAI(api_key=api_key)
+    client = instructor.from_openai(_client)
+    return client
 
 @singleton_constructor
 def get_mistral_async_client() -> MistralAsyncClient:
     api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralAsyncClient(api_key=api_key)
+    _client = MistralAsyncClient(api_key=api_key)
+    client = instructor.from_openai(create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS)
+    return client
 
 @singleton_constructor
 def get_mistral_client() -> MistralClient:
     api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralClient(api_key=api_key)
+    _client = MistralClient(api_key=api_key)
+    client = instructor.from_openai(create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS)
+    return client
 
 @singleton_constructor
 def get_togetherai_client() -> OpenAI:
     url = "https://api.together.xyz/v1"
     api_key = os.getenv("TOGETHER_API_KEY")
-    return OpenAI(api_key=api_key, base_url=url)
+    _client = OpenAI(api_key=api_key, base_url=url)
+    client = instructor.from_openai(_client)
+    return client
 
 @singleton_constructor
 def get_huggingface_local_client(hf_repo) -> pipeline:
@@ -145,7 +155,7 @@ def _mistral_message_transform(messages):
 
 
 @cache  
-async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> Union[str, List[str]]:
+async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str | list[str]:
     client, client_name = get_client(model, use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
