@@ -43,7 +43,8 @@ class ForecastingQuestion(BaseModel):
             raise ValueError("Question type must be either 'binary' or 'conditional_binary'")
         return v
 
-    def expected_answer_type(self):
+    @property
+    def expected_answer_type(self) -> BaseModel:
         exp_answers = {
             'binary': Prob,
             'conditional_binary': Prob

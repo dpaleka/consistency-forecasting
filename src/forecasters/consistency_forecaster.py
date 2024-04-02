@@ -9,11 +9,11 @@ class ConsistentAskForecaster(Forecaster):
     def __init__(self, temperature: float = 0.2, n: int = 5, preface: str = None, examples: list = None):
         self.temperature = temperature 
         self.n = n
-        self.preface = preface or " ".join([
-            "You are an informed and well-calibrated forecaster. I need you to give me",
-            "your best probability estimate for the following sentence or question resolving YES.",
+        self.preface = preface or (
+            "You are an informed and well-calibrated forecaster. I need you to give me "
+            "your best probability estimate for the following sentence or question resolving YES. "
             "Your answer should be a float between 0 and 1, with nothing else in your response."
-        ])
+        )
         self.examples = examples or [Example("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")]
     
     def call(self, sentence: str, **kwargs) -> Prob:
@@ -23,6 +23,7 @@ class ConsistentAskForecaster(Forecaster):
             prompt = sentence,
             preface = self.preface,
             examples = self.examples,
+            response_model=sentence.expected_answer_type(),
             **kwargs)
         mean = np.mean([prob for prob in map(self.extract_prob, response) if prob is not None]) if response else None
         return Prob(mean)

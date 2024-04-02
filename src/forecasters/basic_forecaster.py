@@ -1,7 +1,6 @@
 from .forecaster import Forecaster
 from common.datatypes import *
 from common.llm_utils import answer, answer_sync, Example
-from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class BasicForecaster(Forecaster):
@@ -22,7 +21,7 @@ class BasicForecaster(Forecaster):
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
+            response_model=sentence.expected_answer_type,
             **kwargs
         )
         return response
@@ -32,7 +31,7 @@ class BasicForecaster(Forecaster):
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
+            response_model=sentence.expected_answer_type,
             **kwargs
         )
         return self.extract_prob(response)
