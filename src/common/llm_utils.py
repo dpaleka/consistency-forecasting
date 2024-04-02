@@ -28,9 +28,11 @@ from .perscache import (
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 cache = Cache(
     serializer=JSONSerializer(),
-    storage=LocalFileStorage()
-    if os.getenv("LOCAL_CACHE")
-    else RedisStorage(namespace="llm_utils"),
+    storage=(
+        LocalFileStorage()
+        if os.getenv("LOCAL_CACHE")
+        else RedisStorage(namespace="llm_utils")
+    ),
     value_wrapper=ValueWrapperDictInspectArgs(),
 )
 
@@ -39,13 +41,17 @@ FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"]
 client = None
 load_dotenv(override=False)
 
+
 def singleton_constructor(get_instance_func):
     instances = {}
+
     def wrapper(*args, **kwargs):
         if get_instance_func not in instances:
             instances[get_instance_func] = get_instance_func(*args, **kwargs)
         return instances[get_instance_func]
+
     return wrapper
+
 
 @singleton_constructor
 def get_async_openai_client() -> AsyncOpenAI:
@@ -54,6 +60,7 @@ def get_async_openai_client() -> AsyncOpenAI:
     client = instructor.from_openai(_client)
     return client
 
+
 @singleton_constructor
 def get_openai_client() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
@@ -61,19 +68,26 @@ def get_openai_client() -> OpenAI:
     client = instructor.from_openai(_client)
     return client
 
+
 @singleton_constructor
 def get_mistral_async_client() -> MistralAsyncClient:
     api_key = os.getenv("MISTRAL_API_KEY")
     _client = MistralAsyncClient(api_key=api_key)
-    client = instructor.from_openai(create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS)
+    client = instructor.from_openai(
+        create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS
+    )
     return client
+
 
 @singleton_constructor
 def get_mistral_client() -> MistralClient:
     api_key = os.getenv("MISTRAL_API_KEY")
     _client = MistralClient(api_key=api_key)
-    client = instructor.from_openai(create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS)
+    client = instructor.from_openai(
+        create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS
+    )
     return client
+
 
 @singleton_constructor
 def get_togetherai_client() -> OpenAI:
@@ -83,6 +97,7 @@ def get_togetherai_client() -> OpenAI:
     client = instructor.from_openai(_client)
     return client
 
+
 @singleton_constructor
 def get_huggingface_local_client(hf_repo) -> pipeline:
     hf_model_path = os.path.join(os.getenv("HF_MODELS_DIR"), hf_repo)
@@ -91,7 +106,9 @@ def get_huggingface_local_client(hf_repo) -> pipeline:
 
     tokenizer = AutoTokenizer.from_pretrained(hf_model_path, legacy=False)
     model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_path)
-    pipeline = pipeline('text2text-generation', model=model, tokenizer=tokenizer, max_new_tokens=2048)
+    pipeline = pipeline(
+        "text2text-generation", model=model, tokenizer=tokenizer, max_new_tokens=2048
+    )
     return pipeline
 
 
@@ -105,35 +122,48 @@ def is_openai(model: str) -> bool:
         "davinci",
         "instruct",
         "openai",
-        "open-ai"
+        "open-ai",
     ]
     return any(keyword in model for keyword in keywords)
+
 
 def is_mistral(model: str) -> bool:
     if model.startswith("mistral"):
         return True
 
+
 def is_togetherai(model: str) -> bool:
-    keywords = ["together","llama","phi","orca"]
+    keywords = ["together", "llama", "phi", "orca"]
     return any(keyword in model for keyword in keywords)
+
 
 def is_huggingface_local(model: str) -> bool:
     keywords = ["huggingface", "hf"]
     return any(keyword in model for keyword in keywords)
 
 
-def get_client(model: str, use_async=True) -> Tuple[Union[AsyncOpenAI, OpenAI, MistralAsyncClient, MistralClient], str]:
+def get_client(
+    model: str, use_async=True
+) -> Tuple[Union[AsyncOpenAI, OpenAI, MistralAsyncClient, MistralClient], str]:
     if is_openai(model):
-        return (get_async_openai_client() if use_async else get_openai_client(), "openai")
+        return (
+            get_async_openai_client() if use_async else get_openai_client(),
+            "openai",
+        )
     elif is_mistral(model):
         api_key = os.getenv("MISTRAL_API_KEY")
-        return (get_mistral_async_client() if use_async else get_mistral_client(), "mistral")
+        return (
+            get_mistral_async_client() if use_async else get_mistral_client(),
+            "mistral",
+        )
     elif is_togetherai(model):
         if use_async:
-            raise NotImplementedError("Only synchronous calls are supported for TogetherAI")
+            raise NotImplementedError(
+                "Only synchronous calls are supported for TogetherAI"
+            )
         url = "https://api.together.xyz/v1"
         api_key = os.getenv("TOGETHER_API_KEY")
-        return (get_togetherai_client(), "togetherai") 
+        return (get_togetherai_client(), "togetherai")
     elif is_huggingface_local(model):
         assert model.startswith("hf:")
         model = model.split("hf:")[1]
@@ -141,54 +171,77 @@ def get_client(model: str, use_async=True) -> Tuple[Union[AsyncOpenAI, OpenAI, M
     else:
         raise NotImplementedError(f"Model {model} is not supported for now")
 
+
 def is_llama2_tokenized(model: str) -> bool:
     keywords = ["Llama-2", "pythia"]
     return any(keyword in model for keyword in keywords)
 
+
 def _mistral_message_transform(messages):
     mistral_messages = []
     for message in messages:
-        mistral_message = ChatMessage(
-            role=message["role"], content=message["content"])
+        mistral_message = ChatMessage(role=message["role"], content=message["content"])
         mistral_messages.append(mistral_message)
     return mistral_messages
 
 
-@cache  
-async def query_api_chat(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> str | list[str]:
+class PlainText(BaseModel):
+    text: str
+
+
+@cache
+async def query_api_chat(
+    model: str,
+    messages: list[dict[str, str]],
+    response_model=BaseModel,
+    verbose=False,
+    **kwargs,
+) -> BaseModel | list[BaseModel]:
     client, client_name = get_client(model, use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
-        response = await client.chat(model=model, messages=messages, **kwargs)
-    else:
-        response = await client.chat.completions.create(model=model, messages=messages, **kwargs)
-    n = kwargs.get('n', 1)
-    if n > 1:
-        response_text = [choice.message.content for choice in response.choices[:n]]
-    else:
-        response_text = response.choices[0].message.content
+        # response = await client.chat(model=model, messages=messages, **kwargs)
+    response = await client.chat.completions.create(
+        model=model, messages=messages, response_model=response_model, **kwargs
+    )
+
+    # I don't think structured responses have "choices"
+    # n = kwargs.get("n", 1)
+    # if n > 1:
+    #     # response_text = [choice.message.content for choice in response.choices[:n]]
+    #     response_text = [choice for choice in response.choices[:n]]
+    # else:
+    #     response_text = response.choices[0].message.content
 
     if verbose:
-        print("Text:", messages[-1]["content"], "\nResponse:", response_text)
-    return response_text
+        print(f"Text: {messages[-1]['content']}\nResponse: {response}")
+    return response
 
-def query_api_chat_sync(model: str, messages: list[dict[str, str]], verbose=False, **kwargs) -> Union[str, List[str]]:
+
+def query_api_chat_sync(
+    model: str,
+    messages: list[dict[str, str]],
+    response_model=BaseModel,
+    verbose=False,
+    **kwargs,
+) -> str | List[str]:
     client, client_name = get_client(model, use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
-        response = client.chat(model=model, messages=messages, **kwargs)
-    else:
-        response = client.chat.completions.create(model=model, messages=messages, **kwargs)
+        # response = client.chat(model=model, messages=messages, **kwargs)
+    response = client.chat.completions.create(
+        model=model, messages=messages, response_model=response_model, **kwargs
+    )
 
-    n = kwargs.get('n', 1)
-    if n > 1:
-        response_text = [choice.message.content for choice in response.choices[:n]]
-    else:
-        response_text = response.choices[0].message.content
+    # n = kwargs.get("n", 1)
+    # if n > 1:
+    #     response_text = [choice.message.content for choice in response.choices[:n]]
+    # else:
+    #     response_text = response.choices[0].message.content
 
     if verbose:
-        print("Text:", messages[-1]["content"], "\nResponse:", response_text)
-    return response_text
+        print(f"Text: {messages[-1]['content']}\nResponse: {response}")
+    return response
 
 
 @dataclass
@@ -196,46 +249,51 @@ class QandA:
     question: str
     answer: str
 
+
 @cache
 async def answer(
-    prompt : str, 
-    preface : str | None = None, 
-    examples : list[QandA] = [],
-    **kwargs) -> str | List[str]:
+    prompt: str, preface: str | None = None, examples: list[QandA] = [], **kwargs
+) -> str | List[str]:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [{ "role": "system", "content": preface }]
+    messages = [{"role": "system", "content": preface}]
     for example in examples:
-        messages.extend([
-            { "role": "user", "content": example.question}, 
-            { "role": "system", "content": example.answer}])
-    messages.extend([{ "role": "user", "content": prompt }])
-    
+        messages.extend(
+            [
+                {"role": "user", "content": example.question},
+                {"role": "system", "content": example.answer},
+            ]
+        )
+    messages.extend([{"role": "user", "content": prompt}])
+
     # default kwargs
     kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
     kwargs["temperature"] = kwargs.get("temperature", 0.0)
-    
-    return await query_api_chat(messages = messages, **kwargs)    
+
+    return await query_api_chat(messages=messages, **kwargs)
+
 
 def answer_sync(
-    prompt : str, 
-    preface : str | None = None, 
-    examples : list[QandA] = [],
-    **kwargs) -> str | List[str]:
+    prompt: str, preface: str | None = None, examples: list[QandA] = [], **kwargs
+) -> str | List[str]:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [{ "role": "system", "content": preface }]
+    messages = [{"role": "system", "content": preface}]
     for example in examples:
-        messages.extend([
-            { "role": "user", "content": example.question}, 
-            { "role": "system", "content": example.answer}])
-    messages.extend([{ "role": "user", "content": prompt }])
-    
+        messages.extend(
+            [
+                {"role": "user", "content": example.question},
+                {"role": "system", "content": example.answer},
+            ]
+        )
+    messages.extend([{"role": "user", "content": prompt}])
+
     # default kwargs
     kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
     kwargs["temperature"] = kwargs.get("temperature", 0.0)
-    
-    return query_api_chat_sync(messages = messages, **kwargs)    
+
+    return query_api_chat_sync(messages=messages, **kwargs)
+
 
 @cache
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
@@ -248,6 +306,7 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
         print("Text:", text[:30], "\nResponse:", response_text[:30])
     return response_text
 
+
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=False)
     if verbose:
@@ -257,6 +316,7 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     if verbose:
         print("Text:", text, "\nResponse:", response_text)
     return response_text
+
 
 def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=False)
@@ -269,7 +329,7 @@ def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
 
 
 async def parallelized_call(
-    func: callable, 
+    func: callable,
     data=list[str],
     max_concurrent_queries: int = 100,
 ) -> list[dict]:
