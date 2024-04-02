@@ -191,17 +191,22 @@ class PlainText(BaseModel):
 
 @cache
 async def query_api_chat(
-    model: str,
     messages: list[dict[str, str]],
-    response_model=PlainText,
     verbose=False,
     **kwargs,
 ) -> BaseModel:
-    client, client_name = get_client(model, use_async=True)
+    options = {
+        "model": "gpt-4-1106-preview",
+        "response_model": PlainText,
+    } | kwargs
+    client, client_name = get_client(options["model"], use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
     response = await client.chat.completions.create(
-        model=model, messages=messages, response_model=response_model, **kwargs
+        model=options["model"],
+        messages=messages,
+        response_model=options["response_model"],
+        **options,
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
@@ -209,52 +214,70 @@ async def query_api_chat(
 
 
 def query_api_chat_sync(
-    model: str,
     messages: list[dict[str, str]],
-    response_model=PlainText,
     verbose=False,
     **kwargs,
 ) -> BaseModel:
-    client, client_name = get_client(model, use_async=False)
+    options = {
+        "model": "gpt-4-1106-preview",
+        "response_model": PlainText,
+    } | kwargs
+    client, client_name = get_client(options["model"], use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
     response = client.chat.completions.create(
-        model=model, messages=messages, response_model=response_model, **kwargs
+        model=options["model"], messages=messages, response_model=options["response_model"], **kwargs
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
+
+class Example:
+    user: str
+    assistant: str
+
+
+def prepare_messages(
+    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+) -> list[dict[str, str]]:
+    preface = preface or "You are a helpful assistant."
+    examples = examples or []
+    messages = [{"role": "system", "content": preface}]
+    for example in examples:
+        messages.append({"role": "user", "content": example.user})
+        messages.append({"role": "assistant", "content": example.assistant})
+    messages.append({"role": "user", "content": prompt})
+    return messages
+
+
 @cache
 async def answer(
-    prompt: str, preface: str | None = None, **kwargs
+    prompt: str,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
+    **kwargs,
 ) -> BaseModel:
-    if preface is None:
-        preface = "You are a helpful assistant."
-    messages = [
-        {"role": "system", "content": preface},
-        [{"role": "user", "content": prompt}]
-    ]
+    messages = prepare_messages(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",
         "temperature": 0.0,
-        "response_model" : PlainText
+        "response_model": PlainText,
     } | kwargs
     return await query_api_chat(messages=messages, **options)
 
+
 def answer_sync(
-    prompt: str, preface: str | None = None, **kwargs
+    prompt: str,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
+    **kwargs,
 ) -> BaseModel:
-    if preface is None:
-        preface = "You are a helpful assistant."
-    messages = [
-        {"role": "system", "content": preface},
-        [{"role": "user", "content": prompt}]
-    ]
+    messages = prepare_messages(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",
         "temperature": 0.0,
-        "response_model" : PlainText
+        "response_model": PlainText,
     } | kwargs
     return query_api_chat_sync(messages=messages, **options)
 
