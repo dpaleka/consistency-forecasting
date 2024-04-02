@@ -1,56 +1,13 @@
-import openai
-import instructor
-from typing import Iterable
-from pydantic import BaseModel, Field, ConfigDict
+from forecasters.basic_forecaster import BasicForecaster
+from common.datatypes import ForecastingQuestion, Prob
+from datetime import datetime
 
-client = instructor.patch(openai.OpenAI())
-
-
-class SyntheticQA(BaseModel):
-    question: str
-    answersss: str
-
-    model_config = ConfigDict(
-        json_schema_extra={
-            "examples": [
-                {"question": "What is the capital of France?", "answer": "Paris"},
-                {
-                    "question": "What is the largest planet in our solar system?",
-                    "answer": "Jupiter",
-                },
-                {
-                    "question": "Who wrote 'To Kill a Mockingbird'?",
-                    "answer": "Harper Lee",
-                },
-                {
-                    "question": "What element does 'O' represent on the periodic table?",
-                    "answer": "Oxygen",
-                },
-            ]
-        }
-    )
-
-
-def get_synthetic_data() -> Iterable[SyntheticQA]:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "Generate synthetic examples"},
-            {
-                "role": "user",
-                "content": "Generate more examples like you see in the examples of this prompt. ",
-            },
-        ],
-        response_model=Iterable[SyntheticQA],
-    )  # type: ignore
-
-
-if __name__ == "__main__":
-    for example in get_synthetic_data():
-        print(example)
-        """
-        question='What is the capital of France?' answer='Paris'
-        question='What is the largest planet in our solar system?' answer='Jupiter'
-        question="Who wrote 'To Kill a Mockingbird'?" answer='Harper Lee'
-        question="What element does 'O' represent on the periodic table?" answer='Oxygen'
-        """
+bf = BasicForecaster()
+fq = ForecastingQuestion(
+    title="Will the sun rise tomorrow?",
+    body="I'm asking a simple question.",
+    resolution_date=datetime.now(),
+    question_type="binary"
+)
+resp = bf.call(fq)
+print(resp.prob)
