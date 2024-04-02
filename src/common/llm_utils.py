@@ -193,106 +193,70 @@ class PlainText(BaseModel):
 async def query_api_chat(
     model: str,
     messages: list[dict[str, str]],
-    response_model=BaseModel,
+    response_model=PlainText,
     verbose=False,
     **kwargs,
-) -> BaseModel | list[BaseModel]:
+) -> BaseModel:
     client, client_name = get_client(model, use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
-        # response = await client.chat(model=model, messages=messages, **kwargs)
     response = await client.chat.completions.create(
         model=model, messages=messages, response_model=response_model, **kwargs
     )
-
-    # I don't think structured responses have "choices"
-    # n = kwargs.get("n", 1)
-    # if n > 1:
-    #     # response_text = [choice.message.content for choice in response.choices[:n]]
-    #     response_text = [choice for choice in response.choices[:n]]
-    # else:
-    #     response_text = response.choices[0].message.content
-
     if verbose:
-        print(f"Text: {messages[-1]['content']}\nResponse: {response}")
+        print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
 
 def query_api_chat_sync(
     model: str,
     messages: list[dict[str, str]],
-    response_model=BaseModel,
+    response_model=PlainText,
     verbose=False,
     **kwargs,
-) -> str | List[str]:
+) -> BaseModel:
     client, client_name = get_client(model, use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
-        # response = client.chat(model=model, messages=messages, **kwargs)
     response = client.chat.completions.create(
         model=model, messages=messages, response_model=response_model, **kwargs
     )
-
-    # n = kwargs.get("n", 1)
-    # if n > 1:
-    #     response_text = [choice.message.content for choice in response.choices[:n]]
-    # else:
-    #     response_text = response.choices[0].message.content
-
     if verbose:
-        print(f"Text: {messages[-1]['content']}\nResponse: {response}")
+        print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
-
-
-@dataclass
-class QandA:
-    question: str
-    answer: str
-
 
 @cache
 async def answer(
-    prompt: str, preface: str | None = None, examples: list[QandA] = [], **kwargs
-) -> str | List[str]:
+    prompt: str, preface: str | None = None, **kwargs
+) -> BaseModel:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [{"role": "system", "content": preface}]
-    for example in examples:
-        messages.extend(
-            [
-                {"role": "user", "content": example.question},
-                {"role": "system", "content": example.answer},
-            ]
-        )
-    messages.extend([{"role": "user", "content": prompt}])
-
-    # default kwargs
-    kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
-    kwargs["temperature"] = kwargs.get("temperature", 0.0)
-
-    return await query_api_chat(messages=messages, **kwargs)
-
+    messages = [
+        {"role": "system", "content": preface},
+        [{"role": "user", "content": prompt}]
+    ]
+    options = {
+        "model": "gpt-4-1106-preview",
+        "temperature": 0.0,
+        "response_model" : PlainText
+    } | kwargs
+    return await query_api_chat(messages=messages, **options)
 
 def answer_sync(
-    prompt: str, preface: str | None = None, examples: list[QandA] = [], **kwargs
-) -> str | List[str]:
+    prompt: str, preface: str | None = None, **kwargs
+) -> BaseModel:
     if preface is None:
         preface = "You are a helpful assistant."
-    messages = [{"role": "system", "content": preface}]
-    for example in examples:
-        messages.extend(
-            [
-                {"role": "user", "content": example.question},
-                {"role": "system", "content": example.answer},
-            ]
-        )
-    messages.extend([{"role": "user", "content": prompt}])
-
-    # default kwargs
-    kwargs["model"] = kwargs.get("model", "gpt-4-1106-preview")
-    kwargs["temperature"] = kwargs.get("temperature", 0.0)
-
-    return query_api_chat_sync(messages=messages, **kwargs)
+    messages = [
+        {"role": "system", "content": preface},
+        [{"role": "user", "content": prompt}]
+    ]
+    options = {
+        "model": "gpt-4-1106-preview",
+        "temperature": 0.0,
+        "response_model" : PlainText
+    } | kwargs
+    return query_api_chat_sync(messages=messages, **options)
 
 
 @cache
