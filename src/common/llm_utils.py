@@ -203,9 +203,7 @@ async def query_api_chat(
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
     response = await client.chat.completions.create(
-        model=options["model"],
         messages=messages,
-        response_model=options["response_model"],
         **options,
     )
     if verbose:
@@ -226,13 +224,15 @@ def query_api_chat_sync(
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
     response = client.chat.completions.create(
-        model=options["model"], messages=messages, response_model=options["response_model"], **kwargs
+        messages=messages,
+        **kwargs,
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
 
+@dataclass
 class Example:
     user: str
     assistant: str
