@@ -1,4 +1,4 @@
-from common.llm_utils import answer_sync, answer, QandA
+from common.llm_utils import answer_sync, answer, Example
 from common.datatypes import *
 from .BaseChecker import BaseChecker
 
@@ -23,14 +23,14 @@ class NegChecker(BaseChecker):
     )
 
     examples = [
-        QandA(
-            question=(
+        Example(
+            user=(
                 "TITLE: Will the price of Bitcoin be above $100,000 on 1st January 2025?\n"
                 "RESOLUTION DATE: 1st January 2025\n"
                 "DETAILS: Resolves YES if the spot price of Bitcoin against USD is more than 100,000 "
                 "on 1st January 2025. Resolves NO otherwise."
             ),
-            answer=(
+            assistant=(
                 "TITLE: Will the price of Bitcoin be less than or equal to $100,000 on 1st January 2025?\n"
                 "RESOLUTION DATE: 1st January 2025\n"
                 "DETAILS: Resolves YES if the spot price of Bitcoin against USD is less than or equal to "
