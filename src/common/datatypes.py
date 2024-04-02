@@ -1,15 +1,24 @@
 from datetime import datetime
 from dateutil import parser
 import re
-from typing import Dict
 from uuid import uuid4, UUID
+from pydantic import BaseModel, ConfigDict, field_validator
 
-class Prob(float):
-    def __new__(cls, value):
-        if not (0.0 <= value <= 1.0):
+# class Prob(float):
+#     def __new__(cls, value):
+#         if not (0.0 <= value <= 1.0):
+#             raise ValueError("Probability must be between 0 and 1.")
+#         return super(Prob, cls).__new__(cls, value)
+
+class Prob(BaseModel):
+    prob : float
+    
+    @field_validator
+    @classmethod
+    def validate_prob(cls, v):
+        if not (0.0 <= v <= 1.0):
             raise ValueError("Probability must be between 0 and 1.")
-        return super(Prob, cls).__new__(cls, value)
-
+        return v
 
 class QuestionType(str):
     def __new__(cls, value):
@@ -109,5 +118,5 @@ class ForecastingQuestion:
         )
 
 
-ForecastingQuestionTuple = Dict[str, ForecastingQuestion]
-ProbsTuple = Dict[str, Prob]
+ForecastingQuestionTuple = dict[str, ForecastingQuestion]
+ProbsTuple = dict[str, Prob]

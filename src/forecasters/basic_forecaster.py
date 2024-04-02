@@ -1,17 +1,7 @@
 from .forecaster import Forecaster
 from common.datatypes import *
 from common.llm_utils import answer, answer_sync
-from pydantic import BaseModel, field_validator
-
-class Response(BaseModel):
-    prob : float
-    
-    @field_validator
-    @classmethod
-    def validate_prob(cls, v):
-        if not (0.0 <= v <= 1.0):
-            raise ValueError("Probability must be between 0 and 1.")
-        return v
+from pydantic import BaseModel, ConfigDict, field_validator
 
 class BasicForecaster(Forecaster):
 
