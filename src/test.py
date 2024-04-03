@@ -1,6 +1,6 @@
 from forecasters.basic_forecaster import BasicForecaster
 from common.llm_utils import Example, answer_sync, query_api_chat_sync
-from common.datatypes import ForecastingQuestion, Prob
+from common.datatypes import ForecastingQuestion, Prob, Prob_cot
 from datetime import datetime
 
 # bf = BasicForecaster()
