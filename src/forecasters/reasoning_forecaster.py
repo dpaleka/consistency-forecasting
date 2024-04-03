@@ -7,13 +7,11 @@ from .forecaster import Forecaster
 class ReasoningForecaster(Forecaster):
 
     def __init__(self, preface: str = None, examples: list = None):
-        self.preface = preface or " ".join(
-            [
-                "You are an informed and well-calibrated forecaster. I need you to give me",
-                "your best probability estimate for the following sentence or question resolving YES.",
-                "I want you to first provide a reasoning for your answer, and then give me the probability.",
-                "Your last sentence should be, 'The probability is: <float between 0 and 1>'",
-            ]
+        self.preface = preface or (
+            "You are an informed and well-calibrated forecaster. I need you to give me "
+            "your best probability estimate for the following sentence or question resolving YES. "
+            "I want you to first provide a reasoning for your answer, and then give me the probability. "
+            "Your last sentence should be, 'The probability is: <float between 0 and 1>'"
         )
         self.examples = examples or [
             Example(
