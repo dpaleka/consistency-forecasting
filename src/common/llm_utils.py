@@ -16,6 +16,8 @@ from mistralai.models.chat_completion import ChatMessage
 from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
+from .datatypes import PlainText
+
 
 from .perscache import (
     Cache,
@@ -185,23 +187,35 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-class PlainText(BaseModel):
-    text: str
-
 
 @cache
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
+    model: str | None = None,
     **kwargs,
 ) -> BaseModel:
-    options = {
+    """
+    Query the API (through instructor.Instructor) with the given messages.
+
+    Order of precedence for model:
+    1. `model` argument
+    2. `model` in `kwargs`
+    3. Default model
+    """
+    default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
-    } | kwargs
+    } 
+    options = default_options | kwargs
+    options["model"] = model or options["model"]
     client, client_name = get_client(options["model"], use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
+
+    if options.get("n", 1) != 1:
+        raise NotImplementedError("Multiple queries not supported yet")
+        
     response = await client.chat.completions.create(
         messages=messages,
         **options,
@@ -209,23 +223,31 @@ async def query_api_chat(
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
+        
 
 
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
+    model: str | None = None,
     **kwargs,
 ) -> BaseModel:
-    options = {
+    default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
-    } | kwargs
+    }
+    options = default_options | kwargs
+    options["model"] = model or options["model"]
     client, client_name = get_client(options["model"], use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
+    
+    if options.get("n", 1) != 1:
+        raise NotImplementedError("Multiple structured queries not supported yet")
+
     response = client.chat.completions.create(
         messages=messages,
-        **kwargs,
+        **options,
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
