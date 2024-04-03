@@ -9,6 +9,9 @@ from forecasters import Forecaster
 
 
 class BaseChecker(ABC):
+    """NOTE: Always define nested classes BaseSentenceFormat and TupleFormat 
+    in the subclass."""
+    
     def __init__(self, tolerance=0.1, path=None):
         self.tolerance = tolerance
         if path is None:
@@ -35,16 +38,16 @@ class BaseChecker(ABC):
     async def instantiate_and_write(self, base_sentences: BaseModel, **kwargs):
         result = await self.instantiate(base_sentences, **kwargs)
         
-        result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
+        # result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
         if kwargs.get("verbose", True):
-            print(f"Writing tuple to {self.path}: {result_serial}")
-        await write_jsonl_async(self.path, [result_serial], append=True)
+            print(f"Writing tuple to {self.path}: {result}")
+        await write_jsonl_async(self.path, [result.model_dump_json(indent=4)], append=True)
 
     async def instantiate_and_write_many(
-        self, base_sentencess: list[list[ForecastingQuestion]], **kwargs
+        self, base_sentencess: list[BaseModel], **kwargs
     ):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
-            *base_sentences, **kwargs
+            base_sentences, **kwargs
         )
         await parallelized_call(_instantiate_and_write, base_sentencess)
 
@@ -65,7 +68,7 @@ class BaseChecker(ABC):
         for line in jsonlines.open(self.path):
             print("START")
             print(f"line: {line}")
-            line_obj = {k: ForecastingQuestion.from_dict(v) for k, v in line.items()}
+            line_obj = self.TupleFormat.model_validate(line)
             answers = forecaster.elicit(line_obj)
             print(answers)
             if not all(answers.values()):
