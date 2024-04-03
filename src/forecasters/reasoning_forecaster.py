@@ -27,7 +27,7 @@ class ReasoningForecaster(Forecaster):
             response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
-        return response
+        return response.prob
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
         response = await answer(
@@ -37,4 +37,4 @@ class ReasoningForecaster(Forecaster):
             response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
-        return response
+        return response.prob
