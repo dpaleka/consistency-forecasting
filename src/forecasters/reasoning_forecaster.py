@@ -1,4 +1,3 @@
-import re
 from common.datatypes import *
 from common.llm_utils import answer, answer_sync, Example
 from .forecaster import Forecaster
@@ -6,7 +5,7 @@ from .forecaster import Forecaster
 
 class ReasoningForecaster(Forecaster):
 
-    def __init__(self, preface: str = None, examples: list = None):
+    def __init__(self, preface: str = None, examples: list[Example] = None):
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
             "your best probability estimate for the following sentence or question resolving YES. "
@@ -20,28 +19,22 @@ class ReasoningForecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: str, **kwargs) -> Prob:
+    def call(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
         response = answer_sync(
-            prompt=sentence, preface=self.preface, examples=self.examples, **kwargs
+            prompt=sentence.__str__(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=sentence.expected_answer_type(mode="cot"),
+            **kwargs,
         )
-        return self.extract_prob(response)
+        return response
 
     async def call_async(self, sentence: str, **kwargs) -> Prob:
         response = await answer(
-            prompt=sentence, preface=self.preface, examples=self.examples, **kwargs
+            prompt=sentence.__str__(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=sentence.expected_answer_type(mode="cot"),
+            **kwargs,
         )
-        return self.extract_prob(response)
-
-    def extract_prob(self, s: str) -> float:
-        # Adjusted pattern to capture a number that follows either a colon or the word "is" with optional spaces
-        pattern = r"(?:\:|is)\s*(-?\d*\.?\d+)"
-        match = re.search(pattern, s)
-        if match:
-            try:
-                # Directly return the float value from the captured group
-                return float(match.group(1))
-            except Exception as e:
-                # TODO: log error
-                return None
-        else:
-            return None
+        return response
