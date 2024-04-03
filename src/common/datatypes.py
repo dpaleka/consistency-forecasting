@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import datetime
 from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, field_validator
@@ -16,16 +17,10 @@ class Prob(BaseModel):
         return v
 
 
-class Prob_cot(BaseModel):
+class Prob_cot(Prob):
     chain_of_thought: str
-    prob: float
+    prob: float # redefine to maintain order
 
-    @field_validator("prob")
-    @classmethod
-    def validate_prob(cls, v):
-        if not (0.0 <= v <= 1.0):
-            raise ValueError("Probability must be between 0 and 1.")
-        return v
 
 # this is what we pass to llms for instantiation and forecasting
 # and also the response_model we expect from llms
@@ -50,16 +45,24 @@ class ForecastingQuestion(BaseModel):
     body: str
     resolution_date: datetime
     question_type: str
-    data_source: str = None
-    url: str = None
-    metadata: dict = None
-    resolution: str = None
+    data_source: Optional[str] = None
+    url: Optional[str] = None
+    metadata: Optional[dict] = None
+    resolution: Optional[str] = None
 
     @field_validator("question_type")
     def validate_question_type(cls, v):
         if v not in ["binary", "conditional_binary"]:
             raise ValueError(
                 "Question type must be either 'binary' or 'conditional_binary'"
+            )
+        return v
+    
+    @field_validator("data_source")
+    def validate_data_source(cls, v):
+        if v not in [None, "synthetic", "synthetic_inst", "manifold", "metaculus", "predictit"]:
+            raise ValueError(
+                'Data source must be in [None, "synthetic", "synthetic_inst", "manifold", "metaculus", "predictit"]' 
             )
         return v
 
@@ -84,7 +87,6 @@ class ForecastingQuestion(BaseModel):
     
     def __str__(self):
         return self.simple().model_dump_json()
-
 
 ForecastingQuestionTuple = dict[str, ForecastingQuestion]
 ProbsTuple = dict[str, Prob]

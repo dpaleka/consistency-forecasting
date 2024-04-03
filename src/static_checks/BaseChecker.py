@@ -1,7 +1,6 @@
 # Path: static_checks/Base.py
 import jsonlines
 from abc import ABC, abstractmethod
-from typing import Type
 from pydantic import BaseModel
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
@@ -19,21 +18,21 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def instantiate_sync(
-        self, base_sentences : Type[BaseModel], **kwargs
-    ) -> ForecastingQuestionTuple:
+        self, base_sentences : BaseModel, **kwargs
+    ) -> BaseModel:
         pass
 
     @abstractmethod
     async def instantiate(
-        self, base_sentences : Type[BaseModel], **kwargs
+        self, base_sentences : BaseModel, **kwargs
     ) -> ForecastingQuestionTuple:
         pass
 
     @abstractmethod
-    def violation(self, answers: Type[BaseModel]) -> float:
+    def violation(self, answers: dict[str, Prob]) -> float:
         pass
 
-    async def instantiate_and_write(self, base_sentences: Type[BaseModel], **kwargs):
+    async def instantiate_and_write(self, base_sentences: BaseModel, **kwargs):
         result = await self.instantiate(base_sentences, **kwargs)
         
         result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
