@@ -3,7 +3,7 @@ from common.llm_utils import answer, answer_sync, Example
 from .forecaster import Forecaster
 
 
-class ReasoningForecaster(Forecaster):
+class COT_Forecaster(Forecaster):
 
     def __init__(self, preface: str = None, examples: list[Example] = None):
         self.preface = preface or (
@@ -20,23 +20,21 @@ class ReasoningForecaster(Forecaster):
         ]
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
-        response_model = Prob_cot
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=response_model,
+            response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
         return response.prob
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
-        response_model = Prob_cot
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=response_model,
+            response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
         return response.prob

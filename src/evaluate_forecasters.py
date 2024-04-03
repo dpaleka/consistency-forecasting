@@ -1,7 +1,7 @@
 import asyncio
 from datetime import datetime
 from datasets import load_dataset
-from forecasters import Forecaster, ReasoningForecaster, BasicForecaster
+from forecasters import Forecaster, COT_Forecaster, BasicForecaster
 
 model = "gpt-3.5-turbo"
 # model = "gpt-4-1106-preview"
@@ -50,7 +50,7 @@ async def main():
         basic_forecaster, dataset_name=dataset_name, date=date
     )
     print(f"basic_forecaster: {r}")
-    reasoning_forecaster = ReasoningForecaster()
+    reasoning_forecaster = COT_Forecaster()
     r = await calculate_brier_score_async(
         reasoning_forecaster, dataset_name=dataset_name, date=date
     )
