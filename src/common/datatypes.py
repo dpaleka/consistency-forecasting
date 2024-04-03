@@ -2,6 +2,8 @@ from datetime import datetime
 from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, field_validator
 
+class PlainText(BaseModel):
+    text: str
 
 class Prob(BaseModel):
     prob: float
@@ -14,9 +16,16 @@ class Prob(BaseModel):
         return v
 
 
-class Prob_cot(Prob):
+class Prob_cot(BaseModel):
     chain_of_thought: str
-    prob: float  # redefine prob to maintain order
+    prob: float
+
+    @field_validator("prob")
+    @classmethod
+    def validate_prob(cls, v):
+        if not (0.0 <= v <= 1.0):
+            raise ValueError("Probability must be between 0 and 1.")
+        return v
 
 # this is what we pass to llms for instantiation and forecasting
 # and also the response_model we expect from llms
@@ -54,13 +63,13 @@ class ForecastingQuestion(BaseModel):
             )
         return v
 
-    def expected_answer_type(self, mode="default") -> BaseModel:
+    def expected_answer_type(self, mode="default") -> type:
         exp_answer_types = {
             "default": {
                 "binary": Prob, 
                 "conditional_binary": Prob
                 },
-            "chain_of_thought": {
+            "cot": {
                 "binary": Prob_cot,
                 "conditional_binary": Prob_cot
             }

@@ -20,21 +20,23 @@ class ReasoningForecaster(Forecaster):
         ]
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
+        response_model = Prob_cot
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(mode="cot"),
+            response_model=response_model,
             **kwargs,
         )
         return response.prob
 
-    async def call_async(self, sentence: str, **kwargs) -> Prob:
+    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
+        response_model = Prob_cot
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(mode="cot"),
+            response_model=response_model,
             **kwargs,
         )
         return response.prob
