@@ -18,6 +18,22 @@ class Prob_cot(Prob):
     chain_of_thought: str
     prob: float  # redefine prob to maintain order
 
+# this is what we pass to llms for instantiation and forecasting
+# and also the response_model we expect from llms
+class ForecastingQuestion_simple(BaseModel):
+    title : str
+    body : str
+    
+    def complex(self, **kwargs):
+        """Make ForecastingQuestion from a ForecastingQuestion_simple given to us by an llm
+        Mandatory kwargs: resolution_date, question_type. Recommended: data_source.
+        """
+        return ForecastingQuestion(
+            title = self.title,
+            body = self.body,
+            **kwargs
+        )
+    
 
 class ForecastingQuestion(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -30,13 +46,6 @@ class ForecastingQuestion(BaseModel):
     metadata: dict = None
     resolution: str = None
 
-    def __str__(self):
-        return (
-            f"TITLE: {self.title}\n"
-            f"RESOLUTION DATE: {self.resolution_date}\n"
-            f"DETAILS:\n{self.body}"
-        )
-
     @field_validator("question_type")
     def validate_question_type(cls, v):
         if v not in ["binary", "conditional_binary"]:
@@ -45,7 +54,6 @@ class ForecastingQuestion(BaseModel):
             )
         return v
 
-    @property
     def expected_answer_type(self, mode="default") -> BaseModel:
         exp_answer_types = {
             "default": {
@@ -58,6 +66,15 @@ class ForecastingQuestion(BaseModel):
             }
         }
         return exp_answer_types[mode][self.question_type]
+    
+    def simple(self):
+        return ForecastingQuestion_simple(
+            title = self.title,
+            body = self.body
+        )
+    
+    def __str__(self):
+        return self.simple().model_dump_json()
 
 
 ForecastingQuestionTuple = dict[str, ForecastingQuestion]
