@@ -3,15 +3,16 @@ from common.llm_utils import Example, answer_sync, query_api_chat_sync
 from common.datatypes import ForecastingQuestion, Prob, Prob_cot
 from datetime import datetime
 
-# bf = BasicForecaster()
-# fq = ForecastingQuestion(
-#     title="Will the sun rise tomorrow?",
-#     body="I'm asking a simple question.",
-#     resolution_date=datetime.now(),
-#     question_type="binary"
-# )
-# resp = bf.call(fq)
-# print(resp.prob)
+bf = BasicForecaster()
+fq = ForecastingQuestion(
+    title="Will the sun rise tomorrow?",
+    body="I'm asking a simple question.",
+    resolution_date=datetime.now(),
+    question_type="binary"
+)
+print(fq.model_dump_json(indent=4,include={'title', 'body'}))
+resp = bf.call(fq)
+print(resp.prob)
 
 # v=answer_sync(
 #     prompt="Will the sun rise tomorrow?",

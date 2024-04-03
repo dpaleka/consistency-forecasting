@@ -1,6 +1,8 @@
 # Path: static_checks/Base.py
 import jsonlines
 from abc import ABC, abstractmethod
+from typing import Type
+from pydantic import BaseModel
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
 from common.datatypes import *
@@ -17,29 +19,23 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def instantiate_sync(
-        self, *base_sentences: list[ForecastingQuestion], **kwargs
+        self, base_sentences : Type[BaseModel], **kwargs
     ) -> ForecastingQuestionTuple:
         pass
 
     @abstractmethod
     async def instantiate(
-        self, *base_sentences: list[ForecastingQuestion], **kwargs
+        self, base_sentences : Type[BaseModel], **kwargs
     ) -> ForecastingQuestionTuple:
         pass
 
     @abstractmethod
-    def violation(self, answers: ProbsTuple) -> float:
+    def violation(self, answers: Type[BaseModel]) -> float:
         pass
 
-    # stack base sentences into a single prompt
-    def stack(*base_sentences: list[ForecastingQuestion]) -> str:
-        return "\n".join(
-            f"SENTENCE {i}:\n {base_sentence}"
-            for i, base_sentence in enumerate(base_sentences)
-        )
-
-    async def instantiate_and_write(self, *base_sentences: list[ForecastingQuestion], **kwargs):
-        result = await self.instantiate(*base_sentences, **kwargs)
+    async def instantiate_and_write(self, base_sentences: Type[BaseModel], **kwargs):
+        result = await self.instantiate(base_sentences, **kwargs)
+        
         result_serial = {k: v.to_dict() for k, v in result.items()} # serialize ForecastingQuestions into dicts
         if kwargs.get("verbose", True):
             print(f"Writing tuple to {self.path}: {result_serial}")
