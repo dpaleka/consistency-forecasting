@@ -26,7 +26,7 @@ class Prob_cot(Prob):
 
 # this is what we pass to llms for instantiation and forecasting
 # and also the response_model we expect from llms
-class ForecastingQuestion_simple(BaseModel):
+class ForecastingQuestion_stripped(BaseModel):
     title: str
     body: str
 
@@ -37,7 +37,7 @@ class ForecastingQuestion_simple(BaseModel):
         data_source: Optional[str] = None,
         **kwargs,
     ):
-        """Make ForecastingQuestion from a ForecastingQuestion_simple given to us by an llm
+        """Make ForecastingQuestion from a ForecastingQuestion_stripped given to us by an llm
 
         Args:
             resolution_date (datetime): If produced by an LLM, will usually be the max of the
@@ -60,6 +60,9 @@ class ForecastingQuestion_simple(BaseModel):
             data_source=data_source,
             **kwargs,
         )
+    
+    def cast_stripped(self):
+        return self
 
 
 exp_answer_types = {
@@ -106,7 +109,10 @@ class ForecastingQuestion(BaseModel):
         return exp_answer_types[mode][self.question_type]
 
     def cast_simple(self):
-        return ForecastingQuestion_simple(title=self.title, body=self.body)
+        return ForecastingQuestion_stripped(title=self.title, body=self.body)
+    
+    def cast_FQ(self):
+        return self
 
     def __str__(self):
         return self.cast_simple().model_dump_json(indent=4)

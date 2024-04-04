@@ -3,19 +3,19 @@ import jsonlines
 from abc import ABC, abstractmethod
 from typing import Type, Self
 from pydantic import BaseModel
-from common.utils import write_jsonl_async, write_jsonl_async_from_str
+from common.utils import write_jsonl_async_from_str
 from common.llm_utils import parallelized_call
 from common.datatypes import *
 from forecasters import Forecaster
 
 
 class BaseChecker(ABC):
-    
+
     @property
     @abstractmethod
     def BaseSentenceFormat(self) -> Type[BaseModel]:
         pass
-    
+
     @property
     @abstractmethod
     def TupleFormat(self) -> Type[BaseModel]:
@@ -30,13 +30,13 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def instantiate_sync(
-        self, base_sentences : "Self.BaseSentenceFormat", **kwargs
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
         pass
 
     @abstractmethod
     async def instantiate(
-        self, base_sentences : "Self.BaseSentenceFormat", **kwargs
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
         pass
 
@@ -44,15 +44,19 @@ class BaseChecker(ABC):
     def violation(self, answers: dict[str, Prob]) -> float:
         pass
 
-    async def instantiate_and_write(self, base_sentences: "Self.BaseSentenceFormat", **kwargs):
+    async def instantiate_and_write(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ):
         result = await self.instantiate(base_sentences, **kwargs)
-        
+
         if kwargs.get("verbose", True):
             print(f"Writing tuple to {self.path}: {result}")
-        await write_jsonl_async_from_str(self.path, [result.model_dump_json()], append=True)
+        await write_jsonl_async_from_str(
+            self.path, [result.model_dump_json()], append=True
+        )
 
     async def instantiate_and_write_many(
-        self, base_sentencess: "list[Self.BaseSentenceFormat]", **kwargs
+        self, base_sentencess: list[dict[str, ForecastingQuestion]], **kwargs
     ):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
             base_sentences, **kwargs

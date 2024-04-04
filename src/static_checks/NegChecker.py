@@ -40,17 +40,21 @@ class NegChecker(BaseChecker):
 
     examples = [
         Example(
-            user=ForecastingQuestion_simple(
-                title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
-                body=(
-                    "Resolves YES if the spot price of Bitcoin against USD is more than "
-                    "100,000 on 1st January 2025. Resolves NO otherwise."
-                ),
+            user=BaseSentenceFormat(
+                P = ForecastingQuestion(
+                    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Bitcoin against USD is more than "
+                        "100,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                    resolution_date=datetime(2025, 1, 1),
+                    question_type="binary",
+                )
             ).model_dump_json(),
-            assistant=ForecastingQuestion_simple(
+            assistant=ForecastingQuestion_stripped(
                 title="Will the price of Bitcoin be less than or equal to $100,000 on 1st January 2025?",
                 body=(
-                    "Resolves YES if the spot price of Bitcoin against USD is more than "
+                    "Resolves YES if the spot price of Bitcoin against USD is less than or equal to "
                     "100,000 on 1st January 2025. Resolves NO otherwise."
                 ),
             ).model_dump_json(),
@@ -61,16 +65,17 @@ class NegChecker(BaseChecker):
         super().__init__(tolerance)
 
     def instantiate_sync(
-        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
-        response = answer_sync(
-            prompt=base_sentences.model_dump_json(indent=4),
+        base_sentences = self.BaseSentenceFormat(**base_sentences) # for validation
+        _response = answer_sync(
+            prompt=base_sentences.model_dump_json(),
             preface=self.preface,
             examples=self.examples,
-            response_model=ForecastingQuestion_simple,
+            response_model=ForecastingQuestion_stripped,
             **kwargs
         )
-        response_FQ = response.cast_FQ(
+        response = _response.cast_FQ(
             resolution_date=base_sentences.P.resolution_date,
             question_type=base_sentences.P.question_type,
             data_source="synthetic_inst",
@@ -80,19 +85,20 @@ class NegChecker(BaseChecker):
                 else None
             ),
         )
-        return self.TupleFormat(P=base_sentences.P, not_P=response_FQ)
+        return self.TupleFormat(P=base_sentences.P, not_P=response)
 
     async def instantiate(
-        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
-        response = await answer(
-            prompt=base_sentences.model_dump_json(indent=4),
+        base_sentences = self.BaseSentenceFormat(**base_sentences) # for validation
+        _response = await answer(
+            prompt=base_sentences.model_dump_json(),
             preface=self.preface,
             examples=self.examples,
-            response_model=ForecastingQuestion_simple,
+            response_model=ForecastingQuestion_stripped,
             **kwargs
         )
-        response_FQ = response.cast_FQ(
+        response = _response.cast_FQ(
             resolution_date=base_sentences.P.resolution_date,
             question_type=base_sentences.P.question_type,
             data_source="synthetic_inst",
@@ -102,7 +108,7 @@ class NegChecker(BaseChecker):
                 else None
             ),
         )
-        return self.TupleFormat(P=base_sentences.P, not_P=response_FQ)
+        return self.TupleFormat(P=base_sentences.P, not_P=response)
 
     def violation(self, answers: dict[str, Prob]) -> float:
         return abs(answers["P"] + answers["not_P"] - 1)
