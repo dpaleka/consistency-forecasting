@@ -3,7 +3,7 @@ import jsonlines
 from abc import ABC, abstractmethod
 from typing import Type, Self
 from pydantic import BaseModel
-from common.utils import write_jsonl_async
+from common.utils import write_jsonl_async, write_jsonl_async_from_str
 from common.llm_utils import parallelized_call
 from common.datatypes import *
 from forecasters import Forecaster
@@ -49,7 +49,7 @@ class BaseChecker(ABC):
         
         if kwargs.get("verbose", True):
             print(f"Writing tuple to {self.path}: {result}")
-        await write_jsonl_async(self.path, [result.model_dump_json()], append=True)
+        await write_jsonl_async_from_str(self.path, [result.model_dump_json()], append=True)
 
     async def instantiate_and_write_many(
         self, base_sentencess: "list[Self.BaseSentenceFormat]", **kwargs
