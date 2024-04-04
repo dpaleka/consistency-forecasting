@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from uuid import uuid4, UUID
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, validator, field_validator, create_model
 
 
 class PlainText(BaseModel):
@@ -104,7 +104,20 @@ class ForecastingQuestion(BaseModel):
     def __str__(self):
         return self.cast_simple().model_dump_json()
 
+# e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
 
+def mk_TupleFormat(fields, name='TupleFormat'):
+    model = create_model(name, **{k: (ForecastingQuestion, ...) for k in fields})
+    for field_name, field_type in fields.items():
+        def make_validator(field_name : str, field_type : str):
+            @validator(field_name, allow_reuse = True)
+            def validate(cls, v):
+                if v.question_type != field_type:
+                    raise ValueError(f"{field_name}.question_type must be {field_type}")
+                return v
+            return validate
+        model.add_validator(make_validator(field_name, field_type))
+    return model
 
 
 # ForecastingQuestionTuple = dict[str, ForecastingQuestion]
