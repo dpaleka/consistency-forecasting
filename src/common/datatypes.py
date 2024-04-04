@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type
 from datetime import datetime
 from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, validator, field_validator, create_model
@@ -56,6 +56,10 @@ class ForecastingQuestion_simple(BaseModel):
             **kwargs
         )
 
+exp_answer_types = {
+    "default": {"binary": Prob, "conditional_binary": Prob},
+    "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
+}
 
 class ForecastingQuestion(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -92,10 +96,6 @@ class ForecastingQuestion(BaseModel):
         return v
 
     def expected_answer_type(self, mode="default") -> type:
-        exp_answer_types = {
-            "default": {"binary": Prob, "conditional_binary": Prob},
-            "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
-        }
         return exp_answer_types[mode][self.question_type]
 
     def cast_simple(self):
@@ -106,7 +106,7 @@ class ForecastingQuestion(BaseModel):
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
 
-def mk_TupleFormat(fields, name='TupleFormat'):
+def mk_TupleFormat(fields : dict[str, str], name='TupleFormat') -> Type[BaseModel]:
     model = create_model(name, **{k: (ForecastingQuestion, ...) for k in fields})
     for field_name, field_type in fields.items():
         def make_validator(field_name : str, field_type : str):
@@ -119,6 +119,11 @@ def mk_TupleFormat(fields, name='TupleFormat'):
         model.add_validator(make_validator(field_name, field_type))
     return model
 
+def mk_TupleFormat_ans(fields : dict[str, str], name='TupleFormat_ans') -> Type[BaseModel]:
+    return create_model(name, **{
+        field_name: (exp_answer_types["default"][field_type], ...)
+        for field_name, field_type in fields.items()
+    })
 
 # ForecastingQuestionTuple = dict[str, ForecastingQuestion]
 # ProbsTuple = dict[str, Prob]
