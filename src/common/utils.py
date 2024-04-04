@@ -4,7 +4,7 @@ from typing import List
 import jsonlines
 from copy import deepcopy
 import hashlib
-
+from pydantic import BaseModel
 
 def format_float(x) -> str:
     if isinstance(x, float) or isinstance(x, int):
@@ -84,3 +84,9 @@ async def write_jsonl_async_from_str(path: str, data: List[str], append: bool = 
     async with aiofiles.open(path, mode=mode) as file:
         for item in data:
             await file.write(item + "\n")
+
+def shallow_dict(model: BaseModel) -> dict:
+    return {
+        field_name: (getattr(model, field_name) if isinstance(getattr(model, field_name), BaseModel) else value)
+        for field_name, value in model
+    }
