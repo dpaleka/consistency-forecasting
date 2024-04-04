@@ -1,13 +1,25 @@
 from common.llm_utils import answer_sync, answer, Example
 from common.datatypes import *
 from .BaseChecker import BaseChecker
-
+from pydantic import BaseModel, field_validator
 
 class NegChecker(BaseChecker):
     """Where f(x) is the forecaster,
     R(x1, x2)       :=  x2 == ¬x1
     S(f(x1), f(x2)) :=  f(x1) + f(x2) = 1
     """
+    
+    class BaseQuestionFormat(BaseModel):
+        P : ForecastingQuestion
+    
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+    
+    
+        
     
     preface = (
         "You are a helpful assistant. I will give you a forecasting question with Yes/No "
