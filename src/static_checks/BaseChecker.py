@@ -9,6 +9,117 @@ from common.datatypes import *
 from forecasters import Forecaster
 
 
+class MiniInstantiator(ABC):
+
+    # @property
+    # @abstractmethod
+    # def bs_format(self) -> dict[str, str]:
+    #     pass  # e.g. {'P' : 'binary', 'Q' : 'numerical', 'R' : 'binary'}
+
+    # class BaseSentenceFormat(BaseModel):
+    #     pass
+
+    @property
+    @abstractmethod
+    def BaseSentenceFormat(self) -> Type[BaseModel]:
+        pass
+
+    @abstractmethod
+    def title_body_sync_(
+        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+    ) -> ForecastingQuestion_stripped:
+        pass
+
+    @abstractmethod
+    async def title_body_(
+        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+    ) -> ForecastingQuestion_stripped:
+        pass
+
+    def title_body_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestion_stripped:
+        based_sentences = self.BaseSentenceFormat(**base_sentences)
+        return self.title_body_sync_(based_sentences, **kwargs)
+
+    async def title_body(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestion_stripped:
+        based_sentences = self.BaseSentenceFormat(**base_sentences)
+        return await self.title_body_(based_sentences, **kwargs)
+
+    def resolution_date(
+        self, base_sentences: dict[str, ForecastingQuestion]
+    ) -> datetime:
+        return max([base_sentences[key].resolution_date for key in base_sentences])
+
+    def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
+        return base_sentences[
+            list(base_sentences.keys())[0]
+        ].question_type  # default to the first key
+
+    def data_source(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
+        return "synthetic_inst"
+
+    @abstractmethod
+    def resolution_(
+        self, resolutions: dict[str, bool]
+    ) -> Optional[bool]:
+        """Basically just the MiniInstantiator's logic. E.g. return not resolutions['P']"""
+        pass
+
+    def resolution(
+        self, base_sentences: dict[str, ForecastingQuestion]
+    ) -> Optional[bool]:
+        resolutions = {key: base_sentences[key].resolution for key in base_sentences}
+        if all([res is not None for res in resolutions.values()]):
+            return self.resolution_(resolutions)
+        return None
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestion:
+        title_body = self.title_body_sync(base_sentences, **kwargs)
+        return ForecastingQuestion(
+            title=title_body.title,
+            body=title_body.body,
+            resolution_date=self.resolution_date(base_sentences, **kwargs),
+            question_type=self.question_type(base_sentences, **kwargs),
+            data_source=self.data_source(base_sentences, **kwargs),
+            resolution=self._resolution(base_sentences, **kwargs),
+        )
+    
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> ForecastingQuestion:
+        title_body = await self.title_body(base_sentences, **kwargs)
+        return ForecastingQuestion(
+            title=title_body.title,
+            body=title_body.body,
+            resolution_date=self.resolution_date(base_sentences, **kwargs),
+            question_type=self.question_type(base_sentences, **kwargs),
+            data_source=self.data_source(base_sentences, **kwargs),
+            resolution=self._resolution(base_sentences, **kwargs),
+        )
+
+class Trivial(MiniInstantiator):
+        
+        class BaseSentenceFormat(BaseModel):
+            P: ForecastingQuestion
+    
+        async def title_body_(
+            self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+        ) -> ForecastingQuestion_stripped:
+            return base_sentences.P.cast_simple()
+    
+        def resolution_(
+            self, resolutions: dict[str, bool]
+        ) -> Optional[bool]:
+            return resolutions["P"]
+
+class TupleInstantiator(ABC):
+    ...
+
 class BaseChecker(ABC):
 
     @property
