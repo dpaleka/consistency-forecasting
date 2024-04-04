@@ -35,17 +35,22 @@ class ForecastingQuestion_simple(BaseModel):
         resolution_date: datetime,
         question_type: str,
         data_source: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         """Make ForecastingQuestion from a ForecastingQuestion_simple given to us by an llm
 
         Args:
-            resolution_date (datetime): If produced by an LLM, will usually be the max of the 
+            resolution_date (datetime): If produced by an LLM, will usually be the max of the
                 resolution dates of the questions in the input.
-            question_type (str): If produced by an LLM, will usually be the same as that of 
+            question_type (str): If produced by an LLM, will usually be the same as that of
                 the inputs
             data_source (Optional[str], optional): If produced by an LLM, will usually be
                 "synthetic_inst". Defaults to None.
+        
+        Keyword Args:
+            url (Optional[str]): You probably shouldn't add this.
+            metadata (Optional[dict]): Metadata.
+            resolution (Optional[str]): The resolution of the question.
         """
         return ForecastingQuestion(
             title=self.title,
@@ -53,13 +58,15 @@ class ForecastingQuestion_simple(BaseModel):
             resolution_date=resolution_date,
             question_type=question_type,
             data_source=data_source,
-            **kwargs
+            **kwargs,
         )
+
 
 exp_answer_types = {
     "default": {"binary": Prob, "conditional_binary": Prob},
     "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
 }
+
 
 class ForecastingQuestion(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -102,28 +109,40 @@ class ForecastingQuestion(BaseModel):
         return ForecastingQuestion_simple(title=self.title, body=self.body)
 
     def __str__(self):
-        return self.cast_simple().model_dump_json()
+        return self.cast_simple().model_dump_json(indent=4)
+
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
 
-def mk_TupleFormat(fields : dict[str, str], name='TupleFormat') -> Type[BaseModel]:
+
+def mk_TupleFormat(fields: dict[str, str], name="TupleFormat") -> Type[BaseModel]:
     model = create_model(name, **{k: (ForecastingQuestion, ...) for k in fields})
     for field_name, field_type in fields.items():
-        def make_validator(field_name : str, field_type : str):
-            @validator(field_name, allow_reuse = True)
+
+        def make_validator(field_name: str, field_type: str):
+            @validator(field_name, allow_reuse=True)
             def validate(cls, v):
                 if v.question_type != field_type:
                     raise ValueError(f"{field_name}.question_type must be {field_type}")
                 return v
+
             return validate
+
         model.add_validator(make_validator(field_name, field_type))
     return model
 
-def mk_TupleFormat_ans(fields : dict[str, str], name='TupleFormat_ans') -> Type[BaseModel]:
-    return create_model(name, **{
-        field_name: (exp_answer_types["default"][field_type], ...)
-        for field_name, field_type in fields.items()
-    })
+
+def mk_TupleFormat_ans(
+    fields: dict[str, str], name="TupleFormat_ans"
+) -> Type[BaseModel]:
+    return create_model(
+        name,
+        **{
+            field_name: (exp_answer_types["default"][field_type], ...)
+            for field_name, field_type in fields.items()
+        },
+    )
+
 
 # ForecastingQuestionTuple = dict[str, ForecastingQuestion]
 # ProbsTuple = dict[str, Prob]
