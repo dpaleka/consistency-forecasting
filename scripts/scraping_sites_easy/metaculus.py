@@ -74,8 +74,8 @@ def fetch_live_questions_with_dates(api_url):
 
         question_info = {
             'id': question.get('id'),
-            'text': question.get('title'),
-            'resolution_criteria': question.get('description'),  # Assuming 'description' is the detailed text
+            'title': question.get('title'),
+            'body': question.get('description'),  # Assuming 'description' is the detailed text
             'question_type': question.get('possibilities', {}).get('type'),
             'resolution_date': question.get('resolve_time'),  # You might need to format this date
             'url': f"https://www.metaculus.com/questions/{question.get('id')}",

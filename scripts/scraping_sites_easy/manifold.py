@@ -34,8 +34,8 @@ def scrape_manifold_markets(api_url):
         
         market_info.append({
             'id': market['id'],
-            'text': market['question'],
-            'resolution_criteria': market.get('description', 'N/A'),
+            'title': market['question'],
+            'body': market.get('description', 'N/A'),
             'question_type': market.get('outcomeType', '').lower(),
             'resolution_date': resolution_date,
             'url': market.get('url', '').lower(),

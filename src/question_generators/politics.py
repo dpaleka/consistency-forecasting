@@ -40,7 +40,7 @@ def generate_politics_questions(country: str, k: int = 5) -> list[str]:
             "content": """\
 Generate {k} questions abot the politics of {country} between 2024 and 2030.
 Give the answer in the JSON list format.
-Example: "questions": ["text": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
+Example: "questions": ["title": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
 Answer type should always be Prob.
 """
         },
@@ -54,7 +54,7 @@ Answer type should always be Prob.
     # now parse json
     try:
         response_json = json.loads(response_text)
-        questions = [response_json["questions"][i]["text"] for i in range(k)]
+        questions = [response_json["questions"][i]["title"] for i in range(k)]
         return questions
     except KeyError:
         print(f"Error parsing response for {country}")
@@ -101,7 +101,7 @@ def generate_politics_question_topic(topic, country, k : int = 5) -> list[str]:
             "content": """\
 Generate {k} questions abuot the politics of {country} between 2024 and 2030.
 Give the answer in the JSON list format.
-Example: "questions": ["text": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
+Example: "questions": ["title": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
 Make sure the question is precise and unambigous.
 Answer type should always be Prob.
 """
@@ -117,7 +117,7 @@ The {k} questions should all be on the general topic of {topic}, in the country 
     # now parse json
     try:
         response_json = json.loads(response_text)
-        questions = [response_json["questions"][i]["text"] for i in range(k)]
+        questions = [response_json["questions"][i]["title"] for i in range(k)]
         return questions
     except KeyError:
         print(f"Error parsing response for {country} and {topic}")

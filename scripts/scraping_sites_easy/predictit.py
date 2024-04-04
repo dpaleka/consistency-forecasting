@@ -27,8 +27,8 @@ def scrape_website(url):
 
         market_dict = {
             'id': market.get('id'),
-            'text': market.get('name'),
-            'resolution_criteria': market.get('description', 'No description available'),
+            'title': market.get('name'),
+            'body': market.get('description', 'No description available'),
             'question_type': 'binary' if len(market.get('contracts', [])) == 1 else 'multiple_choice',
             'resolution_date': resolution_date,
             'url': market.get('url'),
