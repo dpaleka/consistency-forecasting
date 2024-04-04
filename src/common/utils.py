@@ -66,6 +66,11 @@ def write_jsonl(path: str, data: List[dict], append: bool = False):
         for item in data:
             writer.write(item)
 
+def write_jsonl_from_str(path: str, data: List[str], append: bool = False):
+    with open(path, 'a' if append else 'w') as file:
+        for item in data:
+            file.write(item + "\n")
+
 
 async def write_jsonl_async(path: str, data: List[dict], append: bool = False):
     mode = 'a' if append else 'w'
@@ -73,3 +78,9 @@ async def write_jsonl_async(path: str, data: List[dict], append: bool = False):
         for item in data:
             json_line = json.dumps(item) + "\n"
             await file.write(json_line)
+            
+async def write_jsonl_async_from_str(path: str, data: List[str], append: bool = False):
+    mode = 'a' if append else 'w'
+    async with aiofiles.open(path, mode=mode) as file:
+        for item in data:
+            await file.write(item + "\n")
