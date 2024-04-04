@@ -16,7 +16,7 @@ class BasicForecaster(Forecaster):
             Example("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")
         ]
 
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
+    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -24,9 +24,9 @@ class BasicForecaster(Forecaster):
             response_model=sentence.expected_answer_type(),
             **kwargs
         )
-        return response
+        return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Prob:
+    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -34,4 +34,4 @@ class BasicForecaster(Forecaster):
             response_model=sentence.expected_answer_type(),
             **kwargs
         )
-        return self.extract_prob(response)
+        return response.prob
