@@ -77,7 +77,7 @@ class ForecastingQuestion(BaseModel):
     data_source: Optional[str] = None
     url: Optional[str] = None
     metadata: Optional[dict] = None
-    resolution: Optional[str] = None
+    resolution: Optional[bool] = None
 
     @field_validator("question_type")
     def validate_question_type(cls, v):
@@ -144,5 +144,5 @@ def mk_TupleFormat_ans(
     )
 
 
-# ForecastingQuestionTuple = dict[str, ForecastingQuestion]
-# ProbsTuple = dict[str, Prob]
+ForecastingQuestionTuple = dict[str, ForecastingQuestion]
+ProbsTuple = dict[str, Prob]

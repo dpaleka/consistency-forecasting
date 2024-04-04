@@ -4,6 +4,8 @@ from static_checks import *
 from common.datatypes import *
 import asyncio
 
+neg_checker = NegChecker()
+
 base_question = ForecastingQuestion(
     title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
     body="Resolves YES if the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025. Resolves NO otherwise.",
@@ -14,9 +16,10 @@ base_question = ForecastingQuestion(
     metadata={"currency": "USD"},
     resolution="YES",
 )
+base_questions = neg_checker.BaseSentenceFormat(P=base_question)
 
 #asyncio.run(ButNotChecker().instantiate_and_write_many(base_questions_combos))
-asyncio.run(NegChecker().instantiate_and_write_many([[base_question]], model="gpt-3.5-turbo"))
+asyncio.run(NegChecker().instantiate_and_write_many([base_questions], model="gpt-3.5-turbo"))
 #asyncio.run(ParaphrasalChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
     
 #%%
