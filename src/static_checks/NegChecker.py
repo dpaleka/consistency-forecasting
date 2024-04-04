@@ -61,8 +61,8 @@ class NegChecker(BaseChecker):
         super().__init__(tolerance)
 
     def instantiate_sync(
-        self, base_sentences: Self.BaseSentenceFormat, **kwargs
-    ) -> Self.TupleFormat:
+        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+    ) -> "Self.TupleFormat":
         response = answer_sync(
             prompt=base_sentences.model_dump_json(indent=4),
             preface=self.preface,
@@ -83,8 +83,8 @@ class NegChecker(BaseChecker):
         return self.TupleFormat(P=base_sentences.P, not_P=response_FQ)
 
     async def instantiate(
-        self, base_sentences: Self.BaseSentenceFormat, **kwargs
-    ) -> Self.TupleFormat:
+        self, base_sentences: "Self.BaseSentenceFormat", **kwargs
+    ) -> "Self.TupleFormat":
         response = await answer(
             prompt=base_sentences.model_dump_json(indent=4),
             preface=self.preface,

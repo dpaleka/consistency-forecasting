@@ -30,29 +30,29 @@ class BaseChecker(ABC):
 
     @abstractmethod
     def instantiate_sync(
-        self, base_sentences : Self.BaseSentenceFormat, **kwargs
-    ) -> Self.TupleFormat:
+        self, base_sentences : "Self.BaseSentenceFormat", **kwargs
+    ) -> "Self.TupleFormat":
         pass
 
     @abstractmethod
     async def instantiate(
-        self, base_sentences : Self.BaseSentenceFormat, **kwargs
-    ) -> Self.TupleFormat:
+        self, base_sentences : "Self.BaseSentenceFormat", **kwargs
+    ) -> "Self.TupleFormat":
         pass
 
     @abstractmethod
     def violation(self, answers: dict[str, Prob]) -> float:
         pass
 
-    async def instantiate_and_write(self, base_sentences: Self.BaseSentenceFormat, **kwargs):
+    async def instantiate_and_write(self, base_sentences: "Self.BaseSentenceFormat", **kwargs):
         result = await self.instantiate(base_sentences, **kwargs)
         
         if kwargs.get("verbose", True):
             print(f"Writing tuple to {self.path}: {result}")
-        await write_jsonl_async(self.path, [result.model_dump_json(indent=4)], append=True)
+        await write_jsonl_async(self.path, [result.model_dump_json()], append=True)
 
     async def instantiate_and_write_many(
-        self, base_sentencess: list[Self.BaseSentenceFormat], **kwargs
+        self, base_sentencess: "list[Self.BaseSentenceFormat]", **kwargs
     ):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
             base_sentences, **kwargs
@@ -63,12 +63,12 @@ class BaseChecker(ABC):
         return self.violation(answers) < self.tolerance
 
     def elicit_and_violation(
-        self, forecaster: Forecaster, sentences: Self.TupleFormat, **kwargs
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
     ) -> float:
         return self.violation(forecaster.elicit(sentences, **kwargs))
 
     def elicit_and_check(
-        self, forecaster: Forecaster, sentences: Self.TupleFormat, **kwargs
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
