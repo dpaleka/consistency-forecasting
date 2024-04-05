@@ -1,5 +1,3 @@
-#%%
-
 from static_checks.NegChecker import Neg
 from common.datatypes import *
 import asyncio
@@ -19,10 +17,3 @@ base_questions = [{"P" :base_question}]
 async def foo():
     x = await minineg.instantiate(base_questions[0])
     print(x)
-
-asyncio.run(foo())
-#asyncio.run(ButNotChecker().instantiate_and_write_many(base_questions_combos))
-#asyncio.run(NegChecker().instantiate_and_write_many(base_questions, model="gpt-3.5-turbo"))
-#asyncio.run(ParaphrasalChecker().instantiate_and_write_many(base_questions_combos, model="gpt-3.5-turbo"))
-    
-#%%
