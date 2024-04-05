@@ -86,6 +86,7 @@ class Checker(ABC):
             print(f"Check result: {res}")
             print("")
 
+
 class MiniInstantiator(ABC):
 
     # @property
@@ -114,17 +115,27 @@ class MiniInstantiator(ABC):
             },
         )
 
-    @abstractmethod
     def title_body_sync_(
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
     ) -> ForecastingQuestion_stripped:
-        pass
-
-    @abstractmethod
+        return answer_sync(
+            prompt=base_sentences.model_dump_json(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=ForecastingQuestion_stripped,
+            **kwargs,
+        )
+        
     async def title_body_(
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
     ) -> ForecastingQuestion_stripped:
-        pass
+        return await answer(
+            prompt=base_sentences.model_dump_json(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=ForecastingQuestion_stripped,
+            **kwargs,
+        )
 
     def title_body_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -194,6 +205,7 @@ class MiniInstantiator(ABC):
             resolution=self.resolution(base_sentences),
         )
 
+
 class Trivial(MiniInstantiator):
 
     class BaseSentenceFormat(BaseModel):
@@ -211,6 +223,7 @@ class Trivial(MiniInstantiator):
 
     def resolution_(self, resolutions: dict[str, bool]) -> Optional[bool]:
         return resolutions["P"]
+
 
 class Neg(MiniInstantiator):
 
@@ -255,30 +268,158 @@ class Neg(MiniInstantiator):
         )
     ]
 
-    def __init__(self):
-        super().__init__()
-
-    def title_body_sync_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
-    ) -> ForecastingQuestion_stripped:
-        return answer_sync(
-            prompt=base_sentences.model_dump_json(),
-            preface=self.preface,
-            examples=self.examples,
-            response_model=ForecastingQuestion_stripped,
-            **kwargs
-        )
-
-    async def title_body_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
-    ) -> ForecastingQuestion_stripped:
-        return await answer(
-            prompt=base_sentences.model_dump_json(),
-            preface=self.preface,
-            examples=self.examples,
-            response_model=ForecastingQuestion_stripped,
-            **kwargs
-        )
-
     def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
         return not resolutions["P"]
+
+
+class And(MiniInstantiator):
+
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("Q")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
+    preface = (
+        "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
+        "answers. You should then give me the question that would be answered YES if both "
+        "questions would be answered YES, and NO otherwise. Avoid a very blatant AND "
+        "construction; instead try to integrate the two questions in a more natural way "
+        "while achieving the correct meaning."
+    )
+
+    examples = [
+        Example(
+            user=BaseSentenceFormat_stripped(
+                P=ForecastingQuestion_stripped(
+                    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Bitcoin against USD is more than "
+                        "100,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                ),
+                Q=ForecastingQuestion_stripped(
+                    title="Will the price of Ethereum be above $10,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Ethereum against USD is more than "
+                        "10,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                ),
+            ).model_dump_json(),
+            assistant=ForecastingQuestion_stripped(
+                title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
+                body=(
+                    "Resolves YES if the spot price of Bitcoin against USD is more than 100,000 "
+                    "AND the spot price of Ethereum against USD is more than 10,000 on 1st January "
+                    "2025. Resolves NO otherwise."
+                ),
+            ).model_dump_json(),
+        )
+    ]
+
+    def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
+        return resolutions["P"] and resolutions["Q"]
+
+
+class Or(MiniInstantiator):
+
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("Q")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
+    preface = (
+        "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
+        "answers. You should then give me the question that would be answered YES if either "
+        "question would be answered YES, and NO otherwise. Avoid a very blatant OR "
+        "construction; instead try to integrate the two questions in a more natural way "
+        "while achieving the correct meaning."
+    )
+
+    examples = [
+        Example(
+            user=BaseSentenceFormat_stripped(
+                P=ForecastingQuestion_stripped(
+                    title="Will Jeb Bush be the President of the US in January 2032?",
+                    body=(
+                        "Resolves YES if Jeb Bush is the President of the US in January 2032. "
+                        "Resolves NO otherwise."
+                    ),
+                ),
+                Q=ForecastingQuestion_stripped(
+                    title="Will Jeb Bush be the President of the US in January 2036?",
+                    body=(
+                        "Resolves YES if Jeb Bush is the President of the US in January 2036. "
+                    ),
+                ),
+            ).model_dump_json(),
+            assistant=ForecastingQuestion_stripped(
+                title="Will Jeb Bush be the President of the US in January 2032 or 2036?",
+                body=(
+                    "Resolves YES if Jeb Bush is the President of the US in either January 2032 "
+                    "or January 2036 (or both). Resolves NO otherwise."
+                ),
+            ).model_dump_json(),
+        ),
+        Example(
+            user=BaseSentenceFormat_stripped(
+                P=ForecastingQuestion_stripped(
+                    title="Will Joe Biden be elected president in the 2024 presidential election?",
+                    body=(
+                        "Resolves YES if Joe Biden is elected president in the 2024 presidential "
+                        "election. Resolves NO otherwise."
+                    ),
+                ),
+                Q=ForecastingQuestion_stripped(
+                    title="Will the price of Ethereum be above $10,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Ethereum against USD is more than "
+                        "10,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                ),
+            ).model_dump_json(),
+            assistant=ForecastingQuestion_stripped(
+                title="Will either of the following occur: "
+                "(a) Joe Biden is elected president in the 2024 presidential election, or "
+                "(b) the price of Ethereum is above $10,000 on 1st January 2025?",
+                body=(
+                    "Resolves YES if either of the said events occur (or both). Resolves NO "
+                    "otherwise."
+                ),
+            ).model_dump_json(),
+        ),
+    ]
+                
+    def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
+        return resolutions["P"] or resolutions["Q"]
+    
+    
