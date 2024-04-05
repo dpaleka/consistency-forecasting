@@ -1,7 +1,8 @@
-from static_checks.NegChecker import Neg
+from static_checks.NegChecker import Trivial, Neg
 from common.datatypes import *
 import asyncio
 
+minitrivial = Trivial()
 minineg = Neg()
 
 base_question = ForecastingQuestion(
@@ -17,3 +18,5 @@ base_questions = [{"P" :base_question}]
 async def foo():
     x = await minineg.instantiate(base_questions[0])
     print(x)
+
+asyncio.run(foo())

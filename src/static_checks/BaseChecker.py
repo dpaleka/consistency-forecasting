@@ -89,13 +89,6 @@ class Checker(ABC):
 
 class MiniInstantiator(ABC):
 
-    # @property
-    # @abstractmethod
-    # def bs_format(self) -> dict[str, str]:
-    #     pass  # e.g. {'P' : 'binary', 'Q' : 'numerical', 'R' : 'binary'}
-
-    # class BaseSentenceFormat(BaseModel):
-    #     pass
 
     def __init__(self):
         pass
@@ -114,6 +107,21 @@ class MiniInstantiator(ABC):
                 for k in self.BaseSentenceFormat.model_fields
             },
         )
+    
+    @property
+    @abstractmethod
+    def OutputFormat(self) -> Type[BaseModel]:
+        pass
+    
+    @property
+    def OutputFormat_stripped(self) -> Type[BaseModel]:
+        return create_model(
+            "OutputFormat_stripped",
+            **{
+                k: (ForecastingQuestion_stripped, ...)
+                for k in self.OutputFormat.model_fields
+            },
+        )
 
     def title_body_sync_(
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
@@ -125,7 +133,7 @@ class MiniInstantiator(ABC):
             response_model=ForecastingQuestion_stripped,
             **kwargs,
         )
-        
+
     async def title_body_(
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
     ) -> ForecastingQuestion_stripped:
@@ -418,8 +426,115 @@ class Or(MiniInstantiator):
             ).model_dump_json(),
         ),
     ]
-                
+
     def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
         return resolutions["P"] or resolutions["Q"]
-    
-    
+
+
+class Paraphrase(MiniInstantiator):
+
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
+    preface = (
+        "You are a helpful assistant. I will give you a forecasting question with Yes/No "
+        "answer. You should then give me a paraphrased version of the question that "
+        "expresses the same underlying concept. The question should be as different as "
+        "possible from the original question, while still meaning the exact same thing. "
+        "Use synonyms, etc. "
+    )
+
+    examples = [
+        Example(
+            user=BaseSentenceFormat_stripped(
+                P=ForecastingQuestion_stripped(
+                    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the price of Bitcoin on 1st January 2025 is more than "
+                        "$100,000. Resolves NO otherwise."
+                    ),
+                )
+            ).model_dump_json(),
+            assistant=ForecastingQuestion_stripped(
+                title="On 1st January 2025, will one Bitcoin be worth more than 100,000 US Dollars?",
+                body=(
+                    "Resolves YES if the spot price of Bitcoin against USD is higher than "
+                    "100,000 on 1st January 2025. Resolves NO otherwise."
+                ),
+            ).model_dump_json(),
+        )
+    ]
+
+    def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
+        return resolutions["P"]
+
+
+class Conditional(MiniInstantiator):
+
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("Q")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
+    preface = (
+        "You are a helpful assistant. I will give you two forecasting questions P and Q with Yes/No "
+        "answers. You should then give me a question that expresses their *conditional* expression"
+        "i.e. 'GIVEN that P is true, then is Q true?'"
+    )
+
+    examples = [
+        Example(
+            user=BaseSentenceFormat_stripped(
+                P=ForecastingQuestion_stripped(
+                    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Bitcoin against USD is more than "
+                        "100,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                ),
+                Q=ForecastingQuestion_stripped(
+                    title="Will the price of Ethereum be above $10,000 on 1st January 2025?",
+                    body=(
+                        "Resolves YES if the spot price of Ethereum against USD is more than "
+                        "10,000 on 1st January 2025. Resolves NO otherwise."
+                    ),
+                ),
+            ).model_dump_json(),
+            assistant=ForecastingQuestion_stripped(
+                title=(
+                    "Given that on 1st January 2025, the price of Bitcoin will be above $100,000, "
+                    "will the price of Ethereum be above $10,000 on the same date?"
+                ),
+                body=(
+                    "Resolves N/A if the price of Bitcoin is not above $100,000 on 1st January 2025. "
+                    "If the condition is met (if the price of Bitcoin is above $100,000 on 1st Jan 2025 "
+                    ", then resolves YES if the spot price of Ethereum against USD is more than 10,000 "
+                    "and NO if it's not on 1st Jan 2025."
+                ),
+            ).model_dump_json(),
+        )
+    ]
