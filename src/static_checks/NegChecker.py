@@ -1,8 +1,7 @@
 from common.datatypes import ForecastingQuestion, Prob
-from .MiniInstantiators import Neg, Trivial
-from .BaseChecker import Checker
 from pydantic import BaseModel, field_validator
 from typing import Self
+from .BaseChecker import Checker, Trivial, Neg
 
 class NegChecker(Checker):
 

@@ -11,7 +11,6 @@ import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
 from dotenv import load_dotenv
-from typing import Union, Tuple, List
 from mistralai.models.chat_completion import ChatMessage
 from huggingface_hub import snapshot_download
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
@@ -146,7 +145,7 @@ def is_huggingface_local(model: str) -> bool:
 
 def get_client(
     model: str, use_async=True
-) -> Tuple[Union[AsyncOpenAI, OpenAI, MistralAsyncClient, MistralClient], str]:
+) -> tuple[AsyncOpenAI|OpenAI|MistralAsyncClient|MistralClient, str]:
     if is_openai(model):
         return (
             get_async_openai_client() if use_async else get_openai_client(),
