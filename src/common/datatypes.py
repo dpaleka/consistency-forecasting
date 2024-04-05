@@ -108,14 +108,14 @@ class ForecastingQuestion(BaseModel):
     def expected_answer_type(self, mode="default") -> type:
         return exp_answer_types[mode][self.question_type]
 
-    def cast_simple(self):
+    def cast_stripped(self):
         return ForecastingQuestion_stripped(title=self.title, body=self.body)
     
     def cast_FQ(self):
         return self
 
     def __str__(self):
-        return self.cast_simple().model_dump_json(indent=4)
+        return self.cast_stripped().model_dump_json(indent=4)
 
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
