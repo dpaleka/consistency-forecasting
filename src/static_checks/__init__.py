@@ -1,1 +1,3 @@
-from .BaseChecker import Checker, MiniInstantiator, Trivial
+from .BaseChecker import Checker
+from .MiniInstantiators import *
+from .NegChecker import NegChecker

@@ -1,86 +1,14 @@
-from common.llm_utils import answer_sync, answer, Example
-from common.datatypes import *
-from .BaseChecker import MiniInstantiator, Checker, Trivial
+from common.datatypes import ForecastingQuestion, Prob
+from .MiniInstantiators import Neg, Trivial
+from .BaseChecker import Checker
 from pydantic import BaseModel, field_validator
 from typing import Self
 
+class NegChecker(Checker):
 
-class Neg(MiniInstantiator):
+    def __init__(self, tolerance=0.1, path=None):
+        super().__init__(tolerance, path)
 
-    class BaseSentenceFormat(BaseModel):
-        P: ForecastingQuestion
-
-        @field_validator("P")
-        def check_question_type(cls, value):
-            if value.question_type != "binary":
-                raise ValueError("Question type must be binary")
-            return value
-
-    class BaseSentenceFormat_stripped(BaseModel):
-        P: ForecastingQuestion_stripped
-
-    preface = (
-        "You are a helpful assistant. I will give you a forecasting question with Yes/No "
-        "answer. You should then give me the NEGATION of the question, i.e. the question that "
-        "would be answered YES if the original question would be answered NO, and vice "
-        "versa. Demorgan's laws should be followed with and/or negation. Avoid using the word "
-        "'won't'."
-    )
-
-    examples = [
-        Example(
-            user=BaseSentenceFormat_stripped(
-                P=ForecastingQuestion_stripped(
-                    title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
-                    body=(
-                        "Resolves YES if the spot price of Bitcoin against USD is more than "
-                        "100,000 on 1st January 2025. Resolves NO otherwise."
-                    ),
-                )
-            ).model_dump_json(),
-            assistant=ForecastingQuestion_stripped(
-                title="Will the price of Bitcoin be less than or equal to $100,000 on 1st January 2025?",
-                body=(
-                    "Resolves YES if the spot price of Bitcoin against USD is less than or equal to "
-                    "100,000 on 1st January 2025. Resolves NO otherwise."
-                ),
-            ).model_dump_json(),
-        )
-    ]
-
-    def __init__(self):
-        super().__init__()
-
-    def title_body_sync_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
-    ) -> ForecastingQuestion_stripped:
-        return answer_sync(
-            prompt=base_sentences.model_dump_json(),
-            preface=self.preface,
-            examples=self.examples,
-            response_model=ForecastingQuestion_stripped,
-            **kwargs
-        )
-
-    async def title_body_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
-    ) -> ForecastingQuestion_stripped:
-        return await answer(
-            prompt=base_sentences.model_dump_json(),
-            preface=self.preface,
-            examples=self.examples,
-            response_model=ForecastingQuestion_stripped,
-            **kwargs
-        )
-    
-    def resolution_(self, resolutions: dict[str, bool]) -> bool | None:
-        return not resolutions["P"]
-    
-class NegChecker(Checker):    
-
-    def __init__(self, tolerance=0.1):
-        super().__init__(tolerance)
-        
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -90,11 +18,24 @@ class NegChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
-    
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
-        base_sentences = self.BaseSentenceFormat(**base_sentences)
+        P = Trivial().instantiate_sync(base_sentences, **kwargs)
+        not_P = Neg().instantiate_sync(base_sentences, **kwargs)
+        return self.TupleFormat(P=P, not_P=not_P)
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = await Trivial().instantiate(base_sentences, **kwargs)
+        not_P = await Neg().instantiate(base_sentences, **kwargs)
+        return self.TupleFormat(P=P, not_P=not_P)
+
+    def violation(self, answers: dict[str, Prob]) -> float:
+        return abs(answers["P"] + answers["not_P"] - 1)
+
 
 # class NegChecker(BaseChecker):
 #     """Where f(x) is the forecaster,
