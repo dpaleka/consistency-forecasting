@@ -10,84 +10,6 @@ from common.llm_utils import answer, answer_sync, Example, parallelized_call
 from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob
 from forecasters import Forecaster
 
-
-class Checker(ABC):
-
-    def __init__(self, tolerance=0.1, path=None):
-        self.tolerance = tolerance
-        if path is None:
-            self.path = f"src/data/{self.__class__.__name__}.jsonl"
-        else:
-            self.path = path
-
-    @property
-    @abstractmethod
-    def TupleFormat(self) -> Type[BaseModel]:
-        pass
-
-    @abstractmethod
-    def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
-        pass
-
-    @abstractmethod
-    async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
-        pass
-
-    async def instantiate_and_write(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ):
-        result = await self.instantiate(base_sentences, **kwargs)
-        await write_jsonl_async_from_str(
-            self.path, [result.model_dump_json()], append=True
-        )
-
-    async def instantiate_and_write_many(
-        self, base_sentencess: list[dict[str, ForecastingQuestion]], **kwargs
-    ):
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
-            base_sentences, **kwargs
-        )
-        await parallelized_call(_instantiate_and_write, base_sentencess)
-
-    @abstractmethod
-    def violation(self, answers: dict[str, Prob]) -> float:
-        pass
-
-    def check(self, answers: dict[str, Any]) -> bool:
-        return self.violation(answers) < self.tolerance
-
-    def elicit_and_violation(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> float:
-        return self.violation(forecaster.elicit(sentences, **kwargs))
-
-    def elicit_and_check(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> bool:
-        return self.check(forecaster.elicit(sentences, **kwargs))
-
-    def test(self, forecaster: Forecaster, **kwargs):
-        for line in jsonlines.open(self.path):
-            print("START")
-            print(f"line: {line}")
-            line_obj = self.TupleFormat.model_validate(line)
-            answers = forecaster.elicit(line_obj, **kwargs)
-            print(answers)
-            if not all(answers.values()):
-                print("ERROR: Some answers are None!")
-                continue
-            loss = self.violation(answers)
-            res_bool = self.check(answers)
-            res = {True: "Passed", False: "Failed"}[res_bool]
-            print(f"Violation: {loss}")
-            print(f"Check result: {res}")
-            print("")
-
-
 class MiniInstantiator(ABC):
 
     def __init__(self):
@@ -175,30 +97,29 @@ class MiniInstantiator(ABC):
         return "synthetic_inst"
 
     @abstractmethod
-    def resolution_(self, resolutions: dict[str, bool]) -> Optional[dict[str, bool]]:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         """Basically just the MiniInstantiator's logic. E.g. return {'not_P': not resolutions['P']}"""
         pass
 
     def resolution(
         self, base_sentences: dict[str, ForecastingQuestion]
-    ) -> Optional[dict[str, bool]]:
+    ) -> dict[str, bool | None]:
         resolutions = {key: base_sentences[key].resolution for key in base_sentences}
         if all([res is not None for res in resolutions.values()]):
             return self.resolution_(resolutions)
-        return None
+        return {k: None for k in self.OutputFormat.model_fields}
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.OutputFormat":
         title_body = self.title_body_sync(base_sentences, **kwargs)
-        resolutions = self.resolution(base_sentences)
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
                     resolution_date=self.resolution_date(base_sentences),
                     question_type=self.question_type(base_sentences),
                     data_source=self.data_source(base_sentences),
-                    resolution=resolutions["k"] if resolutions is not None else None,
+                    resolution=self.resolution(base_sentences)[k],
                 )
                 for k, v in shallow_dict(title_body).items()
             }
@@ -208,14 +129,13 @@ class MiniInstantiator(ABC):
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.OutputFormat":
         title_body = await self.title_body(base_sentences, **kwargs)
-        resolutions = self.resolution(base_sentences)
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
                     resolution_date=self.resolution_date(base_sentences),
                     question_type=self.question_type(base_sentences),
                     data_source=self.data_source(base_sentences),
-                    resolution=resolutions["k"] if resolutions is not None else None,
+                    resolution=self.resolution(base_sentences)[k],
                 )
                 for k, v in shallow_dict(title_body).items()
             }
@@ -240,7 +160,7 @@ class Trivial(MiniInstantiator):
     ) -> ForecastingQuestion_stripped:
         return self.OutputFormat_stripped(P=base_sentences.P.cast_stripped())
 
-    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, Optional[bool]]:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return resolutions
 
 
@@ -293,7 +213,7 @@ class Neg(MiniInstantiator):
 
         super().__init__()
 
-    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool] | None:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"not_P": not resolutions["P"]}
 
 
@@ -323,9 +243,10 @@ class And(MiniInstantiator):
         self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
             "answers. You should then give me the question that would be answered YES if both "
-            "questions would be answered YES, and NO otherwise. Avoid a very blatant AND "
-            "construction; instead try to integrate the two questions in a more natural way "
-            "while achieving the correct meaning."
+            "questions would be answered YES, and NO otherwise. Make sure your response is "
+            "as clear as possible, since the words 'and' and 'or' are used quite ambiguously "
+            "in natural language. When the questions allow a simple rephrasing (e.g. using words "
+            "like 'respectively' or 'either'), go for it."
         )
 
         self.examples = [
@@ -356,10 +277,41 @@ class And(MiniInstantiator):
                         ),
                     )
                 ).model_dump_json(),
-            )
+            ),
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will Joe Biden be elected president in the 2024 presidential election?",
+                        body=(
+                            "Resolves YES if Joe Biden is elected president in the 2024 presidential "
+                            "election. Resolves NO otherwise."
+                        ),
+                    ),
+                    Q=ForecastingQuestion_stripped(
+                        title="Will the price of Ethereum be above $10,000 on 1st January 2025?",
+                        body=(
+                            "Resolves YES if the spot price of Ethereum against USD is more than "
+                            "10,000 on 1st January 2025. Resolves NO otherwise."
+                        ),
+                    ),
+                ).model_dump_json(),
+                assistant=self.OutputFormat_stripped(
+                    P_and_Q=ForecastingQuestion_stripped(
+                        title=(
+                            "Will Joe Biden be elected president in the 2024 presidential election AND "
+                            "the price of Ethereum be above $10,000 on 1st January 2025?"
+                        ),
+                        body=(
+                            "Resolves YES if Joe Biden is elected president in the 2024 presidential "
+                            "election AND the spot price of Ethereum against USD is more than 10,000 on 1st "
+                            "January 2025. Resolves NO otherwise."
+                        ),
+                    )
+                ).model_dump_json(),
+            ),
         ]
 
-    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool] | None:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"P_and_Q": resolutions["P"] and resolutions["Q"]}
 
 
@@ -389,9 +341,10 @@ class Or(MiniInstantiator):
         self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
             "answers. You should then give me the question that would be answered YES if either "
-            "question would be answered YES, and NO otherwise. Avoid a very blatant OR "
-            "construction; instead try to integrate the two questions in a more natural way "
-            "while achieving the correct meaning."
+            "question would be answered YES, and NO otherwise. Make sure your response is as clear "
+            "as possible, since the words 'and' and 'or' are used quite ambiguously in natural language."
+            "When the questions allow a simple rephrasing (e.g. using words like 'respectively' or "
+            "'either'), go for it."
         )
 
         self.examples = [
@@ -452,7 +405,7 @@ class Or(MiniInstantiator):
             ),
         ]
 
-    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool] | None:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"P_or_Q": resolutions["P"] or resolutions["Q"]}
 
 
@@ -503,7 +456,7 @@ class Paraphrase(MiniInstantiator):
             )
         ]
 
-    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool] | None:
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"para_P": resolutions["P"]}
 
 
@@ -530,13 +483,13 @@ class Conditional(MiniInstantiator):
 
     def __init__(self):
 
-        preface = (
+        self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions P and Q with Yes/No "
             "answers. You should then give me a question that expresses their *conditional* expression"
             "i.e. 'GIVEN that P is true, then is Q true?'"
         )
 
-        examples = [
+        self.examples = [
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -570,3 +523,184 @@ class Conditional(MiniInstantiator):
                 ).model_dump_json(),
             )
         ]
+
+    def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
+        return "conditional_binary"
+
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
+        return {"Q_given_P": resolutions["Q"] if resolutions["P"] else None}
+
+
+class Spanning4(MiniInstantiator):
+
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class OutputFormat(BaseModel):
+        P1: ForecastingQuestion
+        P2: ForecastingQuestion
+        P3: ForecastingQuestion
+        P4: ForecastingQuestion
+
+    def __init__(self):
+
+        self.preface = (
+            "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
+            "answer. You should then give me a comprehensive spanning list of four ways in which the "
+            "question P could be true. I.e. together they must cover all the ways in which P could "
+            "be true. Make sure your response is in the form of a list of questions, i.e. P1, P2, "
+            "P3, P4 such that P = (P1 OR P2 OR P3 OR P4)."
+        )
+
+        self.examples = [
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will I eat a blueberry tomorrow?",
+                        body="Resolves YES if I eat a blueberry tomorrow. Resolves NO otherwise.",
+                    ),
+                ).model_dump_json(),
+                assistant=self.OutputFormat_stripped(
+                    P1=ForecastingQuestion_stripped(
+                        title="Will I eat a blueberry during breakfast tomorrow?",
+                        body="Resolves YES if I eat a blueberry during breakfast tomorrow. Resolves NO otherwise.",
+                    ),
+                    P2=ForecastingQuestion_stripped(
+                        title="Will I eat a blueberry during lunch tomorrow?",
+                        body="Resolves YES if I eat a blueberry during lunch tomorrow. Resolves NO otherwise.",
+                    ),
+                    P3=ForecastingQuestion_stripped(
+                        title="Will I eat a blueberry during dinner tomorrow?",
+                        body="Resolves YES if I eat a blueberry during dinner tomorrow. Resolves NO otherwise.",
+                    ),
+                    P4=ForecastingQuestion_stripped(
+                        title="Will I eat a blueberry anytime outside of breakfast, lunch and dinner tomorrow?",
+                        body=(
+                            "Resolves YES if I eat a blueberry anytime outside of breakfast, lunch and dinner "
+                            "tomorrow. Resolves NO otherwise."
+                        ),
+                    ),
+                ).model_dump_json(),
+            ),
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin hit $100,000 at any time in 2025?",
+                        body=(
+                            "Resolves YES if the price of Bitcoin hits $100,000 at any time in 2025. "
+                            "Resolves NO otherwise."
+                        ),
+                    ),
+                ).model_dump_json(),
+                assistant=self.OutputFormat_stripped(
+                    P1=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin hit $100,000 in the first quarter of 2025?",
+                        body=(
+                            "Resolves YES if the price of Bitcoin hits $100,000 in the first quarter of 2025. "
+                            "Resolves NO otherwise."
+                        ),
+                    ),
+                    P2=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin hit $100,000 in the second quarter of 2025?",
+                        body=(
+                            "Resolves YES if the price of Bitcoin hits $100,000 in the second quarter of 2025. "
+                            "Resolves NO otherwise."
+                        ),
+                    ),
+                    P3=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin hit $100,000 in the third quarter of 2025?",
+                        body=(
+                            "Resolves YES if the price of Bitcoin hits $100,000 in the third quarter of 2025. "
+                            "Resolves NO otherwise."
+                        ),
+                    ),
+                    P4=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin hit $100,000 in the last quarter of 2025?",
+                        body=(
+                            "Resolves YES if the price of Bitcoin hits $100,000 in the last quarter of 2025. "
+                            "Resolves NO otherwise."
+                        ),
+                    ),
+                ).model_dump_json(),
+            ),
+        ]
+
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
+        return {k: None for k in self.OutputFormat.model_fields}
+
+class Consequence(MiniInstantiator):
+    
+        class BaseSentenceFormat(BaseModel):
+            P: ForecastingQuestion
+    
+            @field_validator("P")
+            def check_question_type(cls, value):
+                if value.question_type != "binary":
+                    raise ValueError("Question type must be binary")
+                return value
+        
+        class OutputFormat(BaseModel):
+            cons_P: ForecastingQuestion
+    
+        def __init__(self):
+    
+            self.preface = (
+                "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
+                "answer. You should then give me a question that expresses any logical consequence "
+                "of P. That is, a question that is necessarily true if P is true. If P is false, "
+                "the question could be either true or false. Make sure it is a perfect logical consequence."
+            )
+    
+            self.examples = [
+                Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        P=ForecastingQuestion_stripped(
+                            title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                            body=(
+                                "Resolves YES if the spot price of Bitcoin against USD is more than "
+                                "100,000 on 1st January 2025. Resolves NO otherwise."
+                            ),
+                        )
+                    ).model_dump_json(),
+                    assistant=self.OutputFormat_stripped(
+                        cons_P=ForecastingQuestion_stripped(
+                            title="Will the price of Bitcoin be above $70,000 on 1st January 2025?",
+                            body=(
+                                "Resolves YES if the spot price of Bitcoin against USD is more than "
+                                "70,000 on 1st January 2025. Resolves NO otherwise."
+                            ),
+                        )
+                    ).model_dump_json(),
+                ),
+                Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        P=ForecastingQuestion_stripped(
+                            title="Will Shinzo Abe be elected US president in 2024?",
+                            body=(
+                                "Resolves YES if Shinzo Abe is elected US president in 2024. "
+                                "Resolves NO otherwise."
+                            ),
+                        )
+                    ).model_dump_json(),
+                    assistant=self.OutputFormat_stripped(
+                        cons_P=ForecastingQuestion_stripped(
+                            title=(
+                                "Will someone who is not a natural-born US citizen be elected US "
+                                "president in 2024?"),
+                            body=(
+                                "Resolves YES if someone who is not a natural-born US citizen is "
+                                "elected US president in 2024. Resolves NO otherwise."
+                            ),
+                        )
+                    ).model_dump_json(),
+                ),
+            ]
+        
+        def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
+            return {"cons_P": resolutions["P"]}

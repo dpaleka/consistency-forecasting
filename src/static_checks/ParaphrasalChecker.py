@@ -5,7 +5,7 @@ S(f(x1), f(x2)) :=  f(x1) == f(x2)
 
 from common.llm_utils import answer, answer_sync
 from forecasters import ForecastingQuestionTuple, ProbsTuple
-from .BaseChecker import BaseChecker
+from .MiniInstantiator import BaseChecker
 
 
 class ParaphrasalChecker(BaseChecker):
