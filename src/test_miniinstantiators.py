@@ -1,4 +1,4 @@
-from src.static_checks.MiniInstantiator import Trivial, Neg, And, Or, Paraphrase, Conditional, Spanning4
+from static_checks.MiniInstantiator import Trivial, Neg, And, Or, Paraphrase, Conditional, Spanning4, Consequence
 from common.datatypes import *
 import asyncio
 
@@ -9,6 +9,7 @@ mini_or = Or()
 mini_para = Paraphrase()
 mini_cond = Conditional()
 mini_span4 = Spanning4()
+mini_cons = Consequence()
 
 base_question = ForecastingQuestion(
     title="Will Jimmy Neutron be US president in 2025?",
@@ -31,7 +32,7 @@ base_questions_p = [{"P" :base_question}]
 base_questions_pq = [{"P" :base_question, "Q": base_question2}]
 
 async def foo():
-    x = await mini_or.instantiate(base_questions_pq[0])
+    x = await mini_cons.instantiate(base_questions_p[0])
     print(x)
 
 asyncio.run(foo())

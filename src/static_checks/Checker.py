@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 from typing import Type, Any, Self
 from pydantic import BaseModel
 from common.datatypes import ForecastingQuestion, Prob
-from common.utils import write_jsonl_async_from_str, parallelized_call
+from common.utils import write_jsonl_async_from_str
+from common.llm_utils import parallelized_call
 from forecasters import Forecaster
 
 class Checker(ABC):
