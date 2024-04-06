@@ -11,6 +11,7 @@ from common.datatypes import *
 neg_checker = NegChecker()
 and_checker = AndChecker()
 or_checker = OrChecker()
+andor_checker = AndOrChecker()
 
 base_question = ForecastingQuestion(
     title="Will Jimmy Neutron be US president in 2025?",
@@ -33,4 +34,6 @@ base_questions_p = [{"P" :base_question}]
 base_questions_pq = [{"P" :base_question, "Q": base_question2}]
 
 #asyncio.run(neg_checker.instantiate_and_write_many(base_questions_p, model="gpt-3.5-turbo"))
+asyncio.run(and_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo"))
 asyncio.run(or_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo"))
+asyncio.run(andor_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo"))
