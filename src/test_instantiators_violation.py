@@ -9,7 +9,8 @@ and_checker = AndChecker()
 or_checker = OrChecker()
 
 #neg_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
-and_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
+#and_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
 #or_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
 
-
+import os
+print(os.environ['OPENAI_API_KEY'])
