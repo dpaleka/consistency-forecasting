@@ -333,3 +333,150 @@ class CondChecker(Checker):
         return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
 
 
+class ConsequenceChecker(Checker):
+    
+    def __init__(self, tolerance=0.1, path=None):
+        super().__init__(tolerance, path)
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        cons_P: ForecastingQuestion
+
+        @field_validator("P", "cons_P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = Trivial().instantiate_sync(base_sentences, **kwargs)
+        cons_P = Consequence().instantiate_sync(base_sentences, **kwargs)
+        return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
+    
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = await Trivial().instantiate(base_sentences, **kwargs)
+        cons_P = await Consequence().instantiate(base_sentences, **kwargs)
+        return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
+    
+    def violation(self, answers: dict[str, Prob]) -> float:
+        return max(0.0, answers["P"] - answers["cons_P"])
+
+class ParaphraseChecker(Checker):
+    
+    def __init__(self, tolerance=0.1, path=None):
+        super().__init__(tolerance, path)
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        para_P: ForecastingQuestion
+
+        @field_validator("P", "para_P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = Trivial().instantiate_sync(base_sentences, **kwargs)
+        para_P = Paraphrase().instantiate_sync(base_sentences, **kwargs)
+        return self.TupleFormat(P=P.P, para_P=para_P.para_P)
+    
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = await Trivial().instantiate(base_sentences, **kwargs)
+        para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
+        return self.TupleFormat(P=P.P, para_P=para_P.para_P)
+    
+    def violation(self, answers: dict[str, Prob]) -> float:
+        return abs(answers["P"] - answers["para_P"])
+
+class SymmetryAndChecker(Checker):
+    
+    def __init__(self, tolerance=0.1, path=None):
+        super().__init__(tolerance, path)
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+        P_and_Q: ForecastingQuestion
+        Q_and_P: ForecastingQuestion
+
+        @field_validator("P", "Q", "P_and_Q", "Q_and_P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
+        Q_and_P = And().instantiate_sync({"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs)
+        return self.TupleFormat(
+            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
+        )
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        P_and_Q = await And().instantiate(base_sentences, **kwargs)
+        Q_and_P = await And().instantiate({"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs)
+        return self.TupleFormat(
+            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
+        )
+
+    def violation(self, answers: dict[str, Prob]) -> float:
+        return abs(answers["P_and_Q"] - answers["Q_and_P"])
+
+class SymmetryOrChecker(Checker):
+    
+    def __init__(self, tolerance=0.1, path=None):
+        super().__init__(tolerance, path)
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+        P_or_Q: ForecastingQuestion
+        Q_or_P: ForecastingQuestion
+
+        @field_validator("P", "Q", "P_or_Q", "Q_or_P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+        Q_or_P = Or().instantiate_sync({"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs)
+        return self.TupleFormat(
+            P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
+        )
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+        Q_or_P = await Or().instantiate({"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs)
+        return self.TupleFormat(
+            P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
+        )
+
+    def violation(self, answers: dict[str, Prob]) -> float:
+        return abs(answers["P_or_Q"] - answers["Q_or_P"])
