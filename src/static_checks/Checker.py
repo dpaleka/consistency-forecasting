@@ -282,12 +282,13 @@ class ButChecker(Checker):
         return self.TupleFormat(
             P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
-    
+
     def violation(self, answers: dict[str, Prob]) -> float:
         return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
 
+
 class CondChecker(Checker):
-    
+
     def __init__(self, tolerance=0.1, path=None):
         super().__init__(tolerance, path)
 
@@ -327,6 +328,6 @@ class CondChecker(Checker):
         return self.TupleFormat(
             P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
         )
-    
+
     def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(np.log(answers["P"]) + np.log(answers["Q_given_P"]) - np.log(answers["P_and_Q"]))
+        return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
