@@ -7,7 +7,7 @@ S(f(x1), f(x2), f(x3))
 
 from common.llm_utils import answer_sync, answer
 from forecasters import ForecastingQuestionTuple, ProbsTuple
-from .BaseChecker import BaseChecker
+from .MiniInstantiator import BaseChecker
 
 class AndChecker(BaseChecker):
     preface = (

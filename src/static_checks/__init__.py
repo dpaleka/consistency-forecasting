@@ -1,2 +1,2 @@
-from .BaseChecker import *
-from .NegChecker import NegChecker
+from .MiniInstantiator import *
+from .Checker import *

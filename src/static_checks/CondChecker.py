@@ -8,7 +8,7 @@ S(f(x1), f(x2), f(x3))
 import numpy as np
 from common.llm_utils import answer_sync, answer
 from forecasters import ForecastingQuestionTuple, ProbsTuple
-from .BaseChecker import BaseChecker
+from .MiniInstantiator import BaseChecker
 from .AndChecker import AndChecker
 
 
