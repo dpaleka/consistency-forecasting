@@ -157,7 +157,7 @@ class Trivial(MiniInstantiator):
 
     async def title_body_(
         self, base_sentences: "Self.BaseSentenceFormat", **kwargs
-    ) -> ForecastingQuestion_stripped:
+    ) -> "Self.OutputFormat_stripped":
         return self.OutputFormat_stripped(P=base_sentences.P.cast_stripped())
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
