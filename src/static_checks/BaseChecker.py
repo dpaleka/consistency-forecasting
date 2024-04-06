@@ -438,7 +438,7 @@ class Or(MiniInstantiator):
                         ),
                     ),
                 ).model_dump_json(),
-                assistant=self.BaseSentenceFormat_stripped(
+                assistant=self.OutputFormat_stripped(
                     P_or_Q=ForecastingQuestion_stripped(
                         title="Will either of the following occur: "
                         "(a) Joe Biden is elected president in the 2024 presidential election, or "
