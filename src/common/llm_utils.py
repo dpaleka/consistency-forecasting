@@ -40,7 +40,7 @@ cache = Cache(
 FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"]
 
 client = None
-load_dotenv(override=False)
+load_dotenv(override=True)
 
 
 def singleton_constructor(get_instance_func):
