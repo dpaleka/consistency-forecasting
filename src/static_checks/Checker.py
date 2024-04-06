@@ -74,7 +74,7 @@ class Checker(ABC):
             line_obj = self.TupleFormat.model_validate(line)
             answers = forecaster.elicit(line_obj, **kwargs)
             print(answers)
-            if not all(answers.values()):
+            if any([a is None for a in answers.values()]):
                 print("ERROR: Some answers are None!")
                 continue
             loss = self.violation(answers)
