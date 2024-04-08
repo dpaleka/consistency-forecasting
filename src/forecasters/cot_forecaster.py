@@ -1,17 +1,18 @@
-from .forecaster import Forecaster
 from common.datatypes import *
 from common.llm_utils import answer, answer_sync, Example
+from .forecaster import Forecaster
 
 
-class BasicForecaster(Forecaster):
+class COT_Forecaster(Forecaster):
 
-    def __init__(self, preface: str = None, examples: list = None):
+    def __init__(self, preface: str = None, examples: list[Example] = None):
+        
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
             "your best probability estimate for the following sentence or question resolving YES. "
-            "Your answer should be a float between 0 and 1, with nothing else in your response."
+            "I want you to first provide a reasoning for your answer, and then give me the probability. "
         )
-
+        
         self.examples = examples or [
             Example(
                 user=ForecastingQuestion_stripped(
@@ -22,7 +23,14 @@ class BasicForecaster(Forecaster):
                         "geographic boundaries) that is at least a mile tall."
                     ),
                 ),
-                assistant=Prob(prob=0.03),
+                assistant=Prob_cot(
+                    chain_of_thought=(
+                        "As of 2021, there are no skyscrapers a mile tall. There are also "
+                        "no plans to build any mile tall skyscraper in new york. The probability "
+                        "is: 0.03"
+                    ),
+                    prob=0.03,
+                ),
             )
         ]
 
@@ -31,8 +39,8 @@ class BasicForecaster(Forecaster):
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
-            **kwargs
+            response_model=sentence.expected_answer_type(mode="cot"),
+            **kwargs,
         )
         return response.prob
 
@@ -41,7 +49,7 @@ class BasicForecaster(Forecaster):
             prompt=sentence.__str__(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
-            **kwargs
+            response_model=sentence.expected_answer_type(mode="cot"),
+            **kwargs,
         )
         return response.prob
