@@ -1,29 +1,32 @@
 #%%
 import json
-from common.llm_utils import query_api_chat_sync
+from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion, Prob_cot, Prob
 
-model = "gpt-3.5-turbo"
-messages = [
-    {
-        "role": "system",
-        "content": """\
-Generate a question about the politics of the United States between 2024 and 2030.
-Give the answer in the JSON object format.
-Example: {"question": "What is the probability that Joe Biden will be the president of the United States on July 1 2025?", "answer_type": "Prob"}.
-Answer type should always be Prob.
-"""
-    },
-    {
-        "role": "user",
-        "content": "United States",
-    },
-]
-response = query_api_chat_sync(model, messages, response_format={"type": "json_object"})
-print(response)
+fq = ForecastingQuestion(
+    title="Will Manhattan have a skyscraper a mile tall by 2030?",
+    body=(
+        "Resolves YES if at any point before 2030, there is at least "
+        "one building in the NYC Borough of Manhattan (based on current "
+        "geographic boundaries) that is at least a mile tall."
+    ),
+    resolution_date="2030-01-01T00:00:00",
+    question_type="binary",
+    data_source="manifold",
+    url="https://www.metaculus.com/questions/12345/",
+    metadata={"foo": "bar"},
+    resolution=None,
+)
 
-response_dict = json.loads(response)
+fqs = ForecastingQuestion_stripped(
+    title="Will Manhattan have a skyscraper a mile tall by 2030?",
+    body=(
+        "Resolves YES if at any point before 2030, there is at least "
+        "one building in the NYC Borough of Manhattan (based on current "
+        "geographic boundaries) that is at least a mile tall."
+    ),
+)
 
-print(json.dumps(response_dict, indent=4))
+print(fqs.__str__())
 
 
 # %%

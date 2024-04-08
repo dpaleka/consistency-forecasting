@@ -1,113 +1,154 @@
+from typing import Optional, Type
 from datetime import datetime
-from dateutil import parser
-import re
-from typing import Dict
 from uuid import uuid4, UUID
+from pydantic import BaseModel, Field, validator, field_validator, create_model
 
-class Prob(float):
-    def __new__(cls, value):
-        if not (0.0 <= value <= 1.0):
+
+class PlainText(BaseModel):
+    text: str
+
+
+class Prob(BaseModel):
+    prob: float
+
+    @field_validator("prob")
+    @classmethod
+    def validate_prob(cls, v):
+        if not (0.0 <= v <= 1.0):
             raise ValueError("Probability must be between 0 and 1.")
-        return super(Prob, cls).__new__(cls, value)
+        return v
 
 
-class QuestionType(str):
-    def __new__(cls, value):
-        if value not in ["binary", "conditional_binary"]:
-            raise ValueError(
-                "Question type must be one of 'binary', 'conditional_binary'."
-            )
-        return super(QuestionType, cls).__new__(cls, value)
-
-    exp_answers = {"binary": Prob, "conditional_binary": Prob}
-
-    def expected_answer_type(self) -> str:
-        return self.exp_answers.get(self, None)
+class Prob_cot(Prob):
+    chain_of_thought: str
+    prob: float  # redefine to maintain order
 
 
-class ForecastingQuestion:
-    def __init__(
+# this is what we pass to llms for instantiation and forecasting
+# and also the response_model we expect from llms
+class ForecastingQuestion_stripped(BaseModel):
+    title: str
+    body: str
+
+    def cast_FQ(
         self,
-        title: str,  # aka "text"
-        body: str,  # aka "resolution_criteria"
-        question_type: QuestionType,
-        resolution_date: datetime | None,
-        data_source: str | None = None,  # e.g. synthetic, metaculus, manifold, predictit
-        url: str | None  = None,
-        metadata: dict = None,  # for example, topics : list[str]
-        resolution: str | None = None,  # some questions may already have been resolved
-        id: UUID = None,
+        resolution_date: datetime,
+        question_type: str,
+        data_source: Optional[str] = None,
+        **kwargs,
     ):
-        self.id = id if id else uuid4()
-        self.title = title
-        self.body = body
-        self.resolution_date = resolution_date
-        self.question_type = question_type
-        self.data_source = data_source
-        self.url = url
-        self.metadata = metadata
-        self.resolution = resolution
+        """Make ForecastingQuestion from a ForecastingQuestion_stripped given to us by an llm
 
-    def to_dict(self) -> dict:
-        return {
-            "id": str(self.id),
-            "title": self.title,
-            "body": self.body,
-            "resolution_date": (
-                self.resolution_date.isoformat() if self.resolution_date else None
-            ),
-            "question_type": self.question_type,
-            "data_source": self.data_source,
-            "url": self.url,
-            "metadata": self.metadata,
-            "resolution": self.resolution,
-        }
-    
-    @classmethod
-    def from_dict(cls, d: dict) -> "ForecastingQuestion":
-        return cls(
-            id=UUID(d["id"]),
-            title=d["title"],
-            body=d["body"],
-            resolution_date=(
-                datetime.fromisoformat(d["resolution_date"])
-                if d["resolution_date"]
-                else None
-            ),
-            question_type=QuestionType(d["question_type"]),
-            data_source=d["data_source"],
-            url=d["url"],
-            metadata=d["metadata"],
-            resolution=d["resolution"],
-        )
-
-    def __str__(self):
-        return (
-            f"TITLE: {self.title}\n"
-            f"RESOLUTION DATE: {self.resolution_date}\n"
-            f"DETAILS:\n{self.body}"
-            #f"ID:\n{self.id}"
-        )
-
-    @classmethod
-    def from_str(
-        cls,
-        string: str,
-        question_type: QuestionType,
-        **kwargs,  # url, data_source, metadata, resolution
-    ) -> "ForecastingQuestion":
-        title = re.search(r"TITLE:(.*?)", string).group(1)
-        resolution_date = re.search(r"RESOLUTION DATE: (.*?)\n", string).group(1)
-        body = re.search(r"DETAILS:(.*?)$", string, re.DOTALL).group(1)
-        # id = re.search(r"ID:(.*?)$", string, re.DOTALL).group(1)
-        return cls(
-            title=title,
-            body=body,
-            resolution_date=parser.parse(resolution_date),
+        Args:
+            resolution_date (datetime): If produced by an LLM, will usually be the max of the
+                resolution dates of the questions in the input.
+            question_type (str): If produced by an LLM, will usually be the same as that of
+                the inputs
+            data_source (Optional[str], optional): If produced by an LLM, will usually be
+                "synthetic_inst". Defaults to None.
+        
+        Keyword Args:
+            url (Optional[str]): You probably shouldn't add this.
+            metadata (Optional[dict]): Metadata.
+            resolution (Optional[str]): The resolution of the question.
+        """
+        return ForecastingQuestion(
+            title=self.title,
+            body=self.body,
+            resolution_date=resolution_date,
             question_type=question_type,
+            data_source=data_source,
             **kwargs,
         )
+    
+    def cast_stripped(self):
+        return self
 
 
-ForecastingQuestionTuple = Dict[str, ForecastingQuestion]
-ProbsTuple = Dict[str, Prob]
+exp_answer_types = {
+    "default": {"binary": Prob, "conditional_binary": Prob},
+    "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
+}
+
+
+class ForecastingQuestion(BaseModel):
+    id: UUID = Field(default_factory=uuid4)
+    title: str
+    body: str
+    resolution_date: datetime
+    question_type: str
+    data_source: Optional[str] = None
+    url: Optional[str] = None
+    metadata: Optional[dict] = None
+    resolution: Optional[bool] = None
+
+    @field_validator("question_type")
+    def validate_question_type(cls, v):
+        if v not in ["binary", "conditional_binary"]:
+            raise ValueError(
+                "Question type must be either 'binary' or 'conditional_binary'"
+            )
+        return v
+
+    @field_validator("data_source")
+    def validate_data_source(cls, v):
+        if v not in [
+            None,
+            "synthetic",
+            "synthetic_inst",
+            "manifold",
+            "metaculus",
+            "predictit",
+        ]:
+            raise ValueError(
+                'Data source must be in [None, "synthetic", "synthetic_inst", "manifold", "metaculus", "predictit"]'
+            )
+        return v
+
+    def expected_answer_type(self, mode="default") -> type:
+        return exp_answer_types[mode][self.question_type]
+
+    def cast_stripped(self):
+        return ForecastingQuestion_stripped(title=self.title, body=self.body)
+    
+    def cast_FQ(self):
+        return self
+
+    def __str__(self):
+        return self.cast_stripped().model_dump_json()
+
+
+# e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
+
+
+def mk_TupleFormat(fields: dict[str, str], name="TupleFormat") -> Type[BaseModel]:
+    model = create_model(name, **{k: (ForecastingQuestion, ...) for k in fields})
+    for field_name, field_type in fields.items():
+
+        def make_validator(field_name: str, field_type: str):
+            @validator(field_name, allow_reuse=True)
+            def validate(cls, v):
+                if v.question_type != field_type:
+                    raise ValueError(f"{field_name}.question_type must be {field_type}")
+                return v
+
+            return validate
+
+        model.add_validator(make_validator(field_name, field_type))
+    return model
+
+
+def mk_TupleFormat_ans(
+    fields: dict[str, str], name="TupleFormat_ans"
+) -> Type[BaseModel]:
+    return create_model(
+        name,
+        **{
+            field_name: (exp_answer_types["default"][field_type], ...)
+            for field_name, field_type in fields.items()
+        },
+    )
+
+
+ForecastingQuestionTuple = dict[str, ForecastingQuestion]
+ProbsTuple = dict[str, Prob]
