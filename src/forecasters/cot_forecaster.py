@@ -6,16 +6,31 @@ from .forecaster import Forecaster
 class COT_Forecaster(Forecaster):
 
     def __init__(self, preface: str = None, examples: list[Example] = None):
+        
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
             "your best probability estimate for the following sentence or question resolving YES. "
             "I want you to first provide a reasoning for your answer, and then give me the probability. "
-            "Your last sentence should be, 'The probability is: <float between 0 and 1>'"
         )
+        
         self.examples = examples or [
             Example(
-                "Will Manhattan have a skyscraper a mile tall by 2030?",
-                "As of 2021, there are no skyscrapers a mile tall. There are also no plans to build any mile tall skyscraper in new york. The probability is: 0.03",
+                user=ForecastingQuestion_stripped(
+                    title="Will Manhattan have a skyscraper a mile tall by 2030?",
+                    body=(
+                        "Resolves YES if at any point before 2030, there is at least "
+                        "one building in the NYC Borough of Manhattan (based on current "
+                        "geographic boundaries) that is at least a mile tall."
+                    ),
+                ).model_dump_json(),
+                assistant=Prob_cot(
+                    chain_of_thought=(
+                        "As of 2021, there are no skyscrapers a mile tall. There are also "
+                        "no plans to build any mile tall skyscraper in new york. The probability "
+                        "is: 0.03"
+                    ),
+                    prob=0.03,
+                ).model_dump_json(),
             )
         ]
 
