@@ -86,3 +86,4 @@ wcwidth==0.2.13
 zipp==3.17.0
 transformers==4.38.2
 huggingface-hub==0.21.3
+streamlit==1.33.0
