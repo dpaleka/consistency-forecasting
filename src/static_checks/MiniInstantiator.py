@@ -49,7 +49,7 @@ class MiniInstantiator(ABC):
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
     ) -> "Self.OutputFormat_stripped":
         return answer_sync(
-            prompt=base_sentences.model_dump_json(),
+            prompt=base_sentences,
             preface=self.preface,
             examples=self.examples,
             response_model=self.OutputFormat_stripped,
@@ -60,7 +60,7 @@ class MiniInstantiator(ABC):
         self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
     ) -> "Self.OutputFormat_stripped":
         return await answer(
-            prompt=base_sentences.model_dump_json(),
+            prompt=base_sentences,
             preface=self.preface,
             examples=self.examples,
             response_model=self.OutputFormat_stripped,
@@ -198,7 +198,7 @@ class Neg(MiniInstantiator):
                             "100,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     not_P=ForecastingQuestion_stripped(
                         title="Will the price of Bitcoin be less than or equal to $100,000 on 1st January 2025?",
@@ -207,7 +207,7 @@ class Neg(MiniInstantiator):
                             "100,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             )
         ]
 
@@ -266,7 +266,7 @@ class And(MiniInstantiator):
                             "10,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     P_and_Q=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
@@ -276,7 +276,7 @@ class And(MiniInstantiator):
                             "2025. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             ),
             Example(
                 user=self.BaseSentenceFormat_stripped(
@@ -294,7 +294,7 @@ class And(MiniInstantiator):
                             "10,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     P_and_Q=ForecastingQuestion_stripped(
                         title=(
@@ -307,7 +307,7 @@ class And(MiniInstantiator):
                             "January 2025. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             ),
         ]
 
@@ -363,7 +363,7 @@ class Or(MiniInstantiator):
                             "Resolves YES if Jeb Bush is the President of the US in January 2036. "
                         ),
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     P_or_Q=ForecastingQuestion_stripped(
                         title="Will Jeb Bush be the President of the US in January 2032 or 2036?",
@@ -372,7 +372,7 @@ class Or(MiniInstantiator):
                             "or January 2036 (or both). Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             ),
             Example(
                 user=self.BaseSentenceFormat_stripped(
@@ -390,7 +390,7 @@ class Or(MiniInstantiator):
                             "10,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     P_or_Q=ForecastingQuestion_stripped(
                         title="Will either of the following occur: "
@@ -401,7 +401,7 @@ class Or(MiniInstantiator):
                             "otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             ),
         ]
 
@@ -443,7 +443,7 @@ class Paraphrase(MiniInstantiator):
                             "$100,000. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     para_P=ForecastingQuestion_stripped(
                         title="On 1st January 2025, will one Bitcoin be worth more than 100,000 US Dollars?",
@@ -452,7 +452,7 @@ class Paraphrase(MiniInstantiator):
                             "100,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             )
         ]
 
@@ -506,7 +506,7 @@ class Conditional(MiniInstantiator):
                             "10,000 on 1st January 2025. Resolves NO otherwise."
                         ),
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=self.OutputFormat_stripped(
                     Q_given_P=ForecastingQuestion_stripped(
                         title=(
@@ -520,7 +520,7 @@ class Conditional(MiniInstantiator):
                             "and NO if it's not on 1st Jan 2025."
                         ),
                     )
-                ).model_dump_json(),
+                ),
             )
         ]
 
@@ -564,7 +564,7 @@ class Consequence(MiniInstantiator):
                                 "100,000 on 1st January 2025. Resolves NO otherwise."
                             ),
                         )
-                    ).model_dump_json(),
+                    ),
                     assistant=self.OutputFormat_stripped(
                         cons_P=ForecastingQuestion_stripped(
                             title="Will the price of Bitcoin be above $70,000 on 1st January 2025?",
@@ -573,7 +573,7 @@ class Consequence(MiniInstantiator):
                                 "70,000 on 1st January 2025. Resolves NO otherwise."
                             ),
                         )
-                    ).model_dump_json(),
+                    ),
                 ),
                 Example(
                     user=self.BaseSentenceFormat_stripped(
@@ -584,7 +584,7 @@ class Consequence(MiniInstantiator):
                                 "Resolves NO otherwise."
                             ),
                         )
-                    ).model_dump_json(),
+                    ),
                     assistant=self.OutputFormat_stripped(
                         cons_P=ForecastingQuestion_stripped(
                             title=(
@@ -595,7 +595,7 @@ class Consequence(MiniInstantiator):
                                 "elected US president in 2024. Resolves NO otherwise."
                             ),
                         )
-                    ).model_dump_json(),
+                    ),
                 ),
             ]
         

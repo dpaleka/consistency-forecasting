@@ -255,8 +255,8 @@ def query_api_chat_sync(
 
 @dataclass
 class Example:
-    user: str
-    assistant: str
+    user: str | BaseModel
+    assistant: str | BaseModel
 
 
 def prepare_messages(
@@ -266,8 +266,14 @@ def prepare_messages(
     examples = examples or []
     messages = [{"role": "system", "content": preface}]
     for example in examples:
+        if isinstance(example.user, BaseModel):
+            example.user = example.user.model_dump_json()
+        if isinstance(example.assistant, BaseModel):
+            example.assistant = example.assistant.model_dump_json()
         messages.append({"role": "user", "content": example.user})
         messages.append({"role": "assistant", "content": example.assistant})
+    if isinstance(prompt, BaseModel):
+        prompt = prompt.model_dump_json()
     messages.append({"role": "user", "content": prompt})
     return messages
 

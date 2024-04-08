@@ -21,8 +21,8 @@ class BasicForecaster(Forecaster):
                         "one building in the NYC Borough of Manhattan (based on current "
                         "geographic boundaries) that is at least a mile tall."
                     ),
-                ).model_dump_json(),
-                assistant=Prob(prob=0.03).model_dump_json(),
+                ),
+                assistant=Prob(prob=0.03),
             )
         ]
 

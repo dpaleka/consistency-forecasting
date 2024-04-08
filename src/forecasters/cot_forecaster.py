@@ -22,7 +22,7 @@ class COT_Forecaster(Forecaster):
                         "one building in the NYC Borough of Manhattan (based on current "
                         "geographic boundaries) that is at least a mile tall."
                     ),
-                ).model_dump_json(),
+                ),
                 assistant=Prob_cot(
                     chain_of_thought=(
                         "As of 2021, there are no skyscrapers a mile tall. There are also "
@@ -30,7 +30,7 @@ class COT_Forecaster(Forecaster):
                         "is: 0.03"
                     ),
                     prob=0.03,
-                ).model_dump_json(),
+                ),
             )
         ]
 
