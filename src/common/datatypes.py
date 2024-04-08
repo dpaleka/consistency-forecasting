@@ -115,7 +115,7 @@ class ForecastingQuestion(BaseModel):
         return self
 
     def __str__(self):
-        return self.cast_stripped().model_dump_json(indent=4)
+        return self.cast_stripped().model_dump_json()
 
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
