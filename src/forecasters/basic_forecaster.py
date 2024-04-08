@@ -13,7 +13,17 @@ class BasicForecaster(Forecaster):
         )
 
         self.examples = examples or [
-            Example("Will Manhattan have a skyscraper a mile tall by 2030?", "0.03")
+            Example(
+                user=ForecastingQuestion_stripped(
+                    title="Will Manhattan have a skyscraper a mile tall by 2030?",
+                    body=(
+                        "Resolves YES if at any point before 2030, there is at least "
+                        "one building in the NYC Borough of Manhattan (based on current "
+                        "geographic boundaries) that is at least a mile tall."
+                    ),
+                ).model_dump_json(),
+                assistant=Prob(prob=0.03).model_dump_json(),
+            )
         ]
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
