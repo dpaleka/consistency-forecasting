@@ -26,13 +26,9 @@ def fetch_resolution_criteria(question_url):
             return resolution_criteria_element.text.strip()
     
     return None
-
+"""
 def fetch_live_questions_with_dates(api_url):
-    """
-    Fetches live questions and their resolution dates from the Metaculus API.
-    :param api_url: Base URL of the Metaculus API.
-    :return: A list of tuples containing live question titles and their resolution dates.
-    """
+
     headers = {
         'User-Agent': 'Mozilla/5.0'
     }
@@ -48,30 +44,12 @@ def fetch_live_questions_with_dates(api_url):
     
     # Assuming the response structure and that 'resolution_date' is the key for the resolution date
     # Adjust the key based on actual API response structure
-    
-    """    
-    questions_info = [{
-        'name': question['title'],
-        'end_date': question.get('resolve_time'),
-        'question_type': question.get('possibilities')['type'],
-        'url': f"https://www.metaculus.com/questions/{question['id']}"  # Constructing the URL using question ID
-
-    } for question in questions_data.get('results', [])]
-        
-    """
 
     questions_info = []
     for question in questions_data.get('results', []):
         
         #div class = content prediction-section-resolution-criteria
         
-        """
-        url = f"https://www.metaculus.com/questions/{question.get('id')}"
-        print(url)
-        resolution_criteria = fetch_resolution_criteria(url)
-        print(resolution_criteria)
-        """
-
         question_info = {
             'id': question.get('id'),
             'title': question.get('title'),
@@ -87,22 +65,56 @@ def fetch_live_questions_with_dates(api_url):
         }
         questions_info.append(question_info)
 
-
-    """
-        market_info = [{
-        'name': market['name'],
-        'end_date': market['contracts'][0]['dateEnd']  # Use .get() to avoid KeyError if 'endDate' is missing
-    } for market in data['markets']]
-    """
-
     return questions_info
+
 """
-    
-    return {
-        "api_url": api_url,
-        "markets": questions_info
+def fetch_live_questions_with_dates(api_url):
+    """
+    Fetches live questions and their resolution dates from the Metaculus API.
+    :param api_url: Base URL of the Metaculus API.
+    :return: A list of tuples containing live question titles and their resolution dates.
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0'
     }
-"""
+    questions_info = []
+    total_questions = 250  # Total number of questions you want to fetch
+    page_size = 50  # Number of questions per page. Adjust based on API's maximum allowed limit
+    page = 1
+
+    while len(questions_info) < total_questions:
+        params = {
+            'status': 'open',
+            'limit': page_size,
+            'page': page  # or 'offset': (page-1) * page_size if the API uses offset
+        }
+        response = requests.get(f"{api_url}/questions", headers=headers, params=params)
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch the API: {api_url}")
+
+        questions_data = response.json()
+        for question in questions_data.get('results', []):
+            question_info = {
+                'id': question.get('id'),
+                'title': question.get('title'),
+                'body': question.get('description'),  # Assuming 'description' is the detailed text
+                'question_type': question.get('possibilities', {}).get('type'),
+                'resolution_date': question.get('resolve_time'),  # You might need to format this date
+                'url': f"https://www.metaculus.com/questions/{question.get('id')}",
+                'data_source': 'metaculus',
+                'metadata': {
+                    'topics': question.get('tags', [])  # Assuming 'tags' can be used as topics
+                },
+                'resolution': question.get('resolution')
+            }
+            questions_info.append(question_info)
+            if len(questions_info) >= total_questions:
+                break
+        page += 1
+
+    return questions_info[:total_questions]  # Ensure only the requested number of questions are returned
+
+
 
 if __name__ == "__main__":
     api_url = "https://www.metaculus.com/api2"

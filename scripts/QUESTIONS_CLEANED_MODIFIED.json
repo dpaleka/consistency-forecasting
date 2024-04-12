@@ -1,122 +1,10 @@
 [
     {
-        "id": 111,
-        "title": "Will there be a total solar eclipse on June 25, 2522?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2522-06-26T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/111",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 11949,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 11950,
-                    "num_questions": 124
-                },
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 11952,
-                    "num_questions": 56
-                },
-                {
-                    "id": 95,
-                    "slug": "earth",
-                    "name": "Earth",
-                    "link_id": 11948,
-                    "num_questions": 51
-                },
-                {
-                    "id": 2196,
-                    "slug": "oregon",
-                    "name": "Oregon",
-                    "link_id": 42596,
-                    "num_questions": 18
-                },
-                {
-                    "id": 548,
-                    "slug": "africa",
-                    "name": "Africa",
-                    "link_id": 11951,
-                    "num_questions": 17
-                },
-                {
-                    "id": 1230,
-                    "slug": "south-carolina",
-                    "name": "South Carolina",
-                    "link_id": 37320,
-                    "num_questions": 7
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 161,
-        "title": "Will the Universe end?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "9999-12-31T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/161",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13283,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 73294,
-                    "num_questions": 171
-                },
-                {
-                    "id": 136,
-                    "slug": "astrophysics",
-                    "name": "Astrophysics",
-                    "link_id": 13284,
-                    "num_questions": 79
-                },
-                {
-                    "id": 1766,
-                    "slug": "cosmology",
-                    "name": "Cosmology",
-                    "link_id": 40973,
-                    "num_questions": 34
-                },
-                {
-                    "id": 1810,
-                    "slug": "observable-universe",
-                    "name": "Observable universe",
-                    "link_id": 40974,
-                    "num_questions": 4
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 349,
         "title": "Will SpaceX land people on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-02T00:00:00Z",
+        "resolution_date": "Jan 02 2030 12:00AM",
         "url": "https://www.metaculus.com/questions/349",
         "data_source": "metaculus",
         "metadata": {
@@ -161,66 +49,11 @@
         "resolution": null
     },
     {
-        "id": 353,
-        "title": "Will someone born before 2001 live to be 150?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2151-01-03T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/353",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": null
-    },
-    {
-        "id": 363,
-        "title": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-01T16:18:08Z",
-        "url": "https://www.metaculus.com/questions/363",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 1506,
-                    "slug": "lockheed-martin",
-                    "name": "Lockheed Martin",
-                    "link_id": 87710,
-                    "num_questions": 6
-                },
-                {
-                    "id": 3404,
-                    "slug": "lockheed-martin-p-791",
-                    "name": "Lockheed Martin P-791",
-                    "link_id": 47077,
-                    "num_questions": 5
-                },
-                {
-                    "id": 1022,
-                    "slug": "national-ignition-facility",
-                    "name": "National Ignition Facility",
-                    "link_id": 34304,
-                    "num_questions": 4
-                },
-                {
-                    "id": 4325,
-                    "slug": "iter",
-                    "name": "ITER",
-                    "link_id": 49245,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 372,
         "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2060-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2060 12:00AM",
         "url": "https://www.metaculus.com/questions/372",
         "data_source": "metaculus",
         "metadata": {
@@ -297,7 +130,7 @@
         "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-01-31T23:59:00Z",
+        "resolution_date": "Jan 31 2027 11:59PM",
         "url": "https://www.metaculus.com/questions/375",
         "data_source": "metaculus",
         "metadata": {
@@ -374,7 +207,7 @@
         "title": "Will there be Human-machine intelligence parity before 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2040 12:00AM",
         "url": "https://www.metaculus.com/questions/384",
         "data_source": "metaculus",
         "metadata": {
@@ -479,7 +312,7 @@
         "title": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-02T04:45:08Z",
+        "resolution_date": "Jan 02 2050 04:45AM",
         "url": "https://www.metaculus.com/questions/397",
         "data_source": "metaculus",
         "metadata": {
@@ -517,74 +350,11 @@
         "resolution": null
     },
     {
-        "id": 404,
-        "title": "When will there be machine-kindergartner parity in LEGO construction?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-02T18:33:24Z",
-        "url": "https://www.metaculus.com/questions/404",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 515,
-                    "slug": "engineering",
-                    "name": "Engineering",
-                    "link_id": 7997,
-                    "num_questions": 112
-                },
-                {
-                    "id": 589,
-                    "slug": "robotics",
-                    "name": "Robotics",
-                    "link_id": 7998,
-                    "num_questions": 90
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 406,
-        "title": "When will AIs program programs that can program AIs?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T00:01:00Z",
-        "url": "https://www.metaculus.com/questions/406",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 33,
-                    "slug": "machine-learning",
-                    "name": "Machine learning",
-                    "link_id": 8006,
-                    "num_questions": 253
-                },
-                {
-                    "id": 1292,
-                    "slug": "software-engineering",
-                    "name": "Software engineering",
-                    "link_id": 85119,
-                    "num_questions": 52
-                },
-                {
-                    "id": 7688,
-                    "slug": "wolframalpha",
-                    "name": "WolframAlpha",
-                    "link_id": 56504,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 480,
         "title": "If chess is solved before 2080, must perfect play result in white winning?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2080-01-02T04:00:00Z",
+        "resolution_date": "Jan 02 2080 04:00AM",
         "url": "https://www.metaculus.com/questions/480",
         "data_source": "metaculus",
         "metadata": {
@@ -612,7 +382,7 @@
         "title": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/489",
         "data_source": "metaculus",
         "metadata": {
@@ -654,7 +424,7 @@
         "title": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/491",
         "data_source": "metaculus",
         "metadata": {
@@ -731,7 +501,7 @@
         "title": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/492",
         "data_source": "metaculus",
         "metadata": {
@@ -829,7 +599,7 @@
         "title": "Will the first commercial hyperloop system be within the US?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/513",
         "data_source": "metaculus",
         "metadata": {
@@ -906,7 +676,7 @@
         "title": "Will humans go extinct before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-02T00:01:00Z",
+        "resolution_date": "Jan 02 2100 12:01AM",
         "url": "https://www.metaculus.com/questions/578",
         "data_source": "metaculus",
         "metadata": {
@@ -941,7 +711,7 @@
         "title": "Will there be more VR headset sales than AR headsets sales in 2025?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2026-07-31T06:00:00Z",
+        "resolution_date": "Jul 31 2026 06:00AM",
         "url": "https://www.metaculus.com/questions/579",
         "data_source": "metaculus",
         "metadata": {
@@ -976,7 +746,7 @@
         "title": "Will there be at least 2\u02daC of global warming by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-06-14T23:00:00Z",
+        "resolution_date": "Jun 14 2100 11:00PM",
         "url": "https://www.metaculus.com/questions/585",
         "data_source": "metaculus",
         "metadata": {
@@ -1011,7 +781,7 @@
         "title": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2051-01-01T17:00:00Z",
+        "resolution_date": "Jan 01 2051 05:00PM",
         "url": "https://www.metaculus.com/questions/594",
         "data_source": "metaculus",
         "metadata": {
@@ -1053,7 +823,7 @@
         "title": "Will a sample of negative energy be produced by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/600",
         "data_source": "metaculus",
         "metadata": {
@@ -1123,7 +893,7 @@
         "title": "Will gravitational waves from the merger of supermassive black holes be detected by November 30, 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-11-30T07:00:00Z",
+        "resolution_date": "Nov 30 2027 07:00AM",
         "url": "https://www.metaculus.com/questions/604",
         "data_source": "metaculus",
         "metadata": {
@@ -1175,46 +945,11 @@
         "resolution": null
     },
     {
-        "id": 605,
-        "title": "How much global warming by 2100?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2101-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/605",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 18498,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 18499,
-                    "num_questions": 124
-                },
-                {
-                    "id": 1167,
-                    "slug": "paris-agreement",
-                    "name": "Paris Agreement",
-                    "link_id": 36656,
-                    "num_questions": 28
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 606,
         "title": "Will we detect a message originating from Luyten's Star before 2046?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-12-31T07:00:00Z",
+        "resolution_date": "Dec 31 2045 07:00AM",
         "url": "https://www.metaculus.com/questions/606",
         "data_source": "metaculus",
         "metadata": {
@@ -1231,81 +966,11 @@
         "resolution": null
     },
     {
-        "id": 610,
-        "title": "Will a world war begin before 2151?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2161-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/610",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 253,
-                    "slug": "environmental-science",
-                    "name": "Environmental science",
-                    "link_id": 70653,
-                    "num_questions": 197
-                },
-                {
-                    "id": 216,
-                    "slug": "climate-change-denial",
-                    "name": "Climate change denial",
-                    "link_id": 7137,
-                    "num_questions": 107
-                },
-                {
-                    "id": 82,
-                    "slug": "north-korea",
-                    "name": "North Korea",
-                    "link_id": 7136,
-                    "num_questions": 87
-                },
-                {
-                    "id": 8009,
-                    "slug": "climatology",
-                    "name": "Climatology",
-                    "link_id": 81637,
-                    "num_questions": 80
-                },
-                {
-                    "id": 615,
-                    "slug": "geology",
-                    "name": "Geology",
-                    "link_id": 70654,
-                    "num_questions": 28
-                },
-                {
-                    "id": 1443,
-                    "slug": "world-war-ii",
-                    "name": "World War II",
-                    "link_id": 88030,
-                    "num_questions": 25
-                },
-                {
-                    "id": 4745,
-                    "slug": "middle-east",
-                    "name": "Middle East",
-                    "link_id": 48773,
-                    "num_questions": 8
-                },
-                {
-                    "id": 4162,
-                    "slug": "united-nations-framework-convention-on-climate-change",
-                    "name": "United Nations Framework Convention on Climate Change",
-                    "link_id": 48771,
-                    "num_questions": 6
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 614,
         "title": "Will there be a Vegan Country by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2100 12:00AM",
         "url": "https://www.metaculus.com/questions/614",
         "data_source": "metaculus",
         "metadata": {
@@ -1343,32 +1008,11 @@
         "resolution": null
     },
     {
-        "id": 649,
-        "title": "When will the next human being walk on the Moon?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T21:00:00Z",
-        "url": "https://www.metaculus.com/questions/649",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 33103,
-                    "num_questions": 56
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 658,
         "title": "Will we reach the island of stability by 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/658",
         "data_source": "metaculus",
         "metadata": {
@@ -1403,7 +1047,7 @@
         "title": "Will Kessler syndrome occur before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/665",
         "data_source": "metaculus",
         "metadata": {
@@ -1455,67 +1099,11 @@
         "resolution": null
     },
     {
-        "id": 676,
-        "title": "When will the world create the first Trillionaire?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2075-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/676",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 226,
-                    "slug": "amazon-company",
-                    "name": "Amazon (company)",
-                    "link_id": 30221,
-                    "num_questions": 86
-                },
-                {
-                    "id": 2976,
-                    "slug": "jeff-bezos",
-                    "name": "Jeff Bezos",
-                    "link_id": 43402,
-                    "num_questions": 19
-                },
-                {
-                    "id": 2353,
-                    "slug": "satoshi-nakamoto",
-                    "name": "Satoshi Nakamoto",
-                    "link_id": 43400,
-                    "num_questions": 5
-                },
-                {
-                    "id": 2975,
-                    "slug": "the-worlds-billionaires",
-                    "name": "The World's Billionaires",
-                    "link_id": 43401,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3937,
-                    "slug": "bill-gates",
-                    "name": "Bill Gates",
-                    "link_id": 47589,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3596,
-                    "slug": "credit-suisse",
-                    "name": "Credit Suisse",
-                    "link_id": 47588,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 684,
         "title": "By 2025 will someone be able to hold his/her breath for 30+ minutes?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/684",
         "data_source": "metaculus",
         "metadata": {
@@ -1536,7 +1124,7 @@
         "title": "Will a human made spaceship enter the Venusian atmosphere before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/686",
         "data_source": "metaculus",
         "metadata": {
@@ -1588,67 +1176,11 @@
         "resolution": null
     },
     {
-        "id": 735,
-        "title": "When will there be a mile-high building?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2060-04-01T07:00:00Z",
-        "url": "https://www.metaculus.com/questions/735",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 19453,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 209,
-                    "slug": "saudi-arabia",
-                    "name": "Saudi Arabia",
-                    "link_id": 19454,
-                    "num_questions": 48
-                },
-                {
-                    "id": 2440,
-                    "slug": "shanghai",
-                    "name": "Shanghai",
-                    "link_id": 43301,
-                    "num_questions": 17
-                },
-                {
-                    "id": 2457,
-                    "slug": "malaysia",
-                    "name": "Malaysia",
-                    "link_id": 43302,
-                    "num_questions": 11
-                },
-                {
-                    "id": 2319,
-                    "slug": "dubai",
-                    "name": "Dubai",
-                    "link_id": 43300,
-                    "num_questions": 7
-                },
-                {
-                    "id": 4018,
-                    "slug": "tokyo",
-                    "name": "Tokyo",
-                    "link_id": 48480,
-                    "num_questions": 5
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 736,
         "title": "Will there be a complete 4 year interval in which world output doubles, before the first 1 year interval in which world output doubles?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/736",
         "data_source": "metaculus",
         "metadata": {
@@ -1676,7 +1208,7 @@
         "title": "Will SpaceX land anything on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T10:35:00Z",
+        "resolution_date": "Jan 01 2030 10:35AM",
         "url": "https://www.metaculus.com/questions/737",
         "data_source": "metaculus",
         "metadata": {
@@ -1725,7 +1257,7 @@
         "title": "Will Puerto Rico become a US state prior to 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/797",
         "data_source": "metaculus",
         "metadata": {
@@ -1774,7 +1306,7 @@
         "title": "Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2045 08:00AM",
         "url": "https://www.metaculus.com/questions/808",
         "data_source": "metaculus",
         "metadata": {
@@ -1844,7 +1376,7 @@
         "title": "Will a practical nuclear fusion reactor first be developed in China?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/824",
         "data_source": "metaculus",
         "metadata": {
@@ -1886,7 +1418,7 @@
         "title": "Will Metaculus exist in 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T00:01:00Z",
+        "resolution_date": "Jan 01 2030 12:01AM",
         "url": "https://www.metaculus.com/questions/841",
         "data_source": "metaculus",
         "metadata": {
@@ -1899,7 +1431,7 @@
         "title": "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2033-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2033 12:00AM",
         "url": "https://www.metaculus.com/questions/899",
         "data_source": "metaculus",
         "metadata": {
@@ -1934,7 +1466,7 @@
         "title": "Will we discover clear evidence of proton decay by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/915",
         "data_source": "metaculus",
         "metadata": {
@@ -1969,7 +1501,7 @@
         "title": "Will another 9/11 on U.S. soil be prevented at least through 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-12-31T08:00:00Z",
+        "resolution_date": "Dec 31 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/916",
         "data_source": "metaculus",
         "metadata": {
@@ -2018,7 +1550,7 @@
         "title": "Will a space elevator successfully be built on Earth before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2101-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2101 08:00AM",
         "url": "https://www.metaculus.com/questions/917",
         "data_source": "metaculus",
         "metadata": {
@@ -2056,116 +1588,11 @@
         "resolution": null
     },
     {
-        "id": 943,
-        "title": "When will we get the last communication from Voyager 1?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/943",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 73581,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 25764,
-                    "num_questions": 171
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 25763,
-                    "num_questions": 124
-                },
-                {
-                    "id": 2321,
-                    "slug": "milky-way",
-                    "name": "Milky Way",
-                    "link_id": 43310,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3037,
-                    "slug": "voyager-2",
-                    "name": "Voyager 2",
-                    "link_id": 43311,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3515,
-                    "slug": "voyager-1",
-                    "name": "Voyager 1",
-                    "link_id": 47397,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 969,
-        "title": "When will the next commercial supersonic flight occur?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2031-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/969",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 13786,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13785,
-                    "num_questions": 402
-                },
-                {
-                    "id": 937,
-                    "slug": "aerospace-engineering",
-                    "name": "Aerospace engineering",
-                    "link_id": 13787,
-                    "num_questions": 84
-                },
-                {
-                    "id": 638,
-                    "slug": "transport",
-                    "name": "Transport",
-                    "link_id": 74051,
-                    "num_questions": 43
-                },
-                {
-                    "id": 2763,
-                    "slug": "fluid-dynamics",
-                    "name": "Fluid dynamics",
-                    "link_id": 44865,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 980,
         "title": "Will Tesla become the largest car company in the world (by sales) before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2035 11:00PM",
         "url": "https://www.metaculus.com/questions/980",
         "data_source": "metaculus",
         "metadata": {
@@ -2200,7 +1627,7 @@
         "title": "Will there be any progress in human lifespan enhancement by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2099-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2099 11:00PM",
         "url": "https://www.metaculus.com/questions/1002",
         "data_source": "metaculus",
         "metadata": {
@@ -2221,7 +1648,7 @@
         "title": "Will there be a city on Earth with a population of over 100 million by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/1052",
         "data_source": "metaculus",
         "metadata": {
@@ -2266,32 +1693,11 @@
         "resolution": null
     },
     {
-        "id": 1056,
-        "title": "How long will the Great Pyramids be recognizable?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "3000-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/1056",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 9,
-                    "slug": "egypt",
-                    "name": "Egypt",
-                    "link_id": 80521,
-                    "num_questions": 36
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 1058,
         "title": "Will humanity (essentially) run out of at least one element currently considered \"under serious threat\" by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/1058",
         "data_source": "metaculus",
         "metadata": {
@@ -2336,123 +1742,11 @@
         "resolution": null
     },
     {
-        "id": 111,
-        "title": "Will there be a total solar eclipse on June 25, 2522?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2522-06-26T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/111",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 11949,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 11950,
-                    "num_questions": 124
-                },
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 11952,
-                    "num_questions": 56
-                },
-                {
-                    "id": 95,
-                    "slug": "earth",
-                    "name": "Earth",
-                    "link_id": 11948,
-                    "num_questions": 51
-                },
-                {
-                    "id": 2196,
-                    "slug": "oregon",
-                    "name": "Oregon",
-                    "link_id": 42596,
-                    "num_questions": 18
-                },
-                {
-                    "id": 548,
-                    "slug": "africa",
-                    "name": "Africa",
-                    "link_id": 11951,
-                    "num_questions": 17
-                },
-                {
-                    "id": 1230,
-                    "slug": "south-carolina",
-                    "name": "South Carolina",
-                    "link_id": 37320,
-                    "num_questions": 7
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 161,
-        "title": "Will the Universe end?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "9999-12-31T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/161",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13283,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 73294,
-                    "num_questions": 171
-                },
-                {
-                    "id": 136,
-                    "slug": "astrophysics",
-                    "name": "Astrophysics",
-                    "link_id": 13284,
-                    "num_questions": 79
-                },
-                {
-                    "id": 1766,
-                    "slug": "cosmology",
-                    "name": "Cosmology",
-                    "link_id": 40973,
-                    "num_questions": 34
-                },
-                {
-                    "id": 1810,
-                    "slug": "observable-universe",
-                    "name": "Observable universe",
-                    "link_id": 40974,
-                    "num_questions": 4
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 349,
         "title": "Will SpaceX land people on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-02T00:00:00Z",
+        "resolution_date": "Jan 02 2030 12:00AM",
         "url": "https://www.metaculus.com/questions/349",
         "data_source": "metaculus",
         "metadata": {
@@ -2497,66 +1791,11 @@
         "resolution": null
     },
     {
-        "id": 353,
-        "title": "Will someone born before 2001 live to be 150?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2151-01-03T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/353",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": null
-    },
-    {
-        "id": 363,
-        "title": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-01T16:18:08Z",
-        "url": "https://www.metaculus.com/questions/363",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 1506,
-                    "slug": "lockheed-martin",
-                    "name": "Lockheed Martin",
-                    "link_id": 87710,
-                    "num_questions": 6
-                },
-                {
-                    "id": 3404,
-                    "slug": "lockheed-martin-p-791",
-                    "name": "Lockheed Martin P-791",
-                    "link_id": 47077,
-                    "num_questions": 5
-                },
-                {
-                    "id": 1022,
-                    "slug": "national-ignition-facility",
-                    "name": "National Ignition Facility",
-                    "link_id": 34304,
-                    "num_questions": 4
-                },
-                {
-                    "id": 4325,
-                    "slug": "iter",
-                    "name": "ITER",
-                    "link_id": 49245,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 372,
         "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2060-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2060 12:00AM",
         "url": "https://www.metaculus.com/questions/372",
         "data_source": "metaculus",
         "metadata": {
@@ -2633,7 +1872,7 @@
         "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-01-31T23:59:00Z",
+        "resolution_date": "Jan 31 2027 11:59PM",
         "url": "https://www.metaculus.com/questions/375",
         "data_source": "metaculus",
         "metadata": {
@@ -2710,7 +1949,7 @@
         "title": "Will there be Human-machine intelligence parity before 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2040 12:00AM",
         "url": "https://www.metaculus.com/questions/384",
         "data_source": "metaculus",
         "metadata": {
@@ -2815,7 +2054,7 @@
         "title": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-02T04:45:08Z",
+        "resolution_date": "Jan 02 2050 04:45AM",
         "url": "https://www.metaculus.com/questions/397",
         "data_source": "metaculus",
         "metadata": {
@@ -2853,74 +2092,11 @@
         "resolution": null
     },
     {
-        "id": 404,
-        "title": "When will there be machine-kindergartner parity in LEGO construction?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-02T18:33:24Z",
-        "url": "https://www.metaculus.com/questions/404",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 515,
-                    "slug": "engineering",
-                    "name": "Engineering",
-                    "link_id": 7997,
-                    "num_questions": 112
-                },
-                {
-                    "id": 589,
-                    "slug": "robotics",
-                    "name": "Robotics",
-                    "link_id": 7998,
-                    "num_questions": 90
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 406,
-        "title": "When will AIs program programs that can program AIs?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T00:01:00Z",
-        "url": "https://www.metaculus.com/questions/406",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 33,
-                    "slug": "machine-learning",
-                    "name": "Machine learning",
-                    "link_id": 8006,
-                    "num_questions": 253
-                },
-                {
-                    "id": 1292,
-                    "slug": "software-engineering",
-                    "name": "Software engineering",
-                    "link_id": 85119,
-                    "num_questions": 52
-                },
-                {
-                    "id": 7688,
-                    "slug": "wolframalpha",
-                    "name": "WolframAlpha",
-                    "link_id": 56504,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 480,
         "title": "If chess is solved before 2080, must perfect play result in white winning?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2080-01-02T04:00:00Z",
+        "resolution_date": "Jan 02 2080 04:00AM",
         "url": "https://www.metaculus.com/questions/480",
         "data_source": "metaculus",
         "metadata": {
@@ -2948,7 +2124,7 @@
         "title": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/489",
         "data_source": "metaculus",
         "metadata": {
@@ -2990,7 +2166,7 @@
         "title": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/491",
         "data_source": "metaculus",
         "metadata": {
@@ -3067,7 +2243,7 @@
         "title": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/492",
         "data_source": "metaculus",
         "metadata": {
@@ -3165,7 +2341,7 @@
         "title": "Will the first commercial hyperloop system be within the US?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/513",
         "data_source": "metaculus",
         "metadata": {
@@ -3242,7 +2418,7 @@
         "title": "Will humans go extinct before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-02T00:01:00Z",
+        "resolution_date": "Jan 02 2100 12:01AM",
         "url": "https://www.metaculus.com/questions/578",
         "data_source": "metaculus",
         "metadata": {
@@ -3277,7 +2453,7 @@
         "title": "Will there be more VR headset sales than AR headsets sales in 2025?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2026-07-31T06:00:00Z",
+        "resolution_date": "Jul 31 2026 06:00AM",
         "url": "https://www.metaculus.com/questions/579",
         "data_source": "metaculus",
         "metadata": {
@@ -3312,7 +2488,7 @@
         "title": "Will there be at least 2\u02daC of global warming by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-06-14T23:00:00Z",
+        "resolution_date": "Jun 14 2100 11:00PM",
         "url": "https://www.metaculus.com/questions/585",
         "data_source": "metaculus",
         "metadata": {
@@ -3347,7 +2523,7 @@
         "title": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2051-01-01T17:00:00Z",
+        "resolution_date": "Jan 01 2051 05:00PM",
         "url": "https://www.metaculus.com/questions/594",
         "data_source": "metaculus",
         "metadata": {
@@ -3389,7 +2565,7 @@
         "title": "Will a sample of negative energy be produced by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/600",
         "data_source": "metaculus",
         "metadata": {
@@ -3459,7 +2635,7 @@
         "title": "Will gravitational waves from the merger of supermassive black holes be detected by November 30, 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-11-30T07:00:00Z",
+        "resolution_date": "Nov 30 2027 07:00AM",
         "url": "https://www.metaculus.com/questions/604",
         "data_source": "metaculus",
         "metadata": {
@@ -3511,46 +2687,11 @@
         "resolution": null
     },
     {
-        "id": 605,
-        "title": "How much global warming by 2100?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2101-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/605",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 18498,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 18499,
-                    "num_questions": 124
-                },
-                {
-                    "id": 1167,
-                    "slug": "paris-agreement",
-                    "name": "Paris Agreement",
-                    "link_id": 36656,
-                    "num_questions": 28
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 606,
         "title": "Will we detect a message originating from Luyten's Star before 2046?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-12-31T07:00:00Z",
+        "resolution_date": "Dec 31 2045 07:00AM",
         "url": "https://www.metaculus.com/questions/606",
         "data_source": "metaculus",
         "metadata": {
@@ -3567,81 +2708,11 @@
         "resolution": null
     },
     {
-        "id": 610,
-        "title": "Will a world war begin before 2151?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2161-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/610",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 253,
-                    "slug": "environmental-science",
-                    "name": "Environmental science",
-                    "link_id": 70653,
-                    "num_questions": 197
-                },
-                {
-                    "id": 216,
-                    "slug": "climate-change-denial",
-                    "name": "Climate change denial",
-                    "link_id": 7137,
-                    "num_questions": 107
-                },
-                {
-                    "id": 82,
-                    "slug": "north-korea",
-                    "name": "North Korea",
-                    "link_id": 7136,
-                    "num_questions": 87
-                },
-                {
-                    "id": 8009,
-                    "slug": "climatology",
-                    "name": "Climatology",
-                    "link_id": 81637,
-                    "num_questions": 80
-                },
-                {
-                    "id": 615,
-                    "slug": "geology",
-                    "name": "Geology",
-                    "link_id": 70654,
-                    "num_questions": 28
-                },
-                {
-                    "id": 1443,
-                    "slug": "world-war-ii",
-                    "name": "World War II",
-                    "link_id": 88030,
-                    "num_questions": 25
-                },
-                {
-                    "id": 4745,
-                    "slug": "middle-east",
-                    "name": "Middle East",
-                    "link_id": 48773,
-                    "num_questions": 8
-                },
-                {
-                    "id": 4162,
-                    "slug": "united-nations-framework-convention-on-climate-change",
-                    "name": "United Nations Framework Convention on Climate Change",
-                    "link_id": 48771,
-                    "num_questions": 6
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 614,
         "title": "Will there be a Vegan Country by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2100 12:00AM",
         "url": "https://www.metaculus.com/questions/614",
         "data_source": "metaculus",
         "metadata": {
@@ -3679,32 +2750,11 @@
         "resolution": null
     },
     {
-        "id": 649,
-        "title": "When will the next human being walk on the Moon?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T21:00:00Z",
-        "url": "https://www.metaculus.com/questions/649",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 33103,
-                    "num_questions": 56
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 658,
         "title": "Will we reach the island of stability by 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/658",
         "data_source": "metaculus",
         "metadata": {
@@ -3739,7 +2789,7 @@
         "title": "Will Kessler syndrome occur before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/665",
         "data_source": "metaculus",
         "metadata": {
@@ -3791,67 +2841,11 @@
         "resolution": null
     },
     {
-        "id": 676,
-        "title": "When will the world create the first Trillionaire?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2075-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/676",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 226,
-                    "slug": "amazon-company",
-                    "name": "Amazon (company)",
-                    "link_id": 30221,
-                    "num_questions": 86
-                },
-                {
-                    "id": 2976,
-                    "slug": "jeff-bezos",
-                    "name": "Jeff Bezos",
-                    "link_id": 43402,
-                    "num_questions": 19
-                },
-                {
-                    "id": 2353,
-                    "slug": "satoshi-nakamoto",
-                    "name": "Satoshi Nakamoto",
-                    "link_id": 43400,
-                    "num_questions": 5
-                },
-                {
-                    "id": 2975,
-                    "slug": "the-worlds-billionaires",
-                    "name": "The World's Billionaires",
-                    "link_id": 43401,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3937,
-                    "slug": "bill-gates",
-                    "name": "Bill Gates",
-                    "link_id": 47589,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3596,
-                    "slug": "credit-suisse",
-                    "name": "Credit Suisse",
-                    "link_id": 47588,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 684,
         "title": "By 2025 will someone be able to hold his/her breath for 30+ minutes?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/684",
         "data_source": "metaculus",
         "metadata": {
@@ -3872,7 +2866,7 @@
         "title": "Will a human made spaceship enter the Venusian atmosphere before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/686",
         "data_source": "metaculus",
         "metadata": {
@@ -3924,67 +2918,11 @@
         "resolution": null
     },
     {
-        "id": 735,
-        "title": "When will there be a mile-high building?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2060-04-01T07:00:00Z",
-        "url": "https://www.metaculus.com/questions/735",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 19453,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 209,
-                    "slug": "saudi-arabia",
-                    "name": "Saudi Arabia",
-                    "link_id": 19454,
-                    "num_questions": 48
-                },
-                {
-                    "id": 2440,
-                    "slug": "shanghai",
-                    "name": "Shanghai",
-                    "link_id": 43301,
-                    "num_questions": 17
-                },
-                {
-                    "id": 2457,
-                    "slug": "malaysia",
-                    "name": "Malaysia",
-                    "link_id": 43302,
-                    "num_questions": 11
-                },
-                {
-                    "id": 2319,
-                    "slug": "dubai",
-                    "name": "Dubai",
-                    "link_id": 43300,
-                    "num_questions": 7
-                },
-                {
-                    "id": 4018,
-                    "slug": "tokyo",
-                    "name": "Tokyo",
-                    "link_id": 48480,
-                    "num_questions": 5
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 736,
         "title": "Will there be a complete 4 year interval in which world output doubles, before the first 1 year interval in which world output doubles?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/736",
         "data_source": "metaculus",
         "metadata": {
@@ -4012,7 +2950,7 @@
         "title": "Will SpaceX land anything on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T10:35:00Z",
+        "resolution_date": "Jan 01 2030 10:35AM",
         "url": "https://www.metaculus.com/questions/737",
         "data_source": "metaculus",
         "metadata": {
@@ -4061,7 +2999,7 @@
         "title": "Will Puerto Rico become a US state prior to 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/797",
         "data_source": "metaculus",
         "metadata": {
@@ -4110,7 +3048,7 @@
         "title": "Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2045 08:00AM",
         "url": "https://www.metaculus.com/questions/808",
         "data_source": "metaculus",
         "metadata": {
@@ -4180,7 +3118,7 @@
         "title": "Will a practical nuclear fusion reactor first be developed in China?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/824",
         "data_source": "metaculus",
         "metadata": {
@@ -4222,7 +3160,7 @@
         "title": "Will Metaculus exist in 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T00:01:00Z",
+        "resolution_date": "Jan 01 2030 12:01AM",
         "url": "https://www.metaculus.com/questions/841",
         "data_source": "metaculus",
         "metadata": {
@@ -4235,7 +3173,7 @@
         "title": "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2033-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2033 12:00AM",
         "url": "https://www.metaculus.com/questions/899",
         "data_source": "metaculus",
         "metadata": {
@@ -4270,7 +3208,7 @@
         "title": "Will we discover clear evidence of proton decay by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/915",
         "data_source": "metaculus",
         "metadata": {
@@ -4305,7 +3243,7 @@
         "title": "Will another 9/11 on U.S. soil be prevented at least through 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-12-31T08:00:00Z",
+        "resolution_date": "Dec 31 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/916",
         "data_source": "metaculus",
         "metadata": {
@@ -4354,7 +3292,7 @@
         "title": "Will a space elevator successfully be built on Earth before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2101-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2101 08:00AM",
         "url": "https://www.metaculus.com/questions/917",
         "data_source": "metaculus",
         "metadata": {
@@ -4392,116 +3330,11 @@
         "resolution": null
     },
     {
-        "id": 943,
-        "title": "When will we get the last communication from Voyager 1?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/943",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 73581,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 25764,
-                    "num_questions": 171
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 25763,
-                    "num_questions": 124
-                },
-                {
-                    "id": 2321,
-                    "slug": "milky-way",
-                    "name": "Milky Way",
-                    "link_id": 43310,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3037,
-                    "slug": "voyager-2",
-                    "name": "Voyager 2",
-                    "link_id": 43311,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3515,
-                    "slug": "voyager-1",
-                    "name": "Voyager 1",
-                    "link_id": 47397,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 969,
-        "title": "When will the next commercial supersonic flight occur?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2031-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/969",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 13786,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13785,
-                    "num_questions": 402
-                },
-                {
-                    "id": 937,
-                    "slug": "aerospace-engineering",
-                    "name": "Aerospace engineering",
-                    "link_id": 13787,
-                    "num_questions": 84
-                },
-                {
-                    "id": 638,
-                    "slug": "transport",
-                    "name": "Transport",
-                    "link_id": 74051,
-                    "num_questions": 43
-                },
-                {
-                    "id": 2763,
-                    "slug": "fluid-dynamics",
-                    "name": "Fluid dynamics",
-                    "link_id": 44865,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 980,
         "title": "Will Tesla become the largest car company in the world (by sales) before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2035 11:00PM",
         "url": "https://www.metaculus.com/questions/980",
         "data_source": "metaculus",
         "metadata": {
@@ -4536,7 +3369,7 @@
         "title": "Will there be any progress in human lifespan enhancement by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2099-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2099 11:00PM",
         "url": "https://www.metaculus.com/questions/1002",
         "data_source": "metaculus",
         "metadata": {
@@ -4557,7 +3390,7 @@
         "title": "Will there be a city on Earth with a population of over 100 million by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/1052",
         "data_source": "metaculus",
         "metadata": {
@@ -4602,32 +3435,11 @@
         "resolution": null
     },
     {
-        "id": 1056,
-        "title": "How long will the Great Pyramids be recognizable?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "3000-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/1056",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 9,
-                    "slug": "egypt",
-                    "name": "Egypt",
-                    "link_id": 80521,
-                    "num_questions": 36
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 1058,
         "title": "Will humanity (essentially) run out of at least one element currently considered \"under serious threat\" by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/1058",
         "data_source": "metaculus",
         "metadata": {
@@ -4672,123 +3484,11 @@
         "resolution": null
     },
     {
-        "id": 111,
-        "title": "Will there be a total solar eclipse on June 25, 2522?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2522-06-26T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/111",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 11949,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 11950,
-                    "num_questions": 124
-                },
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 11952,
-                    "num_questions": 56
-                },
-                {
-                    "id": 95,
-                    "slug": "earth",
-                    "name": "Earth",
-                    "link_id": 11948,
-                    "num_questions": 51
-                },
-                {
-                    "id": 2196,
-                    "slug": "oregon",
-                    "name": "Oregon",
-                    "link_id": 42596,
-                    "num_questions": 18
-                },
-                {
-                    "id": 548,
-                    "slug": "africa",
-                    "name": "Africa",
-                    "link_id": 11951,
-                    "num_questions": 17
-                },
-                {
-                    "id": 1230,
-                    "slug": "south-carolina",
-                    "name": "South Carolina",
-                    "link_id": 37320,
-                    "num_questions": 7
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 161,
-        "title": "Will the Universe end?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "9999-12-31T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/161",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13283,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 73294,
-                    "num_questions": 171
-                },
-                {
-                    "id": 136,
-                    "slug": "astrophysics",
-                    "name": "Astrophysics",
-                    "link_id": 13284,
-                    "num_questions": 79
-                },
-                {
-                    "id": 1766,
-                    "slug": "cosmology",
-                    "name": "Cosmology",
-                    "link_id": 40973,
-                    "num_questions": 34
-                },
-                {
-                    "id": 1810,
-                    "slug": "observable-universe",
-                    "name": "Observable universe",
-                    "link_id": 40974,
-                    "num_questions": 4
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 349,
         "title": "Will SpaceX land people on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-02T00:00:00Z",
+        "resolution_date": "Jan 02 2030 12:00AM",
         "url": "https://www.metaculus.com/questions/349",
         "data_source": "metaculus",
         "metadata": {
@@ -4833,66 +3533,11 @@
         "resolution": null
     },
     {
-        "id": 353,
-        "title": "Will someone born before 2001 live to be 150?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2151-01-03T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/353",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": null
-    },
-    {
-        "id": 363,
-        "title": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-01T16:18:08Z",
-        "url": "https://www.metaculus.com/questions/363",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 1506,
-                    "slug": "lockheed-martin",
-                    "name": "Lockheed Martin",
-                    "link_id": 87710,
-                    "num_questions": 6
-                },
-                {
-                    "id": 3404,
-                    "slug": "lockheed-martin-p-791",
-                    "name": "Lockheed Martin P-791",
-                    "link_id": 47077,
-                    "num_questions": 5
-                },
-                {
-                    "id": 1022,
-                    "slug": "national-ignition-facility",
-                    "name": "National Ignition Facility",
-                    "link_id": 34304,
-                    "num_questions": 4
-                },
-                {
-                    "id": 4325,
-                    "slug": "iter",
-                    "name": "ITER",
-                    "link_id": 49245,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 372,
         "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2060-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2060 12:00AM",
         "url": "https://www.metaculus.com/questions/372",
         "data_source": "metaculus",
         "metadata": {
@@ -4969,7 +3614,7 @@
         "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-01-31T23:59:00Z",
+        "resolution_date": "Jan 31 2027 11:59PM",
         "url": "https://www.metaculus.com/questions/375",
         "data_source": "metaculus",
         "metadata": {
@@ -5046,7 +3691,7 @@
         "title": "Will there be Human-machine intelligence parity before 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2040 12:00AM",
         "url": "https://www.metaculus.com/questions/384",
         "data_source": "metaculus",
         "metadata": {
@@ -5151,7 +3796,7 @@
         "title": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-02T04:45:08Z",
+        "resolution_date": "Jan 02 2050 04:45AM",
         "url": "https://www.metaculus.com/questions/397",
         "data_source": "metaculus",
         "metadata": {
@@ -5189,74 +3834,11 @@
         "resolution": null
     },
     {
-        "id": 404,
-        "title": "When will there be machine-kindergartner parity in LEGO construction?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-02T18:33:24Z",
-        "url": "https://www.metaculus.com/questions/404",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 515,
-                    "slug": "engineering",
-                    "name": "Engineering",
-                    "link_id": 7997,
-                    "num_questions": 112
-                },
-                {
-                    "id": 589,
-                    "slug": "robotics",
-                    "name": "Robotics",
-                    "link_id": 7998,
-                    "num_questions": 90
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 406,
-        "title": "When will AIs program programs that can program AIs?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T00:01:00Z",
-        "url": "https://www.metaculus.com/questions/406",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 33,
-                    "slug": "machine-learning",
-                    "name": "Machine learning",
-                    "link_id": 8006,
-                    "num_questions": 253
-                },
-                {
-                    "id": 1292,
-                    "slug": "software-engineering",
-                    "name": "Software engineering",
-                    "link_id": 85119,
-                    "num_questions": 52
-                },
-                {
-                    "id": 7688,
-                    "slug": "wolframalpha",
-                    "name": "WolframAlpha",
-                    "link_id": 56504,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 480,
         "title": "If chess is solved before 2080, must perfect play result in white winning?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2080-01-02T04:00:00Z",
+        "resolution_date": "Jan 02 2080 04:00AM",
         "url": "https://www.metaculus.com/questions/480",
         "data_source": "metaculus",
         "metadata": {
@@ -5284,7 +3866,7 @@
         "title": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/489",
         "data_source": "metaculus",
         "metadata": {
@@ -5326,7 +3908,7 @@
         "title": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/491",
         "data_source": "metaculus",
         "metadata": {
@@ -5403,7 +3985,7 @@
         "title": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/492",
         "data_source": "metaculus",
         "metadata": {
@@ -5501,7 +4083,7 @@
         "title": "Will the first commercial hyperloop system be within the US?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/513",
         "data_source": "metaculus",
         "metadata": {
@@ -5578,7 +4160,7 @@
         "title": "Will humans go extinct before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-02T00:01:00Z",
+        "resolution_date": "Jan 02 2100 12:01AM",
         "url": "https://www.metaculus.com/questions/578",
         "data_source": "metaculus",
         "metadata": {
@@ -5613,7 +4195,7 @@
         "title": "Will there be more VR headset sales than AR headsets sales in 2025?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2026-07-31T06:00:00Z",
+        "resolution_date": "Jul 31 2026 06:00AM",
         "url": "https://www.metaculus.com/questions/579",
         "data_source": "metaculus",
         "metadata": {
@@ -5648,7 +4230,7 @@
         "title": "Will there be at least 2\u02daC of global warming by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-06-14T23:00:00Z",
+        "resolution_date": "Jun 14 2100 11:00PM",
         "url": "https://www.metaculus.com/questions/585",
         "data_source": "metaculus",
         "metadata": {
@@ -5683,7 +4265,7 @@
         "title": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2051-01-01T17:00:00Z",
+        "resolution_date": "Jan 01 2051 05:00PM",
         "url": "https://www.metaculus.com/questions/594",
         "data_source": "metaculus",
         "metadata": {
@@ -5725,7 +4307,7 @@
         "title": "Will a sample of negative energy be produced by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/600",
         "data_source": "metaculus",
         "metadata": {
@@ -5795,7 +4377,7 @@
         "title": "Will gravitational waves from the merger of supermassive black holes be detected by November 30, 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-11-30T07:00:00Z",
+        "resolution_date": "Nov 30 2027 07:00AM",
         "url": "https://www.metaculus.com/questions/604",
         "data_source": "metaculus",
         "metadata": {
@@ -5847,46 +4429,11 @@
         "resolution": null
     },
     {
-        "id": 605,
-        "title": "How much global warming by 2100?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2101-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/605",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 18498,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 18499,
-                    "num_questions": 124
-                },
-                {
-                    "id": 1167,
-                    "slug": "paris-agreement",
-                    "name": "Paris Agreement",
-                    "link_id": 36656,
-                    "num_questions": 28
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 606,
         "title": "Will we detect a message originating from Luyten's Star before 2046?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-12-31T07:00:00Z",
+        "resolution_date": "Dec 31 2045 07:00AM",
         "url": "https://www.metaculus.com/questions/606",
         "data_source": "metaculus",
         "metadata": {
@@ -5903,81 +4450,11 @@
         "resolution": null
     },
     {
-        "id": 610,
-        "title": "Will a world war begin before 2151?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2161-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/610",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 253,
-                    "slug": "environmental-science",
-                    "name": "Environmental science",
-                    "link_id": 70653,
-                    "num_questions": 197
-                },
-                {
-                    "id": 216,
-                    "slug": "climate-change-denial",
-                    "name": "Climate change denial",
-                    "link_id": 7137,
-                    "num_questions": 107
-                },
-                {
-                    "id": 82,
-                    "slug": "north-korea",
-                    "name": "North Korea",
-                    "link_id": 7136,
-                    "num_questions": 87
-                },
-                {
-                    "id": 8009,
-                    "slug": "climatology",
-                    "name": "Climatology",
-                    "link_id": 81637,
-                    "num_questions": 80
-                },
-                {
-                    "id": 615,
-                    "slug": "geology",
-                    "name": "Geology",
-                    "link_id": 70654,
-                    "num_questions": 28
-                },
-                {
-                    "id": 1443,
-                    "slug": "world-war-ii",
-                    "name": "World War II",
-                    "link_id": 88030,
-                    "num_questions": 25
-                },
-                {
-                    "id": 4745,
-                    "slug": "middle-east",
-                    "name": "Middle East",
-                    "link_id": 48773,
-                    "num_questions": 8
-                },
-                {
-                    "id": 4162,
-                    "slug": "united-nations-framework-convention-on-climate-change",
-                    "name": "United Nations Framework Convention on Climate Change",
-                    "link_id": 48771,
-                    "num_questions": 6
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 614,
         "title": "Will there be a Vegan Country by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2100 12:00AM",
         "url": "https://www.metaculus.com/questions/614",
         "data_source": "metaculus",
         "metadata": {
@@ -6015,32 +4492,11 @@
         "resolution": null
     },
     {
-        "id": 649,
-        "title": "When will the next human being walk on the Moon?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T21:00:00Z",
-        "url": "https://www.metaculus.com/questions/649",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 33103,
-                    "num_questions": 56
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 658,
         "title": "Will we reach the island of stability by 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/658",
         "data_source": "metaculus",
         "metadata": {
@@ -6075,7 +4531,7 @@
         "title": "Will Kessler syndrome occur before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/665",
         "data_source": "metaculus",
         "metadata": {
@@ -6127,67 +4583,11 @@
         "resolution": null
     },
     {
-        "id": 676,
-        "title": "When will the world create the first Trillionaire?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2075-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/676",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 226,
-                    "slug": "amazon-company",
-                    "name": "Amazon (company)",
-                    "link_id": 30221,
-                    "num_questions": 86
-                },
-                {
-                    "id": 2976,
-                    "slug": "jeff-bezos",
-                    "name": "Jeff Bezos",
-                    "link_id": 43402,
-                    "num_questions": 19
-                },
-                {
-                    "id": 2353,
-                    "slug": "satoshi-nakamoto",
-                    "name": "Satoshi Nakamoto",
-                    "link_id": 43400,
-                    "num_questions": 5
-                },
-                {
-                    "id": 2975,
-                    "slug": "the-worlds-billionaires",
-                    "name": "The World's Billionaires",
-                    "link_id": 43401,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3937,
-                    "slug": "bill-gates",
-                    "name": "Bill Gates",
-                    "link_id": 47589,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3596,
-                    "slug": "credit-suisse",
-                    "name": "Credit Suisse",
-                    "link_id": 47588,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 684,
         "title": "By 2025 will someone be able to hold his/her breath for 30+ minutes?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/684",
         "data_source": "metaculus",
         "metadata": {
@@ -6208,7 +4608,7 @@
         "title": "Will a human made spaceship enter the Venusian atmosphere before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/686",
         "data_source": "metaculus",
         "metadata": {
@@ -6260,67 +4660,11 @@
         "resolution": null
     },
     {
-        "id": 735,
-        "title": "When will there be a mile-high building?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2060-04-01T07:00:00Z",
-        "url": "https://www.metaculus.com/questions/735",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 19453,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 209,
-                    "slug": "saudi-arabia",
-                    "name": "Saudi Arabia",
-                    "link_id": 19454,
-                    "num_questions": 48
-                },
-                {
-                    "id": 2440,
-                    "slug": "shanghai",
-                    "name": "Shanghai",
-                    "link_id": 43301,
-                    "num_questions": 17
-                },
-                {
-                    "id": 2457,
-                    "slug": "malaysia",
-                    "name": "Malaysia",
-                    "link_id": 43302,
-                    "num_questions": 11
-                },
-                {
-                    "id": 2319,
-                    "slug": "dubai",
-                    "name": "Dubai",
-                    "link_id": 43300,
-                    "num_questions": 7
-                },
-                {
-                    "id": 4018,
-                    "slug": "tokyo",
-                    "name": "Tokyo",
-                    "link_id": 48480,
-                    "num_questions": 5
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 736,
         "title": "Will there be a complete 4 year interval in which world output doubles, before the first 1 year interval in which world output doubles?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/736",
         "data_source": "metaculus",
         "metadata": {
@@ -6348,7 +4692,7 @@
         "title": "Will SpaceX land anything on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T10:35:00Z",
+        "resolution_date": "Jan 01 2030 10:35AM",
         "url": "https://www.metaculus.com/questions/737",
         "data_source": "metaculus",
         "metadata": {
@@ -6397,7 +4741,7 @@
         "title": "Will Puerto Rico become a US state prior to 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/797",
         "data_source": "metaculus",
         "metadata": {
@@ -6446,7 +4790,7 @@
         "title": "Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2045 08:00AM",
         "url": "https://www.metaculus.com/questions/808",
         "data_source": "metaculus",
         "metadata": {
@@ -6516,7 +4860,7 @@
         "title": "Will a practical nuclear fusion reactor first be developed in China?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/824",
         "data_source": "metaculus",
         "metadata": {
@@ -6558,7 +4902,7 @@
         "title": "Will Metaculus exist in 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T00:01:00Z",
+        "resolution_date": "Jan 01 2030 12:01AM",
         "url": "https://www.metaculus.com/questions/841",
         "data_source": "metaculus",
         "metadata": {
@@ -6571,7 +4915,7 @@
         "title": "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2033-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2033 12:00AM",
         "url": "https://www.metaculus.com/questions/899",
         "data_source": "metaculus",
         "metadata": {
@@ -6606,7 +4950,7 @@
         "title": "Will we discover clear evidence of proton decay by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/915",
         "data_source": "metaculus",
         "metadata": {
@@ -6641,7 +4985,7 @@
         "title": "Will another 9/11 on U.S. soil be prevented at least through 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-12-31T08:00:00Z",
+        "resolution_date": "Dec 31 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/916",
         "data_source": "metaculus",
         "metadata": {
@@ -6690,7 +5034,7 @@
         "title": "Will a space elevator successfully be built on Earth before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2101-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2101 08:00AM",
         "url": "https://www.metaculus.com/questions/917",
         "data_source": "metaculus",
         "metadata": {
@@ -6728,116 +5072,11 @@
         "resolution": null
     },
     {
-        "id": 943,
-        "title": "When will we get the last communication from Voyager 1?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/943",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 73581,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 25764,
-                    "num_questions": 171
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 25763,
-                    "num_questions": 124
-                },
-                {
-                    "id": 2321,
-                    "slug": "milky-way",
-                    "name": "Milky Way",
-                    "link_id": 43310,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3037,
-                    "slug": "voyager-2",
-                    "name": "Voyager 2",
-                    "link_id": 43311,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3515,
-                    "slug": "voyager-1",
-                    "name": "Voyager 1",
-                    "link_id": 47397,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 969,
-        "title": "When will the next commercial supersonic flight occur?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2031-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/969",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 13786,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13785,
-                    "num_questions": 402
-                },
-                {
-                    "id": 937,
-                    "slug": "aerospace-engineering",
-                    "name": "Aerospace engineering",
-                    "link_id": 13787,
-                    "num_questions": 84
-                },
-                {
-                    "id": 638,
-                    "slug": "transport",
-                    "name": "Transport",
-                    "link_id": 74051,
-                    "num_questions": 43
-                },
-                {
-                    "id": 2763,
-                    "slug": "fluid-dynamics",
-                    "name": "Fluid dynamics",
-                    "link_id": 44865,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 980,
         "title": "Will Tesla become the largest car company in the world (by sales) before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2035 11:00PM",
         "url": "https://www.metaculus.com/questions/980",
         "data_source": "metaculus",
         "metadata": {
@@ -6872,7 +5111,7 @@
         "title": "Will there be any progress in human lifespan enhancement by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2099-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2099 11:00PM",
         "url": "https://www.metaculus.com/questions/1002",
         "data_source": "metaculus",
         "metadata": {
@@ -6893,7 +5132,7 @@
         "title": "Will there be a city on Earth with a population of over 100 million by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/1052",
         "data_source": "metaculus",
         "metadata": {
@@ -6938,32 +5177,11 @@
         "resolution": null
     },
     {
-        "id": 1056,
-        "title": "How long will the Great Pyramids be recognizable?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "3000-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/1056",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 9,
-                    "slug": "egypt",
-                    "name": "Egypt",
-                    "link_id": 80521,
-                    "num_questions": 36
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 1058,
         "title": "Will humanity (essentially) run out of at least one element currently considered \"under serious threat\" by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/1058",
         "data_source": "metaculus",
         "metadata": {
@@ -7008,123 +5226,11 @@
         "resolution": null
     },
     {
-        "id": 111,
-        "title": "Will there be a total solar eclipse on June 25, 2522?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2522-06-26T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/111",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 11949,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 11950,
-                    "num_questions": 124
-                },
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 11952,
-                    "num_questions": 56
-                },
-                {
-                    "id": 95,
-                    "slug": "earth",
-                    "name": "Earth",
-                    "link_id": 11948,
-                    "num_questions": 51
-                },
-                {
-                    "id": 2196,
-                    "slug": "oregon",
-                    "name": "Oregon",
-                    "link_id": 42596,
-                    "num_questions": 18
-                },
-                {
-                    "id": 548,
-                    "slug": "africa",
-                    "name": "Africa",
-                    "link_id": 11951,
-                    "num_questions": 17
-                },
-                {
-                    "id": 1230,
-                    "slug": "south-carolina",
-                    "name": "South Carolina",
-                    "link_id": 37320,
-                    "num_questions": 7
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 161,
-        "title": "Will the Universe end?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "9999-12-31T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/161",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13283,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 73294,
-                    "num_questions": 171
-                },
-                {
-                    "id": 136,
-                    "slug": "astrophysics",
-                    "name": "Astrophysics",
-                    "link_id": 13284,
-                    "num_questions": 79
-                },
-                {
-                    "id": 1766,
-                    "slug": "cosmology",
-                    "name": "Cosmology",
-                    "link_id": 40973,
-                    "num_questions": 34
-                },
-                {
-                    "id": 1810,
-                    "slug": "observable-universe",
-                    "name": "Observable universe",
-                    "link_id": 40974,
-                    "num_questions": 4
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 349,
         "title": "Will SpaceX land people on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-02T00:00:00Z",
+        "resolution_date": "Jan 02 2030 12:00AM",
         "url": "https://www.metaculus.com/questions/349",
         "data_source": "metaculus",
         "metadata": {
@@ -7169,66 +5275,11 @@
         "resolution": null
     },
     {
-        "id": 353,
-        "title": "Will someone born before 2001 live to be 150?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2151-01-03T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/353",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": null
-    },
-    {
-        "id": 363,
-        "title": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-01T16:18:08Z",
-        "url": "https://www.metaculus.com/questions/363",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 1506,
-                    "slug": "lockheed-martin",
-                    "name": "Lockheed Martin",
-                    "link_id": 87710,
-                    "num_questions": 6
-                },
-                {
-                    "id": 3404,
-                    "slug": "lockheed-martin-p-791",
-                    "name": "Lockheed Martin P-791",
-                    "link_id": 47077,
-                    "num_questions": 5
-                },
-                {
-                    "id": 1022,
-                    "slug": "national-ignition-facility",
-                    "name": "National Ignition Facility",
-                    "link_id": 34304,
-                    "num_questions": 4
-                },
-                {
-                    "id": 4325,
-                    "slug": "iter",
-                    "name": "ITER",
-                    "link_id": 49245,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 372,
         "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2060-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2060 12:00AM",
         "url": "https://www.metaculus.com/questions/372",
         "data_source": "metaculus",
         "metadata": {
@@ -7305,7 +5356,7 @@
         "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-01-31T23:59:00Z",
+        "resolution_date": "Jan 31 2027 11:59PM",
         "url": "https://www.metaculus.com/questions/375",
         "data_source": "metaculus",
         "metadata": {
@@ -7382,7 +5433,7 @@
         "title": "Will there be Human-machine intelligence parity before 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2040 12:00AM",
         "url": "https://www.metaculus.com/questions/384",
         "data_source": "metaculus",
         "metadata": {
@@ -7487,7 +5538,7 @@
         "title": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-02T04:45:08Z",
+        "resolution_date": "Jan 02 2050 04:45AM",
         "url": "https://www.metaculus.com/questions/397",
         "data_source": "metaculus",
         "metadata": {
@@ -7525,74 +5576,11 @@
         "resolution": null
     },
     {
-        "id": 404,
-        "title": "When will there be machine-kindergartner parity in LEGO construction?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-02T18:33:24Z",
-        "url": "https://www.metaculus.com/questions/404",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 515,
-                    "slug": "engineering",
-                    "name": "Engineering",
-                    "link_id": 7997,
-                    "num_questions": 112
-                },
-                {
-                    "id": 589,
-                    "slug": "robotics",
-                    "name": "Robotics",
-                    "link_id": 7998,
-                    "num_questions": 90
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 406,
-        "title": "When will AIs program programs that can program AIs?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T00:01:00Z",
-        "url": "https://www.metaculus.com/questions/406",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 33,
-                    "slug": "machine-learning",
-                    "name": "Machine learning",
-                    "link_id": 8006,
-                    "num_questions": 253
-                },
-                {
-                    "id": 1292,
-                    "slug": "software-engineering",
-                    "name": "Software engineering",
-                    "link_id": 85119,
-                    "num_questions": 52
-                },
-                {
-                    "id": 7688,
-                    "slug": "wolframalpha",
-                    "name": "WolframAlpha",
-                    "link_id": 56504,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 480,
         "title": "If chess is solved before 2080, must perfect play result in white winning?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2080-01-02T04:00:00Z",
+        "resolution_date": "Jan 02 2080 04:00AM",
         "url": "https://www.metaculus.com/questions/480",
         "data_source": "metaculus",
         "metadata": {
@@ -7620,7 +5608,7 @@
         "title": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/489",
         "data_source": "metaculus",
         "metadata": {
@@ -7662,7 +5650,7 @@
         "title": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/491",
         "data_source": "metaculus",
         "metadata": {
@@ -7739,7 +5727,7 @@
         "title": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/492",
         "data_source": "metaculus",
         "metadata": {
@@ -7837,7 +5825,7 @@
         "title": "Will the first commercial hyperloop system be within the US?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/513",
         "data_source": "metaculus",
         "metadata": {
@@ -7914,7 +5902,7 @@
         "title": "Will humans go extinct before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-02T00:01:00Z",
+        "resolution_date": "Jan 02 2100 12:01AM",
         "url": "https://www.metaculus.com/questions/578",
         "data_source": "metaculus",
         "metadata": {
@@ -7949,7 +5937,7 @@
         "title": "Will there be more VR headset sales than AR headsets sales in 2025?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2026-07-31T06:00:00Z",
+        "resolution_date": "Jul 31 2026 06:00AM",
         "url": "https://www.metaculus.com/questions/579",
         "data_source": "metaculus",
         "metadata": {
@@ -7984,7 +5972,7 @@
         "title": "Will there be at least 2\u02daC of global warming by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-06-14T23:00:00Z",
+        "resolution_date": "Jun 14 2100 11:00PM",
         "url": "https://www.metaculus.com/questions/585",
         "data_source": "metaculus",
         "metadata": {
@@ -8019,7 +6007,7 @@
         "title": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2051-01-01T17:00:00Z",
+        "resolution_date": "Jan 01 2051 05:00PM",
         "url": "https://www.metaculus.com/questions/594",
         "data_source": "metaculus",
         "metadata": {
@@ -8061,7 +6049,7 @@
         "title": "Will a sample of negative energy be produced by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/600",
         "data_source": "metaculus",
         "metadata": {
@@ -8131,7 +6119,7 @@
         "title": "Will gravitational waves from the merger of supermassive black holes be detected by November 30, 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-11-30T07:00:00Z",
+        "resolution_date": "Nov 30 2027 07:00AM",
         "url": "https://www.metaculus.com/questions/604",
         "data_source": "metaculus",
         "metadata": {
@@ -8183,46 +6171,11 @@
         "resolution": null
     },
     {
-        "id": 605,
-        "title": "How much global warming by 2100?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2101-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/605",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 18498,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 18499,
-                    "num_questions": 124
-                },
-                {
-                    "id": 1167,
-                    "slug": "paris-agreement",
-                    "name": "Paris Agreement",
-                    "link_id": 36656,
-                    "num_questions": 28
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 606,
         "title": "Will we detect a message originating from Luyten's Star before 2046?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-12-31T07:00:00Z",
+        "resolution_date": "Dec 31 2045 07:00AM",
         "url": "https://www.metaculus.com/questions/606",
         "data_source": "metaculus",
         "metadata": {
@@ -8239,81 +6192,11 @@
         "resolution": null
     },
     {
-        "id": 610,
-        "title": "Will a world war begin before 2151?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2161-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/610",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 253,
-                    "slug": "environmental-science",
-                    "name": "Environmental science",
-                    "link_id": 70653,
-                    "num_questions": 197
-                },
-                {
-                    "id": 216,
-                    "slug": "climate-change-denial",
-                    "name": "Climate change denial",
-                    "link_id": 7137,
-                    "num_questions": 107
-                },
-                {
-                    "id": 82,
-                    "slug": "north-korea",
-                    "name": "North Korea",
-                    "link_id": 7136,
-                    "num_questions": 87
-                },
-                {
-                    "id": 8009,
-                    "slug": "climatology",
-                    "name": "Climatology",
-                    "link_id": 81637,
-                    "num_questions": 80
-                },
-                {
-                    "id": 615,
-                    "slug": "geology",
-                    "name": "Geology",
-                    "link_id": 70654,
-                    "num_questions": 28
-                },
-                {
-                    "id": 1443,
-                    "slug": "world-war-ii",
-                    "name": "World War II",
-                    "link_id": 88030,
-                    "num_questions": 25
-                },
-                {
-                    "id": 4745,
-                    "slug": "middle-east",
-                    "name": "Middle East",
-                    "link_id": 48773,
-                    "num_questions": 8
-                },
-                {
-                    "id": 4162,
-                    "slug": "united-nations-framework-convention-on-climate-change",
-                    "name": "United Nations Framework Convention on Climate Change",
-                    "link_id": 48771,
-                    "num_questions": 6
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 614,
         "title": "Will there be a Vegan Country by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2100 12:00AM",
         "url": "https://www.metaculus.com/questions/614",
         "data_source": "metaculus",
         "metadata": {
@@ -8351,32 +6234,11 @@
         "resolution": null
     },
     {
-        "id": 649,
-        "title": "When will the next human being walk on the Moon?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T21:00:00Z",
-        "url": "https://www.metaculus.com/questions/649",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 33103,
-                    "num_questions": 56
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 658,
         "title": "Will we reach the island of stability by 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/658",
         "data_source": "metaculus",
         "metadata": {
@@ -8411,7 +6273,7 @@
         "title": "Will Kessler syndrome occur before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/665",
         "data_source": "metaculus",
         "metadata": {
@@ -8463,67 +6325,11 @@
         "resolution": null
     },
     {
-        "id": 676,
-        "title": "When will the world create the first Trillionaire?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2075-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/676",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 226,
-                    "slug": "amazon-company",
-                    "name": "Amazon (company)",
-                    "link_id": 30221,
-                    "num_questions": 86
-                },
-                {
-                    "id": 2976,
-                    "slug": "jeff-bezos",
-                    "name": "Jeff Bezos",
-                    "link_id": 43402,
-                    "num_questions": 19
-                },
-                {
-                    "id": 2353,
-                    "slug": "satoshi-nakamoto",
-                    "name": "Satoshi Nakamoto",
-                    "link_id": 43400,
-                    "num_questions": 5
-                },
-                {
-                    "id": 2975,
-                    "slug": "the-worlds-billionaires",
-                    "name": "The World's Billionaires",
-                    "link_id": 43401,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3937,
-                    "slug": "bill-gates",
-                    "name": "Bill Gates",
-                    "link_id": 47589,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3596,
-                    "slug": "credit-suisse",
-                    "name": "Credit Suisse",
-                    "link_id": 47588,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 684,
         "title": "By 2025 will someone be able to hold his/her breath for 30+ minutes?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/684",
         "data_source": "metaculus",
         "metadata": {
@@ -8544,7 +6350,7 @@
         "title": "Will a human made spaceship enter the Venusian atmosphere before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/686",
         "data_source": "metaculus",
         "metadata": {
@@ -8596,67 +6402,11 @@
         "resolution": null
     },
     {
-        "id": 735,
-        "title": "When will there be a mile-high building?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2060-04-01T07:00:00Z",
-        "url": "https://www.metaculus.com/questions/735",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 19453,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 209,
-                    "slug": "saudi-arabia",
-                    "name": "Saudi Arabia",
-                    "link_id": 19454,
-                    "num_questions": 48
-                },
-                {
-                    "id": 2440,
-                    "slug": "shanghai",
-                    "name": "Shanghai",
-                    "link_id": 43301,
-                    "num_questions": 17
-                },
-                {
-                    "id": 2457,
-                    "slug": "malaysia",
-                    "name": "Malaysia",
-                    "link_id": 43302,
-                    "num_questions": 11
-                },
-                {
-                    "id": 2319,
-                    "slug": "dubai",
-                    "name": "Dubai",
-                    "link_id": 43300,
-                    "num_questions": 7
-                },
-                {
-                    "id": 4018,
-                    "slug": "tokyo",
-                    "name": "Tokyo",
-                    "link_id": 48480,
-                    "num_questions": 5
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 736,
         "title": "Will there be a complete 4 year interval in which world output doubles, before the first 1 year interval in which world output doubles?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/736",
         "data_source": "metaculus",
         "metadata": {
@@ -8684,7 +6434,7 @@
         "title": "Will SpaceX land anything on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T10:35:00Z",
+        "resolution_date": "Jan 01 2030 10:35AM",
         "url": "https://www.metaculus.com/questions/737",
         "data_source": "metaculus",
         "metadata": {
@@ -8733,7 +6483,7 @@
         "title": "Will Puerto Rico become a US state prior to 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/797",
         "data_source": "metaculus",
         "metadata": {
@@ -8782,7 +6532,7 @@
         "title": "Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2045 08:00AM",
         "url": "https://www.metaculus.com/questions/808",
         "data_source": "metaculus",
         "metadata": {
@@ -8852,7 +6602,7 @@
         "title": "Will a practical nuclear fusion reactor first be developed in China?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/824",
         "data_source": "metaculus",
         "metadata": {
@@ -8894,7 +6644,7 @@
         "title": "Will Metaculus exist in 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T00:01:00Z",
+        "resolution_date": "Jan 01 2030 12:01AM",
         "url": "https://www.metaculus.com/questions/841",
         "data_source": "metaculus",
         "metadata": {
@@ -8907,7 +6657,7 @@
         "title": "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2033-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2033 12:00AM",
         "url": "https://www.metaculus.com/questions/899",
         "data_source": "metaculus",
         "metadata": {
@@ -8942,7 +6692,7 @@
         "title": "Will we discover clear evidence of proton decay by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/915",
         "data_source": "metaculus",
         "metadata": {
@@ -8977,7 +6727,7 @@
         "title": "Will another 9/11 on U.S. soil be prevented at least through 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-12-31T08:00:00Z",
+        "resolution_date": "Dec 31 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/916",
         "data_source": "metaculus",
         "metadata": {
@@ -9026,7 +6776,7 @@
         "title": "Will a space elevator successfully be built on Earth before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2101-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2101 08:00AM",
         "url": "https://www.metaculus.com/questions/917",
         "data_source": "metaculus",
         "metadata": {
@@ -9064,116 +6814,11 @@
         "resolution": null
     },
     {
-        "id": 943,
-        "title": "When will we get the last communication from Voyager 1?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/943",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 73581,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 25764,
-                    "num_questions": 171
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 25763,
-                    "num_questions": 124
-                },
-                {
-                    "id": 2321,
-                    "slug": "milky-way",
-                    "name": "Milky Way",
-                    "link_id": 43310,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3037,
-                    "slug": "voyager-2",
-                    "name": "Voyager 2",
-                    "link_id": 43311,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3515,
-                    "slug": "voyager-1",
-                    "name": "Voyager 1",
-                    "link_id": 47397,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 969,
-        "title": "When will the next commercial supersonic flight occur?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2031-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/969",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 13786,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13785,
-                    "num_questions": 402
-                },
-                {
-                    "id": 937,
-                    "slug": "aerospace-engineering",
-                    "name": "Aerospace engineering",
-                    "link_id": 13787,
-                    "num_questions": 84
-                },
-                {
-                    "id": 638,
-                    "slug": "transport",
-                    "name": "Transport",
-                    "link_id": 74051,
-                    "num_questions": 43
-                },
-                {
-                    "id": 2763,
-                    "slug": "fluid-dynamics",
-                    "name": "Fluid dynamics",
-                    "link_id": 44865,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 980,
         "title": "Will Tesla become the largest car company in the world (by sales) before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2035 11:00PM",
         "url": "https://www.metaculus.com/questions/980",
         "data_source": "metaculus",
         "metadata": {
@@ -9208,7 +6853,7 @@
         "title": "Will there be any progress in human lifespan enhancement by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2099-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2099 11:00PM",
         "url": "https://www.metaculus.com/questions/1002",
         "data_source": "metaculus",
         "metadata": {
@@ -9229,7 +6874,7 @@
         "title": "Will there be a city on Earth with a population of over 100 million by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/1052",
         "data_source": "metaculus",
         "metadata": {
@@ -9274,32 +6919,11 @@
         "resolution": null
     },
     {
-        "id": 1056,
-        "title": "How long will the Great Pyramids be recognizable?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "3000-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/1056",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 9,
-                    "slug": "egypt",
-                    "name": "Egypt",
-                    "link_id": 80521,
-                    "num_questions": 36
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 1058,
         "title": "Will humanity (essentially) run out of at least one element currently considered \"under serious threat\" by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/1058",
         "data_source": "metaculus",
         "metadata": {
@@ -9344,123 +6968,11 @@
         "resolution": null
     },
     {
-        "id": 111,
-        "title": "Will there be a total solar eclipse on June 25, 2522?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2522-06-26T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/111",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 11949,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 11950,
-                    "num_questions": 124
-                },
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 11952,
-                    "num_questions": 56
-                },
-                {
-                    "id": 95,
-                    "slug": "earth",
-                    "name": "Earth",
-                    "link_id": 11948,
-                    "num_questions": 51
-                },
-                {
-                    "id": 2196,
-                    "slug": "oregon",
-                    "name": "Oregon",
-                    "link_id": 42596,
-                    "num_questions": 18
-                },
-                {
-                    "id": 548,
-                    "slug": "africa",
-                    "name": "Africa",
-                    "link_id": 11951,
-                    "num_questions": 17
-                },
-                {
-                    "id": 1230,
-                    "slug": "south-carolina",
-                    "name": "South Carolina",
-                    "link_id": 37320,
-                    "num_questions": 7
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 161,
-        "title": "Will the Universe end?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "9999-12-31T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/161",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13283,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 73294,
-                    "num_questions": 171
-                },
-                {
-                    "id": 136,
-                    "slug": "astrophysics",
-                    "name": "Astrophysics",
-                    "link_id": 13284,
-                    "num_questions": 79
-                },
-                {
-                    "id": 1766,
-                    "slug": "cosmology",
-                    "name": "Cosmology",
-                    "link_id": 40973,
-                    "num_questions": 34
-                },
-                {
-                    "id": 1810,
-                    "slug": "observable-universe",
-                    "name": "Observable universe",
-                    "link_id": 40974,
-                    "num_questions": 4
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 349,
         "title": "Will SpaceX land people on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-02T00:00:00Z",
+        "resolution_date": "Jan 02 2030 12:00AM",
         "url": "https://www.metaculus.com/questions/349",
         "data_source": "metaculus",
         "metadata": {
@@ -9505,66 +7017,11 @@
         "resolution": null
     },
     {
-        "id": 353,
-        "title": "Will someone born before 2001 live to be 150?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2151-01-03T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/353",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": []
-        },
-        "resolution": null
-    },
-    {
-        "id": 363,
-        "title": "When will the first 100 Megawatt fusion-based electrical generation facility come into service?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-01T16:18:08Z",
-        "url": "https://www.metaculus.com/questions/363",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 1506,
-                    "slug": "lockheed-martin",
-                    "name": "Lockheed Martin",
-                    "link_id": 87710,
-                    "num_questions": 6
-                },
-                {
-                    "id": 3404,
-                    "slug": "lockheed-martin-p-791",
-                    "name": "Lockheed Martin P-791",
-                    "link_id": 47077,
-                    "num_questions": 5
-                },
-                {
-                    "id": 1022,
-                    "slug": "national-ignition-facility",
-                    "name": "National Ignition Facility",
-                    "link_id": 34304,
-                    "num_questions": 4
-                },
-                {
-                    "id": 4325,
-                    "slug": "iter",
-                    "name": "ITER",
-                    "link_id": 49245,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 372,
         "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2060-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2060 12:00AM",
         "url": "https://www.metaculus.com/questions/372",
         "data_source": "metaculus",
         "metadata": {
@@ -9641,7 +7098,7 @@
         "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-01-31T23:59:00Z",
+        "resolution_date": "Jan 31 2027 11:59PM",
         "url": "https://www.metaculus.com/questions/375",
         "data_source": "metaculus",
         "metadata": {
@@ -9718,7 +7175,7 @@
         "title": "Will there be Human-machine intelligence parity before 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2040 12:00AM",
         "url": "https://www.metaculus.com/questions/384",
         "data_source": "metaculus",
         "metadata": {
@@ -9823,7 +7280,7 @@
         "title": "Will RoboCup announce that robots have beaten professional human soccer players before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-02T04:45:08Z",
+        "resolution_date": "Jan 02 2050 04:45AM",
         "url": "https://www.metaculus.com/questions/397",
         "data_source": "metaculus",
         "metadata": {
@@ -9861,74 +7318,11 @@
         "resolution": null
     },
     {
-        "id": 404,
-        "title": "When will there be machine-kindergartner parity in LEGO construction?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-02T18:33:24Z",
-        "url": "https://www.metaculus.com/questions/404",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 515,
-                    "slug": "engineering",
-                    "name": "Engineering",
-                    "link_id": 7997,
-                    "num_questions": 112
-                },
-                {
-                    "id": 589,
-                    "slug": "robotics",
-                    "name": "Robotics",
-                    "link_id": 7998,
-                    "num_questions": 90
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 406,
-        "title": "When will AIs program programs that can program AIs?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T00:01:00Z",
-        "url": "https://www.metaculus.com/questions/406",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 33,
-                    "slug": "machine-learning",
-                    "name": "Machine learning",
-                    "link_id": 8006,
-                    "num_questions": 253
-                },
-                {
-                    "id": 1292,
-                    "slug": "software-engineering",
-                    "name": "Software engineering",
-                    "link_id": 85119,
-                    "num_questions": 52
-                },
-                {
-                    "id": 7688,
-                    "slug": "wolframalpha",
-                    "name": "WolframAlpha",
-                    "link_id": 56504,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 480,
         "title": "If chess is solved before 2080, must perfect play result in white winning?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2080-01-02T04:00:00Z",
+        "resolution_date": "Jan 02 2080 04:00AM",
         "url": "https://www.metaculus.com/questions/480",
         "data_source": "metaculus",
         "metadata": {
@@ -9956,7 +7350,7 @@
         "title": "Will the European Union meet its 2030 targets under the Paris Climate Treaty?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/489",
         "data_source": "metaculus",
         "metadata": {
@@ -9998,7 +7392,7 @@
         "title": "Will China reduce their carbon emissions per GDP by 60% by 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/491",
         "data_source": "metaculus",
         "metadata": {
@@ -10075,7 +7469,7 @@
         "title": "Will any country that had nuclear weapons on July 1, 2017 give them up before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/492",
         "data_source": "metaculus",
         "metadata": {
@@ -10173,7 +7567,7 @@
         "title": "Will the first commercial hyperloop system be within the US?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/513",
         "data_source": "metaculus",
         "metadata": {
@@ -10250,7 +7644,7 @@
         "title": "Will humans go extinct before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-02T00:01:00Z",
+        "resolution_date": "Jan 02 2100 12:01AM",
         "url": "https://www.metaculus.com/questions/578",
         "data_source": "metaculus",
         "metadata": {
@@ -10285,7 +7679,7 @@
         "title": "Will there be more VR headset sales than AR headsets sales in 2025?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2026-07-31T06:00:00Z",
+        "resolution_date": "Jul 31 2026 06:00AM",
         "url": "https://www.metaculus.com/questions/579",
         "data_source": "metaculus",
         "metadata": {
@@ -10320,7 +7714,7 @@
         "title": "Will there be at least 2\u02daC of global warming by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-06-14T23:00:00Z",
+        "resolution_date": "Jun 14 2100 11:00PM",
         "url": "https://www.metaculus.com/questions/585",
         "data_source": "metaculus",
         "metadata": {
@@ -10355,7 +7749,7 @@
         "title": "Will there be more than 13 people off of planet Earth on December 31, 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2051-01-01T17:00:00Z",
+        "resolution_date": "Jan 01 2051 05:00PM",
         "url": "https://www.metaculus.com/questions/594",
         "data_source": "metaculus",
         "metadata": {
@@ -10397,7 +7791,7 @@
         "title": "Will a sample of negative energy be produced by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/600",
         "data_source": "metaculus",
         "metadata": {
@@ -10467,7 +7861,7 @@
         "title": "Will gravitational waves from the merger of supermassive black holes be detected by November 30, 2027?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2027-11-30T07:00:00Z",
+        "resolution_date": "Nov 30 2027 07:00AM",
         "url": "https://www.metaculus.com/questions/604",
         "data_source": "metaculus",
         "metadata": {
@@ -10519,46 +7913,11 @@
         "resolution": null
     },
     {
-        "id": 605,
-        "title": "How much global warming by 2100?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2101-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/605",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 18498,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 18499,
-                    "num_questions": 124
-                },
-                {
-                    "id": 1167,
-                    "slug": "paris-agreement",
-                    "name": "Paris Agreement",
-                    "link_id": 36656,
-                    "num_questions": 28
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 606,
         "title": "Will we detect a message originating from Luyten's Star before 2046?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-12-31T07:00:00Z",
+        "resolution_date": "Dec 31 2045 07:00AM",
         "url": "https://www.metaculus.com/questions/606",
         "data_source": "metaculus",
         "metadata": {
@@ -10575,81 +7934,11 @@
         "resolution": null
     },
     {
-        "id": 610,
-        "title": "Will a world war begin before 2151?",
-        "body": null,
-        "question_type": "binary",
-        "resolution_date": "2161-01-01T00:00:00Z",
-        "url": "https://www.metaculus.com/questions/610",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 253,
-                    "slug": "environmental-science",
-                    "name": "Environmental science",
-                    "link_id": 70653,
-                    "num_questions": 197
-                },
-                {
-                    "id": 216,
-                    "slug": "climate-change-denial",
-                    "name": "Climate change denial",
-                    "link_id": 7137,
-                    "num_questions": 107
-                },
-                {
-                    "id": 82,
-                    "slug": "north-korea",
-                    "name": "North Korea",
-                    "link_id": 7136,
-                    "num_questions": 87
-                },
-                {
-                    "id": 8009,
-                    "slug": "climatology",
-                    "name": "Climatology",
-                    "link_id": 81637,
-                    "num_questions": 80
-                },
-                {
-                    "id": 615,
-                    "slug": "geology",
-                    "name": "Geology",
-                    "link_id": 70654,
-                    "num_questions": 28
-                },
-                {
-                    "id": 1443,
-                    "slug": "world-war-ii",
-                    "name": "World War II",
-                    "link_id": 88030,
-                    "num_questions": 25
-                },
-                {
-                    "id": 4745,
-                    "slug": "middle-east",
-                    "name": "Middle East",
-                    "link_id": 48773,
-                    "num_questions": 8
-                },
-                {
-                    "id": 4162,
-                    "slug": "united-nations-framework-convention-on-climate-change",
-                    "name": "United Nations Framework Convention on Climate Change",
-                    "link_id": 48771,
-                    "num_questions": 6
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 614,
         "title": "Will there be a Vegan Country by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2100 12:00AM",
         "url": "https://www.metaculus.com/questions/614",
         "data_source": "metaculus",
         "metadata": {
@@ -10687,32 +7976,11 @@
         "resolution": null
     },
     {
-        "id": 649,
-        "title": "When will the next human being walk on the Moon?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2100-01-02T21:00:00Z",
-        "url": "https://www.metaculus.com/questions/649",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 563,
-                    "slug": "moon",
-                    "name": "Moon",
-                    "link_id": 33103,
-                    "num_questions": 56
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 658,
         "title": "Will we reach the island of stability by 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/658",
         "data_source": "metaculus",
         "metadata": {
@@ -10747,7 +8015,7 @@
         "title": "Will Kessler syndrome occur before 2050?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/665",
         "data_source": "metaculus",
         "metadata": {
@@ -10799,67 +8067,11 @@
         "resolution": null
     },
     {
-        "id": 676,
-        "title": "When will the world create the first Trillionaire?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2075-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/676",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 226,
-                    "slug": "amazon-company",
-                    "name": "Amazon (company)",
-                    "link_id": 30221,
-                    "num_questions": 86
-                },
-                {
-                    "id": 2976,
-                    "slug": "jeff-bezos",
-                    "name": "Jeff Bezos",
-                    "link_id": 43402,
-                    "num_questions": 19
-                },
-                {
-                    "id": 2353,
-                    "slug": "satoshi-nakamoto",
-                    "name": "Satoshi Nakamoto",
-                    "link_id": 43400,
-                    "num_questions": 5
-                },
-                {
-                    "id": 2975,
-                    "slug": "the-worlds-billionaires",
-                    "name": "The World's Billionaires",
-                    "link_id": 43401,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3937,
-                    "slug": "bill-gates",
-                    "name": "Bill Gates",
-                    "link_id": 47589,
-                    "num_questions": 4
-                },
-                {
-                    "id": 3596,
-                    "slug": "credit-suisse",
-                    "name": "Credit Suisse",
-                    "link_id": 47588,
-                    "num_questions": 3
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 684,
         "title": "By 2025 will someone be able to hold his/her breath for 30+ minutes?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/684",
         "data_source": "metaculus",
         "metadata": {
@@ -10880,7 +8092,7 @@
         "title": "Will a human made spaceship enter the Venusian atmosphere before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/686",
         "data_source": "metaculus",
         "metadata": {
@@ -10932,67 +8144,11 @@
         "resolution": null
     },
     {
-        "id": 735,
-        "title": "When will there be a mile-high building?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2060-04-01T07:00:00Z",
-        "url": "https://www.metaculus.com/questions/735",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 19453,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 209,
-                    "slug": "saudi-arabia",
-                    "name": "Saudi Arabia",
-                    "link_id": 19454,
-                    "num_questions": 48
-                },
-                {
-                    "id": 2440,
-                    "slug": "shanghai",
-                    "name": "Shanghai",
-                    "link_id": 43301,
-                    "num_questions": 17
-                },
-                {
-                    "id": 2457,
-                    "slug": "malaysia",
-                    "name": "Malaysia",
-                    "link_id": 43302,
-                    "num_questions": 11
-                },
-                {
-                    "id": 2319,
-                    "slug": "dubai",
-                    "name": "Dubai",
-                    "link_id": 43300,
-                    "num_questions": 7
-                },
-                {
-                    "id": 4018,
-                    "slug": "tokyo",
-                    "name": "Tokyo",
-                    "link_id": 48480,
-                    "num_questions": 5
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 736,
         "title": "Will there be a complete 4 year interval in which world output doubles, before the first 1 year interval in which world output doubles?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2050 12:00AM",
         "url": "https://www.metaculus.com/questions/736",
         "data_source": "metaculus",
         "metadata": {
@@ -11020,7 +8176,7 @@
         "title": "Will SpaceX land anything on Mars before 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T10:35:00Z",
+        "resolution_date": "Jan 01 2030 10:35AM",
         "url": "https://www.metaculus.com/questions/737",
         "data_source": "metaculus",
         "metadata": {
@@ -11069,7 +8225,7 @@
         "title": "Will Puerto Rico become a US state prior to 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2035 08:00AM",
         "url": "https://www.metaculus.com/questions/797",
         "data_source": "metaculus",
         "metadata": {
@@ -11118,7 +8274,7 @@
         "title": "Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2045-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2045 08:00AM",
         "url": "https://www.metaculus.com/questions/808",
         "data_source": "metaculus",
         "metadata": {
@@ -11188,7 +8344,7 @@
         "title": "Will a practical nuclear fusion reactor first be developed in China?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2050-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2050 08:00AM",
         "url": "https://www.metaculus.com/questions/824",
         "data_source": "metaculus",
         "metadata": {
@@ -11230,7 +8386,7 @@
         "title": "Will Metaculus exist in 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-01-01T00:01:00Z",
+        "resolution_date": "Jan 01 2030 12:01AM",
         "url": "https://www.metaculus.com/questions/841",
         "data_source": "metaculus",
         "metadata": {
@@ -11243,7 +8399,7 @@
         "title": "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2033-01-01T00:00:00Z",
+        "resolution_date": "Jan 01 2033 12:00AM",
         "url": "https://www.metaculus.com/questions/899",
         "data_source": "metaculus",
         "metadata": {
@@ -11278,7 +8434,7 @@
         "title": "Will we discover clear evidence of proton decay by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/915",
         "data_source": "metaculus",
         "metadata": {
@@ -11313,7 +8469,7 @@
         "title": "Will another 9/11 on U.S. soil be prevented at least through 2030?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2030-12-31T08:00:00Z",
+        "resolution_date": "Dec 31 2030 08:00AM",
         "url": "https://www.metaculus.com/questions/916",
         "data_source": "metaculus",
         "metadata": {
@@ -11362,7 +8518,7 @@
         "title": "Will a space elevator successfully be built on Earth before 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2101-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2101 08:00AM",
         "url": "https://www.metaculus.com/questions/917",
         "data_source": "metaculus",
         "metadata": {
@@ -11400,116 +8556,11 @@
         "resolution": null
     },
     {
-        "id": 943,
-        "title": "When will we get the last communication from Voyager 1?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2040-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/943",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 73581,
-                    "num_questions": 402
-                },
-                {
-                    "id": 304,
-                    "slug": "astronomy",
-                    "name": "Astronomy",
-                    "link_id": 25764,
-                    "num_questions": 171
-                },
-                {
-                    "id": 210,
-                    "slug": "nasa",
-                    "name": "NASA",
-                    "link_id": 25763,
-                    "num_questions": 124
-                },
-                {
-                    "id": 2321,
-                    "slug": "milky-way",
-                    "name": "Milky Way",
-                    "link_id": 43310,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3037,
-                    "slug": "voyager-2",
-                    "name": "Voyager 2",
-                    "link_id": 43311,
-                    "num_questions": 9
-                },
-                {
-                    "id": 3515,
-                    "slug": "voyager-1",
-                    "name": "Voyager 1",
-                    "link_id": 47397,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
-        "id": 969,
-        "title": "When will the next commercial supersonic flight occur?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "2031-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/969",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 141,
-                    "slug": "united-states",
-                    "name": "United States",
-                    "link_id": 13786,
-                    "num_questions": 1753
-                },
-                {
-                    "id": 128,
-                    "slug": "physics",
-                    "name": "Physics",
-                    "link_id": 13785,
-                    "num_questions": 402
-                },
-                {
-                    "id": 937,
-                    "slug": "aerospace-engineering",
-                    "name": "Aerospace engineering",
-                    "link_id": 13787,
-                    "num_questions": 84
-                },
-                {
-                    "id": 638,
-                    "slug": "transport",
-                    "name": "Transport",
-                    "link_id": 74051,
-                    "num_questions": 43
-                },
-                {
-                    "id": 2763,
-                    "slug": "fluid-dynamics",
-                    "name": "Fluid dynamics",
-                    "link_id": 44865,
-                    "num_questions": 9
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 980,
         "title": "Will Tesla become the largest car company in the world (by sales) before 2035?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2035-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2035 11:00PM",
         "url": "https://www.metaculus.com/questions/980",
         "data_source": "metaculus",
         "metadata": {
@@ -11544,7 +8595,7 @@
         "title": "Will there be any progress in human lifespan enhancement by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2099-12-31T23:00:00Z",
+        "resolution_date": "Dec 31 2099 11:00PM",
         "url": "https://www.metaculus.com/questions/1002",
         "data_source": "metaculus",
         "metadata": {
@@ -11565,7 +8616,7 @@
         "title": "Will there be a city on Earth with a population of over 100 million by 2100?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2100-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2100 08:00AM",
         "url": "https://www.metaculus.com/questions/1052",
         "data_source": "metaculus",
         "metadata": {
@@ -11610,32 +8661,11 @@
         "resolution": null
     },
     {
-        "id": 1056,
-        "title": "How long will the Great Pyramids be recognizable?",
-        "body": null,
-        "question_type": "continuous",
-        "resolution_date": "3000-01-01T08:00:00Z",
-        "url": "https://www.metaculus.com/questions/1056",
-        "data_source": "metaculus",
-        "metadata": {
-            "topics": [
-                {
-                    "id": 9,
-                    "slug": "egypt",
-                    "name": "Egypt",
-                    "link_id": 80521,
-                    "num_questions": 36
-                }
-            ]
-        },
-        "resolution": null
-    },
-    {
         "id": 1058,
         "title": "Will humanity (essentially) run out of at least one element currently considered \"under serious threat\" by 2040?",
         "body": null,
         "question_type": "binary",
-        "resolution_date": "2040-01-01T08:00:00Z",
+        "resolution_date": "Jan 01 2040 08:00AM",
         "url": "https://www.metaculus.com/questions/1058",
         "data_source": "metaculus",
         "metadata": {
