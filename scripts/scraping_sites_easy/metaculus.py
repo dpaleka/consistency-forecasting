@@ -78,15 +78,19 @@ def fetch_live_questions_with_dates(api_url):
         'User-Agent': 'Mozilla/5.0'
     }
     questions_info = []
-    total_questions = 250  # Total number of questions you want to fetch
-    page_size = 50  # Number of questions per page. Adjust based on API's maximum allowed limit
+    total_questions = 350  # Total number of questions you want to fetch
+    page_size = 100  # Number of questions per page. Adjust based on API's maximum allowed limit
     page = 1
+
+
+
+    seen_ids = set()
 
     while len(questions_info) < total_questions:
         params = {
             'status': 'open',
             'limit': page_size,
-            'page': page  # or 'offset': (page-1) * page_size if the API uses offset
+            'offset': (page-1) * page_size  # or 'offset': (page-1) * page_size if the API uses offset
         }
         response = requests.get(f"{api_url}/questions", headers=headers, params=params)
         if response.status_code != 200:
@@ -107,7 +111,10 @@ def fetch_live_questions_with_dates(api_url):
                 },
                 'resolution': question.get('resolution')
             }
-            questions_info.append(question_info)
+
+            if question_info['id'] not in seen_ids:
+                questions_info.append(question_info)
+                seen_ids.add(question_info['id'])
             if len(questions_info) >= total_questions:
                 break
         page += 1
