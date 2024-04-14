@@ -45,8 +45,11 @@ class Checker(ABC):
         )
 
     async def instantiate_and_write_many(
-        self, base_sentencess: list[dict[str, ForecastingQuestion]], **kwargs
+        self, base_sentencess: list[dict[str, ForecastingQuestion]], overwrite=False, **kwargs
     ):
+        if overwrite:
+            with open(self.path, "w") as f:
+                f.write("")
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
             base_sentences, **kwargs
         )
