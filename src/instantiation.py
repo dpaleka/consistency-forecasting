@@ -21,9 +21,9 @@ symmor_checker = SymmetryOrChecker()
 condcond_checker = CondCondChecker()
 
 
-def load_data():
+def load_data(file):
     bqs = []
-    for line in jsonlines.open("src/data/politics_qs_1_formated.jsonl"):
+    for line in jsonlines.open(file):
         try:
             line["resolution_date"] = re.split(":", line["resolution_date"], 1)[1]
             line["resolution_date"] = line["resolution_date"].strip()
@@ -33,17 +33,13 @@ def load_data():
             bqs.append(bq)
         except:
             continue
-    return bqs
+    base_questions_p = [{"P": P} for P in bqs]
+    base_questions_pq = [{"P": P, "Q": Q} for P, Q in it.combinations(bqs, 2)]
+    base_questions_pqr = [{"P": P, "Q": Q, "R": R} for P, Q, R in it.combinations(bqs, 3)]
+    return base_questions_p, base_questions_pq, base_questions_pqr
 
-
-bqs = load_data()
-
-base_questions_p = [{"P": P} for P in bqs]
-base_questions_pq = [{"P": P, "Q": Q} for P, Q in it.combinations(bqs, 2)]
-base_questions_pqr = [{"P": P, "Q": Q, "R": R} for P, Q, R in it.combinations(bqs, 3)]
-
-
-async def instantiate(length=10):
+async def instantiate(path, length=10):
+    base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
     await neg_checker.instantiate_and_write_many(
         base_questions_p[:length], model="gpt-3.5-turbo", overwrite=True
     )
@@ -78,40 +74,4 @@ async def instantiate(length=10):
         base_questions_pqr[:length], model="gpt-3.5-turbo", overwrite=True
     )
 
-asyncio.run(instantiate())
-
-# asyncio.run(
-#     neg_checker.instantiate_and_write_many(base_questions_p, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     and_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     or_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     andor_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     but_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     cond_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     cons_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     para_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     symmand_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     symmor_checker.instantiate_and_write_many(base_questions_pq, model="gpt-3.5-turbo")
-# )
-# asyncio.run(
-#     condcond_checker.instantiate_and_write_many(
-#         base_questions_pqr, model="gpt-3.5-turbo"
-#     )
-# )
+asyncio.run(instantiate(path="data/forecasting_questions.jsonl"))
