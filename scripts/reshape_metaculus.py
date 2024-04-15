@@ -65,7 +65,7 @@ def convert_format(format_1):
         "title": format_1["title"],
         "body": format_1["body"],
         "data_source": format_1["data_source"],
-        "question_type": format_1["question_type"].capitalize(),
+        "question_type": format_1["question_type"].lower(),
         "resolution_date": format_1["resolution_date"],
         "url": format_1.get("url", None),
         "metadata": format_1["metadata"],
