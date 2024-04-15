@@ -41,6 +41,8 @@ def validate_fq_jsonl_file(filename: str):
         print(ForecastingQuestion.model_json_schema())
         raise ValueError("Error: file does not conform to the schema.")
 
+    return True
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -51,4 +53,6 @@ if __name__ == "__main__":
         help="Path to the JSONL file to validate, containing ForecastingQuestions",
     )
     args = parser.parse_args()
-    validate_fq_jsonl_file(args.filename)
+    res = validate_fq_jsonl_file(args.filename)
+    if res:
+        print(f"Validated {args.filename} successfully!")
