@@ -72,7 +72,7 @@ def write_jsonl_from_str(path: str, data: List[str], append: bool = False):
             file.write(item + "\n")
 
 
-async def write_jsonl_async(path: str, data: List[dict], append: bool = False):
+async def write_jsonl_async(path: str, data: List[dict], append: bool = True):
     mode = 'a' if append else 'w'
     async with aiofiles.open(path, mode=mode) as file:
         for item in data:
