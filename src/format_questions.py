@@ -5,6 +5,7 @@ from dataclasses import asdict
 from common.datatypes import ForecastingQuestion
 from question_generators import question_formatter
 from common.utils import write_jsonl_async
+from simple_parsing import ArgumentParser
 
 
 def read_json_or_jsonl(file_path: str):
@@ -54,11 +55,7 @@ async def process_questions_from_file(file_path: str, data_source: str, max_ques
     forecasting_questions = [fq for fq in forecasting_questions if fq is not None]
     return forecasting_questions, count_none
 
-async def main():
-    file_path = '../scripts/QUESTIONS_CLEANED_MODIFIED.jsonl'
-    data_source = 'synthetic'
-    max_questions = 30
-
+async def main(file_path: str, data_source: str, max_questions: int):
     forecasting_questions, none_count = await process_questions_from_file(file_path, data_source, max_questions)
     print(f"Number of invalid questions found: {none_count}")
 
@@ -71,4 +68,12 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = ArgumentParser()
+    parser.add_argument("--file_path", "-f", type=str, default="../scripts/QUESTIONS_CLEANED_MODIFIED.jsonl", help="Path to the input file")
+    parser.add_argument("--data_source", "-d", type=str, default="synthetic", help="Data source for the questions")
+    parser.add_argument("--max_questions", "-m", type=int, default=30, help="Maximum number of questions to process")
+
+    args = parser.parse_args()
+
+    asyncio.run(main(args.file_path, args.data_source, args.max_questions))
+
