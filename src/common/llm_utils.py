@@ -28,6 +28,9 @@ from .perscache import (
 )  # If no redis, use LocalFileStorage
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
+# Until we fix cache
+os.environ["NO_CACHE"] = "True"
+
 cache = Cache(
     serializer=JSONSerializer(),
     storage=(
