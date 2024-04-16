@@ -1,6 +1,6 @@
 import jsonlines
 from abc import ABC, abstractmethod
-from typing import Type, Any, Self
+from typing import Type, Any
 from pydantic import BaseModel, field_validator
 from common.datatypes import ForecastingQuestion, Prob
 from common.utils import write_jsonl_async_from_str
