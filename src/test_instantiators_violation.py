@@ -1,32 +1,70 @@
 from forecasters import BasicForecaster
-from static_checks.Checker import NegChecker, AndChecker, OrChecker, AndOrChecker, ButChecker, CondChecker, ConsequenceChecker, ParaphraseChecker, SymmetryAndChecker, SymmetryOrChecker, CondCondChecker
+from static_checks.Checker import Checker, NegChecker, AndChecker, OrChecker, AndOrChecker, ButChecker, CondChecker, ConsequenceChecker, ParaphraseChecker, SymmetryAndChecker, SymmetryOrChecker, CondCondChecker
 
 basic_forecaster = BasicForecaster()
 
 BASE_DATA_PATH = "src/data/"
 
-# model = gpt-3.5-turbo
-model = "gpt-4-turbo-2024-04-09"
+model = "gpt-3.5-turbo"
+#model = "gpt-4-turbo-2024-04-09"
 
-neg_checker = NegChecker(path=BASE_DATA_PATH + "NegChecker.jsonl")
-and_checker = AndChecker(path=BASE_DATA_PATH + "AndChecker.jsonl")
-or_checker = OrChecker(path=BASE_DATA_PATH + "OrChecker.jsonl")
-andor_checker = AndOrChecker(path=BASE_DATA_PATH + "AndOrChecker.jsonl")
-but_checker = ButChecker(path=BASE_DATA_PATH + "ButChecker.jsonl")
-cond_checker = CondChecker(path=BASE_DATA_PATH + "CondChecker.jsonl")
-cons_checker = ConsequenceChecker(path=BASE_DATA_PATH + "ConsequenceChecker.jsonl")
-para_checker = ParaphraseChecker(path=BASE_DATA_PATH + "ParaphraseChecker.jsonl")
-symmand_checker = SymmetryAndChecker(path=BASE_DATA_PATH + "SymmetryAndChecker.jsonl")
-symmor_checker = SymmetryOrChecker(path=BASE_DATA_PATH + "SymmetryOrChecker.jsonl")
-condcond_checker = CondCondChecker(path=BASE_DATA_PATH + "CondCondChecker.jsonl")
-# neg_checker.test(basic_forecaster, model = model)
-# and_checker.test(basic_forecaster, model = model)
-# or_checker.test(basic_forecaster, model = model)
-# andor_checker.test(basic_forecaster, model = model)
-# but_checker.test(basic_forecaster, model=model)
-# cond_checker.test(basic_forecaster, model=model)
-# cons_checker.test(basic_forecaster, model=model)
-# para_checker.test(basic_forecaster, model=model)
-# symmand_checker.test(basic_forecaster, model=model)
-# symmor_checker.test(basic_forecaster, model=model)
-condcond_checker.test(basic_forecaster, model=model)
+checkers : dict[str, Checker] = {
+    "NegChecker": NegChecker(path=BASE_DATA_PATH + "NegChecker.jsonl"),
+    "AndChecker": AndChecker(path=BASE_DATA_PATH + "AndChecker.jsonl"),
+    "OrChecker": OrChecker(path=BASE_DATA_PATH + "OrChecker.jsonl"),
+    "AndOrChecker": AndOrChecker(path=BASE_DATA_PATH + "AndOrChecker.jsonl"),
+    "ButChecker": ButChecker(path=BASE_DATA_PATH + "ButChecker.jsonl"),
+    "CondChecker": CondChecker(path=BASE_DATA_PATH + "CondChecker.jsonl"),
+    "ConsequenceChecker": ConsequenceChecker(path=BASE_DATA_PATH + "ConsequenceChecker.jsonl"),
+    "ParaphraseChecker": ParaphraseChecker(path=BASE_DATA_PATH + "ParaphraseChecker.jsonl"),
+    "SymmetryAndChecker": SymmetryAndChecker(path=BASE_DATA_PATH + "SymmetryAndChecker.jsonl"),
+    "SymmetryOrChecker": SymmetryOrChecker(path=BASE_DATA_PATH + "SymmetryOrChecker.jsonl"),
+    "CondCondChecker": CondCondChecker(path=BASE_DATA_PATH + "CondCondChecker.jsonl")
+}
+
+def get_stats(results : dict, label : str = "") -> dict:
+    # Extract the violation and check results from the test
+    violations = [result["violation"] for result in results]
+    checks = [result["check"] for result in results]
+
+    # Calculate the number of violations
+    print(f"checks: {checks}")
+    num_failed = sum(1 for c in checks if not c)
+
+    # Calculate the average violation
+    avg_violation = sum(v for v in violations) / len(violations)
+
+    # Calculate the median violation
+    sorted_violations = sorted(violations)
+    n = len(sorted_violations)
+    median_violation = (sorted_violations[n//2] + sorted_violations[~n//2]) / 2
+
+    print(f"Number of violations: {num_failed}/{len(checks)}")
+    print(f"Average violation: {avg_violation:.3f}")
+    print(f"Median violation: {median_violation:.3f}")
+
+    return {
+        "label": label,
+        "num_samples": len(violations),
+        "num_violations": num_failed,
+        "avg_violation": avg_violation,
+        "median_violation": median_violation
+    }
+
+#relevant_keys = ["ConsequenceChecker"]
+relevant_keys = list(checkers.keys())
+
+all_stats = {}
+for key in relevant_keys:
+    print("Checker: ", key)
+    results = checkers[key].test(basic_forecaster, model = model)
+    stats = get_stats(results, label = key)
+    all_stats[key] = stats
+
+for key, stats in all_stats.items():
+    print(f"{stats['label']}: {stats['num_violations']}/{stats['num_samples']}")
+
+print("\n\n")
+for key, stats in all_stats.items():
+    print(f"{key} | avg: {stats['avg_violation']:.3f}, median: {stats['median_violation']:.3f}")
+

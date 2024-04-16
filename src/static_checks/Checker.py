@@ -72,7 +72,8 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
-    def test(self, forecaster: Forecaster, **kwargs):
+    def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
+        results = []
         for line in jsonlines.open(self.path):
             print("START")
             print(f"line: {line}")
@@ -88,6 +89,8 @@ class Checker(ABC):
             print(f"Violation: {loss}")
             print(f"Check result: {res}")
             print("")
+            results.append({"line": line, "violation": loss, "check": res_bool, "check_result": res})
+        return results
 
 
 class NegChecker(Checker):

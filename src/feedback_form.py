@@ -211,7 +211,7 @@ def main(filename):
         list_view(entries)
 
 
-DEFAULT_FILE = "data/politics_qs_1_formatttted.jsonl"
+DEFAULT_FILE = "data/politics_qs_1_formatted.jsonl"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
