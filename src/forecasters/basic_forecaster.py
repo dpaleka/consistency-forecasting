@@ -1,5 +1,5 @@
 from .forecaster import Forecaster
-from common.datatypes import *
+from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion, Prob
 from common.llm_utils import answer, answer_sync, Example
 
 
