@@ -68,18 +68,71 @@ resolution_date: 05/11/2031
 Question: {question}
 """
 
+validate_forecasting_question_prompt = """
+
+I want you to help me validate if a forecasting question is well defined. The question will ask about an event in the future, like the quesitons in places like metaculus.
+The fields will be:
+- title: The title of the question.
+- body: The resolution criteria of the question.
+- resolution_date: The date when the outcome of the question will be decided.
+
+I want you to validate according to the following criteria:
+- The resolution date should be consistent with the question. And in the future. The current date is {current_date}
+- The resolution criteria should not be excessively vague or ambiguous. And should be consistent with the question.
+
+The format of your response should be:
+reasoning: [reasoning here]
+valid: [True/False]
+
+Examples:
+
+title: Will Kanye West become the president of the United States by 2030?
+body: This question will resolve as Yes if Kanye West is elected as the president of the United States before January 1, 2030.
+resolution_date: 01/01/2020
+
+Response:
+reasoning: The resolution date is in the past.
+valid: False
+
+title: Will Kanye West become the president of the United States by 2030?
+body: This question will resolve as Yes if it happens.
+resolution_date: 01/01/2020
+
+Response:
+reasoning: The resolution criteria is too vague.
+valid: False
+
+title: Will Kanye West become the president of the United States by 2030?
+body: This question will resolve as Yes if Kanye West is elected as the president of the United States before January 1, 2030.
+esolution_date: 01/01/2030
+
+Response:
+reasoning: The resolution date is consistent with the question.
+valid: True
+
+"""
+
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
 
+class QuestionValidation(BaseModel):
+    reasoning: str
+    valid: bool
 
 async def get_criteria_and_date(question: str):
     prompt = resolution_criteria_date_prompt.format(question=question,response_model=BodyAndDate)  # Assuming definition elsewhere
     return await answer(prompt, response_model=BodyAndDate)  
 
-async def from_string(question: str, data_source: str, question_type: Optional[str] = None, url: Optional[str] = None, metadata: Optional[dict] = None, body: Optional[str] = None, date = None) -> ForecastingQuestion:
+async def from_string(question: str, data_source: str, question_type: Optional[str] = None, url: Optional[str] = None, metadata: Optional[dict] = None, body: Optional[str] = None, date: str = None) -> ForecastingQuestion:
     if not question_type:
         question_type = "binary"
+    
+    try:
+        date = datetime.strptime(date, "%d/%m/%Y")
+    except ValueError:
+        date = None
+    
 
     for attempt in range(3):
         try:
@@ -103,3 +156,8 @@ async def from_string(question: str, data_source: str, question_type: Optional[s
             metadata=metadata,
             resolution=None,
         )
+
+async def validate_question(question: ForecastingQuestion):
+    current_date = datetime.now()
+    prompt = validate_forecasting_question_prompt.format(current_date=current_date)
+    return await answer(prompt, response_model=QuestionValidation)
