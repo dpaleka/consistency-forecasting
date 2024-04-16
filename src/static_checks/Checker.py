@@ -1,4 +1,3 @@
-import numpy as np
 import jsonlines
 from abc import ABC, abstractmethod
 from typing import Type, Any, Self
@@ -7,7 +6,7 @@ from common.datatypes import ForecastingQuestion, Prob
 from common.utils import write_jsonl_async_from_str
 from common.llm_utils import parallelized_call
 from forecasters import Forecaster
-from .MiniInstantiator import *
+from .MiniInstantiator import Neg, Or, And, Trivial, Conditional, Paraphrase, Consequence
 
 
 class Checker(ABC):
@@ -301,13 +300,13 @@ class CondChecker(Checker):
         P_and_Q: ForecastingQuestion
 
         @field_validator("P", "P_and_Q")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q_given_P")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): #noqa
             if value.question_type != "conditional_binary":
                 raise ValueError("Question type must be conditional binary")
             return value
@@ -508,13 +507,13 @@ class CondCondChecker(Checker):
         P_and_Q_and_R: ForecastingQuestion
 
         @field_validator("P", "P_and_Q_and_R")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
         
         @field_validator("Q_given_P", "R_given_P_and_Q")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "conditional_binary":
                 raise ValueError("Question type must be conditional binary")
             return value

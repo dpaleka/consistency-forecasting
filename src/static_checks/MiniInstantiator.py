@@ -1,14 +1,12 @@
 # Path: static_checks/Base.py
-import jsonlines
 from common.utils import shallow_dict
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import Type, Self, Any, Optional
+from typing import Type, Self, Any, Optional # noqa
 from pydantic import BaseModel, create_model, field_validator
-from common.utils import write_jsonl_async_from_str
-from common.llm_utils import answer, answer_sync, Example, parallelized_call
-from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob
-from forecasters import Forecaster
+from common.utils import write_jsonl_async_from_str # noqa
+from common.llm_utils import answer, answer_sync, Example, parallelized_call # noqa
+from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob # noqa
 
 class MiniInstantiator(ABC):
 
@@ -224,13 +222,13 @@ class And(MiniInstantiator):
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
@@ -322,13 +320,13 @@ class Or(MiniInstantiator):
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
@@ -467,13 +465,13 @@ class Conditional(MiniInstantiator):
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value):
+        def check_question_type(cls, value): # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
