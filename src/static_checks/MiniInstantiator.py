@@ -7,7 +7,7 @@ from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str # noqa
 from common.llm_utils import answer, answer_sync, Example, parallelized_call # noqa
 from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob # noqa
-from question_generators import question_formater # noqa
+from question_generators import question_formatter 
 
 class MiniInstantiator(ABC):
 
@@ -140,7 +140,7 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    validate_result = await question_formater.validate_question(fqs[k])
+                    validate_result = await question_formatter.validate_question(fqs[k])
                     valid[k] = validate_result.valid
                 if all([res is not None for res in fqs.values()]):
                     break
