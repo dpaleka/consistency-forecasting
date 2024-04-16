@@ -5,6 +5,9 @@ basic_forecaster = BasicForecaster()
 
 BASE_DATA_PATH = "src/data/"
 
+# model = gpt-3.5-turbo
+model = "gpt-4-turbo-2024-04-09"
+
 neg_checker = NegChecker(path=BASE_DATA_PATH + "NegChecker.jsonl")
 and_checker = AndChecker(path=BASE_DATA_PATH + "AndChecker.jsonl")
 or_checker = OrChecker(path=BASE_DATA_PATH + "OrChecker.jsonl")
@@ -16,14 +19,14 @@ para_checker = ParaphraseChecker(path=BASE_DATA_PATH + "ParaphraseChecker.jsonl"
 symmand_checker = SymmetryAndChecker(path=BASE_DATA_PATH + "SymmetryAndChecker.jsonl")
 symmor_checker = SymmetryOrChecker(path=BASE_DATA_PATH + "SymmetryOrChecker.jsonl")
 condcond_checker = CondCondChecker(path=BASE_DATA_PATH + "CondCondChecker.jsonl")
-# neg_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
-# and_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
-# or_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
-# andor_checker.test(basic_forecaster, model = "gpt-3.5-turbo")
-# but_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-# cond_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-# cons_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-# para_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-# symmand_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-# symmor_checker.test(basic_forecaster, model="gpt-3.5-turbo")
-condcond_checker.test(basic_forecaster, model="gpt-3.5-turbo")
+# neg_checker.test(basic_forecaster, model = model)
+# and_checker.test(basic_forecaster, model = model)
+# or_checker.test(basic_forecaster, model = model)
+# andor_checker.test(basic_forecaster, model = model)
+# but_checker.test(basic_forecaster, model=model)
+# cond_checker.test(basic_forecaster, model=model)
+# cons_checker.test(basic_forecaster, model=model)
+# para_checker.test(basic_forecaster, model=model)
+# symmand_checker.test(basic_forecaster, model=model)
+# symmor_checker.test(basic_forecaster, model=model)
+condcond_checker.test(basic_forecaster, model=model)
