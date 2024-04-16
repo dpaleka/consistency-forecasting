@@ -74,4 +74,4 @@ async def instantiate(path, length=10):
         base_questions_pqr[:length], model="gpt-3.5-turbo", overwrite=True
     )
 
-asyncio.run(instantiate(path="data/forecasting_questions.jsonl"))
+asyncio.run(instantiate(path="src/data/questions_cleaned_formated.jsonl"))
