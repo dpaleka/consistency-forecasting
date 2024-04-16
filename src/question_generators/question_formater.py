@@ -157,7 +157,7 @@ async def from_string(question: str, data_source: str, question_type: Optional[s
             resolution=None,
         )
 
-async def validate_question(question: ForecastingQuestion):
+async def validate_question(question: ForecastingQuestion) -> QuestionValidation:
     current_date = datetime.now()
     prompt = validate_forecasting_question_prompt.format(current_date=current_date)
     return await answer(prompt, response_model=QuestionValidation)

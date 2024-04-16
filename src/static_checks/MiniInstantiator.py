@@ -7,6 +7,7 @@ from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str # noqa
 from common.llm_utils import answer, answer_sync, Example, parallelized_call # noqa
 from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob # noqa
+from question_generators import question_formater # noqa
 
 class MiniInstantiator(ABC):
 
@@ -126,18 +127,36 @@ class MiniInstantiator(ABC):
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.OutputFormat":
-        title_body = await self.title_body(base_sentences, **kwargs)
-        return self.OutputFormat(
-            **{
-                k: v.cast_FQ(
-                    resolution_date=self.resolution_date(base_sentences),
-                    question_type=self.question_type(base_sentences),
-                    data_source=self.data_source(base_sentences),
-                    resolution=self.resolution(base_sentences)[k],
-                )
-                for k, v in shallow_dict(title_body).items()
-            }
-        )
+        validate_before = kwargs.get("validate_before", False)
+        n_validation = kwargs.get("n_validation", 2)
+        if validate_before:
+            for i in range(n_validation):
+                title_body = await self.title_body_sync(base_sentences, **kwargs)
+                sd = shallow_dict(title_body)
+                fqs = {k: None for k in sd.keys()}
+                for k, v in sd.items():
+                    fqs[k] = v.cast_FQ(
+                        resolution_date=self.resolution_date(base_sentences),
+                        question_type=self.question_type(base_sentences),
+                        data_source=self.data_source(base_sentences),
+                        resolution=self.resolution(base_sentences)[k],
+                    )
+                    if await question_formater.validate_question(fqs[k]).valid:
+                       return self.OutputFormat(**fqs)
+            return None
+        else:                            
+            title_body = await self.title_body(base_sentences, **kwargs)
+            return self.OutputFormat(
+                **{
+                    k: v.cast_FQ(
+                        resolution_date=self.resolution_date(base_sentences),
+                        question_type=self.question_type(base_sentences),
+                        data_source=self.data_source(base_sentences),
+                        resolution=self.resolution(base_sentences)[k],
+                    )
+                    for k, v in shallow_dict(title_body).items()
+                }
+            )
 
 
 class Trivial(MiniInstantiator):

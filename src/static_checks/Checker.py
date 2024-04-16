@@ -39,9 +39,10 @@ class Checker(ABC):
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ):
         result = await self.instantiate(base_sentences, **kwargs)
-        await write_jsonl_async_from_str(
-            self.path, [result.model_dump_json()], append=True
-        )
+        if result:
+            await write_jsonl_async_from_str(
+                self.path, [result.model_dump_json()], append=True
+            )
 
     async def instantiate_and_write_many(
         self, base_sentencess: list[dict[str, ForecastingQuestion]], overwrite=False, **kwargs
