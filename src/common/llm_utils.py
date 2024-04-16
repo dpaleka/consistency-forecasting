@@ -13,7 +13,8 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 from mistralai.models.chat_completion import ChatMessage
 from huggingface_hub import snapshot_download
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import transformers
 
 from .datatypes import PlainText
 
@@ -100,14 +101,14 @@ def get_togetherai_client() -> OpenAI:
 
 
 @singleton_constructor
-def get_huggingface_local_client(hf_repo) -> pipeline:
+def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
     hf_model_path = os.path.join(os.getenv("HF_MODELS_DIR"), hf_repo)
     if not os.path.exists(hf_model_path):
         snapshot_download(hf_repo, local_dir=hf_model_path)
 
     tokenizer = AutoTokenizer.from_pretrained(hf_model_path, legacy=False)
     model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_path)
-    pipeline = pipeline(
+    pipeline = transformers.pipeline(
         "text2text-generation", model=model, tokenizer=tokenizer, max_new_tokens=2048
     )
     return pipeline
