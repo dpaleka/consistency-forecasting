@@ -41,6 +41,37 @@ async def validate_and_format_question(question: dict, data_source: str) -> Opti
     return forecasting_question
 
 
+def read_json_or_jsonl(file_path: str):
+    if file_path.endswith('.json'):
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    elif file_path.endswith('.jsonl'):
+        with open(file_path, 'r') as file:
+            return [json.loads(line) for line in file]
+    else:
+        raise ValueError("Unsupported file format. Only '.json' and '.jsonl' files are supported.")
+
+async def validate_and_format_question(question: dict, data_source: str) -> Optional[ForecastingQuestion]:
+    for i in range(2):
+        forecasting_question = await question_formatter.from_string(
+            question['title'],
+            data_source,
+            question_type=question.get('question_type'),
+            url=question.get('url',None),
+            metadata=question.get('metadata',None),
+            body=question.get('body', None),
+            date=question.get('resolution_date', None)
+        )
+        if await question_formatter.validate_question(forecasting_question):
+            break
+        else:
+            print(f"Invalid question: {question}")
+            forecasting_question = None
+            await asyncio.sleep(1)
+
+    return forecasting_question
+
+
 async def process_questions_from_file(file_path: str, data_source: str, max_questions: Optional[int]) -> List[ForecastingQuestion]:
     
     questions = read_json_or_jsonl(file_path)
