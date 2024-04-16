@@ -125,15 +125,14 @@ class MiniInstantiator(ABC):
         )
 
     async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+        self, base_sentences: dict[str, ForecastingQuestion], validate_before = False, n_validation= 3, **kwargs
     ) -> "Self.OutputFormat":
-        validate_before = kwargs.get("validate_before", False)
-        n_validation = kwargs.get("n_validation", 2)
         if validate_before:
             for i in range(n_validation):
-                title_body = await self.title_body_sync(base_sentences, **kwargs)
+                title_body = await self.title_body(base_sentences, **kwargs)
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
+                valid = {k: False for k in sd.keys()}
                 for k, v in sd.items():
                     fqs[k] = v.cast_FQ(
                         resolution_date=self.resolution_date(base_sentences),
@@ -141,9 +140,11 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    if await question_formater.validate_question(fqs[k]).valid:
-                       return self.OutputFormat(**fqs)
-            return None
+                    validate_result = await question_formater.validate_question(fqs[k])
+                    valid[k] = validate_result.valid
+                if all([res is not None for res in fqs.values()]):
+                    break
+            return self.OutputFormat(**fqs)
         else:                            
             title_body = await self.title_body(base_sentences, **kwargs)
             return self.OutputFormat(
