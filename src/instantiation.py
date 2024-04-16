@@ -7,6 +7,7 @@ from dateutil import parser
 from static_checks.MiniInstantiator import *
 from static_checks.Checker import *
 from common.datatypes import *
+import random
 
 neg_checker = NegChecker()
 and_checker = AndChecker()
@@ -36,6 +37,9 @@ def load_data(file):
     base_questions_p = [{"P": P} for P in bqs]
     base_questions_pq = [{"P": P, "Q": Q} for P, Q in it.combinations(bqs, 2)]
     base_questions_pqr = [{"P": P, "Q": Q, "R": R} for P, Q, R in it.combinations(bqs, 3)]
+    random.shuffle(base_questions_p)
+    random.shuffle(base_questions_pq)
+    random.shuffle(base_questions_pqr)
     return base_questions_p, base_questions_pq, base_questions_pqr
 
 async def instantiate(path, length=10):
