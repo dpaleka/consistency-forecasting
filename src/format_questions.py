@@ -3,7 +3,7 @@ import json
 from typing import List, Optional
 from dataclasses import asdict
 from common.datatypes import ForecastingQuestion
-from question_generators import question_formater
+from question_generators import question_formatter
 from common.utils import write_jsonl_async
 
 
@@ -19,7 +19,7 @@ def read_json_or_jsonl(file_path: str):
 
 async def validate_and_format_question(question: dict, data_source: str) -> Optional[ForecastingQuestion]:
     for i in range(2):
-        forecasting_question = await question_formater.from_string(
+        forecasting_question = await question_formatter.from_string(
             question['title'],
             data_source,
             question_type=question.get('question_type'),
@@ -28,7 +28,7 @@ async def validate_and_format_question(question: dict, data_source: str) -> Opti
             body=question.get('body', None),
             date=question.get('resolution_date', None)
         )
-        if await question_formater.validate_question(forecasting_question):
+        if await question_formatter.validate_question(forecasting_question):
             break
         else:
             print(f"Invalid question: {question}")
@@ -67,7 +67,7 @@ async def main():
         data["id"] = str(data["id"])
         data["resolution_date"] = str(data["resolution_date"])
 
-    await write_jsonl_async('data/questions_cleaned_formated.jsonl', data_to_write, append=False)
+    await write_jsonl_async('data/questions_cleaned_formatted.jsonl', data_to_write, append=False)
 
 
 if __name__ == "__main__":
