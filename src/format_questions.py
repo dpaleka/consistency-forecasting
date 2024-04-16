@@ -20,6 +20,7 @@ def read_json_or_jsonl(file_path: str):
 
 async def validate_and_format_question(question: dict, data_source: str) -> Optional[ForecastingQuestion]:
     for i in range(2):
+        print(f"{question}\n")
         forecasting_question = await question_formatter.from_string(
             question['title'],
             data_source,
@@ -30,6 +31,7 @@ async def validate_and_format_question(question: dict, data_source: str) -> Opti
             date=question.get('resolution_date', None)
         )
         if await question_formatter.validate_question(forecasting_question):
+            print("Validated")
             break
         else:
             print(f"Invalid question: {question}")
