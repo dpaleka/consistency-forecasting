@@ -3,12 +3,14 @@
 ## Installation requirements
 ```
 pip install -r requirements.txt
-pip install -r src/common/requirements.txt
 pre-commit install
 ```
 
 ## Docs
 [doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
+
+## Apr 16 writeup
+[writeup doc](https://docs.google.com/document/d/1849L5P9JNZEjBp4s4TsivJOG2iS98Ru6conx9jE0wPE/edit)
 
 ## Utils
 We have some [LLM call utils](/src/common/README.md). (Please read that file!)
