@@ -102,7 +102,7 @@ async def main(file_path: str, data_source: str, max_questions: int):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("--file_path", "-f", type=str, default="../scripts/QUESTIONS_CLEANED_MODIFIED.jsonl", help="Path to the input file")
+    parser.add_argument("--file_path", "-f", type=str, default="../scripts/pipeline/QUESTIONS_CLEANED_MODIFIED.jsonl", help="Path to the input file")
     parser.add_argument("--data_source", "-d", type=str, default="synthetic", help="Data source for the questions")
     parser.add_argument("--max_questions", "-m", type=int, default=30, help="Maximum number of questions to process")
 
