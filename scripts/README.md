@@ -21,7 +21,12 @@ QUESTIONS_CLEANED_MODIFIED.json: Final json that contains the body and resolutio
 QUESTIONS_CLEANED_MODIFIED.jsonl: intermediate jsonl file from reshape_metaculus.py 
 questions_cleaned_formatted.jsonl:  A copy is also is located in data/questions_cleaned_formatted.jsonl, which is the final correctly formatted for instantiation file.
 
-## Things most likely safe to ignore
+## Extra Questions
 master_questions_list:  Has preliminary scraped questions from predictit, metaculus, and manifold
+master_question_raw.json:  the whole list
+master_questions_.json:  after I manually spot-checked and added ones that make sense
+
+## Things most likely safe to ignore
+
 testing_prob_not_useful:  scripts used to get selenium working
 not_useful:  code not being used
