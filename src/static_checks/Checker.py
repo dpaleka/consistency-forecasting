@@ -128,13 +128,14 @@ class Checker(ABC):
             min_arbitrage,
             arbitrageur_answers_list_initial,
             bounds=bounds,
-            options={"disp": True},
+            #options={"disp": True},
+            #tol=1e-6,
         )
 
         arbitrage_argmax = dict(zip(x, result.x))
         arbitrage_max = -result.fun
 
-        return arbitrage_max, arbitrage_argmax
+        return arbitrage_argmax, arbitrage_max
 
     def violation_numerical(
         self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log

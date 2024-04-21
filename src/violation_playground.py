@@ -5,7 +5,7 @@ from static_checks.Checker import Checker, NegChecker#, AndChecker, OrChecker, A
 
 neg_checker = NegChecker()
 
-v=neg_checker.violation({
+v=neg_checker.max_min_arbitrage({
     "P": 0.5,
     "not_P": 0.3
 })
