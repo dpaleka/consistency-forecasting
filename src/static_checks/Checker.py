@@ -122,14 +122,14 @@ class Checker(ABC):
         arbitrageur_answers_list_initial = [0.5] * len(x)
 
         # bounds
-        bounds = [(0.001, 0.999)] * len(x) # avoid log(0)
+        bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
         result = minimize(
             min_arbitrage,
             arbitrageur_answers_list_initial,
             bounds=bounds,
-            #options={"disp": True},
-            #tol=1e-6,
+            # options={"disp": True},
+            # tol=1e-6,
         )
 
         arbitrage_argmax = dict(zip(x, result.x))
@@ -258,10 +258,17 @@ class AndChecker(Checker):
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(
-            max(answers["P"] + answers["Q"] - 1, 0) - answers["P_and_Q"],
-            answers["P_and_Q"] - min(answers["P"], answers["Q"]),
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(
+    #         max(answers["P"] + answers["Q"] - 1, 0) - answers["P_and_Q"],
+    #         answers["P_and_Q"] - min(answers["P"], answers["Q"]),
+    #     )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and max(answers["P"] + answers["Q"] - 1, 0) <= answers["P_and_Q"]
+            and answers["P_and_Q"] <= min(answers["P"], answers["Q"])
         )
 
 
@@ -297,10 +304,17 @@ class OrChecker(Checker):
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(
-            max(answers["P"], answers["Q"]) - answers["P_or_Q"],
-            answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(
+    #         max(answers["P"], answers["Q"]) - answers["P_or_Q"],
+    #         answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
+    #     )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and max(answers["P"], answers["Q"]) <= answers["P_or_Q"]
+            and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"])
         )
 
 
@@ -343,8 +357,14 @@ class AndOrChecker(Checker):
             P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["Q"] == answers["P_and_Q"] + answers["P_or_Q"]
+        )
 
 
 class ButChecker(Checker):
@@ -389,8 +409,14 @@ class ButChecker(Checker):
             P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["Q_and_not_P"] == answers["P_or_Q"]
+        )
 
 
 class CondChecker(Checker):
@@ -435,8 +461,18 @@ class CondChecker(Checker):
             P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            answers["P"] is not None
+            and answers["P_and_Q"] is not None
+            and (
+                answers["Q_given_P"] is None
+                or answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+            )
+        )
 
 
 class ConsequenceChecker(Checker):
