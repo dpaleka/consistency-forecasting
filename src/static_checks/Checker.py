@@ -1,12 +1,23 @@
 import jsonlines
+import numpy as np
+from scipy.optimize import minimize
+from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any
+from typing import Type, Any, Self, Callable
 from pydantic import BaseModel, field_validator
 from common.datatypes import ForecastingQuestion, Prob
 from common.utils import write_jsonl_async_from_str
 from common.llm_utils import parallelized_call
 from forecasters import Forecaster
-from .MiniInstantiator import Neg, Or, And, Trivial, Conditional, Paraphrase, Consequence
+from .MiniInstantiator import (
+    Neg,
+    Or,
+    And,
+    Trivial,
+    Conditional,
+    Paraphrase,
+    Consequence,
+)
 
 
 class Checker(ABC):
@@ -45,7 +56,10 @@ class Checker(ABC):
             )
 
     async def instantiate_and_write_many(
-        self, base_sentencess: list[dict[str, ForecastingQuestion]], overwrite=False, **kwargs
+        self,
+        base_sentencess: list[dict[str, ForecastingQuestion]],
+        overwrite=False,
+        **kwargs,
     ):
         if overwrite:
             with open(self.path, "w") as f:
@@ -56,8 +70,80 @@ class Checker(ABC):
         await parallelized_call(_instantiate_and_write, base_sentencess)
 
     @abstractmethod
-    def violation(self, answers: dict[str, Prob]) -> float:
+    def check_exact(self, answers: dict[str, Any]) -> bool:
         pass
+
+    def arbitrage(
+        self,
+        outcome: dict[str, bool | None],
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        score = 0.0
+        for question, answer in answers.items():
+            if outcome[question] is None:
+                continue
+            elif outcome[question] == True:
+                score += scoring(arbitrageur_answers[question]) - scoring(answer)
+            elif outcome[question] == False:
+                score += scoring(1 - arbitrageur_answers[question]) - scoring(
+                    1 - answer
+                )
+        return score
+
+    def max_min_arbitrage(
+        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log
+    ) -> float:
+        x = answers.keys()
+        v = [True, False, None]
+        outcomes = product(v, repeat=len(x))
+
+        Omega = []
+        for outcome in outcomes:
+            outcome_dict = dict(zip(x, outcome))
+            if self.check_exact(outcome_dict):
+                Omega.append(outcome_dict)
+
+        # actually this is -min_arbitrage because scipy minimize
+        min_arbitrage = lambda arbitrageur_answers_list: -np.amin(
+            [
+                self.arbitrage(
+                    outcome=outcom,
+                    answers=answers,
+                    arbitrageur_answers=dict(zip(x, arbitrageur_answers_list)),
+                    scoring=scoring,
+                )
+                for outcom in Omega
+            ]
+        )
+
+        # initial guess
+        arbitrageur_answers_list_initial = [0.5] * len(x)
+
+        # bounds
+        bounds = [(0.001, 0.999)] * len(x) # avoid log(0)
+
+        result = minimize(
+            min_arbitrage,
+            arbitrageur_answers_list_initial,
+            bounds=bounds,
+            options={"disp": True},
+        )
+
+        arbitrage_argmax = dict(zip(x, result.x))
+        arbitrage_max = -result.fun
+
+        return arbitrage_max, arbitrage_argmax
+
+    def violation_numerical(
+        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log
+    ) -> float:
+        return self.max_min_arbitrage(answers, scoring)[1]
+
+    def violation(self, answers: dict[str, Any]) -> float:
+        """Can be re-defined in subclass to use an exact calculation."""
+        return self.violation_numerical(answers)
 
     def check(self, answers: dict[str, Any]) -> bool:
         return self.violation(answers) < self.tolerance
@@ -89,7 +175,14 @@ class Checker(ABC):
             print(f"Violation: {loss}")
             print(f"Check result: {res}")
             print("")
-            results.append({"line": line, "violation": loss, "check": res_bool, "check_result": res})
+            results.append(
+                {
+                    "line": line,
+                    "violation": loss,
+                    "check": res_bool,
+                    "check_result": res,
+                }
+            )
         return results
 
 
@@ -122,8 +215,14 @@ class NegChecker(Checker):
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["not_P"] - 1)
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["not_P"] - 1)
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["not_P"] == 1
+        )
 
 
 class AndChecker(Checker):
@@ -304,13 +403,13 @@ class CondChecker(Checker):
         P_and_Q: ForecastingQuestion
 
         @field_validator("P", "P_and_Q")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q_given_P")
-        def check_question_type(cls, value): #noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "conditional_binary":
                 raise ValueError("Question type must be conditional binary")
             return value
@@ -511,13 +610,13 @@ class CondCondChecker(Checker):
         P_and_Q_and_R: ForecastingQuestion
 
         @field_validator("P", "P_and_Q_and_R")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
-        
+
         @field_validator("Q_given_P", "R_given_P_and_Q")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "conditional_binary":
                 raise ValueError("Question type must be conditional binary")
             return value
