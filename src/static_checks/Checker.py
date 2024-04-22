@@ -123,6 +123,8 @@ class Checker(ABC):
 
         # initial guess
         arbitrageur_answers_list_initial = [0.5] * len(x)
+        # alternatively, we could use the answers as initial guess
+        # arbitrageur_answers_list_initial = [answers[question] for question in x]
 
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
