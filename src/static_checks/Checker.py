@@ -71,6 +71,9 @@ class Checker(ABC):
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
+        """Suffices to define this for answers: dict[str, bool], because
+        it is only used to check if a given tuple of resolutions is a
+        possible world."""
         pass
 
     def arbitrage(
@@ -466,12 +469,12 @@ class CondChecker(Checker):
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
-            answers["P"] is not None
-            and answers["P_and_Q"] is not None
-            and (
-                answers["Q_given_P"] is None
-                or answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
-            )
+            all([a is not None for a in answers.values()])
+            and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+        ) or (
+            answers["P"] == False
+            and answers["Q_given_P"] is None
+            and answers["P_and_Q"] == False
         )
 
 
