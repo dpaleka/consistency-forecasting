@@ -468,14 +468,19 @@ class CondChecker(Checker):
     #     return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
-        return (
-            all([a is not None for a in answers.values()])
-            and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
-        ) or (
-            answers["P"] == False
-            and answers["Q_given_P"] is None
-            and answers["P_and_Q"] == False
-        )
+        return answers in [
+            {"P" : True, "Q_given_P" : True, "P_and_Q" : True},
+            {"P" : True, "Q_given_P" : False, "P_and_Q" : False},
+            {"P" : False, "Q_given_P" : None, "P_and_Q" : False}
+        ]
+        # return (
+        #     all([a is not None for a in answers.values()])
+        #     and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+        # ) or (
+        #     answers["P"] == False
+        #     and answers["Q_given_P"] is None
+        #     and answers["P_and_Q"] == False
+        # )
 
 
 class ConsequenceChecker(Checker):
