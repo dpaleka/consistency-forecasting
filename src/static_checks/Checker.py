@@ -469,9 +469,9 @@ class CondChecker(Checker):
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return answers in [
-            {"P" : True, "Q_given_P" : True, "P_and_Q" : True},
-            {"P" : True, "Q_given_P" : False, "P_and_Q" : False},
-            {"P" : False, "Q_given_P" : None, "P_and_Q" : False}
+            {"P": True, "Q_given_P": True, "P_and_Q": True},
+            {"P": True, "Q_given_P": False, "P_and_Q": False},
+            {"P": False, "Q_given_P": None, "P_and_Q": False},
         ]
         # return (
         #     all([a is not None for a in answers.values()])
@@ -512,8 +512,14 @@ class ConsequenceChecker(Checker):
         cons_P = await Consequence().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(0.0, answers["P"] - answers["cons_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(0.0, answers["P"] - answers["cons_P"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] <= answers["cons_P"]
+        )
 
 
 class ParaphraseChecker(Checker):
