@@ -13,7 +13,7 @@ cond_checker = CondChecker()
 v=cond_checker.max_min_arbitrage({
     "P": 0.5,
     "Q_given_P" : 0.3,
-    "P_and_Q" : 0.35
+    "P_and_Q" : 0.9
 })
 
 print(v)
