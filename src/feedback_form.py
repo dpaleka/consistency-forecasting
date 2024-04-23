@@ -17,16 +17,35 @@ def load_data(filename):
     return data
 
 
-def get_feedback_filepath(source_filename):
+def get_feedback_filepath(
+    source_filename: str, feedback_abs_dir: str = "src/data/feedback"
+):
     source_path = Path(source_filename)
     parts = list(source_path.parts)
-    if 'data' in parts:
-        data_index = parts.index('data')
-        new_parts = parts[:data_index + 1] + ['feedback']
+    # It's a bit hacky to put all feedback in the same dir no matter what, hope there won't be name conflicts
+    if "data" in parts:
+        data_index = parts.index("data")
+        new_parts = parts[: data_index + 1] + ["feedback"]
     else:
-        new_parts = ['src', 'data', 'feedback']
-    new_path = Path(*new_parts) / source_path.name
+        new_parts = [feedback_abs_dir]
+
+    name = source_path.name.replace(".jsonl", "_feedback.jsonl")
+    new_path = Path(*new_parts) / name
     return str(new_path)
+
+
+def test_get_feedback_filepath():
+    assert (
+        get_feedback_filepath("data/fq/synthetic/politics_qs_2_formatted.jsonl")
+        == "data/feedback/politics_qs_2_formatted_feedback.jsonl"
+    )
+    assert (
+        get_feedback_filepath("src/data/fq/synthetic/politics_qs_2_formatted.jsonl")
+        == "src/data/feedback/politics_qs_2_formatted_feedback.jsonl"
+    )
+
+
+test_get_feedback_filepath()
 
 
 def write_feedback(entry_id, feedback_data, source_filename):
@@ -50,7 +69,7 @@ def write_feedback(entry_id, feedback_data, source_filename):
 
 
 def has_previous_feedback(entry_id, source_filename):
-    feedback_path = get_feedback_filepath(source_filename) 
+    feedback_path = get_feedback_filepath(source_filename)
     try:
         with open(feedback_path, "r") as file:
             existing_feedback = json.load(file)
