@@ -1,0 +1,35 @@
+[
+    {
+        "feedback_id": "3280bf23-6b2e-4ae8-9026-784f9b2db3d1",
+        "question_id": "0be305d7-a333-4146-8a3a-1b294e8d6d6d",
+        "Ambiguities": "",
+        "Resolution Criteria": "Drop the electoral college sentence and just say \"elected and inaugurated\" in the first sentence.",
+        "Edge Cases": "Good, maybe even a bit too verbose",
+        "Relevance of included information": "",
+        "Time Frame": "",
+        "Improved Question wording": "This question will resolve as Yes if, between January 20, 2025, and January 20, 2031, a woman is elected and inaugurated as the President of the United States.  The individual must identify as a woman and be recognized as such by authoritative media sources. In the event of a dispute over the election results, the question will resolve based on the final decision by the relevant legal authority, such as the Supreme Court of the United States, if applicable. If a woman assumes the presidency through succession, impeachment, or any other means other than being elected and inaugurated for a new term within the specified timeframe, this will not satisfy the resolution criteria.\n\nIn the case that the inauguration date is officially changed, the resolution timeframe will be adjusted accordingly. If no woman is inaugurated as President during the specified timeframe, the question will resolve as No.",
+        "Other feedback": ""
+    },
+    {
+        "feedback_id": "948bb582-44b6-41ff-9327-0af94a2ddfb4",
+        "question_id": "0be305d7-a333-4146-8a3a-1b294e8d6d6d",
+        "Ambiguities": "Test; do not consider this feedback",
+        "Resolution Criteria": "",
+        "Edge Cases": "",
+        "Relevance of included information": "",
+        "Time Frame": "",
+        "Improved Question wording": "",
+        "Other feedback": ""
+    },
+    {
+        "feedback_id": "0630711b-5f85-4cbe-9992-49202b908142",
+        "question_id": "0be305d7-a333-4146-8a3a-1b294e8d6d6d",
+        "Ambiguities": "",
+        "Resolution Criteria": "",
+        "Edge Cases": "",
+        "Relevance of included information": "TEST",
+        "Time Frame": "",
+        "Improved Question wording": "",
+        "Other feedback": ""
+    }
+]
