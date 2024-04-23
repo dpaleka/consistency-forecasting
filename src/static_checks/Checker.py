@@ -1,6 +1,7 @@
 import jsonlines
 import numpy as np
-from scipy.optimize import minimize
+from numpy.random import random
+from scipy.optimize import minimize, basinhopping, differential_evolution, dual_annealing, shgo, brute
 from itertools import product
 from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
@@ -83,6 +84,9 @@ class Checker(ABC):
         arbitrageur_answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
     ) -> float:
+        """Arbitrage earned given a particular outcome, forcaster answers and
+        arbitrageur_answers.
+        """
         score = 0.0
         for question, answer in answers.items():
             if outcome[question] is None:
@@ -95,9 +99,14 @@ class Checker(ABC):
                 )
         return score
 
-    def max_min_arbitrage(
-        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log
+    def min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
     ) -> float:
+        """Minimum arbitrage earned regardless of outcome, given forcaster answers
+        and arbitrageur_answers."""
         x = answers.keys()
         v = [True, False, None]
         outcomes = product(v, repeat=len(x))
@@ -108,34 +117,94 @@ class Checker(ABC):
             if self.check_exact(outcome_dict):
                 Omega.append(outcome_dict)
 
-        # actually this is -min_arbitrage because scipy minimize
-        min_arbitrage = lambda arbitrageur_answers_list: -np.amin(
+        return np.amin(
             [
                 self.arbitrage(
                     outcome=outcom,
                     answers=answers,
-                    arbitrageur_answers=dict(zip(x, arbitrageur_answers_list)),
+                    arbitrageur_answers=arbitrageur_answers,
                     scoring=scoring,
                 )
                 for outcom in Omega
             ]
         )
 
+    def max_min_arbitrage(
+        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log, initial_guess = None, method='L-BFGS-B'
+    ) -> float:
+        """Finding the best arbitrageur_answers to maximize the guaranteed minimum
+        arbitrage earned for some given forecaster answers."""
+
+        x = answers.keys()
+
+        fun_to_minimize = lambda arbitrageur_answers_list: -self.min_arbitrage(
+            answers, dict(zip(x, arbitrageur_answers_list)), scoring
+        )
+
+        if initial_guess is None:
+            arbitrageur_answers_list_initial = [0.5] * len(x)
+        else:
+            arbitrageur_answers_list_initial = initial_guess
+        
         # initial guess
-        arbitrageur_answers_list_initial = [0.5] * len(x)
-        # alternatively, we could use the answers as initial guess
+        # arbitrageur_answers_list_initial = [0.5] * len(x)
+        # arbitrageur_answers_list_initial = [0.5,0.4] # for testing
         # arbitrageur_answers_list_initial = [answers[question] for question in x]
+        # arbitrageur_answers_list_initial = [answers[question] + 0.1*random() for question in x]
 
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
-        result = minimize(
-            min_arbitrage,
-            arbitrageur_answers_list_initial,
-            bounds=bounds,
-            # options={"disp": True},
-            # tol=1e-6,
-        )
+        if method == 'differential_evolution':
+            result = differential_evolution(
+                fun_to_minimize,
+                bounds=bounds,
+                # options={"disp": True},
+                # method=method,
+                # tol=1e-6,
+            )
+        elif method == 'brute':
+            result = brute(
+                fun_to_minimize,
+                ranges=bounds,
+                # options={"disp": True},
+                # method=method,
+                # tol=1e-6,
+            )
+        elif method == 'shgo':
+            result = shgo(
+                fun_to_minimize,
+                bounds=bounds,
+                # options={"disp": True},
+                # method=method,
+                # tol=1e-6,
+            )
+        elif method == 'dual_annealing':
+            result = dual_annealing(
+                fun_to_minimize,
+                bounds=bounds,
+                # options={"disp": True},
+                # method=method,
+                # tol=1e-6,
+            )
+        elif method == 'basinhopping':
+            result = basinhopping(
+                fun_to_minimize,
+                arbitrageur_answers_list_initial,
+                minimizer_kwargs={"bounds": bounds},
+                # options={"disp": True},
+                # method=method,
+                # tol=1e-6,
+            )
+        else:
+            result = minimize(
+                fun_to_minimize,
+                arbitrageur_answers_list_initial,
+                bounds=bounds,
+                options={"disp": True},
+                method=method,
+                # tol=1e-6,
+            )
 
         arbitrage_argmax = dict(zip(x, result.x))
         arbitrage_max = -result.fun
