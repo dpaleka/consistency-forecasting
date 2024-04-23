@@ -30,7 +30,7 @@ from .MiniInstantiator import (
 
 class Checker(ABC):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         self.tolerance = tolerance
         if path is None:
             self.path = f"src/data/{self.__class__.__name__}.jsonl"
@@ -270,7 +270,7 @@ class Checker(ABC):
 
 class NegChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -309,7 +309,7 @@ class NegChecker(Checker):
 
 class AndChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -355,7 +355,7 @@ class AndChecker(Checker):
 
 class OrChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -401,7 +401,7 @@ class OrChecker(Checker):
 
 class AndOrChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -450,7 +450,7 @@ class AndOrChecker(Checker):
 
 class ButChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -502,7 +502,7 @@ class ButChecker(Checker):
 
 class CondChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -563,7 +563,7 @@ class CondChecker(Checker):
 
 class ConsequenceChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -602,7 +602,7 @@ class ConsequenceChecker(Checker):
 
 class ParaphraseChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -641,7 +641,7 @@ class ParaphraseChecker(Checker):
 
 class SymmetryAndChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -694,7 +694,7 @@ class SymmetryAndChecker(Checker):
 
 class SymmetryOrChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
@@ -747,7 +747,7 @@ class SymmetryOrChecker(Checker):
 
 class CondCondChecker(Checker):
 
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         super().__init__(tolerance, path)
 
     class TupleFormat(BaseModel):
