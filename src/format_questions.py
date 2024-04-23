@@ -97,7 +97,9 @@ async def main(file_path: str, data_source: str, max_questions: int):
         data["id"] = str(data["id"])
         data["resolution_date"] = str(data["resolution_date"])
 
-    await write_jsonl_async('data/questions_cleaned_formatted.jsonl', data_to_write, append=False)
+    directory = 'data/fq/synthetic' if data_source == 'synthetic' else 'data/fq/real'
+
+    await write_jsonl_async(f'{directory}/questions_cleaned_formatted.jsonl', data_to_write, append=False)
     await write_jsonl_async('../scripts/pipeline/questions_cleaned_formatted.jsonl', data_to_write, append=False)
 
 
