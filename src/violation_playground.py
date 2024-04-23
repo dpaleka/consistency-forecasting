@@ -84,7 +84,7 @@ cc_checker = CondCondChecker()
 cc_arb = cc_checker.max_min_arbitrage(
     answers={"P": 0.5, "Q_given_P": 0.4, "R_given_P_and_Q": 0.3, "P_and_Q_and_R": 0.2},
     initial_guess=[0.5, 0.4, 0.3, 0.2],
-    method="differential_evolution",
+    method="shgo",
 )
 
 
