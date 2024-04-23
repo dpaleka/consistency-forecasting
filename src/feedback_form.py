@@ -17,13 +17,20 @@ def load_data(filename):
     return data
 
 
-def get_feedback_filename(source_filename):
-    return f"{Path(source_filename).stem}_feedback.json"
+def get_feedback_filepath(source_filename):
+    source_path = Path(source_filename)
+    parts = list(source_path.parts)
+    if 'data' in parts:
+        data_index = parts.index('data')
+        new_parts = parts[:data_index + 1] + ['feedback']
+    else:
+        new_parts = ['src', 'data', 'feedback']
+    new_path = Path(*new_parts) / source_path.name
+    return str(new_path)
 
 
 def write_feedback(entry_id, feedback_data, source_filename):
-    feedback_filename = get_feedback_filename(source_filename)
-    feedback_path = Path(source_filename).parent / feedback_filename
+    feedback_path = get_feedback_filepath(source_filename)
 
     try:
         with open(feedback_path, "r") as file:
@@ -43,9 +50,7 @@ def write_feedback(entry_id, feedback_data, source_filename):
 
 
 def has_previous_feedback(entry_id, source_filename):
-    feedback_filename = get_feedback_filename(source_filename)
-    feedback_path = Path(source_filename).parent / feedback_filename
-
+    feedback_path = get_feedback_filepath(source_filename) 
     try:
         with open(feedback_path, "r") as file:
             existing_feedback = json.load(file)
@@ -60,8 +65,7 @@ def has_previous_feedback(entry_id, source_filename):
 
 
 def get_previous_feedback(entry_id, source_filename):
-    feedback_filename = get_feedback_filename(source_filename)
-    feedback_path = Path(source_filename).parent / feedback_filename
+    feedback_path = get_feedback_filepath(source_filename)
 
     try:
         with open(feedback_path, "r") as file:
@@ -211,7 +215,7 @@ def main(filename):
         list_view(entries)
 
 
-DEFAULT_FILE = "data/politics_qs_1_formatted.jsonl"
+DEFAULT_FILE = "data/fq/synthetic/politics_qs_2_formatted.jsonl"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
