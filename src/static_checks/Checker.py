@@ -1,7 +1,14 @@
 import jsonlines
 import numpy as np
 from numpy.random import random
-from scipy.optimize import minimize, basinhopping, differential_evolution, dual_annealing, shgo, brute
+from scipy.optimize import (
+    minimize,
+    basinhopping,
+    differential_evolution,
+    dual_annealing,
+    shgo,
+    brute,
+)
 from itertools import product
 from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
@@ -130,7 +137,11 @@ class Checker(ABC):
         )
 
     def max_min_arbitrage(
-        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log, initial_guess = None, method='L-BFGS-B'
+        self,
+        answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+        initial_guess=None,
+        method="L-BFGS-B",
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers."""
@@ -143,19 +154,15 @@ class Checker(ABC):
 
         if initial_guess is None:
             arbitrageur_answers_list_initial = [0.5] * len(x)
+            # arbitrageur_answers_list_initial = [answers[question] for question in x]
+            # arbitrageur_answers_list_initial = [answers[question] + 0.1*random() for question in x]
         else:
             arbitrageur_answers_list_initial = initial_guess
-        
-        # initial guess
-        # arbitrageur_answers_list_initial = [0.5] * len(x)
-        # arbitrageur_answers_list_initial = [0.5,0.4] # for testing
-        # arbitrageur_answers_list_initial = [answers[question] for question in x]
-        # arbitrageur_answers_list_initial = [answers[question] + 0.1*random() for question in x]
 
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
-        if method == 'differential_evolution':
+        if method == "differential_evolution":
             result = differential_evolution(
                 fun_to_minimize,
                 bounds=bounds,
@@ -163,7 +170,7 @@ class Checker(ABC):
                 # method=method,
                 # tol=1e-6,
             )
-        elif method == 'brute':
+        elif method == "brute":
             result = brute(
                 fun_to_minimize,
                 ranges=bounds,
@@ -171,7 +178,7 @@ class Checker(ABC):
                 # method=method,
                 # tol=1e-6,
             )
-        elif method == 'shgo':
+        elif method == "shgo":
             result = shgo(
                 fun_to_minimize,
                 bounds=bounds,
@@ -179,7 +186,7 @@ class Checker(ABC):
                 # method=method,
                 # tol=1e-6,
             )
-        elif method == 'dual_annealing':
+        elif method == "dual_annealing":
             result = dual_annealing(
                 fun_to_minimize,
                 bounds=bounds,
@@ -187,7 +194,7 @@ class Checker(ABC):
                 # method=method,
                 # tol=1e-6,
             )
-        elif method == 'basinhopping':
+        elif method == "basinhopping":
             result = basinhopping(
                 fun_to_minimize,
                 arbitrageur_answers_list_initial,
@@ -622,8 +629,14 @@ class ParaphraseChecker(Checker):
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, para_P=para_P.para_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] - answers["para_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] - answers["para_P"])
+    
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] == answers["para_P"]
+        )
 
 
 class SymmetryAndChecker(Checker):
@@ -669,8 +682,14 @@ class SymmetryAndChecker(Checker):
             P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P_and_Q"] - answers["Q_and_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
+    
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P_and_Q"] == answers["Q_and_P"]
+        )
 
 
 class SymmetryOrChecker(Checker):
@@ -716,8 +735,14 @@ class SymmetryOrChecker(Checker):
             P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P_or_Q"] - answers["Q_or_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
+    
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P_or_Q"] == answers["Q_or_P"]
+        )
 
 
 class CondCondChecker(Checker):
@@ -805,8 +830,16 @@ class CondCondChecker(Checker):
             P_and_Q_and_R=P_and_Q_and_R,
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(
-            answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
-            - answers["P_and_Q_and_R"]
-        )
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(
+    #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
+    #         - answers["P_and_Q_and_R"]
+    #     )
+    
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return answers in [
+            {"P": True, "Q_given_P": True, "R_given_P_and_Q": True, "P_and_Q_and_R": True},
+            {"P": True, "Q_given_P": True, "R_given_P_and_Q": False, "P_and_Q_and_R": False},
+            {"P": True, "Q_given_P": False, "R_given_P_and_Q": None, "P_and_Q_and_R": False},
+            {"P": False, "Q_given_P": None, "R_given_P_and_Q": None, "P_and_Q_and_R": False}
+        ]
