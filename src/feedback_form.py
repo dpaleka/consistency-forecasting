@@ -217,5 +217,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f", "--filename", default=DEFAULT_FILE, help="Path to the file"
     )
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()  # Ignore unknown args
     main(args.filename)
+
+# Run with:
+# streamlit run feedback_form.py -- -f FILENAME.jsonl
