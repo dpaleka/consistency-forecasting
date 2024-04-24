@@ -1,6 +1,5 @@
 import jsonlines
 import numpy as np
-from numpy.random import random
 from scipy.optimize import (
     minimize,
     basinhopping,
@@ -38,7 +37,6 @@ from .MiniInstantiator import (
 
 
 class Checker(ABC):
-
     def __init__(self, tolerance=0.001, path=None):
         self.tolerance = tolerance
         if path is None:
@@ -93,7 +91,7 @@ class Checker(ABC):
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
+        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(  # noqa
             base_sentences, **kwargs
         )
         await parallelized_call(_instantiate_and_write, base_sentencess)
@@ -116,15 +114,13 @@ class Checker(ABC):
         arbitrageur_answers.
         """
         score = 0.0
-        for question, answer in answers.items():
-            if outcome[question] is None:
+        for qun, ans in answers.items():
+            if outcome[qun] is None:
                 continue
-            elif outcome[question] == True:
-                score += scoring(arbitrageur_answers[question]) - scoring(answer)
-            elif outcome[question] == False:
-                score += scoring(1 - arbitrageur_answers[question]) - scoring(
-                    1 - answer
-                )
+            elif outcome[qun] == True:  # noqa
+                score += scoring(arbitrageur_answers[qun]) - scoring(ans)
+            elif outcome[qun] == False:  # noqa
+                score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
         return score
 
     def min_arbitrage(
@@ -169,7 +165,7 @@ class Checker(ABC):
 
         x = answers.keys()
 
-        fun_to_minimize = lambda arbitrageur_answers_list: -self.min_arbitrage(
+        fun_to_minimize = lambda arbitrageur_answers_list: -self.min_arbitrage(  # noqa
             answers, dict(zip(x, arbitrageur_answers_list)), scoring
         )
 
@@ -187,49 +183,36 @@ class Checker(ABC):
             result = differential_evolution(
                 fun_to_minimize,
                 bounds=bounds,
-                # options={"disp": True},
-                # method=method,
-                # tol=1e-6,
+                disp=False,
             )
         elif method == "brute":
             result = brute(
                 fun_to_minimize,
                 ranges=bounds,
-                # options={"disp": True},
-                # method=method,
-                # tol=1e-6,
+                disp=False,
             )
         elif method == "shgo":
             result = shgo(
                 fun_to_minimize,
                 bounds=bounds,
-                # options={"disp": True},
-                # method=method,
-                # tol=1e-6,
             )
         elif method == "dual_annealing":
             result = dual_annealing(
                 fun_to_minimize,
                 bounds=bounds,
-                # options={"disp": True},
-                # method=method,
-                # tol=1e-6,
             )
         elif method == "basinhopping":
             result = basinhopping(
                 fun_to_minimize,
                 arbitrageur_answers_list_initial,
                 minimizer_kwargs={"bounds": bounds},
-                # options={"disp": True},
-                # method=method,
-                # tol=1e-6,
             )
         else:
             result = minimize(
                 fun_to_minimize,
                 arbitrageur_answers_list_initial,
                 bounds=bounds,
-                options={"disp": True},
+                # options={"disp": True},
                 method=method,
                 # tol=1e-6,
             )
@@ -239,14 +222,9 @@ class Checker(ABC):
 
         return arbitrage_argmax, arbitrage_max
 
-    def violation_numerical(
-        self, answers: dict[str, Prob], scoring: Callable[[Prob], float] = np.log
-    ) -> float:
-        return self.max_min_arbitrage(answers, scoring)[1]
-
     def violation(self, answers: dict[str, Any]) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
-        return self.violation_numerical(answers)
+        return self.max_min_arbitrage(answers)[1]
 
     def check(self, answers: dict[str, Any]) -> bool:
         return self.violation(answers) < self.tolerance
@@ -290,10 +268,6 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -345,10 +319,6 @@ class NegChecker(Checker):
 
 
 class AndChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -407,10 +377,6 @@ class AndChecker(Checker):
 
 
 class OrChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -469,10 +435,6 @@ class OrChecker(Checker):
 
 
 class AndOrChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -556,10 +518,6 @@ class AndOrChecker(Checker):
 
 
 class ButChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_and_not_P: ForecastingQuestion
@@ -575,7 +533,9 @@ class ButChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = but_validation_prompt.format(
-            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+            P=generated_tuple.P,
+            P_and_not_Q=generated_tuple.Q_and_not_P,
+            Q=generated_tuple.P_or_Q,
         )
         return answer_sync(prompt, response_model=ValidationResult)
 
@@ -583,7 +543,9 @@ class ButChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = but_validation_prompt.format(
-            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+            P=generated_tuple.P,
+            P_and_not_Q=generated_tuple.Q_and_not_P,
+            Q=generated_tuple.P_or_Q,
         )
         return await answer(prompt, response_model=ValidationResult)
 
@@ -624,10 +586,6 @@ class ButChecker(Checker):
 
 
 class CondChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -649,7 +607,9 @@ class CondChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = conditional_validation_prompt.format(
-            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+            P=generated_tuple.P,
+            Q_given_P=generated_tuple.Q_given_P,
+            P_and_Q=generated_tuple.P_and_Q,
         )
         return answer_sync(prompt, response_model=ValidationResult)
 
@@ -657,7 +617,9 @@ class CondChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = conditional_validation_prompt.format(
-            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+            P=generated_tuple.P,
+            Q_given_P=generated_tuple.Q_given_P,
+            P_and_Q=generated_tuple.P_and_Q,
         )
         return await answer(prompt, response_model=ValidationResult)
 
@@ -701,10 +663,6 @@ class CondChecker(Checker):
 
 
 class ConsequenceChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         cons_P: ForecastingQuestion
@@ -721,7 +679,7 @@ class ConsequenceChecker(Checker):
         prompt = consequence_validation_prompt.format(
             P=generated_tuple.P, cons_P=generated_tuple.cons_P
         )
-        return answer_sync(prompt, response_model=ValidationResult) 
+        return answer_sync(prompt, response_model=ValidationResult)
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
@@ -756,10 +714,6 @@ class ConsequenceChecker(Checker):
 
 
 class ParaphraseChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         para_P: ForecastingQuestion
@@ -802,7 +756,7 @@ class ParaphraseChecker(Checker):
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P"] - answers["para_P"])
-    
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
@@ -811,10 +765,6 @@ class ParaphraseChecker(Checker):
 
 
 class SymmetryAndChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -830,13 +780,13 @@ class SymmetryAndChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -867,7 +817,7 @@ class SymmetryAndChecker(Checker):
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
-    
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
@@ -876,10 +826,6 @@ class SymmetryAndChecker(Checker):
 
 
 class SymmetryOrChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -895,13 +841,13 @@ class SymmetryOrChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -932,7 +878,7 @@ class SymmetryOrChecker(Checker):
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
-    
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
@@ -941,10 +887,6 @@ class SymmetryOrChecker(Checker):
 
 
 class CondCondChecker(Checker):
-
-    def __init__(self, tolerance=0.001, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -966,13 +908,13 @@ class CondCondChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
-        pass 
+        # TODO(Alejadnro): Implement this
+        pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -1042,11 +984,31 @@ class CondCondChecker(Checker):
     #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
     #         - answers["P_and_Q_and_R"]
     #     )
-    
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return answers in [
-            {"P": True, "Q_given_P": True, "R_given_P_and_Q": True, "P_and_Q_and_R": True},
-            {"P": True, "Q_given_P": True, "R_given_P_and_Q": False, "P_and_Q_and_R": False},
-            {"P": True, "Q_given_P": False, "R_given_P_and_Q": None, "P_and_Q_and_R": False},
-            {"P": False, "Q_given_P": None, "R_given_P_and_Q": None, "P_and_Q_and_R": False}
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": True,
+                "P_and_Q_and_R": True,
+            },
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": False,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": True,
+                "Q_given_P": False,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": False,
+                "Q_given_P": None,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
         ]
