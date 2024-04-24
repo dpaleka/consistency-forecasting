@@ -34,22 +34,22 @@ cc_checker = CondCondChecker()
 # nc_arb = neg_checker.max_min_arbitrage(
 #     answers={"P": 0.5, "not_P": 0.3},
 #     initial_guess=[0.5, 0.3],
-#     method="basinhopping",
+#     method="shgo",
 # )
 # ac_arb = and_checker.max_min_arbitrage(
 #     answers={"P": 0.5, "Q": 0.3, "P_and_Q": 0.4},
 #     initial_guess=[0.1, 0.4, 0.02],
-#     method="basinhopping",
+#     method="shgo",
 # )
 # oc_arb = or_checker.max_min_arbitrage(
 #     answers={"P": 0.5, "Q": 0.3, "P_or_Q": 0.4},
 #     initial_guess=[0.1, 0.4, 0.02],
-#     method="basinhopping",
+#     method="shgo",
 # )
 # aoc_arb = and_or_checker.max_min_arbitrage(
 #     answers={"P": 0.5, "Q": 0.3, "P_and_Q": 0.4, "P_or_Q": 0.3},
 #     initial_guess=[0.1, 0.4, 0.4, 0.1],
-#     method="basinhopping",
+#     method="shgo",
 # )
 # bc_arb = but_checker.max_min_arbitrage(
 #     answers={"Q_and_not_P": 0.5, "P": 0.3, "P_or_Q": 0.4},
@@ -81,11 +81,11 @@ cc_checker = CondCondChecker()
 #     initial_guess=[0.1, 0.4],
 #     method="shgo",
 # )
-cc_arb = cc_checker.max_min_arbitrage(
-    answers={"P": 0.5, "Q_given_P": 0.4, "R_given_P_and_Q": 0.3, "P_and_Q_and_R": 0.2},
-    initial_guess=[0.5, 0.4, 0.3, 0.2],
-    method="shgo",
-)
+# cc_arb = cc_checker.max_min_arbitrage(
+#     answers={"P": 0.5, "Q_given_P": 0.4, "R_given_P_and_Q": 0.3, "P_and_Q_and_R": 0.2},
+#     initial_guess=[0.5, 0.4, 0.3, 0.2],
+#     method="shgo",
+# )
 
 
-print(cc_arb)
+# print(cc_arb)
