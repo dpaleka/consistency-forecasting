@@ -13,9 +13,18 @@ from itertools import product
 from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
 from pydantic import BaseModel, field_validator
-from common.datatypes import ForecastingQuestion, Prob
+from common.datatypes import ForecastingQuestion, Prob, ValidationResult
 from common.utils import write_jsonl_async_from_str
-from common.llm_utils import parallelized_call
+from common.llm_utils import parallelized_call, answer, answer_sync
+from .checker_prompts import (
+    neg_validation_prompt,
+    and_validation_prompt,
+    or_validation_prompt,
+    but_validation_prompt,
+    conditional_validation_prompt,
+    consequence_validation_prompt,
+    paraphrase_validation_prompt,
+)
 from forecasters import Forecaster
 from .MiniInstantiator import (
     Neg,
@@ -33,7 +42,7 @@ class Checker(ABC):
     def __init__(self, tolerance=0.001, path=None):
         self.tolerance = tolerance
         if path is None:
-            self.path = f"src/data/{self.__class__.__name__}.jsonl"
+            self.path = f"src/data/tuples/{self.__class__.__name__}.jsonl"
         else:
             self.path = path
 
@@ -52,6 +61,18 @@ class Checker(ABC):
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
+        pass
+
+    @abstractmethod
+    def validate_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        pass
+
+    @abstractmethod
+    async def validate(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
         pass
 
     async def instantiate_and_write(
@@ -283,6 +304,22 @@ class NegChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = neg_validation_prompt.format(
+            P=generated_tuple.P, not_P=generated_tuple.not_P
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = neg_validation_prompt.format(
+            P=generated_tuple.P, not_P=generated_tuple.not_P
+        )
+        return await answer(prompt, response_model=ValidationResult)
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -322,6 +359,22 @@ class AndChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = and_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = and_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+        )
+        return await answer(prompt, response_model=ValidationResult)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -368,6 +421,22 @@ class OrChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = or_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = or_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+        )
+        return await answer(prompt, response_model=ValidationResult)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -416,6 +485,44 @@ class AndOrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = or_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+        )
+        or_validation_result = answer_sync(prompt, response_model=ValidationResult)
+        prompt = and_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+        )
+        and_validation_result = answer_sync(prompt, response_model=ValidationResult)
+        return ValidationResult(
+            valid=and_validation_result.valid and or_validation_result,
+            reasoning="And reasoning:\n"
+            + and_validation_result.reasoning
+            + "\nOr reasoning:\n"
+            + or_validation_result.reasoning,
+        )
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = or_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+        )
+        or_validation_result = answer(prompt, response_model=ValidationResult)
+        prompt = and_validation_prompt.format(
+            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+        )
+        and_validation_result = answer(prompt, response_model=ValidationResult)
+        return ValidationResult(
+            valid=and_validation_result.valid and or_validation_result,
+            reasoning="And reasoning:\n"
+            + and_validation_result.reasoning
+            + "\nOr reasoning:\n"
+            + or_validation_result.reasoning,
+        )
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -463,6 +570,22 @@ class ButChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = but_validation_prompt.format(
+            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = but_validation_prompt.format(
+            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+        )
+        return await answer(prompt, response_model=ValidationResult)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -522,6 +645,22 @@ class CondChecker(Checker):
                 raise ValueError("Question type must be conditional binary")
             return value
 
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = conditional_validation_prompt.format(
+            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = conditional_validation_prompt.format(
+            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+        )
+        return await answer(prompt, response_model=ValidationResult)
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -576,6 +715,22 @@ class ConsequenceChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = consequence_validation_prompt.format(
+            P=generated_tuple.P, cons_P=generated_tuple.cons_P
+        )
+        return answer_sync(prompt, response_model=ValidationResult) 
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = consequence_validation_prompt.format(
+            P=generated_tuple.P, cons_P=generated_tuple.cons_P
+        )
+        return await answer(prompt, response_model=ValidationResult)
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -614,6 +769,22 @@ class ParaphraseChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = paraphrase_validation_prompt.format(
+            P=generated_tuple.P, para_P=generated_tuple.para_P
+        )
+        return answer_sync(prompt, response_model=ValidationResult)
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        prompt = paraphrase_validation_prompt.format(
+            P=generated_tuple.P, para_P=generated_tuple.para_P
+        )
+        return await answer(prompt, response_model=ValidationResult)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -655,6 +826,18 @@ class SymmetryAndChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -708,6 +891,18 @@ class SymmetryOrChecker(Checker):
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -767,6 +962,18 @@ class CondCondChecker(Checker):
             if value.question_type != "conditional_binary":
                 raise ValueError("Question type must be conditional binary")
             return value
+
+    def validate_sync(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass 
+
+    async def validate(
+        generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> ValidationResult:
+        #TODO(Alejadnro): Implement this
+        pass
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs

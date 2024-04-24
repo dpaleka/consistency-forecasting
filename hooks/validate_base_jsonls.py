@@ -3,9 +3,12 @@ import subprocess
 import sys
 
 # Define the script to run and the list of JSONL files to validate
-script = "src/validate_fq_jsonl.py"
+BASE_DIR = "src/"
+script = f"{BASE_DIR}/validate_fq_jsonl.py"
+REAL_DATA_DIR = f"{BASE_DIR}/data/fq/real"
+# TODO add all
 jsonl_files = [
-    "src/data/questions_cleaned_formated.jsonl",
+    f"{REAL_DATA_DIR}/questions_cleaned_formatted.jsonl",
 ]
 
 

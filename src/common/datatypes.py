@@ -152,3 +152,7 @@ def mk_TupleFormat_ans(
 
 ForecastingQuestionTuple = dict[str, ForecastingQuestion]
 ProbsTuple = dict[str, Prob]
+
+class ValidationResult(BaseModel):
+    reasoning: str
+    valid: bool
