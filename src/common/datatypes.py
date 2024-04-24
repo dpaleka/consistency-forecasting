@@ -46,7 +46,7 @@ class ForecastingQuestion_stripped(BaseModel):
                 the inputs
             data_source (Optional[str], optional): If produced by an LLM, will usually be
                 "synthetic_inst". Defaults to None.
-        
+
         Keyword Args:
             url (Optional[str]): You probably shouldn't add this.
             metadata (Optional[dict]): Metadata.
@@ -60,7 +60,7 @@ class ForecastingQuestion_stripped(BaseModel):
             data_source=data_source,
             **kwargs,
         )
-    
+
     def cast_stripped(self):
         return self
 
@@ -110,12 +110,15 @@ class ForecastingQuestion(BaseModel):
 
     def cast_stripped(self):
         return ForecastingQuestion_stripped(title=self.title, body=self.body)
-    
+
     def cast_FQ(self):
         return self
 
     def __str__(self):
         return self.cast_stripped().model_dump_json()
+
+    def to_dict(self):
+        return self.dict()
 
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
