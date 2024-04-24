@@ -2,6 +2,7 @@ exclude = [
   "*.ipynb",
   "*playground*",
   "README.md",
+  "old/",
 ]
 
 ignore = [
@@ -12,5 +13,7 @@ ignore = [
   # ambiguous variable name
   "E741",
   # local variable name is assigned to but never used
-  "F841",
+  "F841", 
+  # import star
+  "F403",
 ]
