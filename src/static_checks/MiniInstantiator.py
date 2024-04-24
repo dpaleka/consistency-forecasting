@@ -2,7 +2,7 @@
 from common.utils import shallow_dict
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import Type, Any, Optional # noqa
+from typing import Type, Any, Optional, Self # noqa
 from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str # noqa
 from common.llm_utils import answer, answer_sync, Example, parallelized_call # noqa

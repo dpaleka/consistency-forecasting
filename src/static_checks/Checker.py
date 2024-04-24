@@ -1,6 +1,16 @@
 import jsonlines
+import numpy as np
+from scipy.optimize import (
+    minimize,
+    basinhopping,
+    differential_evolution,
+    dual_annealing,
+    shgo,
+    brute,
+)
+from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any
+from typing import Type, Any, Self, Callable
 from pydantic import BaseModel, field_validator
 from common.datatypes import ForecastingQuestion, Prob, ValidationResult
 from common.utils import write_jsonl_async_from_str
@@ -27,7 +37,7 @@ from .MiniInstantiator import (
 
 
 class Checker(ABC):
-    def __init__(self, tolerance=0.1, path=None):
+    def __init__(self, tolerance=0.001, path=None):
         self.tolerance = tolerance
         if path is None:
             self.path = f"src/data/tuples/{self.__class__.__name__}.jsonl"
@@ -81,14 +91,140 @@ class Checker(ABC):
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(
+        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(  # noqa
             base_sentences, **kwargs
         )
         await parallelized_call(_instantiate_and_write, base_sentencess)
 
     @abstractmethod
-    def violation(self, answers: dict[str, Prob]) -> float:
+    def check_exact(self, answers: dict[str, Any]) -> bool:
+        """Suffices to define this for answers: dict[str, bool], because
+        it is only used to check if a given tuple of resolutions is a
+        possible world."""
         pass
+
+    def arbitrage(
+        self,
+        outcome: dict[str, bool | None],
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        """Arbitrage earned given a particular outcome, forcaster answers and
+        arbitrageur_answers.
+        """
+        score = 0.0
+        for qun, ans in answers.items():
+            if outcome[qun] is None:
+                continue
+            elif outcome[qun] == True:  # noqa
+                score += scoring(arbitrageur_answers[qun]) - scoring(ans)
+            elif outcome[qun] == False:  # noqa
+                score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
+        return score
+
+    def min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        """Minimum arbitrage earned regardless of outcome, given forcaster answers
+        and arbitrageur_answers."""
+        x = answers.keys()
+        v = [True, False, None]
+        outcomes = product(v, repeat=len(x))
+
+        Omega = []
+        for outcome in outcomes:
+            outcome_dict = dict(zip(x, outcome))
+            if self.check_exact(outcome_dict):
+                Omega.append(outcome_dict)
+
+        return np.amin(
+            [
+                self.arbitrage(
+                    outcome=outcom,
+                    answers=answers,
+                    arbitrageur_answers=arbitrageur_answers,
+                    scoring=scoring,
+                )
+                for outcom in Omega
+            ]
+        )
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+        initial_guess=None,
+        method="L-BFGS-B",
+    ) -> float:
+        """Finding the best arbitrageur_answers to maximize the guaranteed minimum
+        arbitrage earned for some given forecaster answers."""
+
+        x = answers.keys()
+
+        fun_to_minimize = lambda arbitrageur_answers_list: -self.min_arbitrage(  # noqa
+            answers, dict(zip(x, arbitrageur_answers_list)), scoring
+        )
+
+        if initial_guess is None:
+            arbitrageur_answers_list_initial = [0.5] * len(x)
+            # arbitrageur_answers_list_initial = [answers[question] for question in x]
+            # arbitrageur_answers_list_initial = [answers[question] + 0.1*random() for question in x]
+        else:
+            arbitrageur_answers_list_initial = initial_guess
+
+        # bounds
+        bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
+
+        if method == "differential_evolution":
+            result = differential_evolution(
+                fun_to_minimize,
+                bounds=bounds,
+                disp=False,
+            )
+        elif method == "brute":
+            result = brute(
+                fun_to_minimize,
+                ranges=bounds,
+                disp=False,
+            )
+        elif method == "shgo":
+            result = shgo(
+                fun_to_minimize,
+                bounds=bounds,
+            )
+        elif method == "dual_annealing":
+            result = dual_annealing(
+                fun_to_minimize,
+                bounds=bounds,
+            )
+        elif method == "basinhopping":
+            result = basinhopping(
+                fun_to_minimize,
+                arbitrageur_answers_list_initial,
+                minimizer_kwargs={"bounds": bounds},
+            )
+        else:
+            result = minimize(
+                fun_to_minimize,
+                arbitrageur_answers_list_initial,
+                bounds=bounds,
+                # options={"disp": True},
+                method=method,
+                # tol=1e-6,
+            )
+
+        arbitrage_argmax = dict(zip(x, result.x))
+        arbitrage_max = -result.fun
+
+        return arbitrage_argmax, arbitrage_max
+
+    def violation(self, answers: dict[str, Any]) -> float:
+        """Can be re-defined in subclass to use an exact calculation."""
+        return self.max_min_arbitrage(answers)[1]
 
     def check(self, answers: dict[str, Any]) -> bool:
         return self.violation(answers) < self.tolerance
@@ -132,9 +268,6 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -175,14 +308,17 @@ class NegChecker(Checker):
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["not_P"] - 1)
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["not_P"] - 1)
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["not_P"] == 1
+        )
 
 
 class AndChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -226,17 +362,21 @@ class AndChecker(Checker):
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(
-            max(answers["P"] + answers["Q"] - 1, 0) - answers["P_and_Q"],
-            answers["P_and_Q"] - min(answers["P"], answers["Q"]),
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(
+    #         max(answers["P"] + answers["Q"] - 1, 0) - answers["P_and_Q"],
+    #         answers["P_and_Q"] - min(answers["P"], answers["Q"]),
+    #     )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and max(answers["P"] + answers["Q"] - 1, 0) <= answers["P_and_Q"]
+            and answers["P_and_Q"] <= min(answers["P"], answers["Q"])
         )
 
 
 class OrChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -280,17 +420,21 @@ class OrChecker(Checker):
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(
-            max(answers["P"], answers["Q"]) - answers["P_or_Q"],
-            answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(
+    #         max(answers["P"], answers["Q"]) - answers["P_or_Q"],
+    #         answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
+    #     )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and max(answers["P"], answers["Q"]) <= answers["P_or_Q"]
+            and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"])
         )
 
 
 class AndOrChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -363,14 +507,17 @@ class AndOrChecker(Checker):
             P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["Q"] == answers["P_and_Q"] + answers["P_or_Q"]
+        )
 
 
 class ButChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_and_not_P: ForecastingQuestion
@@ -386,7 +533,9 @@ class ButChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = but_validation_prompt.format(
-            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+            P=generated_tuple.P,
+            P_and_not_Q=generated_tuple.Q_and_not_P,
+            Q=generated_tuple.P_or_Q,
         )
         return answer_sync(prompt, response_model=ValidationResult)
 
@@ -394,7 +543,9 @@ class ButChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = but_validation_prompt.format(
-            P=generated_tuple.P, P_and_not_Q=generated_tuple.Q_and_not_P, Q=generated_tuple.P_or_Q
+            P=generated_tuple.P,
+            P_and_not_Q=generated_tuple.Q_and_not_P,
+            Q=generated_tuple.P_or_Q,
         )
         return await answer(prompt, response_model=ValidationResult)
 
@@ -424,14 +575,17 @@ class ButChecker(Checker):
             P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] + answers["Q_and_not_P"] == answers["P_or_Q"]
+        )
 
 
 class CondChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -453,7 +607,9 @@ class CondChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = conditional_validation_prompt.format(
-            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+            P=generated_tuple.P,
+            Q_given_P=generated_tuple.Q_given_P,
+            P_and_Q=generated_tuple.P_and_Q,
         )
         return answer_sync(prompt, response_model=ValidationResult)
 
@@ -461,7 +617,9 @@ class CondChecker(Checker):
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
         prompt = conditional_validation_prompt.format(
-            P=generated_tuple.P, Q_given_P=generated_tuple.Q_given_P, P_and_Q=generated_tuple.P_and_Q
+            P=generated_tuple.P,
+            Q_given_P=generated_tuple.Q_given_P,
+            P_and_Q=generated_tuple.P_and_Q,
         )
         return await answer(prompt, response_model=ValidationResult)
 
@@ -485,14 +643,26 @@ class CondChecker(Checker):
             P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return answers in [
+            {"P": True, "Q_given_P": True, "P_and_Q": True},
+            {"P": True, "Q_given_P": False, "P_and_Q": False},
+            {"P": False, "Q_given_P": None, "P_and_Q": False},
+        ]
+        # return (
+        #     all([a is not None for a in answers.values()])
+        #     and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+        # ) or (
+        #     answers["P"] == False
+        #     and answers["Q_given_P"] is None
+        #     and answers["P_and_Q"] == False
+        # )
 
 
 class ConsequenceChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         cons_P: ForecastingQuestion
@@ -509,7 +679,7 @@ class ConsequenceChecker(Checker):
         prompt = consequence_validation_prompt.format(
             P=generated_tuple.P, cons_P=generated_tuple.cons_P
         )
-        return answer_sync(prompt, response_model=ValidationResult) 
+        return answer_sync(prompt, response_model=ValidationResult)
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
@@ -533,14 +703,17 @@ class ConsequenceChecker(Checker):
         cons_P = await Consequence().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return max(0.0, answers["P"] - answers["cons_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return max(0.0, answers["P"] - answers["cons_P"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] <= answers["cons_P"]
+        )
 
 
 class ParaphraseChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         para_P: ForecastingQuestion
@@ -581,14 +754,17 @@ class ParaphraseChecker(Checker):
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, para_P=para_P.para_P)
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P"] - answers["para_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P"] - answers["para_P"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P"] == answers["para_P"]
+        )
 
 
 class SymmetryAndChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -604,13 +780,13 @@ class SymmetryAndChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -639,14 +815,17 @@ class SymmetryAndChecker(Checker):
             P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P_and_Q"] - answers["Q_and_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P_and_Q"] == answers["Q_and_P"]
+        )
 
 
 class SymmetryOrChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -662,13 +841,13 @@ class SymmetryOrChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -697,14 +876,17 @@ class SymmetryOrChecker(Checker):
             P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(answers["P_or_Q"] - answers["Q_or_P"])
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return (
+            all([a is not None for a in answers.values()])
+            and answers["P_or_Q"] == answers["Q_or_P"]
+        )
 
 
 class CondCondChecker(Checker):
-    def __init__(self, tolerance=0.1, path=None):
-        super().__init__(tolerance, path)
-
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -726,13 +908,13 @@ class CondCondChecker(Checker):
     def validate_sync(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
-        pass 
+        # TODO(Alejadnro): Implement this
+        pass
 
     async def validate(
         generated_tuple: "Self.TupleFormat", **kwargs
     ) -> ValidationResult:
-        #TODO(Alejadnro): Implement this
+        # TODO(Alejadnro): Implement this
         pass
 
     def instantiate_sync(
@@ -797,8 +979,36 @@ class CondCondChecker(Checker):
             P_and_Q_and_R=P_and_Q_and_R,
         )
 
-    def violation(self, answers: dict[str, Prob]) -> float:
-        return abs(
-            answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
-            - answers["P_and_Q_and_R"]
-        )
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(
+    #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
+    #         - answers["P_and_Q_and_R"]
+    #     )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return answers in [
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": True,
+                "P_and_Q_and_R": True,
+            },
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": False,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": True,
+                "Q_given_P": False,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": False,
+                "Q_given_P": None,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
+        ]
