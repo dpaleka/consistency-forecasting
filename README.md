@@ -23,3 +23,9 @@ Running the files with actual logic in them may run into Python import / path is
 ## Data Formats
 Currently being discussed in the [Datatypes design doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit). 
 
+## Testing Before Submitting PRs
+Before submitting a Pull Request, please ensure that you run the test suite to check that your changes do not break any existing functionality. You can run the tests with the following command from the root directory of the project:
+```
+python3.11 -m pytest
+```
+This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
