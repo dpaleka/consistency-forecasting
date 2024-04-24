@@ -1,5 +1,6 @@
 import jsonlines
 import numpy as np
+from numpy.random import random
 from scipy.optimize import (
     minimize,
     basinhopping,
@@ -157,11 +158,24 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
-        initial_guess=None,
-        method="L-BFGS-B",
+        initial_guess: list[float] | str | None = None,
+        method="shgo",
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
-        arbitrage earned for some given forecaster answers."""
+        arbitrage earned for some given forecaster answers.
+
+        Args:
+            answers (dict[str, Prob]): Forecaster answers.
+            scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
+            initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
+            method (str, optional): Optimization method. Options:
+                Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
+                basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
+                brute -- some syntax error
+                differential_evolution, shgo, dual_annealing -- working
+            Defaults to "shgo".
+
+        """
 
         x = answers.keys()
 
@@ -171,8 +185,15 @@ class Checker(ABC):
 
         if initial_guess is None:
             arbitrageur_answers_list_initial = [0.5] * len(x)
-            # arbitrageur_answers_list_initial = [answers[question] for question in x]
             # arbitrageur_answers_list_initial = [answers[question] + 0.1*random() for question in x]
+        elif initial_guess == "answers":
+            arbitrageur_answers_list_initial = [answers[question] for question in x]
+        elif initial_guess == "answers_randomize":
+            arbitrageur_answers_list_initial = [
+                answers[question] + 0.1 * (0.5 - random()) for question in x
+            ]
+        elif initial_guess == "random":
+            arbitrageur_answers_list_initial = [random() for _ in x]
         else:
             arbitrageur_answers_list_initial = initial_guess
 
