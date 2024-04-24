@@ -3,13 +3,25 @@ import subprocess
 import sys
 
 # Define the script to run and the list of JSONL files to validate
+# Intended to be run from the root of the repository, as when running the pre-commit hook
 BASE_DIR = "src/"
 script = f"{BASE_DIR}/validate_fq_jsonl.py"
 REAL_DATA_DIR = f"{BASE_DIR}/data/fq/real"
-# TODO add all
-jsonl_files = [
-    f"{REAL_DATA_DIR}/questions_cleaned_formatted.jsonl",
-]
+SYNTHETIC_DATA_DIR = f"{BASE_DIR}/data/fq/synthetic"
+
+from pathlib import Path
+
+jsonl_files = []
+real_data_dir = Path(REAL_DATA_DIR)
+synthetic_data_dir = Path(SYNTHETIC_DATA_DIR)
+
+for file in real_data_dir.rglob("*.jsonl"):
+    jsonl_files.append(file)
+
+for file in synthetic_data_dir.rglob("*.jsonl"):
+    jsonl_files.append(file)
+
+print(f"{len(jsonl_files)} jsonl files found")
 
 
 # Function to run the validation script on each file
