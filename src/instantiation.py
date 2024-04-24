@@ -42,7 +42,7 @@ def load_data(file):
     random.shuffle(base_questions_pqr)
     return base_questions_p, base_questions_pq, base_questions_pqr
 
-async def instantiate(path, length=18):
+async def instantiate(path, length=3):
     base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
     await neg_checker.instantiate_and_write_many(
         base_questions_p[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
@@ -78,4 +78,4 @@ async def instantiate(path, length=18):
         base_questions_pqr[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
     )
 
-asyncio.run(instantiate(path="src/data/questions_cleaned_formated.jsonl"))
+asyncio.run(instantiate(path="src/data/fq/real/questions_cleaned_formatted.jsonl"))

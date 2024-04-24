@@ -1,4 +1,4 @@
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, ValidationResult
 import asyncio
 import uuid
 from common.llm_utils import answer
@@ -116,10 +116,6 @@ class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
 
-class QuestionValidation(BaseModel):
-    reasoning: str
-    valid: bool
-
 async def get_criteria_and_date(question: str):
     prompt = resolution_criteria_date_prompt.format(question=question,response_model=BodyAndDate)  # Assuming definition elsewhere
     return await answer(prompt, response_model=BodyAndDate)  
@@ -160,4 +156,4 @@ async def from_string(question: str, data_source: str, question_type: Optional[s
 async def validate_question(question: ForecastingQuestion):
     current_date = datetime.now()
     prompt = validate_forecasting_question_prompt.format(current_date=current_date)
-    return await answer(prompt, response_model=QuestionValidation)
+    return await answer(prompt, response_model=ValidationResult)
