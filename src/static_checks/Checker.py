@@ -94,7 +94,11 @@ class Checker(ABC):
         _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(  # noqa
             base_sentences, **kwargs
         )
-        await parallelized_call(_instantiate_and_write, base_sentencess)
+        # Added print statement to log the base sentences being processed
+        print(f"Base sentences: {base_sentencess}")
+        results = await parallelized_call(_instantiate_and_write, base_sentencess)
+        # Added print statement to log the results of instantiation
+        print(f"Results of instantiation: {results}")
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
