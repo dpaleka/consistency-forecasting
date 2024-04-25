@@ -171,8 +171,8 @@ def display_list_view(entry):
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), DEFAULT_FILE)
     st.markdown(f"\n{entry['title']}\n")
 
-    # Create a layout with two columns
-    col1, col2 = st.columns(2)
+    # Create a layout with three columns
+    col1, col2, col3 = st.columns(3)
 
     # Add the "Give feedback" button to the first column
     with col1:
@@ -197,7 +197,12 @@ def display_list_view(entry):
                 key=f"view_feedback{entry.get('id', 'N/A')}",
             ):
                 pass
-            st.empty()
+        st.empty()
+
+    # Add the "Show/Hide Examples" toggle to the third column
+    with col3:
+        if st.checkbox("Show Examples", key=f"toggle_examples{entry.get('id', 'N/A')}"):
+            st.text(entry.get("examples", "No examples provided"))
 
 
 def list_view(entries):
