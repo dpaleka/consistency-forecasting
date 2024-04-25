@@ -129,15 +129,18 @@ def display_entry(entry, source_filename, feedback=None):
 
     feedback_data = {}
 
-    feedback_fields = [
-        "Ambiguities",
-        "Resolution Criteria",
-        "Edge Cases",
-        "Relevance of included information",
-        "Time Frame",
-        "Improved Question wording",
-        "Other feedback",
-    ]
+    feedback_fields = {
+        "Rewritten body": "Either leave this empty or rewrite the whole body field. This takes precedence over other feedback fields.",
+        "Discard the question?": "Either leave this empty, or write why we’re discarding the question, e.g. because of the issues with the title.",
+        "Bad included information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
+        "Unintuitive/wrong resolution criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
+        "Ambiguities": "Specify any ambiguous aspects of the question that could affect its resolution.",
+        "Too specific criteria / edge cases": "Are some edge cases extremely low probability, in the sense that it’s clear the question would resolve to N/A if something like this happens?",
+        "Edge cases not covered": "Specify any edge cases that the question does not cover but should.",
+        "General feedback": "Write anything not covered above.",
+        "Formatting issues": "Is some field formatted in an unusual way? Is some field missing?"
+    }
+
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), source_filename)
 
     # Create a layout with two columns
@@ -155,8 +158,8 @@ def display_entry(entry, source_filename, feedback=None):
         if feedback:
             display_feedback(feedback)
         else:
-            for field in feedback_fields:
-                feedback_data[field] = st.text_area(field, "")
+            for field, description in feedback_fields.items():
+                feedback_data[field] = st.text_area(field, "", help=description)
 
             if st.button("Submit Feedback"):
                 write_feedback(entry.get("id", "N/A"), feedback_data, source_filename)
