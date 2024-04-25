@@ -3,7 +3,7 @@ from static_checks.Checker import Checker, NegChecker, AndChecker, OrChecker, An
 
 basic_forecaster = BasicForecaster()
 
-BASE_DATA_PATH = "src/data/"
+BASE_DATA_PATH = "src/data/tuples/"
 
 model = "gpt-3.5-turbo"
 #model = "gpt-4-turbo-2024-04-09"
@@ -22,7 +22,7 @@ checkers : dict[str, Checker] = {
     "CondCondChecker": CondCondChecker(path=BASE_DATA_PATH + "CondCondChecker.jsonl")
 }
 
-def get_stats(results : dict, label : str = "") -> dict:
+def get_stats(results : list, label : str = "") -> dict:
     # Extract the violation and check results from the test
     violations = [result["violation"] for result in results]
     checks = [result["check"] for result in results]
@@ -58,6 +58,15 @@ all_stats = {}
 for key in relevant_keys:
     print("Checker: ", key)
     results = checkers[key].test(basic_forecaster, model = model)
+    # Log the messages being sent to the OpenAI API if results is a dict
+    if isinstance(results, dict) and 'messages' in results:
+        print(f"Messages sent to OpenAI API for {key}: {results['messages']}")
+    elif isinstance(results, list) and results:
+        # Assuming each item in results is a dict that contains a 'messages' key
+        messages = [result.get('messages', 'No messages found') for result in results]
+        print(f"Messages sent to OpenAI API for {key}: {messages}")
+    else:
+        print(f"No messages sent to OpenAI API for {key}")
     stats = get_stats(results, label = key)
     all_stats[key] = stats
 
@@ -67,4 +76,3 @@ for key, stats in all_stats.items():
 print("\n\n")
 for key, stats in all_stats.items():
     print(f"{key} | avg: {stats['avg_violation']:.3f}, median: {stats['median_violation']:.3f}")
-

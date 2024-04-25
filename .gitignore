@@ -1,3 +1,6 @@
+# Project-specific
+/src/data/test/*.jsonl
+
 # Local
 *.code-workspace
 *.DS_Store
