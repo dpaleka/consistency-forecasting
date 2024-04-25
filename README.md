@@ -1,6 +1,7 @@
 # Consistency & Forecasting
 
 ## Installation requirements
+Python 3.11 is required for all operations within this project. Ensure you have it installed before proceeding.
 ```
 pip install -r requirements.txt
 pre-commit install
