@@ -37,12 +37,31 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
-
+from pydantic import BaseModel
 import cloudpickle
 import redis
 from beartype import beartype
 from beartype.typing import Any, Callable, Iterable, Iterator, Optional, Union, Type
 from icontract import require
+
+
+from .datatypes import (
+    PlainText,
+    Prob,
+    Prob_cot,
+    ForecastingQuestion_stripped,
+    ForecastingQuestion,
+    ValidationResult,
+)
+
+perscache_supported_models = {
+    "PlainText": PlainText,
+    "Prob": Prob,
+    "Prob_cot": Prob_cot,
+    "ForecastingQuestion_stripped": ForecastingQuestion_stripped,
+    "ForecastingQuestion": ForecastingQuestion,
+    "ValidationResult": ValidationResult,
+}
 
 
 # Logger stubs
@@ -107,6 +126,102 @@ JSONSerializer = make_serializer(
     lambda data: json.dumps(data).encode("utf-8"),
     lambda data: json.loads(data.decode("utf-8")),
 )
+
+
+def pydantic_response_dumps(data: Any) -> bytes:
+    """
+    All operations are in-place and idempotent.
+    """
+
+    if (
+        isinstance(data, dict)
+        and "value" in data
+        and isinstance(data["value"], BaseModel)
+    ):
+        # Serialize the 'value' field which is a Pydantic model
+        model_data = {
+            "__class__": data["value"].__class__.__name__,
+            "data": data["value"].model_dump(),
+        }
+        # Replace the original 'value' with its serialized form
+        data = {**data, "value": model_data}
+
+    if (
+        isinstance(data, dict)
+        and "kwargs" in data
+        and "response_model" in data["kwargs"]
+    ):
+        # Serialize the 'response_model' which is a class type
+        # Assumption: it ends with something in known_models
+        data["kwargs"]["response_model"] = data["kwargs"]["response_model"].__name__
+
+    elif (
+        isinstance(data, dict)
+        and "bound_args" in data
+        and "kwargs" in data["bound_args"]
+        and "response_model" in data["bound_args"]["kwargs"]
+    ):
+        # Serialize the 'response_model' which is a class type
+        # Assumption: it ends with something in known_models
+        data["bound_args"]["kwargs"]["response_model"] = data["bound_args"]["kwargs"][
+            "response_model"
+        ].__name__
+
+    return json.dumps(data).encode("utf-8")
+
+
+def pydantic_response_loads(
+    data: bytes, known_models: dict[str, Type[BaseModel]]
+) -> Any:
+    """
+    All operations are in-place and idempotent.
+    """
+    data_dict = json.loads(data.decode("utf-8"))
+    if (
+        "value" in data_dict
+        and isinstance(data_dict["value"], dict)
+        and "__class__" in data_dict["value"]
+    ):
+        class_name = data_dict["value"]["__class__"]
+        if class_name in known_models:
+            # Deserialize the 'value' field using the appropriate Pydantic model
+            model_class = known_models[class_name]
+            data_dict["value"] = model_class.model_validate(data_dict["value"]["data"])
+
+    if (
+        "kwargs" in data_dict
+        and "response_model" in data_dict["kwargs"]
+        and isinstance(data_dict["kwargs"]["response_model"], str)
+    ):
+        # Deserialize the 'response_model' which is a class type
+        class_name = data_dict["kwargs"]["response_model"]
+
+        if class_name in known_models:
+            data_dict["kwargs"]["response_model"] = known_models[class_name]
+
+    elif (
+        "bound_args" in data_dict
+        and "kwargs" in data_dict["bound_args"]
+        and "response_model" in data_dict["bound_args"]["kwargs"]
+    ):
+        # Deserialize the 'response_model' which is a class type
+        class_name = data_dict["bound_args"]["kwargs"]["response_model"]
+        if class_name in known_models:
+            data_dict["bound_args"]["kwargs"]["response_model"] = known_models[
+                class_name
+            ]
+
+    return data_dict
+
+
+# Use make_serializer to create JSONPydanticSerializer
+JSONPydanticResponseSerializer = make_serializer(
+    "JSONPydanticSerializer",
+    "json",
+    pydantic_response_dumps,
+    lambda data: pydantic_response_loads(data, perscache_supported_models),
+)
+
 PickleSerializer = make_serializer(
     "PickleSerializer", "pickle", pickle.dumps, pickle.loads
 )
