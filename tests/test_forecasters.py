@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
 
-from common.datatypes import Prob, ForecastingQuestion
+from common.datatypes import ForecastingQuestion
 from forecasters import BasicForecaster
 
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
@@ -34,10 +34,10 @@ def mock_forecasting_question():
 
 @patch("forecasters.basic_forecaster.answer_sync", return_value=mock_response)
 def test_basic_forecaster_call(mock_answer_sync, basic_forecaster, mock_forecasting_question):
-    expected_prob = Prob(prob=mock_response.prob)
+    expected_prob = mock_response.prob
     prob = basic_forecaster.call(mock_forecasting_question)
-    assert prob.prob == pytest.approx(
-        expected_prob.prob
+    assert prob == pytest.approx(
+        expected_prob
     ), "The calculated probability does not match the expected value"
     mock_answer_sync.assert_called_once()
 
@@ -45,9 +45,9 @@ def test_basic_forecaster_call(mock_answer_sync, basic_forecaster, mock_forecast
 @pytest.mark.asyncio
 @patch("forecasters.basic_forecaster.answer", return_value=mock_response)
 async def test_basic_forecaster_call_async(mock_answer, basic_forecaster, mock_forecasting_question):
-    expected_prob = Prob(prob=mock_response.prob)
+    expected_prob = mock_response.prob
     prob = await basic_forecaster.call_async(mock_forecasting_question)
-    assert prob.prob == pytest.approx(
-        expected_prob.prob
+    assert prob == pytest.approx(
+        expected_prob
     ), "The calculated probability does not match the expected value"
     mock_answer.assert_called_once()
