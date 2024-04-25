@@ -21,18 +21,16 @@ from .datatypes import PlainText
 
 from .perscache import (
     Cache,
-    JSONSerializer,
+    JSONPydanticResponseSerializer,
     RedisStorage,
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
-# Until we fix cache
-os.environ["NO_CACHE"] = "True"
 
 cache = Cache(
-    serializer=JSONSerializer(),
+    serializer=JSONPydanticResponseSerializer(),
     storage=(
         LocalFileStorage()
         if os.getenv("LOCAL_CACHE")
@@ -149,7 +147,7 @@ def is_huggingface_local(model: str) -> bool:
 
 def get_client(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI|OpenAI|MistralAsyncClient|MistralClient, str]:
+) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
     if is_openai(model):
         return (
             get_async_openai_client() if use_async else get_openai_client(),
@@ -190,7 +188,6 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-
 @cache
 async def query_api_chat(
     messages: list[dict[str, str]],
@@ -209,7 +206,7 @@ async def query_api_chat(
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
-    } 
+    }
     options = default_options | kwargs
     options["model"] = model or options["model"]
     client, client_name = get_client(options["model"], use_async=True)
@@ -218,7 +215,7 @@ async def query_api_chat(
 
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
-        
+
     response = await client.chat.completions.create(
         messages=messages,
         **options,
@@ -226,9 +223,9 @@ async def query_api_chat(
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
-        
 
 
+@cache
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -279,7 +276,11 @@ def prepare_messages(
             example.assistant = example.assistant.model_dump_json()
         messages.append({"role": "user", "content": example.user})
         # Convert assistant's response to string if it's not already
-        assistant_content = str(example.assistant) if isinstance(example.assistant, (float, int)) else example.assistant
+        assistant_content = (
+            str(example.assistant)
+            if isinstance(example.assistant, (float, int))
+            else example.assistant
+        )
         messages.append({"role": "assistant", "content": assistant_content})
     if isinstance(prompt, BaseModel):
         prompt = prompt.model_dump_json()
@@ -287,7 +288,6 @@ def prepare_messages(
     return messages
 
 
-@cache
 async def answer(
     prompt: str,
     preface: str | None = None,
