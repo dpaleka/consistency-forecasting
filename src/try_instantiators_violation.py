@@ -81,6 +81,15 @@ all_stats = {}
 for key in relevant_keys:
     print("Checker: ", key)
     results = checkers[key].test(basic_forecaster, model=model)
+    # Log the messages being sent to the OpenAI API if results is a dict
+    if isinstance(results, dict) and "messages" in results:
+        print(f"Messages sent to OpenAI API for {key}: {results['messages']}")
+    elif isinstance(results, list) and results:
+        # Assuming each item in results is a dict that contains a 'messages' key
+        messages = [result.get("messages", "No messages found") for result in results]
+        print(f"Messages sent to OpenAI API for {key}: {messages}")
+    else:
+        print(f"No messages sent to OpenAI API for {key}")
     stats = get_stats(results, label=key)
     all_stats[key] = stats
 
@@ -94,4 +103,4 @@ for key, stats in all_stats.items():
     )
 
 # to save the output to a file, run this script as
-# python src/test_instantiators_violation.py | tee src/data/test_instantiators_violation_output.txt
+# python src/try_instantiators_violation.py | tee src/data/try_instantiators_violation_output.txt

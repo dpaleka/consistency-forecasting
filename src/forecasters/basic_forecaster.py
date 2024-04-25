@@ -1,7 +1,6 @@
 from .forecaster import Forecaster
-from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion, Prob
+from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import answer, answer_sync, Example
-
 
 class BasicForecaster(Forecaster):
 
@@ -22,11 +21,17 @@ class BasicForecaster(Forecaster):
                         "geographic boundaries) that is at least a mile tall."
                     ),
                 ),
-                assistant=Prob(prob=0.03),
+                assistant=0.03,
             )
         ]
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+        # Log the request details being sent to the OpenAI API
+        print(f"Sending the following request to OpenAI API:")
+        print(f"Prompt: {sentence.__str__()}")
+        print(f"Preface: {self.preface}")
+        print(f"Examples: {self.examples}")
+        print(f"Response Model: {sentence.expected_answer_type()}")
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -34,9 +39,17 @@ class BasicForecaster(Forecaster):
             response_model=sentence.expected_answer_type(),
             **kwargs
         )
+        # Log the response from the OpenAI API
+        print(f"Received the following response from OpenAI API: {response}")
         return response.prob
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+        # Log the request details being sent to the OpenAI API
+        print(f"Sending the following request to OpenAI API:")
+        print(f"Prompt: {sentence.__str__()}")
+        print(f"Preface: {self.preface}")
+        print(f"Examples: {self.examples}")
+        print(f"Response Model: {sentence.expected_answer_type()}")
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -44,4 +57,6 @@ class BasicForecaster(Forecaster):
             response_model=sentence.expected_answer_type(),
             **kwargs
         )
+        # Log the response from the OpenAI API
+        print(f"Received the following response from OpenAI API: {response}")
         return response.prob

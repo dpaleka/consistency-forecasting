@@ -16,4 +16,10 @@ repos:
         language: script
         always_run: true
         verbose: true
+      - id: avoid-naming-anything-test
+        name: Avoid naming anything *_test.py or test_*.py if it's not a test file
+        entry: hooks/avoid_naming_anything_test.py
+        language: script
+        always_run: true
+        verbose: true
 

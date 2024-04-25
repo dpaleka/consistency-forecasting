@@ -1,4 +1,4 @@
-from static_checks.MiniInstantiator import Trivial, Neg, And, Or, Paraphrase, Conditional, Spanning4, Consequence
+from static_checks.MiniInstantiator import Trivial, Neg, And, Or, Paraphrase, Conditional, Consequence
 from common.datatypes import *
 import asyncio
 
@@ -8,7 +8,6 @@ mini_and = And()
 mini_or = Or()
 mini_para = Paraphrase()
 mini_cond = Conditional()
-mini_span4 = Spanning4()
 mini_cons = Consequence()
 
 base_question = ForecastingQuestion(

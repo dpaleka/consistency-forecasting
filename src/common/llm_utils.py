@@ -235,6 +235,9 @@ def query_api_chat_sync(
     model: str | None = None,
     **kwargs,
 ) -> BaseModel:
+    # Log the messages array to debug the BadRequestError
+    print("Messages array being sent to OpenAI API:", messages)
+
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
@@ -244,7 +247,7 @@ def query_api_chat_sync(
     client, client_name = get_client(options["model"], use_async=False)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
-    
+
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple structured queries not supported yet")
 
@@ -275,7 +278,9 @@ def prepare_messages(
         if isinstance(example.assistant, BaseModel):
             example.assistant = example.assistant.model_dump_json()
         messages.append({"role": "user", "content": example.user})
-        messages.append({"role": "assistant", "content": example.assistant})
+        # Convert assistant's response to string if it's not already
+        assistant_content = str(example.assistant) if isinstance(example.assistant, (float, int)) else example.assistant
+        messages.append({"role": "assistant", "content": assistant_content})
     if isinstance(prompt, BaseModel):
         prompt = prompt.model_dump_json()
     messages.append({"role": "user", "content": prompt})
