@@ -161,11 +161,15 @@ def display_entry(entry, source_filename, feedback=None):
             display_feedback(feedback)
         else:
             # Adjust the conditional logic for displaying examples
-            for field, description in feedback_fields.items():
-                st.markdown(f"**{field}:**")
-                feedback_data[field] = st.text_area("", "", help=description)
-                if st.session_state.show_examples:
+            if st.session_state.show_examples:
+                for field, description in feedback_fields.items():
+                    st.markdown(f"**{field}:**")
                     st.markdown(f"*Example:* {description}")
+                    feedback_data[field] = st.text_area("", "", help=description)
+            else:
+                for field, description in feedback_fields.items():
+                    st.markdown(f"**{field}:**")
+                    feedback_data[field] = st.text_area("", "", help=description)
 
             discard_question = st.radio(
                 "Discard the question?",
