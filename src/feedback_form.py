@@ -164,8 +164,17 @@ def display_entry(entry, source_filename, feedback=None):
             for field, description in feedback_fields.items():
                 st.markdown(f"**{field}:**")
                 # Check if the 'Show Examples' checkbox is checked
-                if st.session_state.get('show_examples', False):
-                    st.markdown(f"*Example:* {description}")
+                show_examples = st.session_state.get('show_examples', False)
+                print(f"'Show Examples' checkbox state: {show_examples}")  # Debugging print statement
+                if show_examples:
+                    if field == "Rewritten body":
+                        st.markdown("Example: 'What is the probability that the current President/Prime Minister of Spain will be re-elected in the next general election?' depends too much on the date when the question is asked.")
+                    elif field == "Bad included information":
+                        st.markdown("Example: 'GPT-4 starts out impressively but gets lost and ends up with a wrong answer (min=3, max=4) and no amount of coaxing yields a definitive analysis.'")
+                    elif field == "Unintuitive/wrong resolution criteria":
+                        st.markdown("Example: 'If the 2028 Olympics are canceled, postponed, or otherwise not completed, the question will resolve as No.' should be 'will resolve as N/A' for questions dealing with Olympic medal tallies.")
+                    # Add more elif statements for each feedback category with the corresponding examples
+                    # ...
                 # Create a text area for feedback input
                 feedback_data[field] = st.text_area("", key=f"feedback_{field}", help=description)
 
