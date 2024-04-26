@@ -126,21 +126,45 @@ field_order = [
 
 
 def display_entry(entry, source_filename, feedback=None):
-    print(f"Displaying entry details for: {entry}")  # Print the entry details for debugging
+    print(
+        f"Displaying entry details for: {entry}"
+    )  # Print the entry details for debugging
 
     st.markdown("### Entry Details")
 
     feedback_data = {}
 
-    feedback_fields = {
-        "rewritten_body": "Either leave this empty or rewrite the whole body field. This takes precedence over other feedback fields.",
-        "bad_included_information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
-        "unintuitive_wrong_resolution_criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
+    feedback_fields_instructions: dict[str, str] = {
+        "rewritten_title": "New title field.",
+        "rewritten_body": "Write the new body field.",
+        "rewritten_resolution_date": "Write the new resolution date field.",
+        "bad_or_irrelevant_included_information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
+        "unintuitive_or_wrong_resolution_criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
+        "too_specific_criteria_or_edge_cases": "Are some edge cases extremely low probability, in the sense that it’s clear the question would resolve to N/A if something like this happens?",
         "ambiguities": "Specify any ambiguous aspects of the question that could affect its resolution.",
-        "too_specific_criteria_edge_cases": "Are some edge cases extremely low probability, in the sense that it’s clear the question would resolve to N/A if something like this happens?",
         "edge_cases_not_covered": "Specify any edge cases that the question does not cover but should.",
         "general_feedback": "Write anything not covered above.",
-        "formatting_issues": "Is some field formatted in an unusual way? Is some field missing?"
+        "formatting_issues": "Is some field formatted in an unusual way? Is some field missing?",
+        "discard_reason": "Explain why the question is being discarded. Make the feedback self-contained in this field only; do not reference what you wrote in other fields.",
+    }
+
+    feedback_fields_examples: dict[str, str] = {
+        "rewritten_title": "",
+        "rewritten_body": "",
+        "rewritten_resolution_date": "",
+        "bad_or_irrelevant_included_information": """Example: “As AI continues to evolve, there is growing speculation about its ability to perform complex cognitive tasks that traditionally require human-like understanding and contextual awareness.” is a sentence that adds nothing to the question and should be removed.\n"""  # noqa
+        """Example: “Today, Google announced the launch of Google Vids (a new AI-powered video creation app for work).” is not timeless. Just specify what Google Vids was considered to mean at a given date.""",  # noqa
+        "unintuitive_or_wrong_resolution_criteria": """Example: “If the 2028 Olympics are canceled, postponed, or otherwise not completed, the question will resolve as No.” should be “will resolve as N/A” for questions dealing with Olympic medal tallies. Otherwise, asking “Will Country X win the most gold medals” over all countries and expecting those to sum up to 1 is not a valid consistency check.\n"""  # noqa
+        """Example: “If Italy undergoes significant political or territorial changes before the resolution date that would substantially impact its ability to report emissions or the comparability of emissions data, the question will resolve as No unless a clear and widely accepted method for adjusting the emissions data is provided by an authoritative body.” should be N/A instead.""",  # noqa
+        "too_specific_criteria_or_edge_cases": """Example: “If Japan stops existing, the question will resolve as N/A”. """,  # noqa
+        "ambiguities": """Example: “Should there be any significant changes to the methodology of how carbon emissions are measured between the time of the question's posting and the resolution date, such changes must be taken into account to ensure a fair assessment of the emissions reduction target.” should be removed and replaced with “If there is a major change in the methodology of how carbon emissions are measured before the resolution date, and it is not possible to measure carbon emissions according to the methodology, this question resolves N/A.”\n"""  # noqa
+        """Non-example: Criteria such as “If there are conflicting reports about the fatalities or the nature of military engagement, the question will be resolved by a panel of three experts in international conflict, chosen in good faith by the question author, who will determine whether the criteria have been met based on the preponderance of evidence.” is good if the question cannot specify a trustworthy source for quantitative criteria (such as fatalities in an armed conflict).""",  # noqa
+        "edge_cases_not_covered": """Example: “What is the probability that a Jewish person will be elected...” must include a somewhat precise way to determine if a well-known person is Jewish -- is it religion, or cultural background, self-identification, Rabbinical law, etc? But make it a single sentence, no need to write a full paragraph for this.""",  # noqa
+        "general_feedback": """Example: Too long, shorten""",  # noqa
+        "formatting_issues": """Example: resolution_date: “Resolution date: This question resolves on 28 Jan 2034” instead of “28 Jan 2034” or “28/01/2034”.\n"""  # noqa
+        """Example: body: “Resolution criteria: This question will resolve YES if.” instead of just “This question will resolve YES”.""",  # noqa
+        "discard_reason": """Example: “What is the probability that the current President/Prime Minister of Spain will be re-elected in the next general election?” depends on when the question is asked.\n"""  # noqa
+        """Example: “What is the probability that Shinzo Abe will be re-elected as Prime Minister of Japan in the year 2027?” is off because Shinzo Abe has been assassinated in 2022.""",  # noqa
     }
 
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), source_filename)
@@ -160,39 +184,87 @@ def display_entry(entry, source_filename, feedback=None):
         if feedback:
             display_feedback(feedback)
         else:
+            st.session_state.show_examples = st.checkbox("Show Examples")
+
+            rewrite_title = st.radio(
+                "Rewrite title?",
+                ("NO", "YES"),
+                index=0,
+                help="Select YES if you want to rewrite the title, otherwise select NO. This takes precedence over other feedback fields.",
+                horizontal=True,
+            )
+            if rewrite_title == "YES":
+                feedback_data["rewritten_title"] = st.text_area(
+                    "",
+                    key="rewritten_title",
+                    help=feedback_fields_instructions["rewritten_title"],
+                )
+            else:
+                feedback_data["rewritten_title"] = ""
+
+            rewrite_body = st.radio(
+                "Rewrite body?",
+                ("NO", "YES"),
+                index=0,
+                help="Select YES if you want to rewrite the body, otherwise select NO. This takes precedence over other feedback fields.",
+                horizontal=True,
+            )
+            if rewrite_body == "YES":
+                feedback_data["rewritten_body"] = st.text_area(
+                    "",
+                    key="rewritten_body",
+                    help=feedback_fields_instructions["rewritten_body"],
+                )
+            else:
+                feedback_data["rewritten_body"] = ""
+
+            rewrite_resolution_date = st.radio(
+                "Rewrite resolution date?",
+                ("NO", "YES"),
+                index=0,
+                help="Select YES if you want to rewrite the resolution date, otherwise select NO. This takes precedence over other feedback fields.",
+                horizontal=True,
+            )
+            if rewrite_resolution_date == "YES":
+                feedback_data["rewritten_resolution_date"] = st.text_area(
+                    "",
+                    key="rewritten_resolution_date",
+                    help=feedback_fields_instructions["rewritten_resolution_date"],
+                )
+            else:
+                feedback_data["rewritten_resolution_date"] = ""
+
             # Adjust the conditional logic for displaying examples
-            for field, description in feedback_fields.items():
+            for field, description in feedback_fields_instructions.items():
                 st.markdown(f"**{field}:**")
                 # Check if the 'Show Examples' checkbox is checked
-                show_examples = st.session_state.get('show_examples', False)
-                print(f"'Show Examples' checkbox state: {show_examples}")  # Debugging print statement
+                show_examples = st.session_state.get("show_examples", False)
+                print(
+                    f"'Show Examples' checkbox state: {show_examples}"
+                )  # Debugging print statement
                 if show_examples:
-                    if field == "rewritten_body":
-                        st.markdown("Example: 'What is the probability that the current President/Prime Minister of Spain will be re-elected in the next general election?' depends too much on the date when the question is asked.")
-                    elif field == "bad_included_information":
-                        st.markdown("Example: 'GPT-4 starts out impressively but gets lost and ends up with a wrong answer (min=3, max=4) and no amount of coaxing yields a definitive analysis.'")
-                    elif field == "unintuitive_wrong_resolution_criteria":
-                        st.markdown("Example: 'If the 2028 Olympics are canceled, postponed, or otherwise not completed, the question will resolve as No.' should be 'will resolve as N/A' for questions dealing with Olympic medal tallies.")
-                    elif field == "too_specific_criteria_edge_cases":
-                        st.markdown("Example: “If Japan stops existing, the question will resolve as N/A”.")
-                    elif field == "ambiguities":
-                        st.markdown("Example: “Should there be any significant changes to the methodology of how carbon emissions are measured between the time of the question's posting and the resolution date, such changes must be taken into account to ensure a fair assessment of the emissions reduction target.” should be removed and replaced with “If there is a major change in the methodology of how carbon emissions are measured before the resolution date, and it is not possible to measure carbon emissions according to the methodology, this question resolves N/A.”")
-                        st.markdown("Non-example: Criteria such as “If there are conflicting reports about the fatalities or the nature of military engagement, the question will be resolved by a panel of three experts in international conflict, chosen in good faith by the question author, who will determine whether the criteria have been met based on the preponderance of evidence.” is good if the question cannot specify a trustworthy source for quantitative criteria (such as fatalities in an armed conflict).")
-                    # ... (rest of the conditional logic remains unchanged)
+                    st.markdown(feedback_fields_examples[field])
                 # Create a text area for feedback input
-                feedback_data[field] = st.text_area("", key=f"feedback_{field}", help=description)
+                feedback_data[field] = st.text_area(
+                    "", key=f"feedback_{field}", help=description
+                )
 
             discard_question = st.radio(
                 "Discard the question?",
-                ('NO', 'YES'),
+                ("NO", "YES"),
                 index=0,
-                help="Select YES if the question should be discarded, otherwise select NO."
+                help="Select YES if the question should be discarded, otherwise select NO.",
             )
 
-            if discard_question == 'YES':
-                feedback_data['Discard reason'] = st.text_area("Reason for discarding the question", "", help="Explain why the question is being discarded.")
+            if discard_question == "YES":
+                feedback_data["discard_reason"] = st.text_area(
+                    "Reason for discarding the question",
+                    "",
+                    help="Explain why the question is being discarded.",
+                    horizontal=True,
+                )
             else:
-                feedback_data['Discard reason'] = ""
+                feedback_data["discard_reason"] = ""
 
             if st.button("Submit Feedback"):
                 write_feedback(entry.get("id", "N/A"), feedback_data, source_filename)
@@ -204,10 +276,12 @@ def go_back():
 
 
 def display_list_view(entry):
-    print(f"Displaying entry: {entry.get('id', 'N/A')}")  # Print the entry ID for debugging
+    print(
+        f"Displaying entry: {entry.get('id', 'N/A')}"
+    )  # Print the entry ID for debugging
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), DEFAULT_FILE)
     # Use 'text' as the title if 'title' is not present
-    entry_title = entry.get('title', entry.get('text', 'No title available'))
+    entry_title = entry.get("title", entry.get("text", "No title available"))
     st.markdown(f"\n{entry_title}\n")
 
     # Create a layout with three columns
@@ -238,10 +312,11 @@ def display_list_view(entry):
                 pass
         st.empty()
 
-    # The "Show/Hide Examples" toggle has been removed from here as per instructions
 
 def list_view(entries):
-    print(f"Listing {len(entries)} entries")  # Print the number of entries for debugging
+    print(
+        f"Listing {len(entries)} entries"
+    )  # Print the number of entries for debugging
     st.title("JSON Lines Viewer")
     for entry in entries:
         display_list_view(entry)
@@ -260,9 +335,6 @@ def main(filename):
         st.session_state.entry_view = None
     if "feedback_view" not in st.session_state:
         st.session_state.feedback_view = None
-
-    # Move the "Show Examples" checkbox to the top of the main function
-    st.session_state.show_examples = st.checkbox("Show Examples")
 
     if st.session_state.feedback_view:
         display_entry(
