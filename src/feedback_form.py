@@ -131,7 +131,6 @@ def display_entry(entry, source_filename, feedback=None):
 
     feedback_fields = {
         "Rewritten body": "Either leave this empty or rewrite the whole body field. This takes precedence over other feedback fields.",
-        "Discard the question?": "Either leave this empty, or write why we’re discarding the question, e.g. because of the issues with the title.",
         "Bad included information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
         "Unintuitive/wrong resolution criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
         "Ambiguities": "Specify any ambiguous aspects of the question that could affect its resolution.",
@@ -160,6 +159,23 @@ def display_entry(entry, source_filename, feedback=None):
         else:
             for field, description in feedback_fields.items():
                 feedback_data[field] = st.text_area(field, "", help=description)
+
+            discard_question = st.radio(
+                "Discard the question?",
+                ('NO', 'YES'),
+                index=0,
+                help="Select YES if the question should be discarded, otherwise select NO."
+            )
+
+            if discard_question == 'YES':
+                feedback_data['Discard reason'] = st.text_area("Reason for discarding the question", "", help="Explain why the question is being discarded.")
+            else:
+                feedback_data['Discard reason'] = ""
+
+            show_examples = st.checkbox("Show Examples")
+            if show_examples:
+                for field, example in feedback_fields.items():
+                    st.markdown(f"**Example for '{field}':** {example}")
 
             if st.button("Submit Feedback"):
                 write_feedback(entry.get("id", "N/A"), feedback_data, source_filename)
@@ -202,11 +218,7 @@ def display_list_view(entry):
                 pass
         st.empty()
 
-    # Add the "Show/Hide Examples" toggle to the third column
-    with col3:
-        if st.checkbox("Show Examples", key=f"toggle_examples{entry.get('id', 'N/A')}"):
-            st.text(entry.get("examples", "No examples provided"))
-
+    # The "Show/Hide Examples" toggle has been removed from here as per instructions
 
 def list_view(entries):
     st.title("JSON Lines Viewer")
