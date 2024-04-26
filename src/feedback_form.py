@@ -133,14 +133,14 @@ def display_entry(entry, source_filename, feedback=None):
     feedback_data = {}
 
     feedback_fields = {
-        "Rewritten body": "Either leave this empty or rewrite the whole body field. This takes precedence over other feedback fields.",
-        "Bad included information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
-        "Unintuitive/wrong resolution criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
-        "Ambiguities": "Specify any ambiguous aspects of the question that could affect its resolution.",
-        "Too specific criteria / edge cases": "Are some edge cases extremely low probability, in the sense that it’s clear the question would resolve to N/A if something like this happens?",
-        "Edge cases not covered": "Specify any edge cases that the question does not cover but should.",
-        "General feedback": "Write anything not covered above.",
-        "Formatting issues": "Is some field formatted in an unusual way? Is some field missing?"
+        "rewritten_body": "Either leave this empty or rewrite the whole body field. This takes precedence over other feedback fields.",
+        "bad_included_information": "Is there some information irrelevant, time-specific, or is there editorializing? Paste the relevant bit from the body field, and optionally add a comment why it’s bad, and preferably a fix.",
+        "unintuitive_wrong_resolution_criteria": "Are some items in body unexpected, given the title? Would it be better for downstream consistency checks if the question specified resolution as N/A instead of Yes/No for some edge cases, or vice versa?",
+        "ambiguities": "Specify any ambiguous aspects of the question that could affect its resolution.",
+        "too_specific_criteria_edge_cases": "Are some edge cases extremely low probability, in the sense that it’s clear the question would resolve to N/A if something like this happens?",
+        "edge_cases_not_covered": "Specify any edge cases that the question does not cover but should.",
+        "general_feedback": "Write anything not covered above.",
+        "formatting_issues": "Is some field formatted in an unusual way? Is some field missing?"
     }
 
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), source_filename)
@@ -167,14 +167,18 @@ def display_entry(entry, source_filename, feedback=None):
                 show_examples = st.session_state.get('show_examples', False)
                 print(f"'Show Examples' checkbox state: {show_examples}")  # Debugging print statement
                 if show_examples:
-                    if field == "Rewritten body":
+                    if field == "rewritten_body":
                         st.markdown("Example: 'What is the probability that the current President/Prime Minister of Spain will be re-elected in the next general election?' depends too much on the date when the question is asked.")
-                    elif field == "Bad included information":
+                    elif field == "bad_included_information":
                         st.markdown("Example: 'GPT-4 starts out impressively but gets lost and ends up with a wrong answer (min=3, max=4) and no amount of coaxing yields a definitive analysis.'")
-                    elif field == "Unintuitive/wrong resolution criteria":
+                    elif field == "unintuitive_wrong_resolution_criteria":
                         st.markdown("Example: 'If the 2028 Olympics are canceled, postponed, or otherwise not completed, the question will resolve as No.' should be 'will resolve as N/A' for questions dealing with Olympic medal tallies.")
-                    # Add more elif statements for each feedback category with the corresponding examples
-                    # ...
+                    elif field == "too_specific_criteria_edge_cases":
+                        st.markdown("Example: “If Japan stops existing, the question will resolve as N/A”.")
+                    elif field == "ambiguities":
+                        st.markdown("Example: “Should there be any significant changes to the methodology of how carbon emissions are measured between the time of the question's posting and the resolution date, such changes must be taken into account to ensure a fair assessment of the emissions reduction target.” should be removed and replaced with “If there is a major change in the methodology of how carbon emissions are measured before the resolution date, and it is not possible to measure carbon emissions according to the methodology, this question resolves N/A.”")
+                        st.markdown("Non-example: Criteria such as “If there are conflicting reports about the fatalities or the nature of military engagement, the question will be resolved by a panel of three experts in international conflict, chosen in good faith by the question author, who will determine whether the criteria have been met based on the preponderance of evidence.” is good if the question cannot specify a trustworthy source for quantitative criteria (such as fatalities in an armed conflict).")
+                    # ... (rest of the conditional logic remains unchanged)
                 # Create a text area for feedback input
                 feedback_data[field] = st.text_area("", key=f"feedback_{field}", help=description)
 
