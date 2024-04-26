@@ -128,9 +128,6 @@ field_order = [
 def display_entry(entry, source_filename, feedback=None):
     print(f"Displaying entry details for: {entry}")  # Print the entry details for debugging
 
-    # Show Examples checkbox at the top
-    show_examples = st.checkbox("Show Examples")
-
     st.markdown("### Entry Details")
 
     feedback_data = {}
@@ -163,12 +160,15 @@ def display_entry(entry, source_filename, feedback=None):
         if feedback:
             display_feedback(feedback)
         else:
-            for field, description in feedback_fields.items():
-                st.markdown(f"**{field}:**")
-                # Display examples right below the title of each feedback category
-                if show_examples:
-                    st.markdown(f"*Example:* {description}")
-                feedback_data[field] = st.text_area(field, "", help=description)
+            # Adjust the conditional logic for displaying examples
+            if st.session_state.show_examples:
+                for field, description in feedback_fields.items():
+                    st.markdown(f"**{field}:**\n\n*Example:* {description}")
+                    feedback_data[field] = st.text_area("", "", help=description)
+            else:
+                for field, description in feedback_fields.items():
+                    st.markdown(f"**{field}:**")
+                    feedback_data[field] = st.text_area("", "", help=description)
 
             discard_question = st.radio(
                 "Discard the question?",
@@ -248,6 +248,9 @@ def main(filename):
         st.session_state.entry_view = None
     if "feedback_view" not in st.session_state:
         st.session_state.feedback_view = None
+
+    # Move the "Show Examples" checkbox to the top of the main function
+    st.session_state.show_examples = st.checkbox("Show Examples")
 
     if st.session_state.feedback_view:
         display_entry(
