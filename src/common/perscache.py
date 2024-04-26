@@ -34,23 +34,24 @@ import os
 import pickle
 from abc import ABC, abstractmethod
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
-from pydantic import BaseModel
+
 import cloudpickle
 import redis
 from beartype import beartype
-from beartype.typing import Any, Callable, Iterable, Iterator, Optional, Union, Type
+from beartype.typing import Any, Callable, Iterable, Iterator, Optional, Type, Union
 from icontract import require
-
+from pydantic import BaseModel
 
 from .datatypes import (
+    ForecastingQuestion,
+    ForecastingQuestion_stripped,
     PlainText,
     Prob,
     Prob_cot,
-    ForecastingQuestion_stripped,
-    ForecastingQuestion,
     ValidationResult,
 )
 

@@ -18,13 +18,6 @@ class Prob(BaseModel):
             raise ValueError("Probability must be between 0 and 1.")
         return v
 
-    def to_dict(self):
-        return {"prob": self.prob}
-
-    @classmethod
-    def from_dict(cls, data):
-        return cls(prob=data["prob"])
-
 
 class Prob_cot(Prob):
     chain_of_thought: str
