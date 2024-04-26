@@ -127,6 +127,10 @@ field_order = [
 
 def display_entry(entry, source_filename, feedback=None):
     print(f"Displaying entry details for: {entry}")  # Print the entry details for debugging
+
+    # Show Examples checkbox at the top
+    show_examples = st.checkbox("Show Examples")
+
     st.markdown("### Entry Details")
 
     feedback_data = {}
@@ -160,6 +164,10 @@ def display_entry(entry, source_filename, feedback=None):
             display_feedback(feedback)
         else:
             for field, description in feedback_fields.items():
+                st.markdown(f"**{field}:**")
+                # Display examples right below the title of each feedback category
+                if show_examples:
+                    st.markdown(f"*Example:* {description}")
                 feedback_data[field] = st.text_area(field, "", help=description)
 
             discard_question = st.radio(
@@ -173,11 +181,6 @@ def display_entry(entry, source_filename, feedback=None):
                 feedback_data['Discard reason'] = st.text_area("Reason for discarding the question", "", help="Explain why the question is being discarded.")
             else:
                 feedback_data['Discard reason'] = ""
-
-            show_examples = st.checkbox("Show Examples")
-            if show_examples:
-                for field, example in feedback_fields.items():
-                    st.markdown(f"**Example for '{field}':** {example}")
 
             if st.button("Submit Feedback"):
                 write_feedback(entry.get("id", "N/A"), feedback_data, source_filename)
