@@ -14,6 +14,7 @@ def load_data(filename):
                 data.append(json.loads(line))
     except FileNotFoundError:
         st.error("File not found.")
+    print(f"Data loaded: {data}")  # Print the loaded data for debugging
     return data
 
 
@@ -125,6 +126,7 @@ field_order = [
 
 
 def display_entry(entry, source_filename, feedback=None):
+    print(f"Displaying entry details for: {entry}")  # Print the entry details for debugging
     st.markdown("### Entry Details")
 
     feedback_data = {}
@@ -187,8 +189,11 @@ def go_back():
 
 
 def display_list_view(entry):
+    print(f"Displaying entry: {entry.get('id', 'N/A')}")  # Print the entry ID for debugging
     previous_feedback = has_previous_feedback(entry.get("id", "N/A"), DEFAULT_FILE)
-    st.markdown(f"\n{entry['title']}\n")
+    # Use 'text' as the title if 'title' is not present
+    entry_title = entry.get('title', entry.get('text', 'No title available'))
+    st.markdown(f"\n{entry_title}\n")
 
     # Create a layout with three columns
     col1, col2, col3 = st.columns(3)
@@ -221,6 +226,7 @@ def display_list_view(entry):
     # The "Show/Hide Examples" toggle has been removed from here as per instructions
 
 def list_view(entries):
+    print(f"Listing {len(entries)} entries")  # Print the number of entries for debugging
     st.title("JSON Lines Viewer")
     for entry in entries:
         display_list_view(entry)
