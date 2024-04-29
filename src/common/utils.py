@@ -5,15 +5,6 @@ import jsonlines
 from copy import deepcopy
 import hashlib
 from pydantic import BaseModel
-from pathlib import Path
-
-
-def get_project_root() -> Path:
-    return Path(__file__).parent.parent
-
-
-def get_data_path() -> Path:
-    return get_project_root() / "data"
 
 
 def format_float(x) -> str:
@@ -86,7 +77,7 @@ def write_jsonl_from_str(path: str, data: List[str], append: bool = False):
 
 async def write_jsonl_async(path: str, data: List[dict], append: bool = True):
     mode = "a" if append else "w"
-    async with aiofiles.open(path, mode=mode) as file:
+    async with aiofiles.open(path, mode=mode, encoding="utf-8") as file:
         for item in data:
             json_line = json.dumps(item) + "\n"
             await file.write(json_line)
@@ -94,7 +85,7 @@ async def write_jsonl_async(path: str, data: List[dict], append: bool = True):
 
 async def write_jsonl_async_from_str(path: str, data: List[str], append: bool = False):
     mode = "a" if append else "w"
-    async with aiofiles.open(path, mode=mode) as file:
+    async with aiofiles.open(path, mode=mode, encoding="utf-8") as file:
         for item in data:
             await file.write(item + "\n")
 
