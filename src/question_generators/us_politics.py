@@ -105,12 +105,60 @@ write_questions(questions, "politics_qs_3.jsonl")
 # %%
 questions = load_questions(DATA_PATH / "fq" / "synthetic" / "politics_qs_3.jsonl")
 
+
 # %%
-from collections import defaultdict
+# Remove duplicates with cosine similarity of embeddings
+from scipy.spatial.distance import cosine
 
-grouped_questions = defaultdict(list)
-for q in questions:
-    grouped_questions[q.title].append(q)
 
-questions = [grouped_questions[k][0] for k in grouped_questions]
-write_questions(questions, "politics_qs_3_deduped.jsonl")
+def cosine_similarity(
+    query_embedding: list[float], embeddings: list[list[float]]
+) -> list[list]:
+    distances = [cosine(query_embedding, embedding) for embedding in embeddings]
+    return distances
+
+
+# %%
+EMBEDDING_MODEL = "text-embedding-3-small"
+async_client, _ = get_client(MODEL, use_async=True)
+
+
+async def get_embedding(text: str) -> list[float]:
+    response = await async_client.client.embeddings.create(
+        input=text, model=EMBEDDING_MODEL
+    )
+    return response.data[0].embedding
+
+
+# %%
+import asyncio
+
+
+async def get_distances(embeddings):
+    embeddings = await asyncio.gather(*[get_embedding(q.title) for q in questions])
+    distances = [cosine_similarity(e, embeddings) for e in embeddings]
+    return distances
+
+
+async def deduplicate(questions):
+    distances = await get_distances(questions)
+    ids_to_remove = set()
+
+    for i, dist in enumerate(distances):
+        # Find indices of similar questions based on a threshold distance
+        similar_indices = {
+            j for j, distance in enumerate(dist) if i != j and distance < 0.1
+        }
+        # Only update ids_to_remove if i is not already set to be removed
+        if i not in ids_to_remove:
+            ids_to_remove.update(similar_indices)
+
+    # Filter questions by removing those with indices in ids_to_remove
+    filtered_questions = [
+        question for idx, question in enumerate(questions) if idx not in ids_to_remove
+    ]
+    return filtered_questions
+
+
+# deduped_questions = await deduplicate(questions)
+# write_questions(deduped_questions, "politics_qs_3_deduped.jsonl")
