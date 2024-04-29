@@ -264,31 +264,32 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
-    def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
+    async def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
         results = []
-        for line in jsonlines.open(self.path):
-            print("START")
-            print(f"line: {line}")
-            line_obj = self.TupleFormat.model_validate(line)
-            answers = forecaster.elicit(line_obj, **kwargs)
-            print(answers)
-            if any([a is None for a in answers.values()]):
-                print("ERROR: Some answers are None!")
-                continue
-            loss = self.violation(answers)
-            res_bool = self.check(answers)
-            res = {True: "Passed", False: "Failed"}[res_bool]
-            print(f"Violation: {loss}")
-            print(f"Check result: {res}")
-            print("")
-            results.append(
-                {
+        async with jsonlines.open(self.path, mode='a') as writer:
+            for line in jsonlines.open(self.path):
+                print("START")
+                print(f"line: {line}")
+                line_obj = self.TupleFormat.model_validate(line)
+                answers = forecaster.elicit(line_obj, **kwargs)
+                print(answers)
+                if any([a is None for a in answers.values()]):
+                    print("ERROR: Some answers are None!")
+                    continue
+                loss = self.violation(answers)
+                res_bool = self.check(answers)
+                res = {True: "Passed", False: "Failed"}[res_bool]
+                print(f"Violation: {loss}")
+                print(f"Check result: {res}")
+                print("")
+                result = {
                     "line": line,
                     "violation": loss,
                     "check": res_bool,
                     "check_result": res,
                 }
-            )
+                results.append(result)
+                await writer.write(result)
         return results
 
 
