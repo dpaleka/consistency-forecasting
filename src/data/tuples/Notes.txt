@@ -1,0 +1,33 @@
+AndChecker 
+"Q:" question is incorrect, it just repeats P, "P_and_Q" looks fine though
+Questions look fine though
+
+AndOrChecker
+looks fine, but why do we have And, Or, and AndOr?  It just seems repeated.
+
+ButChecker
+Missing "Q" question tuple
+question quality still good
+
+CondChecker
+Missing "Q"
+
+CondCondChecker
+Missing Q and R tuples
+P_and_Q_and_R:  The questions generally are missing "R", some also missing "Q".  Generally for these only two of the questions are ANDed and the third is missing.
+
+NegChecker
+Some of the questions are inverting properties of the "body" as opposed to just the title
+{"P":{"id":"25f6ca4b-33d8-4bfc-b893-0862c163ebce","title":"Will we reach the island of stability by 2050?","body":"Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain \"magic numbers\" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we create an isotope of an element that has more than 110 protons, that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive the half-life of the isotope must be verified by an independent scientific team to be greater than one day prior to 2050.\n","resolution_date":"2050-01-01T00:00:00Z","question_type":"binary","data_source":"synthetic_inst","url":null,"metadata":null,"resolution":null},"not_P":{"id":"503be751-35fa-4125-869f-24b65303c155","title":"Will we not create an isotope of an element that has more than 110 protons, that has a half-life of at least one day (86,400 seconds) prior to 2050?","body
+
+SymmetryAndChecker
+These look mostly good
+
+ParaphraseChecker
+These look pretty good too, good use of using the body to rephrase questions
+
+SymmetryOrChecker
+Looks good
+
+
+
