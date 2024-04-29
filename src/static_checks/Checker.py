@@ -374,16 +374,16 @@ class AndChecker(Checker):
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
-        P = Trivial().instantiate_sync(base_sentences, **kwargs)
-        Q = Trivial().instantiate_sync(base_sentences, **kwargs)
+        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
-        P = await Trivial().instantiate(base_sentences, **kwargs)
-        Q = await Trivial().instantiate(base_sentences, **kwargs)
+        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
 
