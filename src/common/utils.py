@@ -5,7 +5,15 @@ import jsonlines
 from copy import deepcopy
 import hashlib
 from pydantic import BaseModel
+from pathlib import Path
 
+
+def get_project_root() -> Path:
+    return Path(__file__).parent.parent
+
+
+def get_data_path() -> Path:
+    return get_project_root() / "data"
 
 def format_float(x) -> str:
     if isinstance(x, float) or isinstance(x, int):
