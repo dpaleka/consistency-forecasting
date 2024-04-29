@@ -62,7 +62,7 @@ def generate_questions(
 
 
 # %%
-response = generate_questions(5, 5)
+response = generate_questions(5, [e.model_dump_json() for e in question_examples])
 response
 
 
