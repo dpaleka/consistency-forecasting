@@ -14,7 +14,7 @@ from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
 from pydantic import BaseModel, field_validator
 from common.datatypes import ForecastingQuestion, Prob, ValidationResult
-from common.utils import write_jsonl_async_from_str
+from common.utils import write_jsonl_async_from_str, get_data_path
 from common.llm_utils import parallelized_call, answer, answer_sync
 from .checker_prompts import (
     neg_validation_prompt,
@@ -41,7 +41,7 @@ class Checker(ABC):
     def __init__(self, tolerance=0.001, path=None):
         self.tolerance = tolerance
         if path is None:
-            self.path = f"src/data/tuples/{self.__class__.__name__}.jsonl"
+            self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
         else:
             self.path = path
 
@@ -252,7 +252,7 @@ class Checker(ABC):
         return self.max_min_arbitrage(answers)[1]
 
     def check(self, answers: dict[str, Any]) -> bool:
-        return self.violation(answers) < self.tolerance
+        return bool(self.violation(answers) < self.tolerance)
 
     def elicit_and_violation(
         self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
@@ -264,31 +264,44 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
+    """
+    Checker.test() should log to a file e.g. data/tuples_elicit/...jsonl with the tuples copied over with the probabilities added as an extra field for each forecasting question and the results of the consistency check as a field for the tuple itself.
+    """
+
     def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
         results = []
-        for line in jsonlines.open(self.path):
-            print("START")
-            print(f"line: {line}")
-            line_obj = self.TupleFormat.model_validate(line)
-            answers = forecaster.elicit(line_obj, **kwargs)
-            print(answers)
-            if any([a is None for a in answers.values()]):
-                print("ERROR: Some answers are None!")
-                continue
-            loss = self.violation(answers)
-            res_bool = self.check(answers)
-            res = {True: "Passed", False: "Failed"}[res_bool]
-            print(f"Violation: {loss}")
-            print(f"Check result: {res}")
-            print("")
-            results.append(
-                {
+        log_path = (
+            get_data_path()
+            / "elicit_tuple_logs"
+            / f"{self.__class__.__name__}_test_log.jsonl"
+        )
+        with jsonlines.open(log_path, mode="a") as writer:
+            for line in jsonlines.open(self.path):
+                print("START")
+                print(f"line: {line}")
+                line_obj = self.TupleFormat.model_validate(line)
+                answers = forecaster.elicit(line_obj, **kwargs)
+                print(answers)
+                if any([a is None for a in answers.values()]):
+                    print("ERROR: Some answers are None!")
+                    continue
+                loss = self.violation(answers)
+                res_bool = self.check(answers)
+                res = {True: "Passed", False: "Failed"}[res_bool]
+                print(f"Violation: {loss}")
+                print(f"Check result: {res}")
+                print("")
+                # get the probability into line for each question
+                for question, prob in answers.items():
+                    line[question]["elicited_prob"] = prob
+                result = {
                     "line": line,
                     "violation": loss,
                     "check": res_bool,
                     "check_result": res,
                 }
-            )
+                results.append(result)
+                writer.write(result)
         return results
 
 
