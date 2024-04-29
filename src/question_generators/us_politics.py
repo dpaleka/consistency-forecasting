@@ -47,13 +47,11 @@ MODEL = "gpt-3.5-turbo"
 client, _ = get_client(MODEL, use_async=False)
 
 
-def generate_questions(
-    num_questions: int = 5, examples: list[dict] = None
-) -> list[str]:
+def generate_questions(num_questions: int = 5, examples: list[str] = None) -> list[str]:
     examples = examples or []
     messages = [
         {"role": "user", "content": instruction.format(num_examples=num_questions)},
-        {"role": "user", "content": str(examples)},
+        {"role": "user", "content": "\n".join(examples)},
     ]
     response = query_api_chat_sync(
         model=MODEL, messages=messages, response_model=ForecastingQuestions
@@ -62,7 +60,11 @@ def generate_questions(
 
 
 # %%
-response = generate_questions(5, [e.model_dump_json() for e in question_examples])
+question_examples_json = [e.model_dump_json(exclude=["id"]) for e in question_examples]
+question_examples_json
+
+# %%
+response = generate_questions(5, question_examples_json)
 response
 
 
@@ -77,7 +79,7 @@ def write_questions(questions: list[ForecastingQuestion], file_name: str):
 def generate_questions_batched(
     questions_per_batch: int = 1, num_batches: int = 1
 ) -> list[ForecastingQuestion]:
-    questions_json = [e.model_dump_json() for e in question_examples]
+    questions_json = [e.model_dump_json(exclude=["id"]) for e in question_examples]
     questions = []
     for _ in range(num_batches):
         try:
@@ -85,7 +87,9 @@ def generate_questions_batched(
         except Exception as e:
             print(e)
             break
-        questions_json += [q.model_dump_json() for q in response.questions]
+        questions_json += [
+            q.model_dump_json(exclude=["id"]) for q in response.questions
+        ]
         questions += response.questions
     return questions
 
