@@ -266,7 +266,8 @@ class Checker(ABC):
 
     async def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
         results = []
-        async with jsonlines.open(self.path, mode='a') as writer:
+        log_path = f"src/data/logs/{self.__class__.__name__}_test_log.jsonl"  # New log file path
+        async with jsonlines.open(log_path, mode='a') as writer:  # Use the new log file path
             for line in jsonlines.open(self.path):
                 print("START")
                 print(f"line: {line}")

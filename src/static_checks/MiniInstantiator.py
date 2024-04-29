@@ -104,9 +104,13 @@ class MiniInstantiator(ABC):
         self, base_sentences: dict[str, ForecastingQuestion]
     ) -> dict[str, bool | None]:
         resolutions = {key: base_sentences[key].resolution for key in base_sentences}
-        if all([res is not None for res in resolutions.values()]):
-            return self.resolution_(resolutions)
-        return {k: None for k in self.OutputFormat.model_fields}
+        processed_resolutions = {}
+        for key, res in resolutions.items():
+            if res is not None:
+                processed_resolutions[key] = self.resolution_({key: res})[key]
+            else:
+                processed_resolutions[key] = None
+        return processed_resolutions
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
