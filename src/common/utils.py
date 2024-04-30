@@ -15,6 +15,7 @@ def get_project_root() -> Path:
 def get_data_path() -> Path:
     return get_project_root() / "data"
 
+
 def format_float(x) -> str:
     if isinstance(x, float) or isinstance(x, int):
         return "{:.3f}".format(x)
