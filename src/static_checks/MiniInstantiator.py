@@ -2,15 +2,18 @@
 from common.utils import shallow_dict
 from datetime import datetime
 from abc import ABC, abstractmethod
-from typing import Type, Any, Optional, Self # noqa
+from typing import Type, Any, Optional, Self  # noqa
 from pydantic import BaseModel, create_model, field_validator
-from common.utils import write_jsonl_async_from_str # noqa
-from common.llm_utils import answer, answer_sync, Example, parallelized_call # noqa
-from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob # noqa
-from question_generators import question_formatter 
+from common.utils import write_jsonl_async_from_str  # noqa
+from common.llm_utils import answer, answer_sync, Example, parallelized_call  # noqa
+from common.datatypes import (
+    ForecastingQuestion,
+    ForecastingQuestion_stripped,
+)  # noqa
+from question_generators import question_formatter
+
 
 class MiniInstantiator(ABC):
-
     def __init__(self):
         pass
 
@@ -125,7 +128,11 @@ class MiniInstantiator(ABC):
         )
 
     async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], validate_before = False, n_validation= 3, **kwargs
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        validate_before=False,
+        n_validation=3,
+        **kwargs,
     ) -> "Self.OutputFormat":
         if validate_before:
             for i in range(n_validation):
@@ -145,7 +152,7 @@ class MiniInstantiator(ABC):
                 if all([res is not None for res in fqs.values()]):
                     break
             return self.OutputFormat(**fqs)
-        else:                            
+        else:
             title_body = await self.title_body(base_sentences, **kwargs)
             return self.OutputFormat(
                 **{
@@ -161,7 +168,6 @@ class MiniInstantiator(ABC):
 
 
 class Trivial(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
 
@@ -183,7 +189,6 @@ class Trivial(MiniInstantiator):
 
 
 class Neg(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
 
@@ -197,7 +202,6 @@ class Neg(MiniInstantiator):
         not_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant. I will give you a forecasting question with Yes/No "
             "answer. You should then give me the NEGATION of the question, i.e. the question that "
@@ -236,19 +240,18 @@ class Neg(MiniInstantiator):
 
 
 class And(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
@@ -257,7 +260,6 @@ class And(MiniInstantiator):
         P_and_Q: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
             "answers. You should then give me the question that would be answered YES if both "
@@ -334,19 +336,18 @@ class And(MiniInstantiator):
 
 
 class Or(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
@@ -355,7 +356,6 @@ class Or(MiniInstantiator):
         P_or_Q: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
             "answers. You should then give me the question that would be answered YES if either "
@@ -426,9 +426,16 @@ class Or(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"P_or_Q": resolutions["P"] or resolutions["Q"]}
 
+    def resolution(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
+        # a bit more complicated than for other instantiators
+        if True in resolutions:
+            return {"P_or_Q": True}
+        elif None in resolutions:
+            return {"P_or_Q": None}
+        return {"P_or_Q": False}
+
 
 class Paraphrase(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
 
@@ -442,7 +449,6 @@ class Paraphrase(MiniInstantiator):
         para_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant. I will give you a forecasting question with Yes/No "
             "answer. You should then give me a paraphrased version of the question that "
@@ -479,19 +485,18 @@ class Paraphrase(MiniInstantiator):
 
 
 class Conditional(MiniInstantiator):
-
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
 
         @field_validator("P")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
 
         @field_validator("Q")
-        def check_question_type(cls, value): # noqa
+        def check_question_type(cls, value):  # noqa
             if value.question_type != "binary":
                 raise ValueError("Question type must be binary")
             return value
@@ -500,7 +505,6 @@ class Conditional(MiniInstantiator):
         Q_given_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant. I will give you two forecasting questions P and Q with Yes/No "
             "answers. You should then give me a question that expresses their *conditional* expression"
@@ -550,72 +554,71 @@ class Conditional(MiniInstantiator):
 
 
 class Consequence(MiniInstantiator):
-    
-        class BaseSentenceFormat(BaseModel):
-            P: ForecastingQuestion
-    
-            @field_validator("P")
-            def check_question_type(cls, value):
-                if value.question_type != "binary":
-                    raise ValueError("Question type must be binary")
-                return value
-        
-        class OutputFormat(BaseModel):
-            cons_P: ForecastingQuestion
-    
-        def __init__(self):
-    
-            self.preface = (
-                "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
-                "answer. You should then give me a question that expresses any logical consequence "
-                "of P. That is, a question that is necessarily true if P is true. If P is false, "
-                "the question could be either true or false. Make sure it is a perfect logical consequence."
-            )
-    
-            self.examples = [
-                Example(
-                    user=self.BaseSentenceFormat_stripped(
-                        P=ForecastingQuestion_stripped(
-                            title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
-                            body=(
-                                "Resolves YES if the spot price of Bitcoin against USD is more than "
-                                "100,000 on 1st January 2025. Resolves NO otherwise."
-                            ),
-                        )
-                    ),
-                    assistant=self.OutputFormat_stripped(
-                        cons_P=ForecastingQuestion_stripped(
-                            title="Will the price of Bitcoin be above $70,000 on 1st January 2025?",
-                            body=(
-                                "Resolves YES if the spot price of Bitcoin against USD is more than "
-                                "70,000 on 1st January 2025. Resolves NO otherwise."
-                            ),
-                        )
-                    ),
+    class BaseSentenceFormat(BaseModel):
+        P: ForecastingQuestion
+
+        @field_validator("P")
+        def check_question_type(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+    class OutputFormat(BaseModel):
+        cons_P: ForecastingQuestion
+
+    def __init__(self):
+        self.preface = (
+            "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
+            "answer. You should then give me a question that expresses any logical consequence "
+            "of P. That is, a question that is necessarily true if P is true. If P is false, "
+            "the question could be either true or false. Make sure it is a perfect logical consequence."
+        )
+
+        self.examples = [
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                        body=(
+                            "Resolves YES if the spot price of Bitcoin against USD is more than "
+                            "100,000 on 1st January 2025. Resolves NO otherwise."
+                        ),
+                    )
                 ),
-                Example(
-                    user=self.BaseSentenceFormat_stripped(
-                        P=ForecastingQuestion_stripped(
-                            title="Will Shinzo Abe be elected US president in 2024?",
-                            body=(
-                                "Resolves YES if Shinzo Abe is elected US president in 2024. "
-                                "Resolves NO otherwise."
-                            ),
-                        )
-                    ),
-                    assistant=self.OutputFormat_stripped(
-                        cons_P=ForecastingQuestion_stripped(
-                            title=(
-                                "Will someone who is not a natural-born US citizen be elected US "
-                                "president in 2024?"),
-                            body=(
-                                "Resolves YES if someone who is not a natural-born US citizen is "
-                                "elected US president in 2024. Resolves NO otherwise."
-                            ),
-                        )
-                    ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will the price of Bitcoin be above $70,000 on 1st January 2025?",
+                        body=(
+                            "Resolves YES if the spot price of Bitcoin against USD is more than "
+                            "70,000 on 1st January 2025. Resolves NO otherwise."
+                        ),
+                    )
                 ),
-            ]
-        
-        def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
-            return {"cons_P": resolutions["P"]}
+            ),
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will Shinzo Abe be elected US president in 2024?",
+                        body=(
+                            "Resolves YES if Shinzo Abe is elected US president in 2024. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title=(
+                            "Will someone who is not a natural-born US citizen be elected US "
+                            "president in 2024?"
+                        ),
+                        body=(
+                            "Resolves YES if someone who is not a natural-born US citizen is "
+                            "elected US president in 2024. Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),
+        ]
+
+    def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
+        return {"cons_P": resolutions["P"]}
