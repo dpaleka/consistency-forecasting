@@ -233,8 +233,8 @@ def query_api_chat_sync(
     model: str | None = None,
     **kwargs,
 ) -> BaseModel:
-    # Log the messages array to debug the BadRequestError
-    print("Messages array being sent to OpenAI API:", messages)
+    if verbose:
+        print("Messages array being sent to OpenAI API:", messages, "\n")
 
     default_options = {
         "model": "gpt-4-1106-preview",

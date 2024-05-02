@@ -147,7 +147,6 @@ def pydantic_response_dumps(data: Any) -> bytes:
             "data": data["value"].model_dump(mode="json"),
         }
         # Replace the original 'value' with its serialized form
-        print(f"model_data: {model_data}")
         data = {**data, "value": model_data}
 
     if (
@@ -632,6 +631,7 @@ class Cache:
         value_wrapper: ValueWrapper = None,
     ):
         if os.getenv("NO_CACHE"):
+            print("\n\033[1m NO_CACHE \033[0m\n")
             pass
         self.serializer = serializer or CloudPickleSerializer()
         self.storage = storage or LocalFileStorage()
