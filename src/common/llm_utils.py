@@ -149,7 +149,7 @@ def is_huggingface_local(model: str) -> bool:
 
 def get_client(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI|OpenAI|MistralAsyncClient|MistralClient, str]:
+) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
     if is_openai(model):
         return (
             get_async_openai_client() if use_async else get_openai_client(),
@@ -190,7 +190,6 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-
 @cache
 async def query_api_chat(
     messages: list[dict[str, str]],
@@ -209,7 +208,7 @@ async def query_api_chat(
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
-    } 
+    }
     options = default_options | kwargs
     options["model"] = model or options["model"]
     client, client_name = get_client(options["model"], use_async=True)
@@ -218,7 +217,7 @@ async def query_api_chat(
 
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
-        
+
     response = await client.chat.completions.create(
         messages=messages,
         **options,
@@ -226,7 +225,6 @@ async def query_api_chat(
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
-        
 
 
 def query_api_chat_sync(
@@ -279,7 +277,11 @@ def prepare_messages(
             example.assistant = example.assistant.model_dump_json()
         messages.append({"role": "user", "content": example.user})
         # Convert assistant's response to string if it's not already
-        assistant_content = str(example.assistant) if isinstance(example.assistant, (float, int)) else example.assistant
+        assistant_content = (
+            str(example.assistant)
+            if isinstance(example.assistant, (float, int))
+            else example.assistant
+        )
         messages.append({"role": "assistant", "content": assistant_content})
     if isinstance(prompt, BaseModel):
         prompt = prompt.model_dump_json()
@@ -377,6 +379,17 @@ async def parallelized_call(
 
     tasks = [call_func(sem, func, d) for d in data]
     return await asyncio.gather(*tasks)
+
+
+async def get_embedding(
+    text: str,
+    embedding_model: str = "text-embedding-3-small",
+    model: str = "gpt-3.5-turbo",
+) -> list[float]:
+    # model is largely ignored because we currently can't use the same model for both the embedding and the completion
+    client, _ = get_client(model, use_async=True)
+    response = await client.client.embeddings.create(input=text, model=embedding_model)
+    return response.data[0].embedding
 
 
 # %%
