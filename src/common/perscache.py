@@ -54,6 +54,7 @@ from .datatypes import (
     Prob,
     Prob_cot,
     ValidationResult,
+    BodyAndDate,
 )
 
 perscache_supported_models = {
@@ -64,6 +65,7 @@ perscache_supported_models = {
     "ForecastingQuestion": ForecastingQuestion,
     "ForecastingQuestions": ForecastingQuestions,
     "ValidationResult": ValidationResult,
+    "BodyAndDate": BodyAndDate,
 }
 
 
@@ -156,7 +158,12 @@ def pydantic_response_dumps(data: Any) -> bytes:
     ):
         # Serialize the 'response_model' which is a class type
         # Assumption: it ends with something in known_models
-        data["kwargs"]["response_model"] = data["kwargs"]["response_model"].__name__
+        if data["kwargs"]["response_model"].__name__ in perscache_supported_models:
+            data["kwargs"]["response_model"] = data["kwargs"]["response_model"].__name__
+        else:
+            raise NotImplementedError(
+                f"Response model not registered in {__file__}: {data['kwargs']['response_model']}"
+            )
 
     elif (
         isinstance(data, dict)
@@ -166,9 +173,17 @@ def pydantic_response_dumps(data: Any) -> bytes:
     ):
         # Serialize the 'response_model' which is a class type
         # Assumption: it ends with something in known_models
-        data["bound_args"]["kwargs"]["response_model"] = data["bound_args"]["kwargs"][
-            "response_model"
-        ].__name__
+        if (
+            data["bound_args"]["kwargs"]["response_model"].__name__
+            in perscache_supported_models
+        ):
+            data["bound_args"]["kwargs"]["response_model"] = data["bound_args"][
+                "kwargs"
+            ]["response_model"].__name__
+        else:
+            raise NotImplementedError(
+                f"Response model not registered in {__file__}: {data['bound_args']['kwargs']['response_model']}"
+            )
 
     return json.dumps(data).encode("utf-8")
 
@@ -190,6 +205,10 @@ def pydantic_response_loads(
             # Deserialize the 'value' field using the appropriate Pydantic model
             model_class = known_models[class_name]
             data_dict["value"] = model_class.model_validate(data_dict["value"]["data"])
+        else:
+            raise NotImplementedError(
+                f"Response model not registered in {__file__}: {class_name}"
+            )
 
     if (
         "kwargs" in data_dict
