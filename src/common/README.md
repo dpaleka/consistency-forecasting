@@ -10,7 +10,7 @@ Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary.
 ## LLM API requests
 For standard queries, prefer using methods in the `llm_utils.py` module over dealing with the `openai` package directly.
 Most likely, the only methods you're going to need in the first weeks are:
-- `query_api_chat_sync`: takes `model : str` and `messages : list[dict[str, str]]` in OpenAI chat format, and queries the corresponding model. Returns the `response_text : str`. It behaves like a normal function.
+- `query_api_chat_sync`: takes `model : str` and `messages : list[dict[str, str]]` in OpenAI chat format, and queries the corresponding model. Returns the `response_text : str`. It behaves like a normal function. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
 - `query_api_chat`: async version of the above. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
 - `parallelized_request`: run some async `func` over `data: list[str]`, "in parallel". Usually the `func` will create `messages` and then call `query_api_chat`; but you can provide an arbitrary `func` you implemented. Use when just running a for loop is too slow for you.
 
