@@ -12,9 +12,9 @@ from scipy.optimize import (
 from itertools import product
 from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import ForecastingQuestion, Prob, ValidationResult
-from common.utils import write_jsonl_async_from_str, get_data_path
+from common.utils import write_jsonl_async_from_str, get_data_path, update_recursive
 from common.llm_utils import parallelized_call, answer, answer_sync
 from .checker_prompts import (
     neg_validation_prompt,
@@ -50,6 +50,25 @@ class Checker(ABC):
     def TupleFormat(self) -> Type[BaseModel]:
         pass
 
+    @property
+    def TupleFormat_with_metadata(self) -> Type[BaseModel]:
+        fields = {k: (ForecastingQuestion, ...) for k in self.TupleFormat.model_fields}
+        fields = {**fields, "metadata": (dict, ...)}
+        model = create_model("TupleFormat_with_metadata", **fields)
+
+        # for field_name, field_type in self.TupleFormat.__annotations__.items():
+        #     if field_name == "metadata":
+        #         continue
+        #     def make_validator(field_name: str, field_type: Any):
+        #         @validator(field_name, allow_reuse=True)
+        #         def validate(cls, v):
+        #             if v.question_type != field_type:
+        #                 raise ValueError(f"{field_name}.question_type must be {field_type}")
+        #             return v
+        #         return validate
+        #     model.add_validator(make_validator(field_name, field_type))
+        return model
+
     @abstractmethod
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -61,6 +80,38 @@ class Checker(ABC):
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
         pass
+
+    def instantiate_sync_with_metadata(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        supplied_metadata=None,
+        **kwargs,
+    ) -> "Self.TupleFormat_with_metadata":
+        """Instantiate with a metadata field that can store the base questions and other things.
+        supplied_metadata is used to *recursively* update the metadata so you can surgically
+        update nested fields."""
+        result = self.instantiate_sync(base_sentences, **kwargs)
+        if supplied_metadata is None:
+            supplied_metadata = {}
+        metadata = {"base_sentences": base_sentences}
+        update_recursive(metadata, supplied_metadata)
+        return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+
+    async def instantiate_with_metadata(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        supplied_metadata=None,
+        **kwargs,
+    ) -> "Self.TupleFormat_with_metadata":
+        """Instantiate with a metadata field that can store the base questions and other things.
+        supplied_metadata is used to *recursively* update the metadata so you can surgically
+        update nested fields."""
+        result = await self.instantiate(base_sentences, **kwargs)
+        if supplied_metadata is None:
+            supplied_metadata = {}
+        metadata = {"base_sentences": base_sentences}
+        update_recursive(metadata, supplied_metadata)
+        return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
 
     @abstractmethod
     def validate_sync(
@@ -75,9 +126,15 @@ class Checker(ABC):
         pass
 
     async def instantiate_and_write(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        supplied_metadata=None,
+        **kwargs,
     ):
-        result = await self.instantiate(base_sentences, **kwargs)
+        result = await self.instantiate_with_metadata(
+            base_sentences, supplied_metadata=supplied_metadata, **kwargs
+        )
+        # result = await self.instantiate(base_sentences, **kwargs)
         if result:
             await write_jsonl_async_from_str(
                 self.path, [result.model_dump_json()], append=True
@@ -264,11 +321,12 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
-    """
-    Checker.test() should log to a file e.g. data/tuples_elicit/...jsonl with the tuples copied over with the probabilities added as an extra field for each forecasting question and the results of the consistency check as a field for the tuple itself.
-    """
-
     def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
+        """
+        Checker.test() should log to a file e.g. data/tuples_elicit/...jsonl with the tuples
+        copied over with the probabilities added as an extra field for each forecasting question
+        and the results of the consistency check as a field for the tuple itself.
+        """
         results = []
         log_path = (
             get_data_path()
@@ -279,6 +337,9 @@ class Checker(ABC):
             for line in jsonlines.open(self.path):
                 print("START")
                 print(f"line: {line}")
+                metadata = line.pop(
+                    "metadata", None
+                )  # remove metadata before validation
                 line_obj = self.TupleFormat.model_validate(line)
                 answers = forecaster.elicit(line_obj, **kwargs)
                 print(answers)

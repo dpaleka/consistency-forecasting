@@ -108,3 +108,12 @@ def shallow_dict(model: BaseModel) -> dict:
         )
         for field_name, value in model
     }
+
+
+def update_recursive(source, overrides):
+    for key, value in overrides.items():
+        if isinstance(value, dict) and key in source and isinstance(source[key], dict):
+            update_recursive(source[key], value)
+        else:
+            source[key] = value
+    return source
