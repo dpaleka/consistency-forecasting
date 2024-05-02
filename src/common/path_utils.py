@@ -7,3 +7,7 @@ def get_src_path() -> Path:
 
 def get_data_path() -> Path:
     return get_src_path() / "data"
+
+
+def get_scripts_path() -> Path:
+    return get_src_path().parent / "scripts"

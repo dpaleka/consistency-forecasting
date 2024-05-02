@@ -4,15 +4,16 @@ from typing import List, Optional
 from common.datatypes import ForecastingQuestion
 from question_generators import question_formatter
 from common.utils import write_jsonl_async
-from common.path_utils import get_src_path, get_data_path
+from common.path_utils import get_data_path, get_scripts_path
 from simple_parsing import ArgumentParser
+from pathlib import Path
 
 
-def read_json_or_jsonl(file_path: str):
-    if file_path.endswith(".json"):
+def read_json_or_jsonl(file_path: Path):
+    if file_path.suffix == ".json":
         with open(file_path, "r") as file:
             return json.load(file)
-    elif file_path.endswith(".jsonl"):
+    elif file_path.suffix == ".jsonl":
         with open(file_path, "r") as file:
             return [json.loads(line) for line in file]
     else:
@@ -21,13 +22,11 @@ def read_json_or_jsonl(file_path: str):
         )
 
 
-async def validate_and_format_question(
-    question: dict, data_source: str
-) -> Optional[ForecastingQuestion]:
+async def validate_and_format_question(question: dict) -> Optional[ForecastingQuestion]:
     for i in range(2):
         forecasting_question = await question_formatter.from_string(
             question["title"],
-            data_source,
+            data_source=question["data_source"],
             question_type=question.get("question_type"),
             url=question.get("url", None),
             metadata=question.get("metadata", None),
@@ -45,7 +44,7 @@ async def validate_and_format_question(
 
 
 async def process_questions_from_file(
-    file_path: str, data_source: str, max_questions: Optional[int]
+    file_path: Path, max_questions: Optional[int]
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
 
@@ -53,7 +52,7 @@ async def process_questions_from_file(
     tasks = []
 
     for question in questions[:max_questions]:
-        tasks.append(validate_and_format_question(question, data_source))
+        tasks.append(validate_and_format_question(question))
 
     forecasting_questions = await asyncio.gather(*tasks)
     count_none = forecasting_questions.count(None)
@@ -61,9 +60,11 @@ async def process_questions_from_file(
     return forecasting_questions, count_none
 
 
-async def main(file_path: str, data_source: str, max_questions: int):
+async def main(
+    file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int
+):
     forecasting_questions, none_count = await process_questions_from_file(
-        file_path, data_source, max_questions
+        file_path, max_questions
     )
     print(f"Number of invalid questions found: {none_count}")
 
@@ -73,12 +74,12 @@ async def main(file_path: str, data_source: str, max_questions: int):
         data["resolution_date"] = str(data["resolution_date"])
 
     await write_jsonl_async(
-        f"{get_data_path()}/fq/{data_source}/questions_cleaned_formatted.jsonl",
+        f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}",
         data_to_write,
         append=False,
     )
     await write_jsonl_async(
-        f"{get_src_path().parent}/scripts/pipeline/questions_cleaned_formatted.jsonl",
+        f"{get_scripts_path()}/pipeline/{out_file_name}",
         data_to_write,
         append=False,
     )
@@ -90,15 +91,24 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_src_path().parent}/scripts/pipeline/QUESTIONS_CLEANED_MODIFIED.jsonl",
+        default=f"{get_scripts_path()}/pipeline/QUESTIONS_CLEANED_MODIFIED.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
-        "--data_source",
+        "--out_data_dir",
         "-d",
         type=str,
-        default="synthetic",
-        help="Data source for the questions",
+        default="real",
+        choices=["real", "synthetic"],
+        help="Data dir to write the output to",
+    )
+    # TODO name the output file better, somehow dependent on the input file name
+    parser.add_argument(
+        "--out_file_name",
+        "-o",
+        type=str,
+        default="questions_cleaned_formatted.jsonl",
+        help="Name of the output file",
     )
     parser.add_argument(
         "--max_questions",
@@ -110,4 +120,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    asyncio.run(main(args.file_path, args.data_source, args.max_questions))
+    asyncio.run(
+        main(
+            Path(args.file_path),
+            args.out_data_dir,
+            args.out_file_name,
+            args.max_questions,
+        )
+    )
