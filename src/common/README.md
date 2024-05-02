@@ -32,5 +32,7 @@ To ignore caching completely, set the environment variable `NO_CACHE` to `True`.
 Essentially, run `export NO_CACHE=True` in your shell before running anything, 
 or do `NO_CACHE=True python3 your_script.py`, or `os.environ['NO_CACHE'] = 'True'` in your Jupyter notebook.
 
+Whenever you want to cache a new `BaseModel` response, add it to [`perscache.py`](perscache.py).
+
 Default caching uses Redis, and should work out of the box once you [install Redis](https://redis.io/docs/install/install-redis/).
 If you don't want to use Redis, but you still want to cache, use `LOCAL_CACHE=True`.

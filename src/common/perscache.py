@@ -49,6 +49,7 @@ from pydantic import BaseModel
 from .datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
+    ForecastingQuestions,
     PlainText,
     Prob,
     Prob_cot,
@@ -61,6 +62,7 @@ perscache_supported_models = {
     "Prob_cot": Prob_cot,
     "ForecastingQuestion_stripped": ForecastingQuestion_stripped,
     "ForecastingQuestion": ForecastingQuestion,
+    "ForecastingQuestions": ForecastingQuestions,
     "ValidationResult": ValidationResult,
 }
 
@@ -142,9 +144,10 @@ def pydantic_response_dumps(data: Any) -> bytes:
         # Serialize the 'value' field which is a Pydantic model
         model_data = {
             "__class__": data["value"].__class__.__name__,
-            "data": data["value"].model_dump(),
+            "data": data["value"].model_dump(mode="json"),
         }
         # Replace the original 'value' with its serialized form
+        print(f"model_data: {model_data}")
         data = {**data, "value": model_data}
 
     if (
