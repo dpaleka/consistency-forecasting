@@ -68,6 +68,9 @@ perscache_supported_models = {
     "BodyAndDate": BodyAndDate,
 }
 
+# Note: we cannot cache dynamically created BaseModels as in MiniInstantiator.py.
+# Use NO_CACHE if you're instantiating tuples directly using instructor.
+
 
 # Logger stubs
 def debug(msg, *args):
@@ -133,6 +136,17 @@ JSONSerializer = make_serializer(
 )
 
 
+class ResponseModelNotRegisteredError(NotImplementedError):
+    def __init__(self, model_name):
+        self.model_name = model_name
+        super().__init__(
+            f"Response model not registered in {__file__}: {model_name}.\n"
+            "Note that caching dynamically created BaseModels, as in MiniInstantiator.py, is currently not supported.\n"
+            "Set NO_CACHE=True to use instructor LLM calls for dynamically created BaseModels."
+        )
+        raise self
+
+
 def pydantic_response_dumps(data: Any) -> bytes:
     """
     All operations are in-place and idempotent.
@@ -161,9 +175,7 @@ def pydantic_response_dumps(data: Any) -> bytes:
         if data["kwargs"]["response_model"].__name__ in perscache_supported_models:
             data["kwargs"]["response_model"] = data["kwargs"]["response_model"].__name__
         else:
-            raise NotImplementedError(
-                f"Response model not registered in {__file__}: {data['kwargs']['response_model']}"
-            )
+            raise ResponseModelNotRegisteredError(data["kwargs"]["response_model"])
 
     elif (
         isinstance(data, dict)
@@ -181,8 +193,8 @@ def pydantic_response_dumps(data: Any) -> bytes:
                 "kwargs"
             ]["response_model"].__name__
         else:
-            raise NotImplementedError(
-                f"Response model not registered in {__file__}: {data['bound_args']['kwargs']['response_model']}"
+            raise ResponseModelNotRegisteredError(
+                data["bound_args"]["kwargs"]["response_model"]
             )
 
     return json.dumps(data).encode("utf-8")
@@ -206,9 +218,7 @@ def pydantic_response_loads(
             model_class = known_models[class_name]
             data_dict["value"] = model_class.model_validate(data_dict["value"]["data"])
         else:
-            raise NotImplementedError(
-                f"Response model not registered in {__file__}: {class_name}"
-            )
+            raise ResponseModelNotRegisteredError(class_name)
 
     if (
         "kwargs" in data_dict
