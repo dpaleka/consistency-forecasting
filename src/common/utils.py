@@ -6,6 +6,7 @@ from copy import deepcopy
 import hashlib
 from pydantic import BaseModel
 from pathlib import Path
+from common.datatypes import ForecastingQuestion
 
 
 def get_project_root() -> Path:
@@ -108,3 +109,17 @@ def shallow_dict(model: BaseModel) -> dict:
         )
         for field_name, value in model
     }
+
+
+def load_questions(path: str) -> list[ForecastingQuestion]:
+    with open(path, "r") as f:
+        jsonl_content = f.read()
+    return [
+        ForecastingQuestion(**json.loads(jline)) for jline in jsonl_content.splitlines()
+    ]
+
+
+def write_questions(questions: list[ForecastingQuestion], path: str):
+    with open(path, "w") as f:
+        for q in questions:
+            f.write(f"{q.model_dump_json()}\n")
