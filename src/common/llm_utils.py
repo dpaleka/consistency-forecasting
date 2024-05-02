@@ -21,18 +21,16 @@ from .datatypes import PlainText
 
 from .perscache import (
     Cache,
-    JSONSerializer,
+    JSONPydanticResponseSerializer,
     RedisStorage,
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
-# Until we fix cache
-os.environ["NO_CACHE"] = "True"
 
 cache = Cache(
-    serializer=JSONSerializer(),
+    serializer=JSONPydanticResponseSerializer(),
     storage=(
         LocalFileStorage()
         if os.getenv("LOCAL_CACHE")
@@ -227,6 +225,7 @@ async def query_api_chat(
     return response
 
 
+@cache
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -289,7 +288,6 @@ def prepare_messages(
     return messages
 
 
-@cache
 async def answer(
     prompt: str,
     preface: str | None = None,
