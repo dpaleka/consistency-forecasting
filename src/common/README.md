@@ -7,13 +7,16 @@ The licensing of this code is governed by [LICENSE](LICENSE).
 ## .env
 Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary.
 
+## OpenRouter
+Most models can alternatively be called in OpenAI-compliant format through [OpenRouter](https://openrouter.ai/).
+To use OpenRouter, set the environment variable `USE_OPENROUTER=True` and provide your OpenRouter API key in the `OPENROUTER_API_KEY` environment variable. Note: this will route all model calls (incl. to OpenAI and Anthropic models) through OpenRouter.
+
 ## LLM API requests
 For standard queries, prefer using methods in the `llm_utils.py` module over dealing with the `openai` package directly.
 Most likely, the only methods you're going to need in the first weeks are:
 - `query_api_chat_sync`: takes `model : str` and `messages : list[dict[str, str]]` in OpenAI chat format, and queries the corresponding model. Returns the `response_text : str`. It behaves like a normal function. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
 - `query_api_chat`: async version of the above. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
 - `parallelized_request`: run some async `func` over `data: list[str]`, "in parallel". Usually the `func` will create `messages` and then call `query_api_chat`; but you can provide an arbitrary `func` you implemented. Use when just running a for loop is too slow for you.
-
 
 If you need a complex LLM request (e.g. logprobs), and you think it's not an one-off, implement another function in `llm_utils.py` and use that.
 

@@ -74,6 +74,25 @@ def get_openai_client() -> OpenAI:
 
 
 @singleton_constructor
+def get_async_openrouter_client() -> AsyncOpenAI:
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    client = instructor.from_openai(_client)
+    return client
+
+
+@singleton_constructor
+def get_openrouter_client() -> OpenAI:
+    print("\033[Calling models through OpenRouter\033[0m")
+    _client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+    )
+    client = instructor.from_openai(_client)
+    return client
+
+
+@singleton_constructor
 def get_mistral_async_client() -> MistralAsyncClient:
     api_key = os.getenv("MISTRAL_API_KEY")
     _client = MistralAsyncClient(api_key=api_key)
@@ -149,7 +168,12 @@ def is_huggingface_local(model: str) -> bool:
 def get_client(
     model: str, use_async=True
 ) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
-    if is_openai(model):
+    if os.getenv("USE_OPENROUTER"):
+        return (
+            get_async_openrouter_client() if use_async else get_openrouter_client(),
+            "openrouter",
+        )
+    elif is_openai(model):
         return (
             get_async_openai_client() if use_async else get_openai_client(),
             "openai",
