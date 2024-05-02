@@ -121,6 +121,10 @@ class ForecastingQuestion(BaseModel):
         return self.dict()
 
 
+class ForecastingQuestions(BaseModel):
+    questions: list[ForecastingQuestion]
+
+
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
 
 
@@ -155,6 +159,7 @@ def mk_TupleFormat_ans(
 
 ForecastingQuestionTuple = dict[str, ForecastingQuestion]
 ProbsTuple = dict[str, Prob]
+
 
 class ValidationResult(BaseModel):
     reasoning: str
