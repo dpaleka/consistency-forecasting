@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+from pathlib import Path
 
 # Define the script to run and the list of JSONL files to validate
 # Intended to be run from the root of the repository, as when running the pre-commit hook
-BASE_DIR = "src/"
-script = f"{BASE_DIR}/validate_fq_jsonl.py"
-REAL_DATA_DIR = f"{BASE_DIR}/data/fq/real"
-SYNTHETIC_DATA_DIR = f"{BASE_DIR}/data/fq/synthetic"
 
-from pathlib import Path
+# Need to do this hack to import stuff
+sys.path.append(".")
+from src.common.path_utils import get_data_path, get_src_path
+
+script = f"{get_src_path()}/validate_fq_jsonl.py"
+REAL_DATA_DIR = f"{get_data_path()}/fq/real"
+SYNTHETIC_DATA_DIR = f"{get_data_path()}/fq/synthetic"
 
 jsonl_files = []
 real_data_dir = Path(REAL_DATA_DIR)

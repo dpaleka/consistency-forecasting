@@ -17,7 +17,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
-from .path_utils import get_project_root
+from .path_utils import get_src_path
 
 
 from .perscache import (
@@ -33,7 +33,7 @@ CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
     storage=(
-        LocalFileStorage(location=get_project_root() / ".cache")
+        LocalFileStorage(location=get_src_path().parent / ".cache")
         if os.getenv("LOCAL_CACHE")
         else RedisStorage(namespace="llm_utils")
     ),
