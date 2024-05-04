@@ -13,34 +13,36 @@ from static_checks.Checker import (
     SymmetryOrChecker,
     CondCondChecker,
 )
+from pathlib import Path
+from common.path_utils import get_data_path
 
 basic_forecaster = BasicForecaster()
 
-BASE_DATA_PATH = "src/data/tuples/"
+BASE_DATA_PATH: Path = get_data_path() / "tuples/"
 
 model = "gpt-3.5-turbo"
 # model = "gpt-4-turbo-2024-04-09"
 
 checkers: dict[str, Checker] = {
-    "NegChecker": NegChecker(path=BASE_DATA_PATH + "NegChecker.jsonl"),
-    "AndChecker": AndChecker(path=BASE_DATA_PATH + "AndChecker.jsonl"),
-    "OrChecker": OrChecker(path=BASE_DATA_PATH + "OrChecker.jsonl"),
-    "AndOrChecker": AndOrChecker(path=BASE_DATA_PATH + "AndOrChecker.jsonl"),
-    "ButChecker": ButChecker(path=BASE_DATA_PATH + "ButChecker.jsonl"),
-    "CondChecker": CondChecker(path=BASE_DATA_PATH + "CondChecker.jsonl"),
+    "NegChecker": NegChecker(path=BASE_DATA_PATH / "NegChecker.jsonl"),
+    "AndChecker": AndChecker(path=BASE_DATA_PATH / "AndChecker.jsonl"),
+    "OrChecker": OrChecker(path=BASE_DATA_PATH / "OrChecker.jsonl"),
+    "AndOrChecker": AndOrChecker(path=BASE_DATA_PATH / "AndOrChecker.jsonl"),
+    "ButChecker": ButChecker(path=BASE_DATA_PATH / "ButChecker.jsonl"),
+    "CondChecker": CondChecker(path=BASE_DATA_PATH / "CondChecker.jsonl"),
     "ConsequenceChecker": ConsequenceChecker(
-        path=BASE_DATA_PATH + "ConsequenceChecker.jsonl"
+        path=BASE_DATA_PATH / "ConsequenceChecker.jsonl"
     ),
     "ParaphraseChecker": ParaphraseChecker(
-        path=BASE_DATA_PATH + "ParaphraseChecker.jsonl"
+        path=BASE_DATA_PATH / "ParaphraseChecker.jsonl"
     ),
     "SymmetryAndChecker": SymmetryAndChecker(
-        path=BASE_DATA_PATH + "SymmetryAndChecker.jsonl"
+        path=BASE_DATA_PATH / "SymmetryAndChecker.jsonl"
     ),
     "SymmetryOrChecker": SymmetryOrChecker(
-        path=BASE_DATA_PATH + "SymmetryOrChecker.jsonl"
+        path=BASE_DATA_PATH / "SymmetryOrChecker.jsonl"
     ),
-    "CondCondChecker": CondCondChecker(path=BASE_DATA_PATH + "CondCondChecker.jsonl"),
+    "CondCondChecker": CondCondChecker(path=BASE_DATA_PATH / "CondCondChecker.jsonl"),
 }
 
 

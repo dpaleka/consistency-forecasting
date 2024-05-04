@@ -3,11 +3,7 @@ import asyncio
 import uuid
 from common.llm_utils import answer
 from typing import Optional
-import datetime
-from pydantic import BaseModel
 from datetime import datetime
-
-
 
 
 resolution_criteria_date_prompt = """
@@ -112,46 +108,57 @@ valid: True
 
 """
 
-class BodyAndDate(BaseModel):
-    resolution_date: datetime
-    resolution_criteria: str
+from common.datatypes import BodyAndDate
+
 
 async def get_criteria_and_date(question: str):
-    prompt = resolution_criteria_date_prompt.format(question=question,response_model=BodyAndDate)  # Assuming definition elsewhere
-    return await answer(prompt, response_model=BodyAndDate)  
+    prompt = resolution_criteria_date_prompt.format(
+        question=question, response_model=BodyAndDate
+    )  # Assuming definition elsewhere
+    return await answer(prompt, response_model=BodyAndDate)
 
-async def from_string(question: str, data_source: str, question_type: Optional[str] = None, url: Optional[str] = None, metadata: Optional[dict] = None, body: Optional[str] = None, date: str = None) -> ForecastingQuestion:
+
+async def from_string(
+    question: str,
+    data_source: str,
+    question_type: Optional[str] = None,
+    url: Optional[str] = None,
+    metadata: Optional[dict] = None,
+    body: Optional[str] = None,
+    date: str = None,
+) -> ForecastingQuestion:
     if not question_type:
         question_type = "binary"
-    
+
     try:
         date = datetime.strptime(date, "%d/%m/%Y")
     except ValueError:
         date = None
-    
 
     for attempt in range(3):
         try:
-            
             bodyAndDate = await get_criteria_and_date(question)
-            break  
+            break
         except Exception as e:
             print(f"An error has occurred: {e}")
-            if attempt == 2:  
-                raise  
-            await asyncio.sleep(1)  
+            if attempt == 2:
+                raise
+            await asyncio.sleep(1)
+
+    print(f"\n{bodyAndDate=}")
 
     return ForecastingQuestion(
-            id=uuid.uuid4(),
-            title=question,
-            body=body or bodyAndDate.resolution_criteria,
-            resolution_date = date or bodyAndDate.resolution_date,
-            question_type=question_type,
-            data_source=data_source,
-            url=url,
-            metadata=metadata,
-            resolution=None,
-        )
+        id=uuid.uuid4(),
+        title=question,
+        body=body or bodyAndDate.resolution_criteria,
+        resolution_date=date or bodyAndDate.resolution_date,
+        question_type=question_type,
+        data_source=data_source,
+        url=url,
+        metadata=metadata,
+        resolution=None,
+    )
+
 
 async def validate_question(question: ForecastingQuestion):
     current_date = datetime.now()

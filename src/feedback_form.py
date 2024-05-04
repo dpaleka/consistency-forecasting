@@ -3,6 +3,8 @@ import json
 import uuid
 from pathlib import Path
 
+from common.path_utils import get_data_path
+
 import streamlit as st
 
 
@@ -19,7 +21,7 @@ def load_data(filename):
 
 
 def get_feedback_filepath(
-    source_filename: str, feedback_abs_dir: str = "src/data/feedback"
+    source_filename: str, feedback_abs_dir: str = f"{get_data_path()}/feedback"
 ):
     source_path = Path(source_filename)
     parts = list(source_path.parts)
@@ -37,12 +39,16 @@ def get_feedback_filepath(
 
 def test_get_feedback_filepath():
     assert (
-        get_feedback_filepath("data/fq/synthetic/politics_qs_2_formatted.jsonl")
-        == "data/feedback/politics_qs_2_formatted_feedback.jsonl"
+        get_feedback_filepath(
+            f"{get_data_path()}/fq/synthetic/politics_qs_2_formatted.jsonl"
+        )
+        == f"{get_data_path()}/feedback/politics_qs_2_formatted_feedback.jsonl"
     )
     assert (
-        get_feedback_filepath("src/data/fq/synthetic/politics_qs_2_formatted.jsonl")
-        == "src/data/feedback/politics_qs_2_formatted_feedback.jsonl"
+        get_feedback_filepath(
+            f"{get_data_path()}/fq/synthetic/politics_qs_2_formatted.jsonl"
+        )
+        == f"{get_data_path()}/feedback/politics_qs_2_formatted_feedback.jsonl"
     )
 
 
@@ -53,8 +59,10 @@ def write_feedback(entry_id, feedback_data, source_filename):
     feedback_path = get_feedback_filepath(source_filename)
 
     try:
+        existing_feedback = []
         with open(feedback_path, "r") as file:
-            existing_feedback = json.load(file)
+            for line in file:
+                existing_feedback.append(json.loads(line))
     except FileNotFoundError:
         existing_feedback = []
 
@@ -66,14 +74,17 @@ def write_feedback(entry_id, feedback_data, source_filename):
     existing_feedback.append(feedback_entry)
 
     with open(feedback_path, "w") as file:
-        json.dump(existing_feedback, file, indent=4)
+        for feedback_entry in existing_feedback:
+            json.dump(feedback_entry, file)
 
 
 def has_previous_feedback(entry_id, source_filename):
     feedback_path = get_feedback_filepath(source_filename)
     try:
+        existing_feedback = []
         with open(feedback_path, "r") as file:
-            existing_feedback = json.load(file)
+            for line in file:
+                existing_feedback.append(json.loads(line))
     except FileNotFoundError:
         return False
 
@@ -88,8 +99,10 @@ def get_previous_feedback(entry_id, source_filename):
     feedback_path = get_feedback_filepath(source_filename)
 
     try:
+        existing_feedback = []
         with open(feedback_path, "r") as file:
-            existing_feedback = json.load(file)
+            for line in file:
+                existing_feedback.append(json.loads(line))
     except FileNotFoundError:
         return {}
 
@@ -400,7 +413,7 @@ def main(filename):
         list_view(entries)
 
 
-DEFAULT_FILE = "data/fq/synthetic/politics_qs_2_formatted.jsonl"
+DEFAULT_FILE = f"{get_data_path()}/fq/synthetic/politics_qs_2_formatted.jsonl"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(

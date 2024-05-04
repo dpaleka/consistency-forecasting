@@ -164,3 +164,8 @@ ProbsTuple = dict[str, Prob]
 class ValidationResult(BaseModel):
     reasoning: str
     valid: bool
+
+
+class BodyAndDate(BaseModel):
+    resolution_date: datetime
+    resolution_criteria: str
