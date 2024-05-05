@@ -328,15 +328,10 @@ class Checker(ABC):
         return self.check(forecaster.elicit(sentences, **kwargs))
 
     def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
-        """
-        Checker.test() should log to a file e.g. data/tuples_elicit/...jsonl with the tuples
-        copied over with the probabilities added as an extra field for each forecasting question
-        and the results of the consistency check as a field for the tuple itself.
-        """
         results = []
         log_path = (
             get_data_path()
-            / "elicit_tuple_logs"
+            / "check_tuple_logs"
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
         with jsonlines.open(log_path, mode="a") as writer:
