@@ -1,6 +1,6 @@
-from forecaster import Forecaster
+from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
-from common.llm_utils import answer, answer_sync, Example
+from common.llm_utils import Example
 
 # llm_forecasting imports
 from config.constants import PROMPT_DICT
@@ -22,7 +22,6 @@ RETRIEVAL_CONFIG = {
     "SUMMARIZATION_MODEL_NAME": "gpt-3.5-turbo-1106",
     "SUMMARIZATION_TEMPERATURE": 0.2,
     "SUMMARIZATION_PROMPT_TEMPLATE": PROMPT_DICT["summarization"]["9"],
-    "NUM_SUMMARIES_THRESHOLD": 10,
     "PRE_FILTER_WITH_EMBEDDING": True,
     "PRE_FILTER_WITH_EMBEDDING_THRESHOLD": 0.32,
     "RANKING_MODEL_NAME": "gpt-3.5-turbo-1106",
@@ -60,8 +59,8 @@ REASONING_CONFIG = {
     "AGGREGATION_WEIGTHTS": None,
 }
 
-class AdvancedForecaster(Forecaster):
 
+class AdvancedForecaster(Forecaster):
     def __init__(self, preface: str = None, examples: list = None):
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
@@ -84,13 +83,16 @@ class AdvancedForecaster(Forecaster):
         ]
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
-        return 0.5
+        raise NotImplementedError
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         question = sentence.title
         background_info = sentence.metadata["background_info"]
         resolution_criteria = sentence.body
-        retrieval_dates = ("2024-03-01", "2024-05-04") # artificially set and fixed for now
+        retrieval_dates = (
+            "2024-03-01",
+            "2024-05-04",
+        )  # artificially set and fixed for now
 
         (
             ranked_articles,
@@ -120,7 +122,9 @@ class AdvancedForecaster(Forecaster):
             resolution_criteria=resolution_criteria,
             today_to_close_date_range=today_to_close_date,
             retrieved_info=all_summaries,
-            reasoning_prompt_templates=REASONING_CONFIG["BASE_REASONING_PROMPT_TEMPLATES"],
+            reasoning_prompt_templates=REASONING_CONFIG[
+                "BASE_REASONING_PROMPT_TEMPLATES"
+            ],
             base_model_names=REASONING_CONFIG["BASE_REASONING_MODEL_NAMES"],
             base_temperature=REASONING_CONFIG["BASE_REASONING_TEMPERATURE"],
             aggregation_method=REASONING_CONFIG["AGGREGATION_METHOD"],
