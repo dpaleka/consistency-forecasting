@@ -31,6 +31,8 @@ symmand_checker = SymmetryAndChecker()
 symmor_checker = SymmetryOrChecker()
 condcond_checker = CondCondChecker()
 
+from common.path_utils import get_data_path
+
 
 def load_data(file):
     bqs = []
@@ -42,7 +44,8 @@ def load_data(file):
             # line["question_type"] = line["question_type"].lower()
             bq = ForecastingQuestion(**line)
             bqs.append(bq)
-        except:  # noqa
+        except Exception as e:
+            print(e)
             continue
     base_questions_p = [{"P": P} for P in bqs]
     base_questions_pq = [{"P": P, "Q": Q} for P, Q in it.combinations(bqs, 2)]
@@ -57,6 +60,7 @@ def load_data(file):
 
 async def instantiate(path, length=3):
     base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
+    # fmt: off
     await neg_checker.instantiate_and_write_many(
         base_questions_p[:length],
         model="gpt-3.5-turbo",
@@ -134,6 +138,11 @@ async def instantiate(path, length=3):
         validate_before=True,
         n_validation=3,
     )
+    # fmt: on
 
 
-asyncio.run(instantiate(path="src/data/fq/real/questions_cleaned_formatted.jsonl"))
+asyncio.run(
+    instantiate(
+        path=get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
+    )
+)

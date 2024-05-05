@@ -61,11 +61,13 @@ def generate_questions(num_questions: int = 5, examples: list[str] = None) -> li
 
 # %%
 question_examples_json = [e.model_dump_json(exclude=["id"]) for e in question_examples]
-question_examples_json
+print(f"\033[91m{question_examples_json=}\033[0m\n")
 
 # %%
 response = generate_questions(5, question_examples_json)
-response
+# black bold
+json_response = response.model_dump_json()
+print(f"\n\033[1;30m{json_response}\033[0m\n")
 
 
 # %%
@@ -100,7 +102,6 @@ questions
 
 # %%
 write_questions(questions, "politics_qs_3.jsonl")
-
 
 # %%
 questions = load_questions(DATA_PATH / "fq" / "synthetic" / "politics_qs_3.jsonl")

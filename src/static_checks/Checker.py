@@ -14,7 +14,8 @@ from abc import ABC, abstractmethod
 from typing import Type, Any, Self, Callable
 from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import ForecastingQuestion, Prob, ValidationResult
-from common.utils import write_jsonl_async_from_str, get_data_path, update_recursive
+from common.utils import write_jsonl_async_from_str, update_recursive
+from common.path_utils import get_data_path
 from common.llm_utils import parallelized_call, answer, answer_sync
 from .checker_prompts import (
     neg_validation_prompt,
