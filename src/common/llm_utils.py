@@ -17,24 +17,23 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
+from .path_utils import get_src_path
 
 
 from .perscache import (
     Cache,
-    JSONSerializer,
+    JSONPydanticResponseSerializer,
     RedisStorage,
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
-# Until we fix cache
-os.environ["NO_CACHE"] = "True"
 
 cache = Cache(
-    serializer=JSONSerializer(),
+    serializer=JSONPydanticResponseSerializer(),
     storage=(
-        LocalFileStorage()
+        LocalFileStorage(location=get_src_path().parent / ".cache")
         if os.getenv("LOCAL_CACHE")
         else RedisStorage(namespace="llm_utils")
     ),
@@ -70,6 +69,25 @@ def get_async_openai_client() -> AsyncOpenAI:
 def get_openai_client() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
+    client = instructor.from_openai(_client)
+    return client
+
+
+@singleton_constructor
+def get_async_openrouter_client() -> AsyncOpenAI:
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    client = instructor.from_openai(_client)
+    return client
+
+
+@singleton_constructor
+def get_openrouter_client() -> OpenAI:
+    print("\033[Calling models through OpenRouter\033[0m")
+    _client = OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+    )
     client = instructor.from_openai(_client)
     return client
 
@@ -149,8 +167,13 @@ def is_huggingface_local(model: str) -> bool:
 
 def get_client(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI|OpenAI|MistralAsyncClient|MistralClient, str]:
-    if is_openai(model):
+) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
+    if os.getenv("USE_OPENROUTER"):
+        return (
+            get_async_openrouter_client() if use_async else get_openrouter_client(),
+            "openrouter",
+        )
+    elif is_openai(model):
         return (
             get_async_openai_client() if use_async else get_openai_client(),
             "openai",
@@ -190,7 +213,6 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-
 @cache
 async def query_api_chat(
     messages: list[dict[str, str]],
@@ -209,7 +231,7 @@ async def query_api_chat(
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
-    } 
+    }
     options = default_options | kwargs
     options["model"] = model or options["model"]
     client, client_name = get_client(options["model"], use_async=True)
@@ -218,7 +240,7 @@ async def query_api_chat(
 
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
-        
+
     response = await client.chat.completions.create(
         messages=messages,
         **options,
@@ -226,17 +248,17 @@ async def query_api_chat(
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
-        
 
 
+@cache
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
     **kwargs,
 ) -> BaseModel:
-    # Log the messages array to debug the BadRequestError
-    print("Messages array being sent to OpenAI API:", messages)
+    if verbose:
+        print("Messages array being sent to OpenAI API:", messages, "\n")
 
     default_options = {
         "model": "gpt-4-1106-preview",
@@ -279,7 +301,11 @@ def prepare_messages(
             example.assistant = example.assistant.model_dump_json()
         messages.append({"role": "user", "content": example.user})
         # Convert assistant's response to string if it's not already
-        assistant_content = str(example.assistant) if isinstance(example.assistant, (float, int)) else example.assistant
+        assistant_content = (
+            str(example.assistant)
+            if isinstance(example.assistant, (float, int))
+            else example.assistant
+        )
         messages.append({"role": "assistant", "content": assistant_content})
     if isinstance(prompt, BaseModel):
         prompt = prompt.model_dump_json()
@@ -287,7 +313,6 @@ def prepare_messages(
     return messages
 
 
-@cache
 async def answer(
     prompt: str,
     preface: str | None = None,
@@ -377,6 +402,17 @@ async def parallelized_call(
 
     tasks = [call_func(sem, func, d) for d in data]
     return await asyncio.gather(*tasks)
+
+
+async def get_embedding(
+    text: str,
+    embedding_model: str = "text-embedding-3-small",
+    model: str = "gpt-3.5-turbo",
+) -> list[float]:
+    # model is largely ignored because we currently can't use the same model for both the embedding and the completion
+    client, _ = get_client(model, use_async=True)
+    response = await client.client.embeddings.create(input=text, model=embedding_model)
+    return response.data[0].embedding
 
 
 # %%
