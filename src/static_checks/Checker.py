@@ -54,19 +54,24 @@ class Checker(ABC):
     def TupleFormat_with_metadata(self) -> Type[BaseModel]:
         fields = {k: (ForecastingQuestion, ...) for k in self.TupleFormat.model_fields}
         fields = {**fields, "metadata": (dict, ...)}
-        model = create_model("TupleFormat_with_metadata", **fields)
 
-        # for field_name, field_type in self.TupleFormat.__annotations__.items():
-        #     if field_name == "metadata":
-        #         continue
-        #     def make_validator(field_name: str, field_type: Any):
-        #         @validator(field_name, allow_reuse=True)
-        #         def validate(cls, v):
-        #             if v.question_type != field_type:
-        #                 raise ValueError(f"{field_name}.question_type must be {field_type}")
-        #             return v
-        #         return validate
-        #     model.add_validator(make_validator(field_name, field_type))
+        def make_validator(field_name: str, field_type: Any):
+            @field_validator(field_name)
+            def validate(cls, v):
+                if v.question_type != field_type:
+                    raise ValueError(f"{field_name}.question_type must be {field_type}")
+                return v
+
+            return validate
+
+        validators = {
+            k: make_validator(k, v) for k, v in fields.items() if k != "metadata"
+        }
+
+        model = create_model(
+            "TupleFormat_with_metadata", **fields, __validators__=validators
+        )
+
         return model
 
     @abstractmethod
