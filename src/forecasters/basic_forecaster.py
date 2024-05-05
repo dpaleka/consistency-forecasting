@@ -1,4 +1,4 @@
-from .forecaster import Forecaster
+from forecaster import Forecaster
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import answer, answer_sync, Example
 
