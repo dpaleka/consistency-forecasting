@@ -1,6 +1,8 @@
 import itertools as it
 import jsonlines
 import asyncio
+
+# from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks.Checker import (
     NegChecker,
     AndChecker,
@@ -36,6 +38,10 @@ def load_data(file):
     bqs = []
     for line in jsonlines.open(file):
         try:
+            # line["resolution_date"] = re.split(":", line["resolution_date"], 1)[1]
+            # line["resolution_date"] = line["resolution_date"].strip()
+            # line["resolution_date"] = parser.parse(line["resolution_date"])
+            # line["question_type"] = line["question_type"].lower()
             bq = ForecastingQuestion(**line)
             bqs.append(bq)
         except Exception as e:
@@ -56,37 +62,81 @@ async def instantiate(path, length=3):
     base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
     # fmt: off
     await neg_checker.instantiate_and_write_many(
-        base_questions_p[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_p[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await and_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await or_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await andor_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await but_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await cond_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await cons_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await para_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_p[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await symmand_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await symmor_checker.instantiate_and_write_many(
-        base_questions_pq[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pq[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     await condcond_checker.instantiate_and_write_many(
-        base_questions_pqr[:length], model="gpt-3.5-turbo", overwrite=True, validate_before=True, n_validation=3,
+        base_questions_pqr[:length],
+        model="gpt-3.5-turbo",
+        overwrite=True,
+        validate_before=True,
+        n_validation=3,
     )
     # fmt: on
 
