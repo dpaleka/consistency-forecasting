@@ -4,7 +4,6 @@ import logging
 # Related third-party imports
 import numpy as np
 from numpy.linalg import norm
-import torch
 
 # Local application/library-specific imports
 from utils import time_utils
@@ -29,51 +28,6 @@ def brier_score(probabilities, answer_idx):
     answer = np.zeros_like(probabilities)
     answer[answer_idx] = 1
     return ((probabilities - answer) ** 2).sum() / 2
-
-
-def calculate_cosine_similarity_bert(text_list, tokenizer, model):
-    """
-    Calculate the average cosine similarity between texts in a given list using
-    embeddings.
-
-    Define Bert outside the function:
-    from transformers import BertTokenizer, BertModel
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    model = BertModel.from_pretrained('bert-base-uncased')
-
-    Parameters:
-    text_list (List[str]): A list of strings where each string is a text
-    document.
-
-    Returns:
-    float: The average cosine similarity between each pair of texts in the list.
-           Returns 0 if the list contains less than two text documents.
-    """
-    if len(text_list) < 2:
-        return 0
-
-    # Function to get embeddings
-    def get_embedding(text):
-        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
-        outputs = model(**inputs)
-        return torch.mean(outputs.last_hidden_state, dim=1)
-
-    # Generating embeddings for each text
-    embeddings = [get_embedding(text) for text in text_list]
-
-    # Calculating cosine similarity between each pair of embeddings
-    similarity_scores = []
-    for i in range(len(embeddings)):
-        for j in range(i + 1, len(embeddings)):
-            similarity = torch.nn.functional.cosine_similarity(
-                embeddings[i], embeddings[j]
-            )
-            similarity_scores.append(similarity.item())
-
-    # Calculating average similarity
-    average_similarity = np.mean(similarity_scores)
-
-    return average_similarity
 
 
 def cosine_similarity(u, v):
