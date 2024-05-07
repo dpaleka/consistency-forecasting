@@ -425,7 +425,7 @@ async def retrieve_summarize_and_rank_articles(
         )
         sim_threshold = config["PRE_FILTER_WITH_EMBEDDING_THRESHOLD"]
         # If there are too many articles, use a higher threshold
-        if len(articles) >= 100:
+        if len(articles) >= 200:
             sim_threshold = 0.36
         logger.info(f"Using {sim_threshold} as the cosine similarity threshold.")
         # filter articles with cosine similarity below threshold
