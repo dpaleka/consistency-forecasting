@@ -37,8 +37,18 @@ Looks good
 ***
 May 3, 2024
 
+Question quality should be much better
 
+CondChecker:
+We are still missing the "Q" tuple
 
+condcondchecker
+also missing "Q" tuple
+also missing "R" tuple
+
+Conseqchecker:
+still a bit finnicky, Q not necessarilly are subset of P resolutions
+{"P":{"id":"eb49ec94-3bc0-422f-9c1d-94ca766b4fc1","title":"Will we detect a message originating from Luyten's Star before 2046?","body":"Resolution Criteria\nThis question will resolve as positive if a signal of unambiguously intelligent and extraterrestrial origin originating from Luyten's Star is detected on or near Earth on or before December 31, 2045","resolution_date":"2046-01-01T00:00:00Z","question_type":"binary","data_source":"synthetic_inst","url":null,"metadata":null,"resolution":null},"cons_P":{"id":"0698c258-7ecd-45b7-98aa-bc67b425aca7","title":"Will we detect a message originating from any star other than Luyten's Star before 2046?","body":"Resolution Criteria\nThis question will resolve as positive if a signal of unambiguously intelligent and extraterrestrial origin originating from any star other than Luyten's Star is detected on or near Earth on or before December 31, 2045","resolution_date":"2046-01-01T00:00:00Z","question_type":"binary","data_source":"synthetic_inst","url":null,"metadata":null,"resolution":null}}
 
 
 

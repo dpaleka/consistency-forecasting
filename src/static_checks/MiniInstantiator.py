@@ -257,9 +257,9 @@ class Neg(MiniInstantiator):
                     P=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -268,9 +268,9 @@ class Neg(MiniInstantiator):
                     not_P=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin or Ethereum not exceed $100,000 or $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if either of these events happen."
-                            "a.) the spot price of Bitcoin against USD is not more than 100,000 on 1st January 2025 OR"
-                            "b.) the spot price of Ethereum against USD is not more than 10,000 on 1st January 2025"
+                            "Resolves YES if either of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is not more than 100,000 on 1st January 2025 OR "
+                            "b.) the spot price of Ethereum against USD is not more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -292,9 +292,9 @@ class Neg(MiniInstantiator):
                     not_P=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum not exceed $100,000 or $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) the spot price of Bitcoin against USD is not more than 100,000 on 1st January 2025 AND"
-                            "b.) the spot price of Ethereum against USD is not more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is not more than 100,000 on 1st January 2025 AND "
+                            "b.) the spot price of Ethereum against USD is not more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -365,9 +365,9 @@ class And(MiniInstantiator):
                     P_and_Q=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -417,9 +417,9 @@ class And(MiniInstantiator):
                     Q=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     ),
@@ -431,9 +431,9 @@ class And(MiniInstantiator):
                             "the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?"
                         ),
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) Joe Biden is elected president in the 2024 presidential election AND"
-                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) Joe Biden is elected president in the 2024 presidential election AND "
+                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -452,9 +452,9 @@ class And(MiniInstantiator):
                     Q=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin or Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if either of these events happen."
-                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if either of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     ),
@@ -466,9 +466,9 @@ class And(MiniInstantiator):
                             "the prices of Bitcoin or Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?"
                         ),
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) Joe Biden is elected president in the 2024 presidential election AND"
-                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) Joe Biden is elected president in the 2024 presidential election AND "
+                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -528,9 +528,9 @@ class Or(MiniInstantiator):
                     Q=ForecastingQuestion_stripped(
                         title="Will the prices of Bitcoin and Ethereum exceed $100,000 and $10,000 respectively on 1st January 2025?",
                         body=(
-                            "Resolves YES if both of these events happen."
-                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "Resolves YES if both of these events happen. "
+                            "a.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 AND "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     ),
@@ -541,8 +541,8 @@ class Or(MiniInstantiator):
                         body=(
                             "Resolves YES if either of these events happen. "
                             "a.) Jeb Bush is the President of the US in January 2032 AND "
-                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
-                            " Resolves NO otherwise."
+                            "b.) the spot price of Bitcoin against USD is more than 100,000 on 1st January 2025 OR the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
+                            "Resolves NO otherwise."
                         ),
                     )
                 ),
@@ -569,8 +569,8 @@ class Or(MiniInstantiator):
                         title="Will either Joe Biden be elected president in the 2024 presidential election or the price of Ethereum be above $10,000 on 1st January 2025?",
                         body=(
                             "Resolves YES if either of these events occur (or both). "
-                            "a.) Joe Biden is elected president in the 2024 presidential election OR"
-                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025"
+                            "a.) Joe Biden is elected president in the 2024 presidential election OR "
+                            "b.) the spot price of Ethereum against USD is more than 10,000 on 1st January 2025. "
                             "Resolves NO otherwise."
                         ),
                     )
@@ -727,7 +727,9 @@ class Consequence(MiniInstantiator):
             "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
             "answer. You should then give me a question that expresses any logical consequence "
             "of P. That is, a question that is necessarily true if P is true. If P is false, "
-            "the question could be either true or false. Make sure it is a perfect logical consequence."
+            "the question could be either true or false. Make sure it is a perfect logical consequence. "
+            "It should also be very obvious that if P is true, then Q must be true.  Another way to describe it is that it would be impossible for Q to occur without P also having occured. "
+            "Q is in a way a stronger refinement of P. "
         )
 
         self.examples = [
