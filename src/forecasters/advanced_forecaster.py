@@ -3,7 +3,8 @@ from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import Example
 
 # llm_forecasting imports
-from config.constants import PROMPT_DICT
+from prompts.prompts import PROMPT_DICT
+from utils.time_utils import get_todays_date, subtract_days_from_date
 import ranking
 import summarize
 import ensemble
@@ -22,6 +23,7 @@ RETRIEVAL_CONFIG = {
     "SUMMARIZATION_MODEL_NAME": "gpt-3.5-turbo-1106",
     "SUMMARIZATION_TEMPERATURE": 0.2,
     "SUMMARIZATION_PROMPT_TEMPLATE": PROMPT_DICT["summarization"]["9"],
+    "NUM_SUMMARIES_THRESHOLD": 10,
     "PRE_FILTER_WITH_EMBEDDING": True,
     "PRE_FILTER_WITH_EMBEDDING_THRESHOLD": 0.32,
     "RANKING_MODEL_NAME": "gpt-3.5-turbo-1106",
@@ -49,9 +51,6 @@ REASONING_CONFIG = {
             PROMPT_DICT["binary"]["scratch_pad"]["new_6"],
         ],
     ],
-    "ALIGNMENT_MODEL_NAME": "gpt-3.5-turbo-1106",
-    "ALIGNMENT_TEMPERATURE": 0,
-    "ALIGNMENT_PROMPT": PROMPT_DICT["alignment"]["0"],
     "AGGREGATION_METHOD": "meta",
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
@@ -88,11 +87,17 @@ class AdvancedForecaster(Forecaster):
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         question = sentence.title
         background_info = sentence.metadata["background_info"]
-        resolution_criteria = sentence.body
+        resolution_criteria = (
+            sentence.body
+        )  # resolution criteria and other info is in |body|
+
+        today_date = get_todays_date()
+        # If open date is set in data structure, change beginning of retrieval to question open date.
+        # Retrieve from [today's date - 1 month, today's date].
         retrieval_dates = (
-            "2024-03-01",
-            "2024-05-04",
-        )  # artificially set and fixed for now
+            subtract_days_from_date(today_date, 30),
+            today_date,
+        )
 
         (
             ranked_articles,
@@ -113,9 +118,8 @@ class AdvancedForecaster(Forecaster):
             ranked_articles[: RETRIEVAL_CONFIG["NUM_SUMMARIES_THRESHOLD"]]
         )
 
-        # retrieval_dates[1] currently set to today
-        # data doesn't have close date currently (so set to N/A)
-        today_to_close_date = [retrieval_dates[1], "N/A"]
+        close_date = "N/A"  # data doesn't have explicit close date, so set to N/A
+        today_to_close_date = [today_date, close_date]
         ensemble_dict = await ensemble.meta_reason(
             question=question,
             background_info=background_info,
@@ -128,7 +132,6 @@ class AdvancedForecaster(Forecaster):
             base_model_names=REASONING_CONFIG["BASE_REASONING_MODEL_NAMES"],
             base_temperature=REASONING_CONFIG["BASE_REASONING_TEMPERATURE"],
             aggregation_method=REASONING_CONFIG["AGGREGATION_METHOD"],
-            answer_type="probability",
             weights=REASONING_CONFIG["AGGREGATION_WEIGTHTS"],
             meta_model_name=REASONING_CONFIG["AGGREGATION_MODEL_NAME"],
             meta_prompt_template=REASONING_CONFIG["AGGREGATION_PROMPT_TEMPLATE"],

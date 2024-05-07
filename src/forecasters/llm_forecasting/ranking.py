@@ -407,7 +407,7 @@ async def retrieve_summarize_and_rank_articles(
     articles = information_retrieval.deduplicate_articles(articles)
     articles_unfiltered = articles.copy()
     # Step 2.5 (optional): filter articles via quick embedding model
-    if config.get("PRE_FILTER_WITH_EMBEDDING") and len(articles) >= 25:
+    if config.get("PRE_FILTER_WITH_EMBEDDING") and len(articles) >= 100:
         logger.info(f"Filtering {len(articles)} articles with embedding model.")
         cos_sim = []
         q_embedding, a_embeddings = get_question_article_embeddings(

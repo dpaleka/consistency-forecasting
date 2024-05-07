@@ -3,10 +3,7 @@ from prompts.base_reasoning import *
 from prompts.search_query import *
 from prompts.summarization import *
 from prompts.ensemble_reasoning import *
-from prompts.alignment import *
 from prompts.system import *
-from prompts.data_wrangling import *
-from prompts.base_eval import *
 
 PROMPT_DICT = {
     "binary": {
@@ -36,9 +33,6 @@ PROMPT_DICT = {
     },
     "ranking": {
         "0": RELEVANCE_PROMPT_0,
-    },
-    "alignment": {
-        "0": ALIGNMENT_PROMPT,
     },
     "search_query": {
         "0": SEARCH_QUERY_PROMPT_0,
@@ -71,17 +65,5 @@ PROMPT_DICT = {
     },
     "system": {
         "0": SYSTEM_SUPERFORECASTER_0,
-    },
-    "data_wrangling": {
-        "is_bad_title": IS_BAD_TITLE_PROMPT,
-        "reformat": REFORMAT_PROMPT,
-        "assign_category": ASSIGN_CATEGORY_PROMPT,
-    },
-    "base_eval": {
-        "knowledge": KNOWLEDGE_PROMPT,
-        "gemini_knowledge": GEMINI_KNOLWEDGE_PROMPT,
-        "zero_shot": ZERO_SHOT_PROMPT,
-        "scratch_pad": BINARY_SCRATCH_PAD_PROMPT,
-        "gemini_scratch_pad": GEMINI_BINARY_SCRATCH_PAD_PROMPT,
     },
 }

@@ -1,13 +1,15 @@
 # Local application/library specific imports
 from config.keys import keys
 from prompts.prompts import PROMPT_DICT
-from utils import db_utils
 
 OAI_SOURCE = "OAI"
 ANTHROPIC_SOURCE = "ANTHROPIC"
 TOGETHER_AI_SOURCE = "TOGETHER"
 GOOGLE_SOURCE = "GOOGLE"
 HUGGINGFACE_SOURCE = "HUGGINGFACE"
+
+CHARS_PER_TOKEN = 4
+ANTHROPIC_RATE_LIMIT = 5
 
 DEFAULT_RETRIEVAL_CONFIG = {
     "NUM_SEARCH_QUERY_KEYWORDS": 3,
@@ -47,9 +49,6 @@ DEFAULT_REASONING_CONFIG = {
             PROMPT_DICT["binary"]["scratch_pad"]["2"],
         ],
     ],
-    "ALIGNMENT_MODEL_NAME": "gpt-3.5-turbo-1106",
-    "ALIGNMENT_TEMPERATURE": 0,
-    "ALIGNMENT_PROMPT": PROMPT_DICT["alignment"]["0"],
     "AGGREGATION_METHOD": "meta",
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
@@ -57,10 +56,6 @@ DEFAULT_REASONING_CONFIG = {
     "AGGREGATION_WEIGTHTS": None,
 }
 
-CHARS_PER_TOKEN = 4
-
-S3 = db_utils.initialize_s3_client(keys["AWS_ACCESS_KEY"], keys["AWS_SECRET_KEY"])
-S3_BUCKET_NAME = "my-forecasting-bucket"
 
 MODEL_TOKEN_LIMITS = {
     "claude-2.1": 200000,
@@ -107,8 +102,6 @@ MODEL_NAME_TO_SOURCE = {
     "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO": TOGETHER_AI_SOURCE,
     "NousResearch/Nous-Hermes-2-Yi-34B": TOGETHER_AI_SOURCE,
 }
-
-ANTHROPIC_RATE_LIMIT = 5
 
 IRRETRIEVABLE_SITES = [
     "wsj.com",
@@ -186,60 +179,3 @@ IRRETRIEVABLE_SITES = [
     "bizjournals.com",
     "thejakartapost.com",
 ]
-
-QUESTION_CATEGORIES = [
-    "Science & Tech",
-    "Healthcare & Biology",
-    "Economics & Business",
-    "Environment & Energy",
-    "Politics & Governance",
-    "Education & Research",
-    "Arts & Recreation",
-    "Security & Defense",
-    "Social Sciences",
-    "Sports",
-    "Other",
-]
-
-(
-    METACULUS_PLATFORM,
-    CSET_PLATFORM,
-    GJOPEN_PLATFORM,
-    MANIFOLD_PLATFORM,
-    POLYMARKET_PLATFORM,
-) = ("metaculus", "cset", "gjopen", "manifold", "polymarket")
-
-ALL_PLATFORMS = [
-    METACULUS_PLATFORM,
-    CSET_PLATFORM,
-    GJOPEN_PLATFORM,
-    MANIFOLD_PLATFORM,
-    POLYMARKET_PLATFORM,
-]
-
-END_WORDS_TO_PROBS_6 = {
-    "No": 0.05,
-    "Very Unlikely": 0.15,
-    "Unlikely": 0.35,
-    "Likely": 0.55,
-    "Very Likely": 0.75,
-    "Yes": 0.95,
-}
-
-END_WORDS_TO_PROBS_10 = {
-    "No": 0.05,
-    "Extremely Unlikely": 0.15,
-    "Very Unlikely": 0.25,
-    "Unlikely": 0.35,
-    "Slightly Unlikely": 0.45,
-    "Slightly Likely": 0.55,
-    "Likely": 0.65,
-    "Very Likely": 0.75,
-    "Extremely Likely": 0.85,
-    "Yes": 0.95,
-}
-
-TOKENS_TO_PROBS_DICT = {
-    "six_options": END_WORDS_TO_PROBS_6,
-    "ten_options": END_WORDS_TO_PROBS_10,
-}

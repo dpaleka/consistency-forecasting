@@ -5,9 +5,6 @@ import re
 # Third-party imports
 import urllib.parse
 
-# Local application/library-specific imports
-from config.constants import TOKENS_TO_PROBS_DICT
-
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,29 +19,6 @@ def is_string_in_list(target_string, string_list):
 
     # Check if the lowercase target string is in the list of lowercase strings
     return any(s.lower() == target_string_lower for s in string_list)
-
-
-def find_end_word(paragraph, end_words, window_size=50):
-    """
-    Find one of the end_words in the last window_size words of the paragraph.
-    Return the found word or None if no word is found.
-
-    TODO: Lowercase the paragraph and end_words before searching so that the search is case-insensitive?
-
-    Args:
-    - paragraph (str): The paragraph to search in.
-    - end_words (list of str): The words to search for.
-    - window_size (int): The number of words from the end to search within.
-
-    Returns:
-    str: found word or None
-    """
-    sorted_words = sorted(end_words, key=lambda s: len(s.split(" ")), reverse=True)
-    for end_word in sorted_words:
-        if end_word in paragraph[-window_size:]:
-            return end_word
-    logger.debug(f"Could not find any end word in {paragraph[-window_size:]}.")
-    return None
 
 
 def get_prompt(
@@ -129,7 +103,7 @@ def get_prompt(
     return prompt_template.format(**mapping)
 
 
-def extract_probability_with_stars(text):
+def extract_prediction(text):
     """
     Extract a probability value from a given text string.
 
@@ -191,35 +165,6 @@ def extract_probability_with_stars(text):
     return 0.5
 
 
-def extract_prediction(
-    response,
-    answer_type="probability",
-    end_words=list(TOKENS_TO_PROBS_DICT["ten_options"].keys()),
-):
-    """
-    A generic function to extract a prediction from a response string.
-
-    Args:
-        response (str): The response string from which the prediction is to be
-            extracted.
-        answer_type (str): The type of answer to extract. Can be "probability"
-            or "tokens".
-        end_words (list): The list of end words to search for in the response
-            string. The first end word found in the response string will be
-            used to extract the prediction.
-            Only used if answer_type == "tokens".
-
-    Returns:
-        str or float: The extracted prediction.
-    """
-    if answer_type == "probability":
-        return extract_probability_with_stars(response)
-    elif answer_type == "tokens":
-        return find_end_word(response, end_words)
-    else:
-        raise ValueError(f"Invalid answer_type: {answer_type}")
-
-
 def extract_and_decode_title_from_wikiurl(url):
     """
     Extract the title from a Wikipedia URL and decode it.
@@ -237,39 +182,3 @@ def extract_and_decode_title_from_wikiurl(url):
             # Replace underscores with spaces and decode percent encoding
             return urllib.parse.unquote(re.sub(r"_", " ", match.group(1)))
     return None
-
-
-def concat_summaries_from_fields(summary_texts, titles, publish_dates):
-    """
-    Concatenate summaries from a list of summary texts. Fill in the titles and
-    publish dates for each summary.
-
-    The length of the summary_texts, titles, and publish_dates lists should be
-    the same.
-
-    Args:
-        summary_texts (list of str): A list of summary texts.
-        titles (list of str): A list of titles.
-        publish_dates (list str): A list of publish dates.
-
-    Returns:
-        str: The concatenated summaries with titles and publish dates.
-    """
-    logger.info(
-        f"Concatenating summaries from {len(summary_texts)} articles ({len(titles)} titles and {len(publish_dates)} dates)."
-    )
-    if (len(summary_texts) != len(titles)) or (
-        len(summary_texts) != len(publish_dates)
-    ):
-        logger.error(
-            f"Lengths of summary_texts, titles, and publish_dates should be the same. Got {len(summary_texts)}, {len(titles)}, and {len(publish_dates)}."
-        )
-        return "Not available."
-    article_summaries = [
-        f"[{i+1}] {titles[i]} (published on {(publish_dates[i] if publish_dates[i] else 'unknown date')})\nSummary: {article_summary}\n"
-        for i, article_summary in enumerate(summary_texts)
-    ]
-    concatenated_summaries_str = (
-        "---\nARTICLES\n" + "\n".join(article_summaries) + "----"
-    )
-    return concatenated_summaries_str
