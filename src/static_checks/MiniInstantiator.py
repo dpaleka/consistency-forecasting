@@ -728,8 +728,8 @@ class Consequence(MiniInstantiator):
             "answer. You should then give me a question that expresses any logical consequence "
             "of P. That is, a question that is necessarily true if P is true. If P is false, "
             "the question could be either true or false. Make sure it is a perfect logical consequence. "
-            "It should also be very obvious that if P is true, then Q must be true.  Another way to describe it is that it would be impossible for Q to occur without P also having occured. "
-            "Q is in a way a stronger refinement of P. "
+            "It should also be very obvious that if P is true, then cons_P must be true.  Another way to describe it is that it would be impossible for cons_P to occur without P also having occured. "
+            "P is in a way a stronger refinement of cons_P. "
         )
 
         self.examples = [
