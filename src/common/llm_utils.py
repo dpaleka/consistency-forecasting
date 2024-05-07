@@ -17,7 +17,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
-from .path_utils import get_project_root
+from .path_utils import get_src_path
 
 
 from .perscache import (
@@ -30,10 +30,10 @@ from .perscache import (
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 
-cache = Cache(
+pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
     storage=(
-        LocalFileStorage(location=get_project_root() / ".cache")
+        LocalFileStorage(location=get_src_path().parent / os.getenv("LOCAL_CACHE"))
         if os.getenv("LOCAL_CACHE")
         else RedisStorage(namespace="llm_utils")
     ),
@@ -213,7 +213,7 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
-@cache
+@pydantic_cache
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
@@ -250,7 +250,7 @@ async def query_api_chat(
     return response
 
 
-@cache
+@pydantic_cache
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -343,7 +343,7 @@ def answer_sync(
     return query_api_chat_sync(messages=messages, **options)
 
 
-@cache
+@pydantic_cache
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client(model, use_async=True)
     if verbose:
@@ -417,7 +417,7 @@ async def get_embedding(
 
 # %%
 def get_all_cached_requests():
-    all_cached = cache.storage.get_all(namespace="llm_utils")
+    all_cached = pydantic_cache.storage.get_all(namespace="llm_utils")
     for key, value in all_cached.items():
         print(key, value.decode("utf-8"))
         break

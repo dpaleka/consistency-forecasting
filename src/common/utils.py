@@ -114,3 +114,12 @@ def write_questions(questions: list[ForecastingQuestion], path: str):
     with open(path, "w") as f:
         for q in questions:
             f.write(f"{q.model_dump_json()}\n")
+
+
+def update_recursive(source, overrides):
+    for key, value in overrides.items():
+        if isinstance(value, dict) and key in source and isinstance(source[key], dict):
+            update_recursive(source[key], value)
+        else:
+            source[key] = value
+    return source

@@ -26,6 +26,7 @@ fqs = ForecastingQuestion_stripped(
     ),
 )
 
+
 print(fqs.__str__())
 
 
