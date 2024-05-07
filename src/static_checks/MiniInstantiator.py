@@ -756,6 +756,48 @@ class Consequence(MiniInstantiator):
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
+                        title="Will SpaceX manage to land a person on Mars before 2100?",
+                        body=(
+                            "Resolves YES if the company SpaceX builds the rocketship that carries a person to Mars before Jan 1, 2100 as defined by that individual touching the surface of the planet. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will a human land on Mars before 2100?",
+                        body=(
+                            "Resolves YES if a member of the human species manages to touch the surface of Mars before Jan 1, 2100.  "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),
+
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will a peace treaty be declared between Russia and Ukraine before 2025?",
+                        body=(
+                            "Resolves YES if a peace treaty is declared between Russia and Ukraine before Jan 1, 2025 regarding the current war. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will a peace treaty be signed between Russia and Ukraine before 2025?",
+                        body=(
+                            "Resolves YES if a peace treaty is signed between Russia and Ukraine before Jan 1, 2025.  "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),
+
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
                         title="Will Shinzo Abe be elected US president in 2024?",
                         body=(
                             "Resolves YES if Shinzo Abe is elected US president in 2024. "
