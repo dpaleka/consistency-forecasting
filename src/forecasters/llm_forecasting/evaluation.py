@@ -19,46 +19,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def to_eval(question, retrieval_number, output_dir):
-    """
-    Determines if a given question needs evaluation based on its presence in an S3 storage.
-
-    Args:
-    question (str): The question to be evaluated.
-    retrieval_number (int): A unique identifier for the retrieval process.
-    output_dir (str): The directory path where the file is expected to be found.
-    file_type (str, optional): The type of the file. Default is "pickle".
-
-    Returns:
-    bool: True if the question needs evaluation, False otherwise.
-    """
-    question_formatted = question.replace(" ", "_").replace("/", "")
-    file_name = f"{output_dir}/{retrieval_number}/{question_formatted}.pickle"
-    try:
-        # Try reading the file from S3
-        _ = db_utils.read_pickle_from_s3(S3, S3_BUCKET_NAME, file_name)
-        return False
-    except BaseException:
-        # If the file is not found in S3, return True to indicate it needs evaluation
-        return True
-
-
-def save_results(save_dict, question, retrieval_number, output_dir, file_type="pickle"):
-    """
-    Save a dictionary of results to an S3 storage, formatted based on a specific question.
-
-    Args:
-        save_dict (dict): The dictionary of results to be saved.
-        question (str): The title of the question related to the results.
-        retrieval_number (int): A unique identifier for the retrieval process.
-        output_dir (str): The directory path where the file will be saved.
-        file_type (str, optional): The type of the file to save. Default is "pickle".
-    """
-    question_formatted = question.replace(" ", "_").replace("/", "")
-    file_name = f"{output_dir}/{retrieval_number}/{question_formatted}.{file_type}"
-    db_utils.upload_data_structure_to_s3(S3, save_dict, S3_BUCKET_NAME, file_name)
-
-
 async def retrieve_and_forecast(
     question_dict,
     question_raw,
