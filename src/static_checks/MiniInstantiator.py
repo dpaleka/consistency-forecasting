@@ -786,9 +786,9 @@ class Consequence(MiniInstantiator):
                 ),
                 assistant=self.OutputFormat_stripped(
                     cons_P=ForecastingQuestion_stripped(
-                        title="Will a peace treaty be signed between Russia and Ukraine before 2025?",
+                        title="Will a ceasefire be declared between Russia and Ukraine before 2025?",
                         body=(
-                            "Resolves YES if a peace treaty is signed between Russia and Ukraine before Jan 1, 2025.  "
+                            "Resolves YES if a ceasefire is declared between Russia and Ukraine before Jan 1, 2025.  "
                             "Resolves NO otherwise."
                         ),
                     )
