@@ -730,6 +730,8 @@ class Consequence(MiniInstantiator):
             "the question could be either true or false. Make sure it is a perfect logical consequence. "
             "It should also be very obvious that if P is true, then cons_P must be true.  Another way to describe it is that it would be impossible for cons_P to occur without P also having occured. "
             "P is in a way a stronger refinement of cons_P. "
+            "The relationship must be strict.  cons_P cannot be something that 'almost certainly' occurs if P occurs. "
+            "It MUST be something that logically / mathematically is inevitable if P occurs."
         )
 
         self.examples = [
@@ -818,6 +820,70 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
+
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will a human being land on Mars by 2200?",
+                        body=(
+                            "Resolves YES if a human being lands on Mars before Jan 1, 2200. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will a human being land on Mars by 2100?",
+                        body=(
+                            "Resolves YES if a human being lands on Mars before Jan 1, 2100. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),
+
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will Vladimir Putin be assassinated by Jan 1, 2030?",
+                        body=(
+                            "Resolves YES if a professional autopsy determines that Vladimir Putin, the current president of Russia, is dead before Jan 1, 2030, and the cause is most likely by an assassination attempt. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will Vladimir Putin be dead by Jan 1, 2030?",
+                        body=(
+                            "Resolves YES if a professional autopsy determines that Vladimir Putin, the current president of Russia, is dead before Jan 1, 2030. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),
+
+
+            Example(
+                user=self.BaseSentenceFormat_stripped(
+                    P=ForecastingQuestion_stripped(
+                        title="Will Sam Bankman-Fried, ex-FTX CEO, serve at least 20 years of his prison sentence?",
+                        body=(
+                            "Resolves YES Sam Bankman-Fried is incarcerated for 20 years or more. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+                assistant=self.OutputFormat_stripped(
+                    cons_P=ForecastingQuestion_stripped(
+                        title="Will Sam Bankman-Fried, ex-FTX CEO, serve at least 15 years of his prison sentence?",
+                        body=(
+                            "Resolves YES Sam Bankman-Fried is incarcerated for 15 years or more. "
+                            "Resolves NO otherwise."
+                        ),
+                    )
+                ),
+            ),            
         ]
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
