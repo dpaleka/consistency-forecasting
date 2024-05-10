@@ -88,7 +88,7 @@ class ForecastingQuestion(BaseModel):
     def __init__(self, **data):
         super().__init__(**data)
         computed_id = self.compute_id()
-        if self.id is not None:
+        if self.id is not None and self.id != computed_id:
             print(f"ID does not match computed ID; changing {self.id} to {computed_id}")
         self.id = computed_id
 
@@ -139,6 +139,14 @@ class ForecastingQuestion(BaseModel):
             significant_data += str(v)
         ret = hashlib.sha256(significant_data.encode()).hexdigest()[:32]
         return ret
+
+    def validate_id(self):
+        # This is not a field validator, on purpose.
+        # This function is NOT called when the object is created, but only called in validation hooks etc.
+        # The purpose of this setup is to ensure that you can modify ForecastingQuestions in .jsonl files without anything erroring out before commit
+        # At commit time, if the only error is about the ids, you can run `scripts/recompute_ids.py` to fix the ids.
+        if self.id != self.compute_id():
+            raise ValueError("ID does not match self-computed ID")
 
 
 class ForecastingQuestions(BaseModel):

@@ -18,6 +18,14 @@ def validate_fq(data: list[dict]):
             print(f"Error validating data: {e}\n")
             print(f"line: {line}\n")
             return False
+    for line in data:
+        fq = ForecastingQuestion.model_validate(line)
+        try:
+            fq.validate_id()
+        except ValidationError as e:
+            print(f"ID is not computed from the data: {e}\n")
+            print(f"line: {line}\n")
+            return False
     return True
 
 
