@@ -1,8 +1,12 @@
 import argparse
 import json
 import uuid
+import sys
 from pathlib import Path
 
+this_dir = Path(__file__).parent
+sys.path.append(str(this_dir.parent / "src"))
+print(sys.path)
 from common.path_utils import get_data_path
 
 import streamlit as st
