@@ -246,6 +246,7 @@ async def query_api_chat(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
+    print(f"%%%%% -> model = {options['model']}")
     client, client_name = get_client(options["model"], use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)

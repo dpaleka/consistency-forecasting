@@ -65,85 +65,63 @@ def load_data(file):
     return base_questions_p, base_questions_pq, base_questions_pqr
 
 
-async def instantiate(path, length=3):
+async def instantiate(path, length=1):
     base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
     # fmt: off
     await neg_checker.instantiate_and_write_many(
         base_questions_p[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await and_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await or_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await andor_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await but_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await cond_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await cons_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await para_checker.instantiate_and_write_many(
         base_questions_p[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await symmand_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await symmor_checker.instantiate_and_write_many(
         base_questions_pq[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     await condcond_checker.instantiate_and_write_many(
         base_questions_pqr[:length],
         model=MODEL,
         overwrite=True,
-        validate_before=True,
-        n_validation=3,
     )
     # fmt: on
 
