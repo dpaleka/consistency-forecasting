@@ -1,7 +1,8 @@
-from typing import Optional, Type
+import hashlib
 from datetime import datetime
-from uuid import uuid4, UUID
-from pydantic import BaseModel, Field, validator, field_validator, create_model
+from typing import Optional, Type
+
+from pydantic import BaseModel, Field, create_model, field_validator, validator
 
 
 class PlainText(BaseModel):
@@ -72,7 +73,9 @@ exp_answer_types = {
 
 
 class ForecastingQuestion(BaseModel):
-    id: UUID = Field(default_factory=uuid4)
+    id: str = Field(
+        default_factory=lambda: None
+    )  # id will be computed in the constructor
     title: str
     body: str
     resolution_date: datetime
@@ -81,6 +84,13 @@ class ForecastingQuestion(BaseModel):
     url: Optional[str] = None
     metadata: Optional[dict] = None
     resolution: Optional[bool] = None
+
+    def __init__(self, **data):
+        super().__init__(**data)
+        computed_id = self.compute_id()
+        if self.id is not None:
+            print(f"ID does not match computed ID; changing {self.id} to {computed_id}")
+        self.id = computed_id
 
     @field_validator("question_type")
     def validate_question_type(cls, v):
@@ -118,7 +128,17 @@ class ForecastingQuestion(BaseModel):
         return self.cast_stripped().model_dump_json()
 
     def to_dict(self):
-        return self.dict()
+        return self.model_dump()
+
+    def to_dict_no_id(self):
+        return {k: v for k, v in self.model_dump().items() if k != "id"}
+
+    def compute_id(self):
+        significant_data = ""
+        for k, v in self.to_dict_no_id().items():
+            significant_data += str(v)
+        ret = hashlib.sha256(significant_data.encode()).hexdigest()[:32]
+        return ret
 
 
 class ForecastingQuestions(BaseModel):

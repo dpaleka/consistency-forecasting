@@ -1,7 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
-import uuid
 
 from common.datatypes import ForecastingQuestion
 from forecasters import BasicForecaster
@@ -20,7 +19,6 @@ def basic_forecaster():
 @pytest.fixture
 def mock_forecasting_question():
     return ForecastingQuestion(
-        id=uuid.uuid4(),
         title="Test Title",
         body="Test Body",
         question_type="binary",
@@ -28,12 +26,14 @@ def mock_forecasting_question():
         data_source="synthetic",
         url="http://example.com",
         metadata={"topics": ["test"]},
-        resolution=True
+        resolution=True,
     )
 
 
 @patch("forecasters.basic_forecaster.answer_sync", return_value=mock_response)
-def test_basic_forecaster_call(mock_answer_sync, basic_forecaster, mock_forecasting_question):
+def test_basic_forecaster_call(
+    mock_answer_sync, basic_forecaster, mock_forecasting_question
+):
     expected_prob = mock_response.prob
     prob = basic_forecaster.call(mock_forecasting_question)
     assert prob == pytest.approx(
@@ -44,7 +44,9 @@ def test_basic_forecaster_call(mock_answer_sync, basic_forecaster, mock_forecast
 
 @pytest.mark.asyncio
 @patch("forecasters.basic_forecaster.answer", return_value=mock_response)
-async def test_basic_forecaster_call_async(mock_answer, basic_forecaster, mock_forecasting_question):
+async def test_basic_forecaster_call_async(
+    mock_answer, basic_forecaster, mock_forecasting_question
+):
     expected_prob = mock_response.prob
     prob = await basic_forecaster.call_async(mock_forecasting_question)
     assert prob == pytest.approx(

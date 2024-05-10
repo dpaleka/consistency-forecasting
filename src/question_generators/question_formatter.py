@@ -1,6 +1,5 @@
 from common.datatypes import ForecastingQuestion, ValidationResult
 import asyncio
-import uuid
 from common.llm_utils import answer
 from typing import Optional
 from datetime import datetime
@@ -148,7 +147,6 @@ async def from_string(
     print(f"\n{bodyAndDate=}")
 
     return ForecastingQuestion(
-        id=uuid.uuid4(),
         title=question,
         body=body or bodyAndDate.resolution_criteria,
         resolution_date=date or bodyAndDate.resolution_date,
