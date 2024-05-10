@@ -1,4 +1,6 @@
 # Path: static_checks/Base.py
+import os
+from dotenv import load_dotenv
 from common.utils import shallow_dict
 from datetime import datetime
 from abc import ABC, abstractmethod
@@ -12,7 +14,8 @@ from common.datatypes import (
 )  # noqa
 from question_generators import question_formatter
 
-
+load_dotenv()
+verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 class MiniInstantiator(ABC):
     def __init__(self):
         pass
@@ -130,12 +133,11 @@ class MiniInstantiator(ABC):
     async def instantiate(
         self,
         base_sentences: dict[str, ForecastingQuestion],
-        validate_before=False,
-        n_validation=3,
+        n_verify=3,
         **kwargs,
     ) -> "Self.OutputFormat":
-        if validate_before:
-            for i in range(n_validation):
+        if verify_before_instantion:
+            for i in range(n_verify):
                 title_body = await self.title_body(base_sentences, **kwargs)
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
@@ -147,7 +149,7 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    validate_result = await question_formatter.validate_question(fqs[k])
+                    validate_result = await question_formatter.verify_question(fqs[k], **kwargs)
                     valid[k] = validate_result.valid
                 if all([res is not None for res in fqs.values()]):
                     break

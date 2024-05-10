@@ -1,9 +1,17 @@
-from common.datatypes import ForecastingQuestion, ValidationResult
+from dotenv import load_dotenv
+import os
+from common.datatypes import ForecastingQuestion, VerificationResult
 import asyncio
 import uuid
 from common.llm_utils import answer
+from common.path_utils import get_data_path
+from common.utils import write_jsonl, write_jsonl_async_from_str
 from typing import Optional
 from datetime import datetime
+
+load_dotenv()
+write_verification = os.getenv("WRITE_VERIFICATION","False") == "True"
+print(f"question formatter, write verification: {write_verification}")
 
 
 resolution_criteria_date_prompt = """
@@ -162,7 +170,15 @@ async def from_string(
     )
 
 
-async def validate_question(question: ForecastingQuestion):
+async def verify_question(question: ForecastingQuestion,**kwargs):
     current_date = datetime.now()
     prompt = validate_forecasting_question_prompt.format(current_date=current_date)
-    return await answer(prompt, response_model=ValidationResult)
+    verification =  await answer(prompt, response_model=VerificationResult, **kwargs)
+    if write_verification:
+        filename = get_data_path()/"verification/question_verification.jsonl"
+        dict_to_write = question.model_dump_json()
+        dict_to_write = dict_to_write[:-1] + f',"verification":{verification.dict()}' +"}"
+        await write_jsonl_async_from_str(filename, [dict_to_write], append=True)
+    return verification
+
+

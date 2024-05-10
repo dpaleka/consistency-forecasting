@@ -1,4 +1,4 @@
-neg_validation_prompt = """I am going to give you two questions, P and Q, and I want you to validate wether Q is the negation of P.
+neg_verification_prompt = """I am going to give you two questions, P and Q, and I want you to validate wether Q is the negation of P.
 So if P is true, Q should be false, and if P is false, Q should be true.
 
 Example 1:
@@ -23,7 +23,7 @@ P: {P}
 Q: {not_P}
 """
 
-and_validation_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the conjunction of P and Q.
+and_verification_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the conjunction of P and Q.
 This means that R is true if and only if both P and Q are true.
 
 Example 1:
@@ -50,7 +50,7 @@ Q: {Q}
 R: {P_and_Q}
 """
 
-or_validation_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the disjunction of P and Q.
+or_verification_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the disjunction of P and Q.
 This means that R is true if at least one of P or Q is true.
 
 Example 1:
@@ -78,7 +78,7 @@ Q: {Q}
 R: {P_or_Q}
 """
 
-but_validation_prompt = """
+but_verification_prompt = """
 I will present you with three questions: P, R, and S. In these questions:
 - P is a straightforward proposition.
 - R is intended to represent another question Q, combined with the negation of P (not P).
@@ -111,7 +111,7 @@ R: {Q_and_not_P}
 S: {P_or_Q}
 """
 
-conditional_validation_prompt = """
+conditional_verification_prompt = """
 I will provide three questions: P, R, and S. In this scenario:
 - P is a direct statement or proposition.
 - R represents the conditional probability of Q given P, denoting how likely Q is to occur if P is true.
@@ -144,7 +144,7 @@ R: {Q_given_P}
 S: {P_and_Q}
 """
 
-consequence_validation_prompt = """
+consequence_verification_prompt = """
 I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that could only be true if P is true. In other words, validate whether Q is logically contingent on P, ensuring that Q can only occur if P is true.
 
 Example 1:
@@ -177,7 +177,7 @@ P: {P}
 Q: {cons_P}
 """
 
-paraphrase_validation_prompt = """
+paraphrase_verification_prompt = """
 I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways.
 
 Example 1:
