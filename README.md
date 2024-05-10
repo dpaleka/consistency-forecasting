@@ -46,7 +46,7 @@ As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not 
 
 ### Paths
 Use [`src/common/path_utils.py`](/src/common/path_utils.py) to specify paths in code, Jupyter notebooks, etc.
-Do not hardcode paths except relative to `pathlib.Path` objects returned by the utils in `path_utils.py`.
+Do not hardcode paths, except relative to `pathlib.Path` objects returned by the utils in `path_utils.py`.
 
 ### Validation of data
 Our base data directory is `src/data/`. Inside this, we have the following scheme:
@@ -67,4 +67,22 @@ This scheme is not final. In particular:
 - If we figure out a need for some data to be committed, we can remove the corresponding .gitignore entry.
 
 Please install `pre-commit`, so the validation hooks in `hooks/` can check that all data in the validated directories is in the correct format.
+
+
+## Labeling tool for questions
+The streamlit app [`data_labeling/feedback_form.py`](data_labeling/feedback_form.py) is used to label questions.
+Do not try to install its dependencies in the main Python environment.
+Instead, make a new virtual environment and install the requirements with:
+```
+pip install -r data_labeling/requirements.txt
+```
+Alternatively, for now you can use [pipx](https://github.com/pypa/pipx), run `pipx install streamlit`, and continue to use the Python environment you have been using so far.
+
+
+The feedback form app can be run with:
+```
+cd data_labeling
+streamlit run feedback_form.py -- -f ../src/data/fq/synthetic/{filename}.jsonl
+```
+It writes into `src/data/feedback/`.
 
