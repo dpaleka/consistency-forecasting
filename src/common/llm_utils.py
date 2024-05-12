@@ -23,15 +23,27 @@ from .path_utils import get_src_path
 from .perscache import (
     Cache,
     JSONPydanticResponseSerializer,
+    PickleSerializer,
     RedisStorage,
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
+print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
+    storage=(
+        LocalFileStorage(location=get_src_path().parent / os.getenv("LOCAL_CACHE"))
+        if os.getenv("LOCAL_CACHE")
+        else RedisStorage(namespace="llm_utils")
+    ),
+    value_wrapper=ValueWrapperDictInspectArgs(),
+)
+
+embeddings_cache = Cache(
+    serializer=PickleSerializer(),
     storage=(
         LocalFileStorage(location=get_src_path().parent / os.getenv("LOCAL_CACHE"))
         if os.getenv("LOCAL_CACHE")
@@ -404,6 +416,7 @@ async def parallelized_call(
     return await asyncio.gather(*tasks)
 
 
+@embeddings_cache
 async def get_embedding(
     text: str,
     embedding_model: str = "text-embedding-3-small",

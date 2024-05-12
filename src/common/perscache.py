@@ -148,10 +148,6 @@ class ResponseModelNotRegisteredError(NotImplementedError):
 
 
 def pydantic_response_dumps(data: Any) -> bytes:
-    """
-    All operations are in-place and idempotent.
-    """
-
     if (
         isinstance(data, dict)
         and "value" in data
@@ -203,9 +199,6 @@ def pydantic_response_dumps(data: Any) -> bytes:
 def pydantic_response_loads(
     data: bytes, known_models: dict[str, Type[BaseModel]]
 ) -> Any:
-    """
-    All operations are in-place and idempotent.
-    """
     data_dict = json.loads(data.decode("utf-8"))
     if (
         "value" in data_dict
@@ -246,7 +239,6 @@ def pydantic_response_loads(
     return data_dict
 
 
-# Use make_serializer to create JSONPydanticSerializer
 JSONPydanticResponseSerializer = make_serializer(
     "JSONPydanticSerializer",
     "json",
