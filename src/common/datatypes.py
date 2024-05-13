@@ -4,6 +4,7 @@ from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, validator, field_validator, create_model
 
 
+### Pydantic models ###
 class PlainText(BaseModel):
     text: str
 
@@ -169,3 +170,32 @@ class ValidationResult(BaseModel):
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
+
+
+### end Pydantic models ###
+
+
+### Other useful classes
+
+
+class DictLikeDataclass:
+    def __getitem__(self, key):
+        return getattr(self, key)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
+    def __delitem__(self, key):
+        delattr(self, key)
+
+    def get(self, key, default=None):
+        return getattr(self, key, default)
+
+    def keys(self):
+        return self.__annotations__.keys()
+
+    def values(self):
+        return (getattr(self, key) for key in self.keys())
+
+    def items(self):
+        return ((key, getattr(self, key)) for key in self.keys())
