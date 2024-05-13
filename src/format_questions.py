@@ -1,7 +1,7 @@
 import asyncio
 import json
 from typing import List, Optional
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, SyntheticTagQuestion
 from question_generators import question_formatter
 from common.utils import write_jsonl_async
 from common.path_utils import get_data_path, get_scripts_path
@@ -41,7 +41,44 @@ async def validate_and_format_question(question: dict) -> Optional[ForecastingQu
             await asyncio.sleep(1)
 
     return forecasting_question
+    
+async def validate_and_format_synthetic_question(question: SyntheticTagQuestion)  -> Optional[ForecastingQuestion]:
+    metadata = {"tags": question.tags, "category": question.category}
+    for i in range(2):
+        forecasting_question = await question_formatter.from_string(
+            question.title,
+            data_source="synthetic",
+            question_type="binary",
+            metadata=metadata,
+        )
+        if await question_formatter.validate_question(forecasting_question):
+            break
+        else:
+            print(f"Invalid question: {question}")
+            forecasting_question = None
+            await asyncio.sleep(1)
+    return forecasting_question
 
+
+async def process_synthetic_questions_from_file(
+    file_path: Path,  output_path: Path, max_questions: Optional[int] = None
+) -> List[ForecastingQuestion]:
+    questions = read_json_or_jsonl(file_path)
+    questions = [SyntheticTagQuestion(**q) for q in questions]
+    print(f"length of questions: {len(questions)}")
+    questions = remove_repeatead_questions(questions, output_path)
+    print(f"length of questions: {len(questions)}")
+
+    max_questions = max_questions if max_questions else len(questions)
+    tasks = []
+
+    for question in questions[:max_questions]:
+        tasks.append(validate_and_format_synthetic_question(question))
+
+    forecasting_questions = await asyncio.gather(*tasks)
+    count_none = forecasting_questions.count(None)
+    forecasting_questions = [fq for fq in forecasting_questions if fq is not None]
+    return forecasting_questions, count_none
 
 async def process_questions_from_file(
     file_path: Path, max_questions: Optional[int]
@@ -59,12 +96,22 @@ async def process_questions_from_file(
     forecasting_questions = [fq for fq in forecasting_questions if fq is not None]
     return forecasting_questions, count_none
 
+def remove_repeatead_questions(questions: List[ForecastingQuestion], output_path) -> List[ForecastingQuestion]:
+    fq_questions = read_json_or_jsonl(Path(output_path))
+    question_set = set([fq["title"] for fq in fq_questions])
+    r = []
+    for q in questions:
+        if q.title not in question_set:
+            r.append(q)
+     
+    return r
+
 
 async def main(
     file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int
 ):
-    forecasting_questions, none_count = await process_questions_from_file(
-        file_path, max_questions
+    forecasting_questions, none_count = await process_synthetic_questions_from_file(
+        file_path,f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}", max_questions=max_questions 
     )
     print(f"Number of invalid questions found: {none_count}")
 
@@ -76,12 +123,12 @@ async def main(
     await write_jsonl_async(
         f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}",
         data_to_write,
-        append=False,
+        append=True,
     )
     await write_jsonl_async(
         f"{get_scripts_path()}/pipeline/{out_file_name}",
         data_to_write,
-        append=False,
+        append=True,
     )
 
 
@@ -91,14 +138,14 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_scripts_path()}/pipeline/QUESTIONS_CLEANED_MODIFIED.jsonl",
+        default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
         "--out_data_dir",
         "-d",
         type=str,
-        default="real",
+        default="synthetic",
         choices=["real", "synthetic"],
         help="Data dir to write the output to",
     )
@@ -107,7 +154,7 @@ if __name__ == "__main__":
         "--out_file_name",
         "-o",
         type=str,
-        default="questions_cleaned_formatted.jsonl",
+        default="high-quality-questions-all-domains.jsonl",
         help="Name of the output file",
     )
     parser.add_argument(

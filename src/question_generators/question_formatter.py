@@ -130,10 +130,11 @@ async def from_string(
     if not question_type:
         question_type = "binary"
 
-    try:
-        date = datetime.strptime(date, "%d/%m/%Y")
-    except ValueError:
-        date = None
+    if date is not None:
+        try:
+            date = datetime.strptime(date, "%d/%m/%Y")
+        except ValueError:
+            date = None
 
     for attempt in range(3):
         try:

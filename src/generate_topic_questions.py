@@ -2,13 +2,15 @@ from typing import Optional
 import asyncio
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async, write_jsonl_async_from_str
+from common.datatypes import SyntheticTagQuestion
+from question_generators.utils import deduplicate
 import json
 from common.llm_utils import answer
 import random
 from pydantic import BaseModel
 
 
-file_path = get_data_path()/'fq'/'synthetic'/'high-quality-questions-all-domains-with-feedback.jsonl'
+file_path = get_data_path()/'other'/'high-quality-questions-all-domains.jsonl'
 model = "gpt-4-0125-preview"
 
 categories = [
@@ -95,17 +97,10 @@ Tags: {tags}
 """
 
 
-class GeneratedQuestion(BaseModel):
-    question: str
-    category: str
-    tags: str
-    feedback: Optional[str] = None
-    fixed: Optional[bool] = False
-
 class QuestionGenerationResponse(BaseModel):
-    question_1: GeneratedQuestion
-    question_2: GeneratedQuestion
-    question_3: GeneratedQuestion
+    question_1: SyntheticTagQuestion
+    question_2: SyntheticTagQuestion
+    question_3: SyntheticTagQuestion
 
 def load_questions_from_jsonl(file_path):
     questions_dict = {}
@@ -113,7 +108,7 @@ def load_questions_from_jsonl(file_path):
         for line in file:
             json_data = json.loads(line) 
             category = json_data['category']  
-            question_tuple = (json_data['question'], json_data['category'], json_data['tags'])  
+            question_tuple = (json_data['title'], json_data['category'], json_data['tags'])  
             if category not in questions_dict:
                 questions_dict[category] = [question_tuple]  
             else:
@@ -160,21 +155,26 @@ async def generate_questions_for_category(initial_questions, questions_dict):
         tags=",".join(tags)
     )
     generated_questions = await answer(model, question_prompt, response_model=QuestionGenerationResponse)
-    print(generated_questions)
 
-    return [q.model_dump_json() for q in [generated_questions.question_1, generated_questions.question_2, generated_questions.question_3]]
+    return [q for q in [generated_questions.question_1, generated_questions.question_2, generated_questions.question_3]]
 
 
 
 async def generate_questions(n=3):
     questions = load_questions_from_jsonl(file_path)
-    generated_questions = []
-    for i in range(n):
-        generated_questions.extend(await generate_questions_for_category(initial_questions, questions))
-    await write_jsonl_async_from_str(file_path, generated_questions, append=True)
+    tasks = [generate_questions_for_category(initial_questions, questions) for _ in range(n)]
+    results = await asyncio.gather(*tasks)
+    
+    generated_questions = [item for sublist in results for item in sublist]
+    
+    deduplicated_questions = await deduplicate(generated_questions)
+    print(f"len deduplicated questions: {len(deduplicated_questions)}, len of generated questions: {len(generated_questions)}")
+    deduplicated_questions = [q.model_dump_json() for q in deduplicated_questions]
+    await write_jsonl_async_from_str(file_path, deduplicated_questions, append=True)
+
 
 if __name__ == "__main__":
-    asyncio.run(generate_questions(5))
+    asyncio.run(generate_questions(32))
 
 
 
