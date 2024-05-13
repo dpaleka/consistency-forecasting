@@ -1,42 +1,21 @@
 from .forecaster import Forecaster
-from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
-from common.llm_utils import Example
+from common.datatypes import ForecastingQuestion
 
 # llm_forecasting imports
-from prompts.prompts import PROMPT_DICT
-from utils.time_utils import get_todays_date, subtract_days_from_date
-import ranking
-import summarize
-import ensemble
+from forecasters.llm_forecasting.prompts.prompts import PROMPT_DICT
+from forecasters.llm_forecasting.utils.time_utils import (
+    get_todays_date,
+    subtract_days_from_date,
+)
+import forecasters.llm_forecasting.ranking as ranking
+import forecasters.llm_forecasting.summarize as summarize
+import forecasters.llm_forecasting.ensemble as ensemble
+from forecasters.llm_forecasting.config.constants import DEFAULT_RETRIEVAL_CONFIG
 
-RETRIEVAL_CONFIG = {
-    "NUM_SEARCH_QUERY_KEYWORDS": 3,
-    "MAX_WORDS_NEWSCATCHER": 5,
-    "MAX_WORDS_GNEWS": 8,
-    "SEARCH_QUERY_MODEL_NAME": "gpt-4-1106-preview",
-    "SEARCH_QUERY_TEMPERATURE": 0.0,
-    "SEARCH_QUERY_PROMPT_TEMPLATES": [
-        PROMPT_DICT["search_query"]["0"],
-        PROMPT_DICT["search_query"]["1"],
-    ],
-    "NUM_ARTICLES_PER_QUERY": 5,
-    "SUMMARIZATION_MODEL_NAME": "gpt-3.5-turbo-1106",
-    "SUMMARIZATION_TEMPERATURE": 0.2,
-    "SUMMARIZATION_PROMPT_TEMPLATE": PROMPT_DICT["summarization"]["9"],
-    "NUM_SUMMARIES_THRESHOLD": 10,
-    "PRE_FILTER_WITH_EMBEDDING": True,
-    "PRE_FILTER_WITH_EMBEDDING_THRESHOLD": 0.32,
-    "RANKING_MODEL_NAME": "gpt-3.5-turbo-1106",
-    "RANKING_TEMPERATURE": 0.0,
-    "RANKING_PROMPT_TEMPLATE": PROMPT_DICT["ranking"]["0"],
-    "RANKING_RELEVANCE_THRESHOLD": 4,
-    "RANKING_COSINE_SIMILARITY_THRESHOLD": 0.5,
-    "SORT_BY": "date",
-    "RANKING_METHOD": "llm-rating",
-    "RANKING_METHOD_LLM": "title_250_tokens",
-    "NUM_SUMMARIES_THRESHOLD": 20,
-    "EXTRACT_BACKGROUND_URLS": True,
-}
+import asyncio
+from dataclasses import dataclass
+from common.datatypes import DictLikeDataclass
+
 
 REASONING_CONFIG = {
     "BASE_REASONING_MODEL_NAMES": ["gpt-4-1106-preview", "gpt-4-1106-preview"],
@@ -55,34 +34,81 @@ REASONING_CONFIG = {
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
     "AGGREGATION_MODEL_NAME": "gpt-4",
-    "AGGREGATION_WEIGTHTS": None,
+    "AGGREGATION_WEIGHTS": None,
 }
 
 
+@dataclass
+class RetrievalConfig(DictLikeDataclass):
+    NUM_SEARCH_QUERY_KEYWORDS: int
+    MAX_WORDS_NEWSCATCHER: int
+    MAX_WORDS_GNEWS: int
+    SEARCH_QUERY_MODEL_NAME: str
+    SEARCH_QUERY_TEMPERATURE: float
+    SEARCH_QUERY_PROMPT_TEMPLATES: list[str]
+    NUM_ARTICLES_PER_QUERY: int
+    SUMMARIZATION_MODEL_NAME: str
+    SUMMARIZATION_TEMPERATURE: float
+    SUMMARIZATION_PROMPT_TEMPLATE: str
+    PRE_FILTER_WITH_EMBEDDING: bool
+    PRE_FILTER_WITH_EMBEDDING_THRESHOLD: float
+    RANKING_MODEL_NAME: str
+    RANKING_TEMPERATURE: float
+    RANKING_PROMPT_TEMPLATE: str
+    RANKING_RELEVANCE_THRESHOLD: int
+    RANKING_COSINE_SIMILARITY_THRESHOLD: float
+    SORT_BY: str
+    RANKING_METHOD: str
+    RANKING_METHOD_LLM: str
+    NUM_SUMMARIES_THRESHOLD: int
+    EXTRACT_BACKGROUND_URLS: bool
+
+
+@dataclass
+class ReasoningConfig(DictLikeDataclass):
+    BASE_REASONING_MODEL_NAMES: list[str]
+    BASE_REASONING_TEMPERATURE: float
+    BASE_REASONING_PROMPT_TEMPLATES: list[list[str]]
+    AGGREGATION_METHOD: str
+    AGGREGATION_PROMPT_TEMPLATE: str
+    AGGREGATION_TEMPERATURE: float
+    AGGREGATION_MODEL_NAME: str
+    AGGREGATION_WEIGHTS: list[float]
+
+
+RETRIEVAL_CONFIG: RetrievalConfig = RetrievalConfig(**DEFAULT_RETRIEVAL_CONFIG)
+REASONING_CONFIG: ReasoningConfig = ReasoningConfig(**REASONING_CONFIG)
+
+
 class AdvancedForecaster(Forecaster):
-    def __init__(self, preface: str = None, examples: list = None):
-        self.preface = preface or (
-            "You are an informed and well-calibrated forecaster. I need you to give me "
-            "your best probability estimate for the following sentence or question resolving YES. "
-            "Your answer should be a float between 0 and 1, with nothing else in your response."
-        )
-
-        self.examples = examples or [
-            Example(
-                user=ForecastingQuestion_stripped(
-                    title="Will Manhattan have a skyscraper a mile tall by 2030?",
-                    body=(
-                        "Resolves YES if at any point before 2030, there is at least "
-                        "one building in the NYC Borough of Manhattan (based on current "
-                        "geographic boundaries) that is at least a mile tall."
-                    ),
-                ),
-                assistant=0.03,
+    def __init__(
+        self,
+        retrieval_config: RetrievalConfig | None = None,
+        reasoning_config: ReasoningConfig | None = None,
+        **kwargs,
+    ):
+        """
+        Only override kwargs for retrieval_config if the retrieval_config is None.
+        Only override kwargs for reasoning_config if the reasoning_config is None.
+        """
+        print("Loading AdvancedForecaster...")
+        self.retrieval_config = retrieval_config or RETRIEVAL_CONFIG
+        self.reasoning_config = reasoning_config or REASONING_CONFIG
+        if retrieval_config is None:
+            for key, value in kwargs.items():
+                if key in self.retrieval_config.keys():
+                    print(f"Overriding retrieval_config: {key}={value}")
+                    self.retrieval_config[key] = value
+        if reasoning_config is None:
+            for key, value in kwargs.items():
+                if key in self.reasoning_config.keys():
+                    print(f"Overriding reasoning_config: {key}:={value}")
+                    self.reasoning_config[key] = value
+        if retrieval_config is not None and reasoning_config is not None and kwargs:
+            print(
+                "WARNING: kwargs passed to AdvancedForecaster constructor are not used."
             )
-        ]
-
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
-        raise NotImplementedError
+            print(f"kwargs: {kwargs}")
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         question = sentence.title
@@ -110,12 +136,12 @@ class AdvancedForecaster(Forecaster):
             resolution_criteria,
             retrieval_dates,
             urls=[],
-            config=RETRIEVAL_CONFIG,
+            config=self.retrieval_config,
             return_intermediates=True,
         )
 
         all_summaries = summarize.concat_summaries(
-            ranked_articles[: RETRIEVAL_CONFIG["NUM_SUMMARIES_THRESHOLD"]]
+            ranked_articles[: self.retrieval_config["NUM_SUMMARIES_THRESHOLD"]]
         )
 
         close_date = "N/A"  # data doesn't have explicit close date, so set to N/A
@@ -126,16 +152,23 @@ class AdvancedForecaster(Forecaster):
             resolution_criteria=resolution_criteria,
             today_to_close_date_range=today_to_close_date,
             retrieved_info=all_summaries,
-            reasoning_prompt_templates=REASONING_CONFIG[
+            reasoning_prompt_templates=self.reasoning_config[
                 "BASE_REASONING_PROMPT_TEMPLATES"
             ],
-            base_model_names=REASONING_CONFIG["BASE_REASONING_MODEL_NAMES"],
-            base_temperature=REASONING_CONFIG["BASE_REASONING_TEMPERATURE"],
-            aggregation_method=REASONING_CONFIG["AGGREGATION_METHOD"],
-            weights=REASONING_CONFIG["AGGREGATION_WEIGTHTS"],
-            meta_model_name=REASONING_CONFIG["AGGREGATION_MODEL_NAME"],
-            meta_prompt_template=REASONING_CONFIG["AGGREGATION_PROMPT_TEMPLATE"],
-            meta_temperature=REASONING_CONFIG["AGGREGATION_TEMPERATURE"],
+            base_model_names=self.reasoning_config["BASE_REASONING_MODEL_NAMES"],
+            base_temperature=self.reasoning_config["BASE_REASONING_TEMPERATURE"],
+            aggregation_method=self.reasoning_config["AGGREGATION_METHOD"],
+            weights=self.reasoning_config["AGGREGATION_WEIGHTS"],
+            meta_model_name=self.reasoning_config["AGGREGATION_MODEL_NAME"],
+            meta_prompt_template=self.reasoning_config["AGGREGATION_PROMPT_TEMPLATE"],
+            meta_temperature=self.reasoning_config["AGGREGATION_TEMPERATURE"],
         )
 
         return ensemble_dict["meta_prediction"]
+
+    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+        # This won't work inside a Jupyter notebook or similar; but there you can use await
+        asyncio.run(self.call_async(sentence, **kwargs))
+
+
+# TODO: make a cheaper/faster version of this that uses a different default config

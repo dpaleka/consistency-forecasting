@@ -13,7 +13,7 @@ import requests
 
 # Local application/library-specific imports
 from config.constants import IRRETRIEVABLE_SITES
-from config.keys import NEWSCASTCHER_KEY
+from config.keys import NEWSCATCHER_KEY
 from config.site_whitelist import NEWS_WHITE_LIST
 import model_eval
 from utils import time_utils, string_utils
@@ -23,8 +23,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Constants
-if NEWSCASTCHER_KEY:
-    newscatcherapi = NewsCatcherApiClient(x_api_key=NEWSCASTCHER_KEY)
+if NEWSCATCHER_KEY:
+    newscatcherapi = NewsCatcherApiClient(x_api_key=NEWSCATCHER_KEY)
 WIKIPEDIA_API_ENDPOINT = "https://en.wikipedia.org/w/api.php"
 
 
@@ -272,7 +272,7 @@ def get_newscatcher_articles(
     """
     assert len(retrieval_dates) == 2, "retrieval_dates should be a list of two strings."
     # return empty set for invalid date ranges.
-    if not NEWSCASTCHER_KEY:
+    if not NEWSCATCHER_KEY:
         logger.error("Skipping Newscatcher since no key is set.")
         return []
     if not time_utils.is_more_recent(retrieval_dates[0], retrieval_dates[1]):

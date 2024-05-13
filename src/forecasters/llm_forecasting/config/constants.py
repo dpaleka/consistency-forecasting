@@ -1,5 +1,4 @@
 # Local application/library specific imports
-from config.keys import keys
 from prompts.prompts import PROMPT_DICT
 
 OAI_SOURCE = "OAI"
@@ -25,7 +24,6 @@ DEFAULT_RETRIEVAL_CONFIG = {
     "SUMMARIZATION_MODEL_NAME": "gpt-3.5-turbo-1106",
     "SUMMARIZATION_TEMPERATURE": 0.2,
     "SUMMARIZATION_PROMPT_TEMPLATE": PROMPT_DICT["summarization"]["9"],
-    "NUM_SUMMARIES_THRESHOLD": 10,
     "PRE_FILTER_WITH_EMBEDDING": True,
     "PRE_FILTER_WITH_EMBEDDING_THRESHOLD": 0.32,
     "RANKING_MODEL_NAME": "gpt-3.5-turbo-1106",
@@ -53,7 +51,7 @@ DEFAULT_REASONING_CONFIG = {
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
     "AGGREGATION_MODEL_NAME": "gpt-4",
-    "AGGREGATION_WEIGTHTS": None,
+    "AGGREGATION_WEIGHTS": None,
 }
 
 
