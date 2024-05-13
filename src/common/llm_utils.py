@@ -428,6 +428,27 @@ async def get_embedding(
     return response.data[0].embedding
 
 
+@embeddings_cache
+def get_embeddings_sync(
+    texts: list[str],
+    embedding_model: str = "text-embedding-3-small",
+    model: str = "gpt-3.5-turbo",
+) -> list[float]:
+    # model is largely ignored because we currently can't use the same model for both the embedding and the completion
+    client, _ = get_client(model, use_async=False)
+    response = client.client.embeddings.create(input=texts, model=embedding_model)
+    return [e.embedding for e in response.data]
+
+
+@embeddings_cache
+def get_embedding_sync(
+    text: str,
+    embedding_model: str = "text-embedding-3-small",
+    model: str = "gpt-3.5-turbo",
+) -> list[float]:
+    return get_embeddings_sync([text], embedding_model, model)[0]
+
+
 # %%
 def get_all_cached_requests():
     all_cached = pydantic_cache.storage.get_all(namespace="llm_utils")

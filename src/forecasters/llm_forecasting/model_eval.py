@@ -9,6 +9,8 @@ import together
 import anthropic
 import google.generativeai as google_ai
 
+from common.llm_utils import get_embedding_sync, get_embeddings_sync
+
 # Local application/library-specific imports
 from config.constants import (
     OAI_SOURCE,
@@ -39,7 +41,7 @@ if TOGETHER_KEY:
         api_key=TOGETHER_KEY,
         base_url="https://api.together.xyz/v1",
     )
-    
+
 if GOOGLE_AI_KEY:
     google_ai.configure(api_key=GOOGLE_AI_KEY)
 
@@ -332,8 +334,11 @@ def get_openai_embedding(texts, model="text-embedding-3-large"):
     texts = [text.replace("\n", " ") for text in texts]
     while True:
         try:
-            embedding = oai.embeddings.create(input=texts, model=model)
-            return embedding.data
+            if len(texts) == 1:
+                embedding = get_embedding_sync(texts[0], embedding_model=model)
+            else:
+                embedding = get_embeddings_sync(texts, embedding_model=model)
+                return embedding
         except Exception as e:
             logger.info(f"erorr message: {e}")
             logger.info("Waiting for 30 seconds before retrying...")
