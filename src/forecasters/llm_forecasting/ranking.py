@@ -294,15 +294,16 @@ async def rank_articles(
     elif method == "embedding":
         # question and background are concatenated, then embedded; this is a
         # list of Embedding objects (with one element)
-        q_embedding, a_embeddings = get_question_article_embeddings(
-            articles, question, background
-        )
+        embedding_dict = get_question_article_embeddings(articles, question, background)
+        q_embedding: list[float] = embedding_dict["q_embedding"]
+        a_embeddings: list[list[float]] = embedding_dict["a_embeddings"]
+
         # Compute the cosine similarity between the question and each article
         for i, a_embedding in enumerate(
             a_embeddings
         ):  # each a_embedding is an Embedding object, with a_embedding.embedding being a list of floats
             articles[i].relevance_rating = metrics_utils.cosine_similarity(
-                q_embedding[0].embedding, a_embedding.embedding
+                q_embedding, a_embedding
             )
         # Sort and filter the articles
         if sort_and_filter:
@@ -336,7 +337,10 @@ def get_question_article_embeddings(articles, question, background):
         ]
     )
     a_embeddings = model_eval.get_openai_embedding(article_texts)
-    return q_embedding, a_embeddings
+    return {
+        "q_embedding": q_embedding,
+        "a_embeddings": a_embeddings,
+    }
 
 
 async def retrieve_summarize_and_rank_articles(
@@ -410,16 +414,14 @@ async def retrieve_summarize_and_rank_articles(
     if config.get("PRE_FILTER_WITH_EMBEDDING") and len(articles) >= 100:
         logger.info(f"Filtering {len(articles)} articles with embedding model.")
         cos_sim = []
-        q_embedding, a_embeddings = get_question_article_embeddings(
+        embedding_dict = get_question_article_embeddings(
             articles, question, background_info
         )
+        q_embedding: list[float] = embedding_dict["q_embedding"]
+        a_embeddings: list[list[float]] = embedding_dict["a_embeddings"]
         # each a_embedding is an Embedding object, with a_embedding.embedding being a list of floats
         for a_embedding in a_embeddings:
-            cos_sim.append(
-                metrics_utils.cosine_similarity(
-                    q_embedding[0].embedding, a_embedding.embedding
-                )
-            )
+            cos_sim.append(metrics_utils.cosine_similarity(q_embedding, a_embedding))
         logger.info(
             f"Get {len(cos_sim)} cosine similarities for {len(articles)} articles."
         )
@@ -532,15 +534,15 @@ async def all_retrieve_summarize_rank_articles(
     """
     articles_by_question = {}
     for index in range(len(questions)):
-        articles_by_question[questions[index]] = (
-            await retrieve_summarize_and_rank_articles(
-                questions[index],
-                background_infos[index],
-                date_ranges[index],
-                num_articles,
-                use_newscatcher,
-                return_intermediates,
-                config,
-            )
+        articles_by_question[
+            questions[index]
+        ] = await retrieve_summarize_and_rank_articles(
+            questions[index],
+            background_infos[index],
+            date_ranges[index],
+            num_articles,
+            use_newscatcher,
+            return_intermediates,
+            config,
         )
     return articles_by_question
