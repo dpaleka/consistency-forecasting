@@ -1,8 +1,12 @@
 import argparse
 import json
 import uuid
+import sys
 from pathlib import Path
 
+this_dir = Path(__file__).parent
+sys.path.append(str(this_dir.parent / "src"))
+print(sys.path)
 from common.path_utils import get_data_path
 
 import streamlit as st
@@ -75,7 +79,7 @@ def write_feedback(entry_id, feedback_data, source_filename):
 
     with open(feedback_path, "w") as file:
         for feedback_entry in existing_feedback:
-            json.dump(feedback_entry, file)
+            file.write(json.dumps(feedback_entry) + "\n")
 
 
 def has_previous_feedback(entry_id, source_filename):
@@ -338,11 +342,11 @@ def go_back():
     set_view()
 
 
-def display_list_view(entry):
+def display_list_view(entry, source_filename):
     print(
         f"Displaying entry: {entry.get('id', 'N/A')}"
     )  # Print the entry ID for debugging
-    previous_feedback = has_previous_feedback(entry.get("id", "N/A"), DEFAULT_FILE)
+    previous_feedback = has_previous_feedback(entry.get("id", "N/A"), source_filename)
     # Use 'text' as the title if 'title' is not present
     entry_title = entry.get("title", entry.get("text", "No title available"))
     st.markdown(f"\n{entry_title}\n")
@@ -364,7 +368,7 @@ def display_list_view(entry):
     with col2:
         if previous_feedback:
             previous_feedback_data = get_previous_feedback(
-                entry.get("id", "N/A"), DEFAULT_FILE
+                entry.get("id", "N/A"), source_filename
             )
             if st.button(
                 "View feedback",
@@ -376,13 +380,13 @@ def display_list_view(entry):
         st.empty()
 
 
-def list_view(entries):
+def list_view(entries, source_filename):
     print(
         f"Listing {len(entries)} entries"
     )  # Print the number of entries for debugging
     st.title("JSON Lines Viewer")
     for entry in entries:
-        display_list_view(entry)
+        display_list_view(entry, source_filename)
 
 
 def set_view(entry=None, feedback=None):
@@ -410,7 +414,7 @@ def main(filename):
         display_entry(st.session_state.entry_view, filename)
         st.button("Back", on_click=go_back)
     else:
-        list_view(entries)
+        list_view(entries, filename)
 
 
 DEFAULT_FILE = f"{get_data_path()}/fq/synthetic/politics_qs_2_formatted.jsonl"
