@@ -341,6 +341,9 @@ class And(MiniInstantiator):
             "For example if P is (A and B), and given Q, then P and Q are (A and B and Q)."
             "If P is (A or B), and given Q, then P and Q are ((A or B) and Q)."
             "Also we should output the final question in as unambiguous phrasing as possible."
+            "All information in all sections from the two original questions should be retained. "
+            "For example information, in the body or resolution criteria should be kept "
+            "in the new question.  Do not remove any information of the original questions."
         )
 
         self.examples = [
@@ -513,6 +516,9 @@ class Or(MiniInstantiator):
             "For example if P is (A and B), and given Q, then P or Q is (A and B or Q)."
             "If P is (A or B), and given Q, then P or Q is (A or B or Q)."
             "Also we should output the final question in as unambiguous phrasing as possible."
+            "All information in all sections from the two original questions should be retained. "
+            "For example information, in the body or resolution criteria should be kept "
+            "in the new question.  Do not remove any information of the original questions."
         )
 
         self.examples = [
@@ -665,6 +671,9 @@ class Conditional(MiniInstantiator):
             "answers. You should then give me a question that expresses their *conditional* expression"
             "i.e. 'GIVEN that P is true, then is Q true?'"
             "Either P and Q can already be a composite question."
+            "All information in all sections from the two original questions should be retained. "
+            "For example information, in the body or resolution criteria should be kept "
+            "in the new question.  Do not remove any information of the original questions."
         )
 
         self.examples = [
