@@ -3,7 +3,7 @@ scrape_questions.sh: runs the entire pipeline
 Relevant files in pipeline folder
 
 ## Scripts inside scrape_questions.sh
-metaculus.py: Scrapes 350 questions from metaculus api
+metaculus.py: Scrapes 700 questions from metaculus api
 reformat_entries.py:  Adds datetime object and ensures only binary questions are kept in question set (narrows down to 175 questions)
 add_body.py --filename QUESTIONS_CLEANED_MODIFIED.json:   Selenium webdriver scrapes for description and resolution criteria of json file provided
 reshape_metaculus.py --filename QUESTIONS_CLEANED_MODIFIED.json:  Reformats json file into jsonl file
