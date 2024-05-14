@@ -169,3 +169,10 @@ class ValidationResult(BaseModel):
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
+
+class SyntheticTagQuestion(BaseModel):
+    title: str
+    category: str
+    tags: str
+    feedback: Optional[str] = None
+    fixed: Optional[bool] = False
