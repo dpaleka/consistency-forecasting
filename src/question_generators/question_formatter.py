@@ -111,11 +111,11 @@ valid: True
 from common.datatypes import BodyAndDate
 
 
-async def get_criteria_and_date(question: str):
+async def get_criteria_and_date(question: str, **kwargs) -> BodyAndDate:
     prompt = resolution_criteria_date_prompt.format(
         question=question, response_model=BodyAndDate
     )  # Assuming definition elsewhere
-    return await answer(prompt, response_model=BodyAndDate)
+    return await answer(prompt, response_model=BodyAndDate, **kwargs)
 
 
 async def from_string(
@@ -126,6 +126,7 @@ async def from_string(
     metadata: Optional[dict] = None,
     body: Optional[str] = None,
     date: str = None,
+    **kwargs,
 ) -> ForecastingQuestion:
     if not question_type:
         question_type = "binary"
@@ -138,7 +139,7 @@ async def from_string(
 
     for attempt in range(3):
         try:
-            bodyAndDate = await get_criteria_and_date(question)
+            bodyAndDate = await get_criteria_and_date(question, **kwargs)
             break
         except Exception as e:
             print(f"An error has occurred: {e}")

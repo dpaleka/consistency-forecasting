@@ -42,7 +42,7 @@ async def validate_and_format_question(question: dict) -> Optional[ForecastingQu
 
     return forecasting_question
     
-async def validate_and_format_synthetic_question(question: SyntheticTagQuestion)  -> Optional[ForecastingQuestion]:
+async def validate_and_format_synthetic_question(question: SyntheticTagQuestion, **kwargs)  -> Optional[ForecastingQuestion]:
     metadata = {"tags": question.tags, "category": question.category}
     for i in range(2):
         forecasting_question = await question_formatter.from_string(
@@ -50,6 +50,7 @@ async def validate_and_format_synthetic_question(question: SyntheticTagQuestion)
             data_source="synthetic",
             question_type="binary",
             metadata=metadata,
+            **kwargs,
         )
         if await question_formatter.validate_question(forecasting_question):
             break
@@ -61,7 +62,7 @@ async def validate_and_format_synthetic_question(question: SyntheticTagQuestion)
 
 
 async def process_synthetic_questions_from_file(
-    file_path: Path,  output_path: Path, max_questions: Optional[int] = None
+    file_path: Path,  output_path: Path, max_questions: Optional[int] = None, model: str = "gpt-4-0125-preview"
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
     questions = [SyntheticTagQuestion(**q) for q in questions]
@@ -73,7 +74,7 @@ async def process_synthetic_questions_from_file(
     tasks = []
 
     for question in questions[:max_questions]:
-        tasks.append(validate_and_format_synthetic_question(question))
+        tasks.append(validate_and_format_synthetic_question(question, model=model))
 
     forecasting_questions = await asyncio.gather(*tasks)
     count_none = forecasting_questions.count(None)
@@ -108,10 +109,10 @@ def remove_repeatead_questions(questions: List[ForecastingQuestion], output_path
 
 
 async def main(
-    file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int
+    file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int, model: str
 ):
     forecasting_questions, none_count = await process_synthetic_questions_from_file(
-        file_path,f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}", max_questions=max_questions 
+        file_path,f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}", max_questions=max_questions, model=model 
     )
     print(f"Number of invalid questions found: {none_count}")
 
@@ -149,7 +150,6 @@ if __name__ == "__main__":
         choices=["real", "synthetic"],
         help="Data dir to write the output to",
     )
-    # TODO name the output file better, somehow dependent on the input file name
     parser.add_argument(
         "--out_file_name",
         "-o",
@@ -164,6 +164,13 @@ if __name__ == "__main__":
         default=30,
         help="Maximum number of questions to process",
     )
+    parser.add_argument(
+        "--model",
+        "-M",
+        type=str,
+        default="gpt-4-0125-preview",
+        help="Model to use",
+    )
 
     args = parser.parse_args()
 
@@ -173,5 +180,6 @@ if __name__ == "__main__":
             args.out_data_dir,
             args.out_file_name,
             args.max_questions,
+            args.model,
         )
     )
