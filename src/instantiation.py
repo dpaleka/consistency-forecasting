@@ -7,6 +7,7 @@ import asyncio
 
 # MODEL = "gpt-3.5-turbo"
 MODEL = "gpt-4-turbo"
+#MODEL = 'gpt-4o'
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks.Checker import (
