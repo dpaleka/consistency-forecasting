@@ -728,10 +728,12 @@ class Consequence(MiniInstantiator):
             "answer. You should then give me a question that expresses any logical consequence "
             "of P. That is, a question that is necessarily true if P is true. If P is false, "
             "the question could be either true or false. Make sure it is a perfect logical consequence. "
-            "It should also be very obvious that if P is true, then cons_P must be true.  Another way to describe it is that it would be impossible for cons_P to occur without P also having occured. "
+            "It should also be very obvious that if P is true, then cons_P must be true.  It should be impossible for cons_P to occur without P also having occured. "
             "P is in a way a stronger refinement of cons_P. "
-            "The relationship must be strict.  cons_P cannot be something that 'almost certainly' occurs if P occurs. "
-            "It MUST be something that logically / mathematically is inevitable if P occurs."
+            "In logical notation we say P -> cons_P. "
+            "The relationship must be strict. "
+            "cons_P MUST be something that logically / mathematically is inevitable if P occurs. "
+            "cons_P also cannot just be the same question or rephrease of P. "
         )
 
         self.examples = [
