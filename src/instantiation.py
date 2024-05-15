@@ -35,7 +35,10 @@ condcond_checker = CondCondChecker()
 from common.path_utils import get_data_path
 
 
-async def load_data(file, n=10):
+async def load_data(
+    file,
+    n=10,  # we have to decide this now because we can't score relevance for everything
+):
     bqs = []
     for line in jsonlines.open(file):
         try:
@@ -60,20 +63,23 @@ async def load_data(file, n=10):
     tasks_pq = [relevance(tup) for tup in base_questions_pq]
     tasks_pqr = [relevance(tup) for tup in base_questions_pqr]
 
+    print("Calculating relevance scores for 2-ples")
     relevances_pq = await asyncio.gather(*tasks_pq)
+
+    print("Calculating relevance scores for 3-ples")
     relevances_pqr = await asyncio.gather(*tasks_pqr)
 
     base_questions_with_relevance_pq = list(zip(base_questions_pq, relevances_pq))
     base_questions_with_relevance_pqr = list(zip(base_questions_pqr, relevances_pqr))
 
-    base_questions_pq = [
-        tup[0] for tup in sorted(base_questions_with_relevance_pq, key=lambda x: x[1])
-    ]
-    base_questions_pqr = [
-        tup[0] for tup in sorted(base_questions_with_relevance_pqr, key=lambda x: x[1])
-    ]
+    base_questions_with_relevance_pq.sort(key=lambda x: x[1]["score"], reverse=True)
+    base_questions_with_relevance_pqr.sort(key=lambda x: x[1]["score"], reverse=True)
 
-    return base_questions_p, base_questions_pq, base_questions_pqr
+    return (
+        base_questions_p,
+        base_questions_with_relevance_pq,
+        base_questions_with_relevance_pqr,
+    )
 
 
 async def instantiate(path, n_relevance=10, length=3):
