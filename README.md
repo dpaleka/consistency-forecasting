@@ -18,8 +18,8 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 
 ## docs
 - [Meeting and Agenda doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
-
 - [Datatypes and Pipeline doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit)
+- [Overleaf](https://www.overleaf.com/project/661ef8533d19f47ba8b0b3b6)
 
 ## Apr 16 writeup
 [writeup doc](https://docs.google.com/document/d/1849L5P9JNZEjBp4s4TsivJOG2iS98Ru6conx9jE0wPE/edit)
@@ -47,6 +47,13 @@ As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not 
 ### Paths
 Use [`src/common/path_utils.py`](/src/common/path_utils.py) to specify paths in code, Jupyter notebooks, etc.
 Do not hardcode paths, except relative to `pathlib.Path` objects returned by the utils in `path_utils.py`.
+
+### Relative imports
+Try to not have relative imports (meaning: put entry points to the code in `src/`.). 
+If you must, here is a prototype of how to modify your path to import something:
+```
+import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+```
 
 ### Validation of data
 Our base data directory is `src/data/`. Inside this, we have the following scheme:
