@@ -261,7 +261,7 @@ def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
     return result.score
 
 
-async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> float:
+async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> dict:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
     base_sentences = list(base_sentences.values())
@@ -269,8 +269,13 @@ async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> float:
     result = await answer(
         simple_combine(*base_sentences),
         preface=preface,
-        examples=examples,
+        # examples=examples,
         response_model=RelevanceResult,
     )
 
-    return result.score
+    print("---")
+    print(base_sentences)
+    print(result)
+    print("---")
+
+    return result.model_dump()

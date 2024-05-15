@@ -148,16 +148,38 @@ class Checker(ABC):
 
     async def instantiate_and_write_many(
         self,
-        base_sentencess: list[dict[str, ForecastingQuestion]],
+        base_sentencess: (
+            list[dict[str, ForecastingQuestion]]
+            | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
+        ),
         overwrite=False,
         **kwargs,
     ):
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(  # noqa
-            base_sentences, **kwargs
-        )
+
+        def _instantiate_and_write(
+            base_sentences: (
+                dict[str, ForecastingQuestion]
+                | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
+            ),
+        ):
+            if isinstance(base_sentences, tuple):
+                base_sentences, supplied_metadata = base_sentences
+            else:
+                supplied_metadata = None
+            return self.instantiate_and_write(
+                base_sentences, supplied_metadata=supplied_metadata, **kwargs
+            )
+
+        # _instantiate_and_write = (
+        #     lambda base_sentences_with_metadata: self.instantiate_and_write(  # noqa
+        #         base_sentences_with_metadata[0],
+        #         supplied_metadata=base_sentences_with_metadata[1],
+        #         **kwargs,
+        #     )
+        # )
         # Added print statement to log the base sentences being processed
         print(f"Base sentences: {base_sentencess}")
         results = await parallelized_call(_instantiate_and_write, base_sentencess)
