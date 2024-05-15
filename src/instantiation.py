@@ -16,6 +16,7 @@ from static_checks.Checker import (
     SymmetryOrChecker,
     CondCondChecker,
 )
+from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
 import random
 
@@ -34,14 +35,10 @@ condcond_checker = CondCondChecker()
 from common.path_utils import get_data_path
 
 
-def load_data(file):
+async def load_data(file, n=10):
     bqs = []
     for line in jsonlines.open(file):
         try:
-            # line["resolution_date"] = re.split(":", line["resolution_date"], 1)[1]
-            # line["resolution_date"] = line["resolution_date"].strip()
-            # line["resolution_date"] = parser.parse(line["resolution_date"])
-            # line["question_type"] = line["question_type"].lower()
             bq = ForecastingQuestion(**line)
             bqs.append(bq)
         except Exception as e:
@@ -55,11 +52,35 @@ def load_data(file):
     random.shuffle(base_questions_p)
     random.shuffle(base_questions_pq)
     random.shuffle(base_questions_pqr)
+
+    base_questions_p = base_questions_p[:n]
+    base_questions_pq = base_questions_pq[:n]
+    base_questions_pqr = base_questions_pqr[:n]
+
+    tasks_pq = [relevance(tup) for tup in base_questions_pq]
+    tasks_pqr = [relevance(tup) for tup in base_questions_pqr]
+
+    relevances_pq = await asyncio.gather(*tasks_pq)
+    relevances_pqr = await asyncio.gather(*tasks_pqr)
+
+    base_questions_with_relevance_pq = list(zip(base_questions_pq, relevances_pq))
+    base_questions_with_relevance_pqr = list(zip(base_questions_pqr, relevances_pqr))
+
+    base_questions_pq = [
+        tup[0] for tup in sorted(base_questions_with_relevance_pq, key=lambda x: x[1])
+    ]
+    base_questions_pqr = [
+        tup[0] for tup in sorted(base_questions_with_relevance_pqr, key=lambda x: x[1])
+    ]
+
     return base_questions_p, base_questions_pq, base_questions_pqr
 
 
-async def instantiate(path, length=3):
-    base_questions_p, base_questions_pq, base_questions_pqr = load_data(path)
+async def instantiate(path, n_relevance=10, length=3):
+    base_questions_p, base_questions_pq, base_questions_pqr = await load_data(
+        path,
+        n=n_relevance,
+    )
     # fmt: off
     await neg_checker.instantiate_and_write_many(
         base_questions_p[:length],

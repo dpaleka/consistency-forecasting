@@ -3,7 +3,7 @@ from common.datatypes import (
     ForecastingQuestion_stripped,
     RelevanceResult,
 )
-from common.llm_utils import answer_sync, Example
+from common.llm_utils import answer_sync, answer, Example
 
 preface = r"""I'm doing a project that involve eliciting probabilities from LLMs to measure the calibration, consistency 
 and such properties of LLM forecasters. As part of this project we will be taking logical combinations of forecasting 
@@ -247,7 +247,7 @@ examples = [
 ]
 
 
-def relevance(self, base_sentences: dict[str, ForecastingQuestion]) -> float:
+def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
     base_sentences = list(base_sentences.values())
@@ -256,6 +256,21 @@ def relevance(self, base_sentences: dict[str, ForecastingQuestion]) -> float:
         simple_combine(*base_sentences),
         preface=preface,
         examples=examples,
+    )
+
+    return result.score
+
+
+async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> float:
+    """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
+
+    base_sentences = list(base_sentences.values())
+
+    result = await answer(
+        simple_combine(*base_sentences),
+        preface=preface,
+        examples=examples,
+        response_model=RelevanceResult,
     )
 
     return result.score
