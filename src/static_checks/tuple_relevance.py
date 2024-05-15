@@ -255,10 +255,16 @@ def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
     result = answer_sync(
         simple_combine(*base_sentences),
         preface=preface,
-        examples=examples,
+        # examples=examples,
+        response_model=RelevanceResult,
     )
 
-    return result.score
+    print("---")
+    print(base_sentences)
+    print(result)
+    print("---")
+
+    return {"relevance": result.model_dump()}
 
 
 async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> dict:
