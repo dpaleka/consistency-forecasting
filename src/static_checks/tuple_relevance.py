@@ -278,4 +278,4 @@ async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> dict:
     print(result)
     print("---")
 
-    return result.model_dump()
+    return {"relevance": result.model_dump()}

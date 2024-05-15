@@ -72,8 +72,12 @@ async def load_data(
     base_questions_with_relevance_pq = list(zip(base_questions_pq, relevances_pq))
     base_questions_with_relevance_pqr = list(zip(base_questions_pqr, relevances_pqr))
 
-    base_questions_with_relevance_pq.sort(key=lambda x: x[1]["score"], reverse=True)
-    base_questions_with_relevance_pqr.sort(key=lambda x: x[1]["score"], reverse=True)
+    base_questions_with_relevance_pq.sort(
+        key=lambda x: x[1]["relevance"]["score"], reverse=True
+    )
+    base_questions_with_relevance_pqr.sort(
+        key=lambda x: x[1]["relevance"]["score"], reverse=True
+    )
 
     return (
         base_questions_p,
