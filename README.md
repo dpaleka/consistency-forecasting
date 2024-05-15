@@ -63,7 +63,7 @@ src/data
 │  ├── real             # ForecastingQuestions made from real scraped data. Formatting validated upon commit.
 │  └── synthetic        # ForecastingQuestions made from synthetic data. Formatting validated upon commit.
 ├── feedback            # Feedback data on real and synhetic questions. TODO Validate upon commit.
-├── tuples              # Tuples of (question, answer) pairs. TODO Validate upon commit.
+├── tuples              # Tuples of (question, answer) pairs. Formatting validated upon commit.
 ├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Unvalidated.
 ├── check_tuple_logs    # Where results of the already instantiated consistency checks + violation are saved. In .gitignore, do not commit. 
 └── test                # Where tests write data. In .gitignore, do not commit.
