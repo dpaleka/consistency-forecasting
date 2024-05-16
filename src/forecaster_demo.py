@@ -47,7 +47,9 @@ af = AdvancedForecaster(
 # %%
 import asyncio
 
+
 final_prob = asyncio.run(af.call_async(sentence=fq))
+# final_prob = await af.call_async(sentence=fq)
 
 # %%
 print("Final LLM probability", final_prob)

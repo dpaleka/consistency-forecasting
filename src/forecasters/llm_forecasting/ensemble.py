@@ -85,12 +85,15 @@ async def meta_reason(
         If the aggregation_method is 'meta', the function returns an answer
             by eliciting another meta-reasoning using the meta_prompt_template.
     """
-    assert aggregation_method in [
-        "vote-or-median",
-        "meta",
-        "mean",
-        "weighted-mean",
-    ], "aggregation_method must be either 'vote-or-median', 'meta', 'mean', or 'weighted-mean'"
+    assert (
+        aggregation_method
+        in [
+            "vote-or-median",
+            "meta",
+            "mean",
+            "weighted-mean",
+        ]
+    ), "aggregation_method must be either 'vote-or-median', 'meta', 'mean', or 'weighted-mean'"
     if aggregation_method == "weighted-mean":
         assert (
             weights is not None
@@ -236,15 +239,15 @@ def aggregate_base_reasonings(
         prompt=meta_full_prompt,
         temperature=meta_temperature,
     )  # raw response
-    
+
+    # TODO make this into a Pydantic call
+
     # Get the probability from the meta-reasoning
     meta_prediction = string_utils.extract_prediction(meta_reasoning)
     if meta_prediction is None or meta_prediction < 0.0 or meta_prediction > 1.0:
-        logger.debug(
-            "final_answer {} is not between 0 and 1".format(meta_prediction)
-        )
+        logger.info("meta_prediction {} is not between 0 and 1".format(meta_prediction))
         meta_prediction = 0.5
-            
+
     return {
         "base_reasonings": base_reasonings,
         "base_predictions": all_base_predictions,
