@@ -2,16 +2,38 @@
 import asyncio
 import logging
 import time
+import tiktoken
 
 # Local application/library-specific imports
 from config.constants import MODEL_TOKEN_LIMITS
 import model_eval
 from prompts.prompts import PROMPT_DICT
-from utils import model_utils
+from common.llm_utils import get_provider
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def count_tokens(text, model_name):
+    """
+    Count the number of tokens for a given text.
+
+    Args:
+    - text (str): The input text whose tokens need to be counted.
+    - model_name (str): Name of the OpenAI model to be used for token counting.
+
+    Returns:
+    - int: Number of tokens in the text for the specified model.
+    """
+    model_source = get_provider(model_name)
+    if model_source == "openai":
+        enc = tiktoken.encoding_for_model(model_name)
+        token_length = len(enc.encode(text))
+    else:
+        token_length = len(text) / 3
+
+    return token_length
 
 
 def concat_summaries(articles, return_summaries_list=False):
@@ -73,7 +95,7 @@ def split_text_into_chunks(text, model_name, token_limit):
     chunks = []
 
     for word in words:
-        word_tokens = model_utils.count_tokens(word, model_name)
+        word_tokens = count_tokens(word, model_name)
         if current_chunk_tokens + word_tokens > token_limit:
             chunks.append(" ".join(current_chunk))
             current_chunk = [word]
@@ -113,7 +135,7 @@ def recursive_summarize(
     """
     start_time = time.time()
 
-    total_tokens = model_utils.count_tokens(text, model_name)
+    total_tokens = count_tokens(text, model_name)
     logger.info(f"Total number of tokens of the given text: {total_tokens}")
 
     if total_tokens <= MODEL_TOKEN_LIMITS[model_name]:
@@ -201,7 +223,7 @@ async def summarize_articles(
     # Truncate articles that are too long
     for article in articles:
         if (  # exceeds token limit
-            model_utils.count_tokens(article.text_cleaned, model_name)
+            count_tokens(article.text_cleaned, model_name)
             > MODEL_TOKEN_LIMITS[model_name] - 1000
         ):
             article.text_cleaned = split_text_into_chunks(

@@ -84,6 +84,6 @@ if TEST_MANUAL:
 #response = query_api_chat_sync_native(messages=messages, verbose=True, model="meta-llama/llama-2-70b-chat-hf")
 #print(response)
 #%%
-response = query_api_chat_sync_native(messages=messages, verbose=True, model="gpt-4o")
+response = query_api_chat_sync_native(messages=messages, verbose=True, model="mistralai/mistral-large")
 print(response)
 # %%
