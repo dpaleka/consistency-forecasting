@@ -41,10 +41,10 @@ instruction.format(num_examples=5)
 
 
 # %%
-from common.llm_utils import query_api_chat_sync, get_client
+from common.llm_utils import query_api_chat_sync, get_client_pydantic
 
 MODEL = "gpt-3.5-turbo"
-client, _ = get_client(MODEL, use_async=False)
+client, _ = get_client_pydantic(MODEL, use_async=False)
 
 
 def generate_questions(num_questions: int = 5, examples: list[str] = None) -> list[str]:
@@ -121,7 +121,7 @@ def cosine_similarity(
 
 # %%
 EMBEDDING_MODEL = "text-embedding-3-small"
-async_client, _ = get_client(MODEL, use_async=True)
+async_client, _ = get_client_pydantic(MODEL, use_async=True)
 
 
 async def get_embedding(text: str) -> list[float]:

@@ -7,6 +7,7 @@ from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
 import instructor
+from instructor.client import Instructor
 import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
@@ -23,6 +24,7 @@ from .path_utils import get_src_path
 from .perscache import (
     Cache,
     JSONPydanticResponseSerializer,
+    JSONSerializer,
     PickleSerializer,
     RedisStorage,
     LocalFileStorage,
@@ -34,6 +36,16 @@ print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
+    storage=(
+        LocalFileStorage(location=get_src_path().parent / os.getenv("LOCAL_CACHE"))
+        if os.getenv("LOCAL_CACHE")
+        else RedisStorage(namespace="llm_utils")
+    ),
+    value_wrapper=ValueWrapperDictInspectArgs(),
+)
+
+text_cache = Cache(
+    serializer=JSONSerializer(),
     storage=(
         LocalFileStorage(location=get_src_path().parent / os.getenv("LOCAL_CACHE"))
         if os.getenv("LOCAL_CACHE")
@@ -58,6 +70,9 @@ client = None
 load_dotenv(override=True)
 
 
+PROVIDERS = ["openai", "mistral", "togetherai", "huggingface_local"]
+
+
 def singleton_constructor(get_instance_func):
     instances = {}
 
@@ -70,7 +85,7 @@ def singleton_constructor(get_instance_func):
 
 
 @singleton_constructor
-def get_async_openai_client() -> AsyncOpenAI:
+def get_async_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
     client = instructor.from_openai(_client)
@@ -78,7 +93,13 @@ def get_async_openai_client() -> AsyncOpenAI:
 
 
 @singleton_constructor
-def get_openai_client() -> OpenAI:
+def get_async_openai_client_native() -> AsyncOpenAI:
+    api_key = os.getenv("OPENAI_API_KEY")
+    return AsyncOpenAI(api_key=api_key)
+
+
+@singleton_constructor
+def get_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
     client = instructor.from_openai(_client)
@@ -86,51 +107,76 @@ def get_openai_client() -> OpenAI:
 
 
 @singleton_constructor
-def get_async_openrouter_client() -> AsyncOpenAI:
+def get_openai_client_native() -> OpenAI:
+    api_key = os.getenv("OPENAI_API_KEY")
+    return OpenAI(api_key=api_key)
+
+
+@singleton_constructor
+def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
     api_key = os.getenv("OPENROUTER_API_KEY")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
-    client = instructor.from_openai(_client)
+    client = instructor.from_openai(_client, **kwargs)
     return client
 
 
 @singleton_constructor
-def get_openrouter_client() -> OpenAI:
-    print("\033[Calling models through OpenRouter\033[0m")
+def get_async_openrouter_client_native() -> AsyncOpenAI:
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+
+
+@singleton_constructor
+def get_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print("Calling models through OpenRouter")
     _client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
-    client = instructor.from_openai(_client)
+    client = instructor.from_openai(_client, **kwargs)
     return client
 
 
 @singleton_constructor
-def get_mistral_async_client() -> MistralAsyncClient:
+def get_openrouter_client_native() -> OpenAI:
+    print("Calling models through OpenRouter")
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+
+
+@singleton_constructor
+def get_mistral_async_client_pydantic() -> Instructor:
     api_key = os.getenv("MISTRAL_API_KEY")
     _client = MistralAsyncClient(api_key=api_key)
-    client = instructor.from_openai(
-        create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS
-    )
+    client = instructor.from_openai(create=_client, mode=instructor.Mode.MISTRAL_TOOLS)
     return client
 
 
 @singleton_constructor
-def get_mistral_client() -> MistralClient:
+def get_mistral_async_client_native() -> MistralAsyncClient:
+    api_key = os.getenv("MISTRAL_API_KEY")
+    return MistralAsyncClient(api_key=api_key)
+
+
+@singleton_constructor
+def get_mistral_client_pydantic() -> Instructor:
     api_key = os.getenv("MISTRAL_API_KEY")
     _client = MistralClient(api_key=api_key)
-    client = instructor.from_openai(
-        create=_client.chat, mode=instructor.Mode.MISTRAL_TOOLS
-    )
+    client = instructor.from_openai(create=_client, mode=instructor.Mode.MISTRAL_TOOLS)
     return client
 
 
 @singleton_constructor
-def get_togetherai_client() -> OpenAI:
+def get_mistral_client_native() -> MistralClient:
+    api_key = os.getenv("MISTRAL_API_KEY")
+    return MistralClient(api_key=api_key)
+
+
+@singleton_constructor
+def get_togetherai_client_native() -> OpenAI:
     url = "https://api.together.xyz/v1"
     api_key = os.getenv("TOGETHER_API_KEY")
-    _client = OpenAI(api_key=api_key, base_url=url)
-    client = instructor.from_openai(_client)
-    return client
+    return OpenAI(api_key=api_key, base_url=url)
 
 
 @singleton_constructor
@@ -149,13 +195,14 @@ def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
 
 def is_openai(model: str) -> bool:
     keywords = [
+        "gpt-4o",
         "gpt-4",
         "gpt-3.5-turbo",
+        "gpt-3.5",
         "ada",
         "babbage",
         "curie",
         "davinci",
-        "instruct",
         "openai",
         "open-ai",
     ]
@@ -177,39 +224,91 @@ def is_huggingface_local(model: str) -> bool:
     return any(keyword in model for keyword in keywords)
 
 
-def get_client(
+def get_provider(model: str) -> str:
+    if is_openai(model):
+        return "openai"
+    elif is_mistral(model):
+        return "mistral"
+    elif is_togetherai(model):
+        return "togetherai"
+    elif is_huggingface_local(model):
+        return "huggingface_local"
+    else:
+        raise NotImplementedError(f"Model {model} is not supported for now")
+
+
+def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
+    provider = get_provider(model)
+    if provider == "togetherai":
+        raise NotImplementedError(
+            "Most models on TogetherAI API, ergo OpenRouter API too, do not support function calling / JSON output mode, so no Pydantic outputs for now."
+        )
+
+    if os.getenv("USE_OPENROUTER"):
+        kwargs = {}
+        if provider == "mistral":
+            # https://python.useinstructor.com/hub/mistral/
+            kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
+        client = (
+            get_openrouter_client_pydantic(**kwargs)
+            if use_async
+            else get_openrouter_client_pydantic(**kwargs)
+        )
+    elif provider == "openai":
+        client = (
+            get_async_openai_client_pydantic()
+            if use_async
+            else get_openai_client_pydantic()
+        )
+    elif provider == "mistral":
+        client = (
+            get_mistral_async_client_pydantic()
+            if use_async
+            else get_mistral_client_pydantic()
+        )
+    else:
+        raise NotImplementedError(f"Model {model} is not supported for now")
+
+    return client, provider
+
+
+def get_client_native(
     model: str, use_async=True
 ) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
+    provider = get_provider(model)
+
     if os.getenv("USE_OPENROUTER"):
-        return (
-            get_async_openrouter_client() if use_async else get_openrouter_client(),
-            "openrouter",
+        client = (
+            get_openrouter_client_native()
+            if use_async
+            else get_openrouter_client_native()
         )
-    elif is_openai(model):
-        return (
-            get_async_openai_client() if use_async else get_openai_client(),
-            "openai",
+    elif provider == "openai":
+        client = (
+            get_async_openai_client_native()
+            if use_async
+            else get_openai_client_native()
         )
-    elif is_mistral(model):
-        api_key = os.getenv("MISTRAL_API_KEY")
-        return (
-            get_mistral_async_client() if use_async else get_mistral_client(),
-            "mistral",
+    elif provider == "mistral":
+        client = (
+            get_mistral_async_client_native()
+            if use_async
+            else get_mistral_client_native()
         )
-    elif is_togetherai(model):
+    elif provider == "togetherai":
         if use_async:
             raise NotImplementedError(
                 "Only synchronous calls are supported for TogetherAI"
             )
-        url = "https://api.together.xyz/v1"
-        api_key = os.getenv("TOGETHER_API_KEY")
-        return (get_togetherai_client(), "togetherai")
-    elif is_huggingface_local(model):
+        client = get_togetherai_client_native()
+    elif provider == "huggingface_local":
         assert model.startswith("hf:")
         model = model.split("hf:")[1]
-        return (get_huggingface_local_client(model), "huggingface_local")
+        client = get_huggingface_local_client(model)
     else:
         raise NotImplementedError(f"Model {model} is not supported for now")
+
+    return client, provider
 
 
 def is_llama2_tokenized(model: str) -> bool:
@@ -240,26 +339,64 @@ async def query_api_chat(
     2. `model` in `kwargs`
     3. Default model
     """
+    if not os.getenv("NO_CACHE"):
+        assert (
+            kwargs.get("response_model", -1) is not None
+        ), "Cannot pass response_model=None if caching is enabled"
+
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client(options["model"], use_async=True)
-    if client_name == "mistral":
-        messages = _mistral_message_transform(messages)
-
+    client, client_name = get_client_pydantic(options["model"], use_async=True)
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
 
+    call_messages = (
+        _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+
     response = await client.chat.completions.create(
-        messages=messages,
+        messages=call_messages,
         **options,
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
+
+
+@text_cache
+async def query_api_chat_native(
+    messages: list[dict[str, str]],
+    verbose=False,
+    model: str | None = None,
+    **kwargs,
+) -> str:
+    default_options = {
+        "model": "gpt-4-1106-preview",
+    }
+    options = default_options | kwargs
+    options["model"] = model or options["model"]
+
+    client, client_name = get_client_native(model, use_async=True)
+    call_messages = (
+        _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+
+    if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
+        response = await client.chat(
+            messages=call_messages,
+            **options,
+        )
+    else:
+        response = await client.chat.completions.create(
+            messages=call_messages,
+            **options,
+        )
+
+    return response.choices[0].message.content
 
 
 @pydantic_cache
@@ -272,26 +409,63 @@ def query_api_chat_sync(
     if verbose:
         print("Messages array being sent to OpenAI API:", messages, "\n")
 
+    if not os.getenv("NO_CACHE"):
+        assert (
+            kwargs.get("response_model", -1) is not None
+        ), "Cannot pass response_model=None if caching is enabled"
+
     default_options = {
         "model": "gpt-4-1106-preview",
         "response_model": PlainText,
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client(options["model"], use_async=False)
-    if client_name == "mistral":
-        messages = _mistral_message_transform(messages)
-
+    client, client_name = get_client_pydantic(options["model"], use_async=False)
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple structured queries not supported yet")
 
+    call_messages = (
+        _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+
     response = client.chat.completions.create(
-        messages=messages,
+        messages=call_messages,
         **options,
     )
     if verbose:
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
+
+
+@text_cache
+def query_api_chat_sync_native(
+    messages: list[dict[str, str]],
+    verbose=False,
+    model: str | None = None,
+    **kwargs,
+) -> str:
+    default_options = {
+        "model": "gpt-4-1106-preview",
+    }
+    options = default_options | kwargs
+    options["model"] = model or options["model"]
+    client, client_name = get_client_native(options["model"], use_async=False)
+    call_messages = (
+        _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+
+    if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
+        response = client.chat(
+            messages=call_messages,
+            **options,
+        )
+    else:
+        response = client.chat.completions.create(
+            messages=call_messages,
+            **options,
+        )
+
+    return response.choices[0].message.content
 
 
 @dataclass
@@ -357,7 +531,7 @@ def answer_sync(
 
 @pydantic_cache
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
-    client, client_name = get_client(model, use_async=True)
+    client, client_name = get_client_pydantic(model, use_async=True)
     if verbose:
         print("Querying API with text:", text[:30])
     response = await client.completions.create(model=model, prompt=text, **kwargs)
@@ -368,7 +542,7 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
 
 
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
-    client, client_name = get_client(model, use_async=False)
+    client, client_name = get_client_pydantic(model, use_async=False)
     if verbose:
         print("Querying API with text:", text[:30])
     response = client.completions.create(model=model, prompt=text, **kwargs)
@@ -379,7 +553,7 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
 
 
 def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
-    client, client_name = get_client(model, use_async=False)
+    client, client_name = get_client_pydantic(model, use_async=False)
     if verbose:
         print("Querying Huggingface with text:", text[:30])
     response_text = client(text)
@@ -423,7 +597,7 @@ async def get_embedding(
     model: str = "gpt-3.5-turbo",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
-    client, _ = get_client(model, use_async=True)
+    client, _ = get_client_pydantic(model, use_async=True)
     response = await client.client.embeddings.create(input=text, model=embedding_model)
     return response.data[0].embedding
 
@@ -435,7 +609,7 @@ def get_embeddings_sync(
     model: str = "gpt-3.5-turbo",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
-    client, _ = get_client(model, use_async=False)
+    client, _ = get_client_pydantic(model, use_async=False)
     response = client.client.embeddings.create(input=texts, model=embedding_model)
     return [e.embedding for e in response.data]
 
