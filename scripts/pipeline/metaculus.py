@@ -78,7 +78,7 @@ def fetch_live_questions_with_dates(api_url):
         'User-Agent': 'Mozilla/5.0'
     }
     questions_info = []
-    total_questions = 350  # Total number of questions you want to fetch
+    total_questions = 1000  # Total number of questions you want to fetch
     page_size = 100  # Number of questions per page. Adjust based on API's maximum allowed limit
     page = 1
 

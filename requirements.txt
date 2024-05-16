@@ -15,6 +15,7 @@ blinker==1.7.0
 cachetools==5.3.3
 certifi==2024.2.2
 cfgv==3.4.0
+chardet==5.2.0
 charset-normalizer==2.0.10
 click==8.1.7
 cloudpickle==3.0.0
