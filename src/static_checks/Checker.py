@@ -390,6 +390,9 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -441,6 +444,9 @@ class NegChecker(Checker):
 
 
 class AndChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -499,6 +505,9 @@ class AndChecker(Checker):
 
 
 class OrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -557,6 +566,9 @@ class OrChecker(Checker):
 
 
 class AndOrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -640,6 +652,9 @@ class AndOrChecker(Checker):
 
 
 class ButChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_and_not_P: ForecastingQuestion
@@ -708,6 +723,9 @@ class ButChecker(Checker):
 
 
 class CondChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -785,6 +803,9 @@ class CondChecker(Checker):
 
 
 class ConsequenceChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         cons_P: ForecastingQuestion
@@ -836,6 +857,9 @@ class ConsequenceChecker(Checker):
 
 
 class ParaphraseChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         para_P: ForecastingQuestion
@@ -887,6 +911,9 @@ class ParaphraseChecker(Checker):
 
 
 class SymmetryAndChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -948,6 +975,9 @@ class SymmetryAndChecker(Checker):
 
 
 class SymmetryOrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -1009,6 +1039,9 @@ class SymmetryOrChecker(Checker):
 
 
 class CondCondChecker(Checker):
+    
+    num_base_questions = 3
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
