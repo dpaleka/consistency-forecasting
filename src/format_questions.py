@@ -33,7 +33,8 @@ async def validate_and_format_question(question: dict) -> Optional[ForecastingQu
             body=question.get("body", None),
             date=question.get("resolution_date", None),
         )
-        if await question_formatter.validate_question(forecasting_question):
+        verification = await question_formatter.verify_question(forecasting_question)
+        if verification.valid:
             break
         else:
             print(f"Invalid question: {question}")
@@ -52,7 +53,8 @@ async def validate_and_format_synthetic_question(question: SyntheticTagQuestion,
             metadata=metadata,
             **kwargs,
         )
-        if await question_formatter.validate_question(forecasting_question):
+        verification = await question_formatter.verify_question(forecasting_question)
+        if verification.valid:
             break
         else:
             print(f"Invalid question: {question}")
@@ -109,11 +111,17 @@ def remove_repeatead_questions(questions: List[ForecastingQuestion], output_path
 
 
 async def main(
-    file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int, model: str
+    file_path: Path, out_data_dir: str, out_file_name: str, max_questions: int, model: str, synthetic: bool
 ):
-    forecasting_questions, none_count = await process_synthetic_questions_from_file(
-        file_path,f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}", max_questions=max_questions, model=model 
-    )
+    if synthetic:
+        forecasting_questions, none_count = await process_synthetic_questions_from_file(
+            file_path, f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}", max_questions=max_questions, model=model 
+        )
+    else:
+        forecasting_questions, none_count = await process_questions_from_file(
+            file_path, max_questions=max_questions
+        )
+        
     print(f"Number of invalid questions found: {none_count}")
 
     data_to_write = [fq.dict() for fq in forecasting_questions]
@@ -131,7 +139,6 @@ async def main(
         data_to_write,
         append=True,
     )
-
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -171,6 +178,13 @@ if __name__ == "__main__":
         default="gpt-4-0125-preview",
         help="Model to use",
     )
+    parser.add_argument(
+        "--synthetic",
+        "-s",
+        type=bool,
+        default=False,
+        help="Flag to indicate synthetic data processing",
+    )
 
     args = parser.parse_args()
 
@@ -181,5 +195,6 @@ if __name__ == "__main__":
             args.out_file_name,
             args.max_questions,
             args.model,
+            args.synthetic,
         )
     )
