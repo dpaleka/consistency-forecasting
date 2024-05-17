@@ -170,15 +170,16 @@ async def from_string(
     )
 
 
-async def verify_question(question: ForecastingQuestion,**kwargs):
+async def verify_question(question: ForecastingQuestion, write_verification: bool = False, **kwargs):
     current_date = datetime.now()
     prompt = validate_forecasting_question_prompt.format(current_date=current_date)
-    verification =  await answer(prompt, response_model=VerificationResult, **kwargs)
+    verification = await answer(prompt, response_model=VerificationResult, **kwargs)
+    
     if write_verification:
-        filename = get_data_path()/"verification/question_verification.jsonl"
+        filename = get_data_path() / "verification/question_verification.jsonl"
         dict_to_write = question.model_dump_json()
-        dict_to_write = dict_to_write[:-1] + f',"verification":{verification.dict()}' +"}"
+        verification_flat = {**dict_to_write[:-1], **verification.dict()}
+        dict_to_write = verification_flat + "}"
         await write_jsonl_async_from_str(filename, [dict_to_write], append=True)
+        
     return verification
-
-
