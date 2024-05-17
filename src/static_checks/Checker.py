@@ -55,14 +55,11 @@ verify_before_instantiation = (
 
 
 async def write_verification_result(tuple_type, generated_tuple, verification):
-    print("-----------")
-    print("write cerification result")
-    print("0-0-0-0-0-0-0-0-0-0-0-0-")
     filename = get_data_path() / "verification/tuple_verifications.jsonl"
     verification_jsonl = generated_tuple.model_dump_json()
     verification_jsonl = (
         verification_jsonl[:-1]
-        + f', "valid": {verification.valid}, "reasoning": "{verification.reasoning}"'
+        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
         + f', "tuple_type":"{tuple_type}"'
         + "}"
     )
@@ -74,7 +71,7 @@ def write_verification_result_sync(tuple_type, generated_tuple, verification):
     verification_jsonl = generated_tuple.model_dump_json()
     verification_jsonl = (
         verification_jsonl[:-1]
-        + f', "valid": {verification.valid}, "reasoning": "{verification.reasoning}"'
+        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
         + f", tuple_type:{tuple_type}"
         + "}"
     )
@@ -171,8 +168,6 @@ class Checker(ABC):
             for _ in range(n_verification):
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
-                print(f"verification result: {verification_result}")
-                print(f"self = {self}")
                 if verification_result.valid:
                     return instantiated_object
             return instantiated_object
@@ -673,9 +668,9 @@ class AndOrChecker(Checker):
         and_verification_result = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         verification = VerificationResult(
             valid=and_verification_result.valid and or_verification_result,
-            reasoning="And reasoning:\n"
+            reasoning="And reasoning:\\n"
             + and_verification_result.reasoning
-            + "\nOr reasoning:\n"
+            + "\\nOr reasoning:\\n"
             + or_verification_result.reasoning,
         )
         if write_verification:
@@ -697,9 +692,9 @@ class AndOrChecker(Checker):
         print(f"verification result for and: {and_verification_result}")
         verification = VerificationResult(
             valid=and_verification_result.valid and or_verification_result.valid,
-            reasoning="And reasoning:\n"
+            reasoning="And reasoning:\\n"
             + and_verification_result.reasoning
-            + "\nOr reasoning:\n"
+            + "\\nOr reasoning:\\n"
             + or_verification_result.reasoning,
         )
         if write_verification:
@@ -1038,8 +1033,8 @@ class SymmetryAndChecker(Checker):
         verification_qp = answer_sync(and_qp_prompt, response_model=VerificationResult,**kwargs)
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry And reasoning:\nP_and_Q reasoning:\n{verification_pq.reasoning}\n" \
-                    f"Q_and_P reasoning:\n{verification_qp.reasoning}"
+        reasoning = f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n" \
+                    f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
         
@@ -1060,8 +1055,8 @@ class SymmetryAndChecker(Checker):
         verification_qp = await answer(and_qp_prompt, response_model=VerificationResult, **kwargs)
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry And reasoning:\nP_and_Q reasoning:\n{verification_pq.reasoning}\n" \
-                    f"Q_and_P reasoning:\n{verification_qp.reasoning}"
+        reasoning = f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n" \
+                    f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
         
@@ -1132,8 +1127,8 @@ class SymmetryOrChecker(Checker):
         verification_qp = answer_sync(or_qp_prompt, response_model=VerificationResult, **kwargs)
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry Or reasoning:\nP_or_Q reasoning:\n{verification_pq.reasoning}\n" \
-                    f"Q_or_P reasoning:\n{verification_qp.reasoning}"
+        reasoning = f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n" \
+                    f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
         
@@ -1154,8 +1149,8 @@ class SymmetryOrChecker(Checker):
         verification_qp = await answer(or_qp_prompt, response_model=VerificationResult, **kwargs)
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry Or reasoning:\nP_or_Q reasoning:\n{verification_pq.reasoning}\n" \
-                    f"Q_or_P reasoning:\n{verification_qp.reasoning}"
+        reasoning = f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n" \
+                    f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
         
