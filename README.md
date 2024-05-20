@@ -39,7 +39,7 @@ Do not run files with actual logic (e.g. anything in `static_checks/` ) directly
 Before submitting a pull request that deals with the core code in `src/`, please ensure that you run the test suite to check that your changes do not break any existing functionality. 
 You can run the tests with the following command from the root directory of the project:
 ```
-NO_CACHE=True python -m pytest
+NO_CACHE=True python -m pytest -s
 ```
 This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
