@@ -95,10 +95,10 @@ async def instantiate(path, checker_list, n_relevance=10, length=3):
         print(f"Instantiating and writing {checker.__class__.__name__}")
         await checker.instantiate_and_write_many(
             possible_tuples[checker.num_base_questions][:length],
-            # model=MODEL,
-            # overwrite=True,
-            # validate_before=True,
-            # n_verification=3,
+            model=MODEL,
+            overwrite=True,
+            verify_before=True,
+            n_verification=3,
         )
 
 
