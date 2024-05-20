@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from common.utils import shallow_dict
 from datetime import datetime
+from dateutil.tz import UTC
 from abc import ABC, abstractmethod
 from typing import Type, Any, Optional, Self  # noqa
 from pydantic import BaseModel, create_model, field_validator
@@ -91,6 +92,14 @@ class MiniInstantiator(ABC):
     def resolution_date(
         self, base_sentences: dict[str, ForecastingQuestion]
     ) -> datetime:
+        # HACK -- set the timezone to UTC if it's not set.
+        # Ideally this should be fixed in the base data.
+        dates = []
+        for key in base_sentences:
+            dt = base_sentences[key].resolution_date
+            if dt.tzinfo is None: 
+                dt = dt.replace(tzinfo=UTC)
+            dates.append(dt)
         return max([base_sentences[key].resolution_date for key in base_sentences])
 
     def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
