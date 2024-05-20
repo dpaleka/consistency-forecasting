@@ -101,6 +101,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
         )
 
 # this should probably go in scripts
-# asyncio.run(
-#     instantiate(BASE_DATA_PATH=BASE_DATA_PATH, checker_list=checkers, n_relevance=10, length=3)
-# )
+if __name__ == "__main__":
+    asyncio.run(
+        instantiate(BASE_DATA_PATH=BASE_DATA_PATH, checker_list=checkers, n_relevance=10, length=3)
+    )
