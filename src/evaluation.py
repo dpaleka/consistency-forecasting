@@ -1,3 +1,6 @@
+import sys
+import io
+
 from forecasters import BasicForecaster
 from static_checks.Checker import (
     Checker,
@@ -19,6 +22,8 @@ from common.path_utils import get_data_path
 basic_forecaster = BasicForecaster()
 
 BASE_DATA_PATH: Path = get_data_path() / "tuples/"
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 model = "gpt-3.5-turbo"
 # model = "gpt-4-turbo-2024-04-09"
