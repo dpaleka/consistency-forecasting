@@ -267,7 +267,7 @@ def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
     return {"relevance": result.model_dump()}
 
 
-async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> dict:
+async def relevance(base_sentences: dict[str, ForecastingQuestion], **kwargs) -> dict:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
     base_sentences = list(base_sentences.values())
@@ -277,6 +277,7 @@ async def relevance(base_sentences: dict[str, ForecastingQuestion]) -> dict:
         preface=preface,
         # examples=examples,
         response_model=RelevanceResult,
+        **kwargs,
     )
 
     print("---")
