@@ -101,7 +101,7 @@ It writes into `src/data/feedback/`.
 
 - [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions.
 
-- [`src/format_questions.py`](src/format_questions.py) reads from a file with raw questions (just a list of strings) and fills the rest of the fields for a ForecastingQuestion.  Writes to `src/data/fq/{appropiate_dir}...`
+- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) questions, optionally fills the rest of the fields for a ForecastingQuestion, and verifies basic sanity checks using a LLM call. If you want it to fill in the resolution criteria, use the `--fill_in_body` flag. *Read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
 
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions. Does not write anything.
 
