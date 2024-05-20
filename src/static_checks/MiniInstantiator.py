@@ -100,7 +100,7 @@ class MiniInstantiator(ABC):
             if dt.tzinfo is None: 
                 dt = dt.replace(tzinfo=UTC)
             dates.append(dt)
-        return max([base_sentences[key].resolution_date for key in base_sentences])
+        return max(dates)
 
     def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
         return base_sentences[
