@@ -66,6 +66,7 @@ src/data
 ├── tuples              # Tuples of (question, answer) pairs. Formatting validated upon commit.
 ├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Unvalidated.
 ├── check_tuple_logs    # Where results of the already instantiated consistency checks + violation are saved. In .gitignore, do not commit. 
+├── verification        # Logging question verification. In .gitignore, do not commit.
 └── test                # Where tests write data. In .gitignore, do not commit.
 ```
 
