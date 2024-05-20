@@ -246,6 +246,7 @@ async def query_api_chat(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
+    print(f"%%%%% -> model = {options['model']}")
     client, client_name = get_client(options["model"], use_async=True)
     if client_name == "mistral":
         messages = _mistral_message_transform(messages)
@@ -332,11 +333,12 @@ async def answer(
     **kwargs,
 ) -> BaseModel:
     messages = prepare_messages(prompt, preface, examples)
-    options = {
+    default_options = {
         "model": "gpt-4-1106-preview",
         "temperature": 0.0,
         "response_model": PlainText,
-    } | kwargs
+    }
+    options = default_options | kwargs  # override defaults with kwargs
     return await query_api_chat(messages=messages, **options)
 
 
@@ -404,7 +406,7 @@ async def parallelized_call(
     print(f"Running {func} on {len(data)} datapoints")
 
     if os.getenv("SINGLE_THREAD"):
-        return [await func(text=d) for d in data]
+        return [await func(d) for d in data]
 
     sem = asyncio.Semaphore(max_concurrent_queries)
 

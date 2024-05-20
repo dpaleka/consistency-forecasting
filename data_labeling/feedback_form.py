@@ -418,6 +418,10 @@ def main(filename):
 
 
 DEFAULT_FILE = f"{get_data_path()}/fq/synthetic/politics_qs_2_formatted.jsonl"
+DEFAULT_FILE = f"{get_data_path()}/other/May14_forfeedback_split1.jsonl"
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(

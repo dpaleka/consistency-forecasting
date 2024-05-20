@@ -61,7 +61,7 @@ async def instantiate(path, checker_list=checkers, n_relevance=10, length=3):
         except Exception as e:
             print(e)
             continue
-    
+            
     possible_tuples = {
         1: [{"P": P} for P in bqs],
         2: [{"P": P, "Q": Q} for P, Q in it.combinations(bqs, 2)],
