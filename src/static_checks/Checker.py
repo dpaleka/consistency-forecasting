@@ -164,7 +164,7 @@ class Checker(ABC):
         returning the instantiated object and a list of verification results from each iteration.
         """
         if verify_before_instantiation:
-            print(f"verifyin before instantiation {n_verification} times")
+            print(f"verifying before instantiation {n_verification} times")
             for _ in range(n_verification):
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
@@ -172,9 +172,7 @@ class Checker(ABC):
                     return instantiated_object
             return instantiated_object
         else:
-            instantiated_object = await self.instantiate(
-                base_sentences, supplied_metadata, **kwargs
-            )
+            instantiated_object = await self.instantiate(base_sentences, **kwargs)
             return instantiated_object
 
     def instantiate_sync_with_metadata(
@@ -480,9 +478,9 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
-    
+
     num_base_questions = 1
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -493,19 +491,19 @@ class NegChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = neg_verification_prompt.format(
             P=generated_tuple.P, not_P=generated_tuple.not_P
         )
-        verification = answer_sync(prompt, response_model=VerificationResult,**kwargs)
+        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             write_verification_result_sync("negation", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = neg_verification_prompt.format(
             P=generated_tuple.P, not_P=generated_tuple.not_P
@@ -540,9 +538,9 @@ class NegChecker(Checker):
 
 
 class AndChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -554,8 +552,8 @@ class AndChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
@@ -565,8 +563,8 @@ class AndChecker(Checker):
             write_verification_result_sync("and", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
@@ -607,9 +605,9 @@ class AndChecker(Checker):
 
 
 class OrChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -621,8 +619,8 @@ class OrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
@@ -632,8 +630,8 @@ class OrChecker(Checker):
             write_verification_result_sync("or", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
@@ -674,9 +672,9 @@ class OrChecker(Checker):
 
 
 class AndOrChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -689,17 +687,21 @@ class AndOrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
         )
-        or_verification_result = answer_sync(prompt, response_model=VerificationResult, **kwargs)
+        or_verification_result = answer_sync(
+            prompt, response_model=VerificationResult, **kwargs
+        )
         prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
         )
-        and_verification_result = answer_sync(prompt, response_model=VerificationResult, **kwargs)
+        and_verification_result = answer_sync(
+            prompt, response_model=VerificationResult, **kwargs
+        )
         verification = VerificationResult(
             valid=and_verification_result.valid and or_verification_result,
             reasoning="And reasoning:\\n"
@@ -711,17 +713,21 @@ class AndOrChecker(Checker):
             write_verification_result_sync("AndOr", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
         )
-        or_verification_result = await answer(prompt, response_model=VerificationResult, **kwargs)
+        or_verification_result = await answer(
+            prompt, response_model=VerificationResult, **kwargs
+        )
         prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
         )
-        and_verification_result = await answer(prompt, response_model=VerificationResult, **kwargs)
+        and_verification_result = await answer(
+            prompt, response_model=VerificationResult, **kwargs
+        )
         print(f"type of and_verification_result: {type(and_verification_result)}")
         print(f"verification result for and: {and_verification_result}")
         verification = VerificationResult(
@@ -768,9 +774,9 @@ class AndOrChecker(Checker):
 
 
 class ButChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_and_not_P: ForecastingQuestion
@@ -782,21 +788,21 @@ class ButChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = but_verification_prompt.format(
             P=generated_tuple.P,
             P_and_not_Q=generated_tuple.Q_and_not_P,
             Q=generated_tuple.P_or_Q,
         )
-        verification = answer_sync(prompt, response_model=VerificationResult,**kwargs)
+        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             write_verification_result_sync("But", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = but_verification_prompt.format(
             P=generated_tuple.P,
@@ -845,9 +851,9 @@ class ButChecker(Checker):
 
 
 class CondChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -865,8 +871,8 @@ class CondChecker(Checker):
                 raise ValueError("Question type must be conditional binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = conditional_verification_prompt.format(
             P=generated_tuple.P,
@@ -878,8 +884,8 @@ class CondChecker(Checker):
             write_verification_result_sync("Conditional", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = conditional_verification_prompt.format(
             P=generated_tuple.P,
@@ -933,9 +939,9 @@ class CondChecker(Checker):
 
 
 class ConsequenceChecker(Checker):
-    
+
     num_base_questions = 1
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         cons_P: ForecastingQuestion
@@ -946,8 +952,8 @@ class ConsequenceChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = consequence_verification_prompt.format(
             P=generated_tuple.P, cons_P=generated_tuple.cons_P
@@ -957,8 +963,8 @@ class ConsequenceChecker(Checker):
             write_verification_result_sync("Consequence", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = consequence_verification_prompt.format(
             P=generated_tuple.P, cons_P=generated_tuple.cons_P
@@ -995,9 +1001,9 @@ class ConsequenceChecker(Checker):
 
 
 class ParaphraseChecker(Checker):
-    
+
     num_base_questions = 1
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         para_P: ForecastingQuestion
@@ -1008,8 +1014,8 @@ class ParaphraseChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = paraphrase_verification_prompt.format(
             P=generated_tuple.P, para_P=generated_tuple.para_P
@@ -1019,8 +1025,8 @@ class ParaphraseChecker(Checker):
             write_verification_result_sync("Paraphrase", generated_tuple, verification)
         return verification
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = paraphrase_verification_prompt.format(
             P=generated_tuple.P, para_P=generated_tuple.para_P
@@ -1055,9 +1061,9 @@ class ParaphraseChecker(Checker):
 
 
 class SymmetryAndChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -1070,50 +1076,69 @@ class SymmetryAndChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self, generated_tuple: "Self.TupleFormat", **kwargs) -> VerificationResult:
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
         and_pq_prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
         )
-        verification_pq = answer_sync(and_pq_prompt, response_model=VerificationResult,**kwargs)
+        verification_pq = answer_sync(
+            and_pq_prompt, response_model=VerificationResult, **kwargs
+        )
 
         and_qp_prompt = and_verification_prompt.format(
             P=generated_tuple.Q, Q=generated_tuple.P, P_and_Q=generated_tuple.Q_and_P
         )
-        verification_qp = answer_sync(and_qp_prompt, response_model=VerificationResult,**kwargs)
+        verification_qp = answer_sync(
+            and_qp_prompt, response_model=VerificationResult, **kwargs
+        )
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n" \
-                    f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
+        reasoning = (
+            f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n"
+            f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
+        )
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-        
+
         if write_verification:
-            write_verification_result_sync("symmetry_and", generated_tuple, verification_result)
+            write_verification_result_sync(
+                "symmetry_and", generated_tuple, verification_result
+            )
 
         return verification_result
 
-    async def verify(self, generated_tuple: "Self.TupleFormat", **kwargs) -> VerificationResult:
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
         and_pq_prompt = and_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
         )
-        verification_pq = await answer(and_pq_prompt, response_model=VerificationResult,**kwargs)
+        verification_pq = await answer(
+            and_pq_prompt, response_model=VerificationResult, **kwargs
+        )
 
         and_qp_prompt = and_verification_prompt.format(
             P=generated_tuple.Q, Q=generated_tuple.P, P_and_Q=generated_tuple.Q_and_P
         )
-        verification_qp = await answer(and_qp_prompt, response_model=VerificationResult, **kwargs)
+        verification_qp = await answer(
+            and_qp_prompt, response_model=VerificationResult, **kwargs
+        )
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n" \
-                    f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
+        reasoning = (
+            f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n"
+            f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
+        )
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-        
+
         if write_verification:
-            await write_verification_result("symmetry_and", generated_tuple, verification_result)
+            await write_verification_result(
+                "symmetry_and", generated_tuple, verification_result
+            )
 
         return verification_result
-
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -1152,9 +1177,9 @@ class SymmetryAndChecker(Checker):
 
 
 class SymmetryOrChecker(Checker):
-    
+
     num_base_questions = 2
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -1167,50 +1192,69 @@ class SymmetryOrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(self, generated_tuple: "Self.TupleFormat", **kwargs) -> VerificationResult:
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
         or_pq_prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
         )
-        verification_pq = answer_sync(or_pq_prompt, response_model=VerificationResult, **kwargs)
+        verification_pq = answer_sync(
+            or_pq_prompt, response_model=VerificationResult, **kwargs
+        )
 
         or_qp_prompt = or_verification_prompt.format(
             P=generated_tuple.Q, Q=generated_tuple.P, P_or_Q=generated_tuple.Q_or_P
         )
-        verification_qp = answer_sync(or_qp_prompt, response_model=VerificationResult, **kwargs)
+        verification_qp = answer_sync(
+            or_qp_prompt, response_model=VerificationResult, **kwargs
+        )
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n" \
-                    f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
+        reasoning = (
+            f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n"
+            f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
+        )
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-        
+
         if write_verification:
-            write_verification_result_sync("symmetry_or", generated_tuple, verification_result)
+            write_verification_result_sync(
+                "symmetry_or", generated_tuple, verification_result
+            )
 
         return verification_result
 
-    async def verify(self, generated_tuple: "Self.TupleFormat", **kwargs) -> VerificationResult:
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
         or_pq_prompt = or_verification_prompt.format(
             P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
         )
-        verification_pq = await answer(or_pq_prompt, response_model=VerificationResult, **kwargs)
+        verification_pq = await answer(
+            or_pq_prompt, response_model=VerificationResult, **kwargs
+        )
 
         or_qp_prompt = or_verification_prompt.format(
             P=generated_tuple.Q, Q=generated_tuple.P, P_or_Q=generated_tuple.Q_or_P
         )
-        verification_qp = await answer(or_qp_prompt, response_model=VerificationResult, **kwargs)
+        verification_qp = await answer(
+            or_qp_prompt, response_model=VerificationResult, **kwargs
+        )
 
         valid = verification_pq.valid and verification_qp.valid
-        reasoning = f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n" \
-                    f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
+        reasoning = (
+            f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n"
+            f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
+        )
 
         verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-        
+
         if write_verification:
-            await write_verification_result("symmetry_or", generated_tuple, verification_result)
+            await write_verification_result(
+                "symmetry_or", generated_tuple, verification_result
+            )
 
         return verification_result
-
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -1249,9 +1293,9 @@ class SymmetryOrChecker(Checker):
 
 
 class CondCondChecker(Checker):
-    
+
     num_base_questions = 3
-    
+
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -1270,17 +1314,17 @@ class CondCondChecker(Checker):
                 raise ValueError("Question type must be conditional binary")
             return value
 
-    def verify_sync(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning = "", valid = True)
+        return VerificationResult(reasoning="", valid=True)
 
-    async def verify(self,
-        generated_tuple: "Self.TupleFormat", **kwargs
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning = "", valid = True)
+        return VerificationResult(reasoning="", valid=True)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
