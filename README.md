@@ -108,10 +108,10 @@ It writes into `src/data/feedback/`.
 
 - [`src/instantiation.py`](src/instantiation.py) Runs instantiation. Takes a JSONL file (a list of ForecastingQuestions), and writes multiple JSONL files (each a list of QuestionTuples) into `src/data/tuples`.
 
-- [`try_instantiators_violation.py`](src/try_instantiators_violation.py)
+- [`evaluation.py`](src/evaluation.py)
 elicits forecasts and scores them. 
 Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit_and_violation methods.
-  - Run: `python src/try_instantiators_violation.py | tee src/data/try_instantiators_violation_output.txt`
+  - Run: `python src/evaluation.py | tee src/data/evaluation.txt`
 
 
 - [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Not merged yet.

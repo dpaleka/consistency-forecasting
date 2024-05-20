@@ -105,4 +105,4 @@ for key, stats in all_stats.items():
     )
 
 # to save the output to a file, run this script as
-# python src/try_instantiators_violation.py | tee src/data/try_instantiators_violation_output.txt
+# python src/evaluation.py | tee src/data/evaluation.txt
