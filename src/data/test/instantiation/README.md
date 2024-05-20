@@ -1,1 +1,1 @@
-Tests for instantiation should write here. Data in here should not be commited.
+Tests for instantiation should write here. This is in .gitignore and data in here should not be commited.
