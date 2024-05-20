@@ -174,7 +174,7 @@ async def generate_questions(n=3):
 
 
 if __name__ == "__main__":
-    asyncio.run(generate_questions(180))
+    asyncio.run(generate_questions(1))
 
 
 

@@ -165,6 +165,10 @@ class ValidationResult(BaseModel):
     reasoning: str
     valid: bool
 
+class VerificationResult(BaseModel):
+    reasoning: str
+    valid: bool
+
 
 class RelevanceResult(BaseModel):
     reasons: list[str]

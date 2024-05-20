@@ -5,22 +5,9 @@ Please use this script for any ForecastingQuestion JSONL files that you commit.
 import argparse
 import json
 from pathlib import Path
-import chardet
 
 from common.datatypes import ForecastingQuestion
 from pydantic import ValidationError
-
-
-def is_utf8(file_path):
-    # This is correct but slow, using try-except open(.., encoding="utf-8") instead
-    with open(file_path, "rb") as file:
-        raw_data = file.read()
-        result = chardet.detect(raw_data)
-        if result["encoding"] in ["ascii", "utf-8"]:
-            return True
-        else:
-            print(json.dumps(result, indent=4))
-            return False
 
 
 def validate_fq(line: dict):

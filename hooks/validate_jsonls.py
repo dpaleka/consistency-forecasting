@@ -50,9 +50,14 @@ print(f"{len(jsonl_files)} jsonl files found")
 
 repo = git.Repo(search_parent_directories=True)
 diff = repo.git.diff("HEAD", name_only=True)
-diff_files: list[str] = diff.splitlines()
-diff_files = [f for f in diff_files if f.endswith(".jsonl")]
 
+
+try:
+    diff_files: list[str] = diff.splitlines()
+    diff_files = [f for f in diff_files if f.endswith(".jsonl")]
+
+except TypeError:
+    diff_files = []
 
 if validate_all:
     jsonl_files_to_check = jsonl_files
