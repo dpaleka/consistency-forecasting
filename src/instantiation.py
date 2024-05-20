@@ -97,7 +97,6 @@ async def instantiate(path, checker_list, n_relevance=10, length=3):
             possible_tuples[checker.num_base_questions][:length],
             model=MODEL,
             overwrite=True,
-            verify_before=True,
             n_verification=3,
         )
 
