@@ -170,9 +170,16 @@ class VerificationResult(BaseModel):
     valid: bool
 
 
+class RelevanceResult(BaseModel):
+    reasons: list[str]
+    conclusion: str
+    score: float
+
+
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
+
 
 class SyntheticTagQuestion(BaseModel):
     title: str

@@ -238,16 +238,38 @@ class Checker(ABC):
 
     async def instantiate_and_write_many(
         self,
-        base_sentencess: list[dict[str, ForecastingQuestion]],
+        base_sentencess: (
+            list[dict[str, ForecastingQuestion]]
+            | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
+        ),
         overwrite=False,
         **kwargs,
     ):
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
-        _instantiate_and_write = lambda base_sentences: self.instantiate_and_write(  # noqa
-            base_sentences, **kwargs
-        )
+
+        def _instantiate_and_write(
+            base_sentences: (
+                dict[str, ForecastingQuestion]
+                | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
+            ),
+        ):
+            if isinstance(base_sentences, tuple):
+                base_sentences, supplied_metadata = base_sentences
+            else:
+                supplied_metadata = None
+            return self.instantiate_and_write(
+                base_sentences, supplied_metadata=supplied_metadata, **kwargs
+            )
+
+        # _instantiate_and_write = (
+        #     lambda base_sentences_with_metadata: self.instantiate_and_write(  # noqa
+        #         base_sentences_with_metadata[0],
+        #         supplied_metadata=base_sentences_with_metadata[1],
+        #         **kwargs,
+        #     )
+        # )
         # Added print statement to log the base sentences being processed
         print(f"Base sentences: {base_sentencess}")
         results = await parallelized_call(_instantiate_and_write, base_sentencess)
@@ -458,6 +480,9 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         not_P: ForecastingQuestion
@@ -515,6 +540,9 @@ class NegChecker(Checker):
 
 
 class AndChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -579,6 +607,9 @@ class AndChecker(Checker):
 
 
 class OrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -643,6 +674,9 @@ class OrChecker(Checker):
 
 
 class AndOrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -734,6 +768,9 @@ class AndOrChecker(Checker):
 
 
 class ButChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_and_not_P: ForecastingQuestion
@@ -808,6 +845,9 @@ class ButChecker(Checker):
 
 
 class CondChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
@@ -893,6 +933,9 @@ class CondChecker(Checker):
 
 
 class ConsequenceChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         cons_P: ForecastingQuestion
@@ -952,6 +995,9 @@ class ConsequenceChecker(Checker):
 
 
 class ParaphraseChecker(Checker):
+    
+    num_base_questions = 1
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         para_P: ForecastingQuestion
@@ -1009,6 +1055,9 @@ class ParaphraseChecker(Checker):
 
 
 class SymmetryAndChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -1103,6 +1152,9 @@ class SymmetryAndChecker(Checker):
 
 
 class SymmetryOrChecker(Checker):
+    
+    num_base_questions = 2
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -1197,6 +1249,9 @@ class SymmetryOrChecker(Checker):
 
 
 class CondCondChecker(Checker):
+    
+    num_base_questions = 3
+    
     class TupleFormat(BaseModel):
         P: ForecastingQuestion
         Q_given_P: ForecastingQuestion
