@@ -164,9 +164,18 @@ async def from_string(
         raise ValueError("No question body provided and fill_in_body is False")
 
     if body is None or date is None:
-        print(
-            "No body or no date, getting criteria and date from the title with an LLM call"
-        )
+        match (body, date):
+            case (None, None):
+                print(
+                    "No body, getting criteria and date from the title with an LLM call"
+                )
+            case (None, _):
+                print("No body, getting criteria from the title with an LLM call")
+            case (_, None):
+                print("No date, getting date from the title with an LLM call")
+            case _:
+                assert False
+
         for attempt in range(3):
             try:
                 bodyAndDate = await get_criteria_and_date(
