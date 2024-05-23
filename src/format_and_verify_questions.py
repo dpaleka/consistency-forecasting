@@ -161,11 +161,27 @@ async def main(
     model: str,
     synthetic: bool,
     fill_in_body: bool,
+    overwrite: bool = False,
 ):
+    output_path = Path(f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}")
+    if overwrite:
+        if output_path.exists():
+            confirmation = input(
+                f"The file {output_path} already exists. The default is to append. Change to overwrite? (y/N): "
+            )
+            if confirmation.lower() != "y":
+                print("Operation cancelled by the user.")
+                return
+    else:
+        if output_path.exists():
+            print(
+                f"The file {output_path} already exists. Appending to it. If you want to overwrite, use the --overwrite flag."
+            )
+
     if synthetic:
         forecasting_questions, none_count = await process_synthetic_questions_from_file(
             file_path,
-            f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}",
+            output_path,
             max_questions=max_questions,
             model=model,
             fill_in_body=fill_in_body,
@@ -186,14 +202,14 @@ async def main(
         data["resolution_date"] = str(data["resolution_date"])
 
     await write_jsonl_async(
-        f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}",
+        output_path,
         data_to_write,
-        append=True,
+        append=not overwrite,
     )
     await write_jsonl_async(
         f"{get_scripts_path()}/pipeline/{out_file_name}",
         data_to_write,
-        append=True,
+        append=not overwrite,
     )
 
 
@@ -220,6 +236,11 @@ if __name__ == "__main__":
         type=str,
         default="high-quality-questions-all-domains.jsonl",
         help="Name of the output file",
+    )
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Flag to indicate whether to overwrite the output file if it exists, instead of appending. It will ask for confirmation.",
     )
     parser.add_argument(
         "--max_questions",
@@ -260,5 +281,6 @@ if __name__ == "__main__":
             args.model,
             args.synthetic,
             args.fill_in_body,
+            args.overwrite,
         )
     )
