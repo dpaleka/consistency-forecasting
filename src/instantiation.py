@@ -30,8 +30,8 @@ MODEL_RELEVANCE = "gpt-4o"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
-TUPLES_PATH: Path = get_data_path() / "tuples/"
-# TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
+# TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
 
 checkers: dict[str, Checker] = {
     "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
@@ -111,6 +111,6 @@ if __name__ == "__main__":
             checker_list=checkers,
             n_relevance=10,
             length=3,
-            use_examples=True,
+            use_examples=False,
         )
     )
