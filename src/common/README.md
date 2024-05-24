@@ -1,4 +1,4 @@
-# (Parts of) the personal Python utils library of Daniel Paleka, repurposed for the consistency forecasting project
+# Python utils library, specialized for the consistency forecasting project
 Feel free to add your own utils if you don't like the setup. You can also create PRs to modify the existing ones.
 Try not to add code that's very specific to the consistency forecasting project; in most cases a better place for that code is in the relevant directory of that part of the project.
 
@@ -15,6 +15,7 @@ To use OpenRouter, set the environment variable `USE_OPENROUTER=True` and provid
 For standard queries, prefer using methods in the `llm_utils.py` module over dealing with the `openai` package directly.
 Most likely, the only methods you're going to need in the first weeks are:
 - `query_api_chat_sync`: takes `model : str` and `messages : list[dict[str, str]]` in OpenAI chat format, and queries the corresponding model. Returns the `response_text : str`. It behaves like a normal function. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
+Optionally, set a Pydantic `response_model` to force the output to conform to some schema.
 - `query_api_chat`: async version of the above. Is cached by default, set `NO_CACHE=True` if you don't want to cache.
 - `parallelized_request`: run some async `func` over `data: list[str]`, "in parallel". Usually the `func` will create `messages` and then call `query_api_chat`; but you can provide an arbitrary `func` you implemented. Use when just running a for loop is too slow for you.
 
@@ -41,4 +42,4 @@ or do `NO_CACHE=True python3 your_script.py`, or `os.environ['NO_CACHE'] = 'True
 Whenever you want to cache a new `BaseModel` response, add it to [`perscache.py`](perscache.py).
 
 Default caching uses Redis, and should work out of the box once you [install Redis](https://redis.io/docs/install/install-redis/).
-If you don't want to use Redis, but you still want to cache, use `LOCAL_CACHE=True`.
+If you don't want to use Redis, but you still want to cache, use `LOCAL_CACHE={cache_folder}`, e.g. `LOCAL_CACHE=.cache/`.

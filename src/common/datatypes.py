@@ -167,12 +167,29 @@ class ValidationResult(BaseModel):
     valid: bool
 
 
+class VerificationResult(BaseModel):
+    reasoning: str
+    valid: bool
+
+
+class RelevanceResult(BaseModel):
+    reasons: list[str]
+    conclusion: str
+    score: float
+
+
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
 
 
 ### end Pydantic models ###
+class SyntheticTagQuestion(BaseModel):
+    title: str
+    category: str
+    tags: str
+    feedback: Optional[str] = None
+    fixed: Optional[bool] = False
 
 
 ### Other useful classes
