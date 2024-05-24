@@ -97,7 +97,7 @@ It writes into `src/data/feedback/`.
 
 ## Entry points to the code
 
-- [`scripts/pipeline/scrape_questions.sh`](scripts/pipeline/scrape_questions.sh) runs pipeline to scrape metaculus for questions and stores them in `scripts/pipeline/QUESTIONS_CLEANED_MODIFIED.jsonl`.
+- [`scripts/pipeline/scrape_questions.sh`](scripts/pipeline/scrape_questions.sh) runs pipeline to scrape metaculus for questions and stores them in `questions_cleaned_formatted.jsonl`.
 
 - [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions.
 
