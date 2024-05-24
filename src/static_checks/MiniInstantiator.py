@@ -140,9 +140,14 @@ class MiniInstantiator(ABC):
         return {k: None for k in self.OutputFormat.model_fields}
 
     def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat":
-        title_body = self.title_body_sync(base_sentences, **kwargs)
+        title_body = self.title_body_sync(
+            base_sentences, use_examples=use_examples, **kwargs
+        )
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
@@ -159,11 +164,14 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verify=3,
+        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat":
         if verify_before_instantion:
             for i in range(n_verify):
-                title_body = await self.title_body(base_sentences, **kwargs)
+                title_body = await self.title_body(
+                    base_sentences, use_examples=use_examples, **kwargs
+                )
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
                 valid = {k: False for k in sd.keys()}
