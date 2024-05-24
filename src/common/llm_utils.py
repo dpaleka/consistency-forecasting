@@ -65,7 +65,7 @@ embeddings_cache = Cache(
     value_wrapper=ValueWrapperDictInspectArgs(),
 )
 
-FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"]
+FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
 
 client = None
 load_dotenv(override=True)
@@ -120,6 +120,7 @@ def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
 
 @singleton_constructor
 def get_async_openrouter_client_native() -> AsyncOpenAI:
+    print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
     return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
@@ -308,7 +309,7 @@ def get_client_native(
 
     if os.getenv("USE_OPENROUTER"):
         client = (
-            get_openrouter_client_native()
+            get_async_openrouter_client_native()
             if use_async
             else get_openrouter_client_native()
         )
@@ -379,7 +380,6 @@ async def query_api_chat(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    print(options)
     client, client_name = get_client_pydantic(options["model"], use_async=True)
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
@@ -388,11 +388,16 @@ async def query_api_chat(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
+    print(
+        options,
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+    )
+
     response = await client.chat.completions.create(
         messages=call_messages,
         **options,
     )
-    if verbose:
+    if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
@@ -415,7 +420,10 @@ async def query_api_chat_native(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
-    print(options)
+    print(
+        options,
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+    )
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
             messages=call_messages,
@@ -427,7 +435,12 @@ async def query_api_chat_native(
             **options,
         )
 
-    return response.choices[0].message.content
+    text_response = response.choices[0].message.content
+
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}\n")
+
+    return text_response
 
 
 @pydantic_cache
@@ -437,9 +450,6 @@ def query_api_chat_sync(
     model: str | None = None,
     **kwargs,
 ) -> BaseModel:
-    if verbose:
-        print("Messages array being sent to OpenAI API:", messages, "\n")
-
     if not os.getenv("NO_CACHE"):
         assert (
             kwargs.get("response_model", -1) is not None
@@ -459,11 +469,17 @@ def query_api_chat_sync(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
+    print(
+        options,
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+    )
+
     response = client.chat.completions.create(
         messages=call_messages,
         **options,
     )
-    if verbose:
+
+    if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
@@ -485,6 +501,11 @@ def query_api_chat_sync_native(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
+    print(
+        options,
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+    )
+
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = client.chat(
             messages=call_messages,
@@ -496,7 +517,12 @@ def query_api_chat_sync_native(
             **options,
         )
 
-    return response.choices[0].message.content
+    text_response = response.choices[0].message.content
+
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}")
+
+    return text_response
 
 
 @dataclass
@@ -563,33 +589,28 @@ def answer_sync(
 @pydantic_cache
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
-    if verbose:
-        print("Querying API with text:", text[:30])
     response = await client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
-    if verbose:
+    if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text[:30], "\nResponse:", response_text[:30])
     return response_text
 
 
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
-    if verbose:
-        print("Querying API with text:", text[:30])
     response = client.completions.create(model=model, prompt=text, **kwargs)
     response_text = response.choices[0].text
-    if verbose:
+    if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text, "\nResponse:", response_text)
     return response_text
 
 
 def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
-    if verbose:
-        print("Querying Huggingface with text:", text[:30])
     response_text = client(text)
-    if verbose:
+    if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text, "\nResponse:", response_text)
+
     return response_text
 
 

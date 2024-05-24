@@ -58,8 +58,12 @@ DEFAULT_REASONING_CONFIG = {
 MODEL_TOKEN_LIMITS = {
     "claude-2.1": 200000,
     "claude-2": 100000,
-    "claude-3-opus-20240229": 200000,
+    "claude-3-haiku-20240229": 200000,
     "claude-3-sonnet-20240229": 200000,
+    "claude-3-opus-20240229": 200000,
+    "anthropic/claude-3-haiku": 200000,
+    "anthropic/claude-3-sonnet": 200000,
+    "anthropic/claude-3-opus": 200000,
     "gpt-4": 8000,
     "gpt-3.5-turbo-1106": 16000,
     "gpt-3.5-turbo-0125": 16000,

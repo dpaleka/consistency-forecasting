@@ -20,12 +20,12 @@ import json
 
 # %%
 data = []
-with open(get_data_path() / "fq/real/questions_cleaned_formatted.jsonl", "r") as file:
+with open(get_data_path() / "other/forecaster_testing_q.jsonl", "r") as file:
     for line in file:
         data.append(json.loads(line))
 
 # %%
-sample_question = data[0]
+sample_question = data[1]
 print(sample_question["title"])
 
 
@@ -36,12 +36,23 @@ fq = ForecastingQuestion(**sample_question)
 # ### Testing "Advanced Forecaster"
 
 # %%
+
+import logging
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)  # configure root logger
+
+# %%
 from forecasters.advanced_forecaster import AdvancedForecaster
 
 af = AdvancedForecaster(
     MAX_WORDS_NEWSCATCHER=5,
     MAX_WORDS_GNEWS=8,
-    BASE_REASONING_MODEL_NAMES=["gpt-3.5-turbo-1106", "gpt-3.5-turbo-1106"],
+    SEARCH_QUERY_MODEL_NAME="gpt-4o-2024-05-13",
+    SUMMARIZATION_MODEL_NAME="gpt-4o-2024-05-13",
+    BASE_REASONING_MODEL_NAMES=["gpt-4o-2024-05-13", "gpt-4o-2024-05-13"],
+    RANKING_MODEL_NAME="gpt-4o-2024-05-13",
+    AGGREGATION_MODEL_NAME="gpt-4o-2024-05-13",
 )
 
 # %%

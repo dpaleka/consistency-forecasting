@@ -5,7 +5,7 @@ Try not to add code that's very specific to the consistency forecasting project;
 The licensing of this code is governed by [LICENSE](LICENSE).
 
 ## .env
-Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary.
+Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary. Place it in the root of the project, similar to [.env.example](../../.env.example).
 
 ## OpenRouter
 Most models can alternatively be called in OpenAI-compliant format through [OpenRouter](https://openrouter.ai/).
@@ -19,6 +19,9 @@ Most likely, the only methods you're going to need in the first weeks are:
 - `parallelized_request`: run some async `func` over `data: list[str]`, "in parallel". Usually the `func` will create `messages` and then call `query_api_chat`; but you can provide an arbitrary `func` you implemented. Use when just running a for loop is too slow for you.
 
 If you need a complex LLM request (e.g. logprobs), and you think it's not an one-off, implement another function in `llm_utils.py` and use that.
+
+### Logging all LLM API calls
+To see every query and response to the LLM APIs, use the flag `VERBOSE=True` in `.env` or when calling the script.
 
 ## async
 By default, prefer use async versions of LLM calls to external providers such as OpenAI.

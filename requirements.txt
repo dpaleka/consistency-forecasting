@@ -126,7 +126,7 @@ stack-data==0.6.3
 streamlit==1.8.0
 tenacity==8.2.3
 threadpoolctl==3.3.0
-tiktoken==0.6.0
+tiktoken==0.7.0
 together==0.2.4
 tokenizers==0.15.2
 toml==0.10.2
