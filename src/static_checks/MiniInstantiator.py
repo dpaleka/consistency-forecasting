@@ -650,7 +650,8 @@ class Paraphrase(MiniInstantiator):
             "answer. You should then give me a paraphrased version of the question that "
             "expresses the same underlying concept. The question should be as different as "
             "possible from the original question, while still meaning the exact same thing. "
-            "Use synonyms, etc. "
+            "Use synonyms, etc. Make sure to retain all the information in the question title "
+            "and body! This is very important."
         )
 
         self.examples = [
@@ -701,14 +702,29 @@ class Conditional(MiniInstantiator):
         Q_given_P: ForecastingQuestion
 
     def __init__(self):
+
         self.preface = (
-            "You are a helpful assistant. I will give you two forecasting questions P and Q with Yes/No "
-            "answers. You should then give me a question that expresses their *conditional* expression"
-            "i.e. 'GIVEN that P is true, then is Q true?'"
-            "Either P and Q can already be a composite question."
-            "All information in all sections from the two original questions should be retained. "
-            "For example information, in the body or resolution criteria should be kept "
-            "in the new question.  Do not remove any information of the original questions."
+            "You are a helpful assistant."
+            "I will give you two forecasting questions P and Q with Yes/No answers. "
+            "You should then give me the conditional expression of these two questions, i.e. "
+            "'GIVEN P is true, then is Q true?' P is the condition, Q is the outcome we are "
+            "interested in. "
+            "Notes:\n\n"
+            " - Your response should be as clear as possible. If writing the whole thing in a "
+            "single sentence becomes too long and cumbersome, you can write something like: "
+            "Suppose the following is true: P. Then is Q true?\n"
+            " - If the question allows for a simple rephrasing or factorization, go for it.\n"
+            " - If Q is already a conditional expression, you can just combine the conditions. "
+            "I.e. (Given P then (Given P2 then Q)) can just be written as (Given P AND P2 then Q). "
+            "Again if P and P2 is too long and cumbersome, you might want to write something like: "
+            "Suppose the following is true: P. Then is Q true? And as always if a more natural "
+            "formulation exists, always go for it.\n"
+            " - Most importantly: make sure you retain all relevant information in the question bodies! "
+            "All this is for an experiment to test the logical consistency of forecasters: "
+            "The conditional question you give will be handed to the forecasters without having seen the "
+            "base questions, so it is critical that all the information in the base questions be included "
+            "in your conditional expression; the resolution criterion for each component should be neatly and "
+            "clearly provided. "
         )
 
         self.examples = [
