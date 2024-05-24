@@ -169,12 +169,19 @@ def is_mistral(model: str) -> bool:
 
 def is_togetherai(model: str) -> bool:
     keywords = ["together", "llama", "phi", "orca"]
-    return any(keyword in model for keyword in keywords)
+    return any(keyword in model for keyword in keywords) and len(model) < 40
 
 
 def is_huggingface_local(model: str) -> bool:
     keywords = ["huggingface", "hf"]
     return any(keyword in model for keyword in keywords)
+
+
+def is_model_name_valid(model: str) -> bool:
+    if len(model) > 40:
+        return False  # Model name is too long, probably a mistake
+    funcs = [is_openai, is_mistral, is_togetherai, is_huggingface_local]
+    return any(f(model) for f in funcs)
 
 
 def get_client(
@@ -332,6 +339,9 @@ async def answer(
     examples: list[Example] | None = None,
     **kwargs,
 ) -> BaseModel:
+    assert not is_model_name_valid(
+        prompt
+    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     default_options = {
         "model": "gpt-4-1106-preview",
@@ -348,6 +358,9 @@ def answer_sync(
     examples: list[Example] | None = None,
     **kwargs,
 ) -> BaseModel:
+    assert not is_model_name_valid(
+        prompt
+    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",
