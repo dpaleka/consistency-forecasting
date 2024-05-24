@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 import time
-from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
+
 
 def fetch_question_details(url):
     # Set up the Selenium WebDriver
@@ -14,41 +14,56 @@ def fetch_question_details(url):
     background_info_text = ""
 
     try:
-        # Navigate to the page
         driver.get(url)
-        time.sleep(1)  # Adjust the sleep time as necessary
+        time.sleep(2)  # Wait for the page to load
 
-        try:
-            # Attempt to click "Show More" buttons if present
-            show_more_buttons = driver.find_elements(By.XPATH, "//button[contains(text(), 'Show More')]")
-            for button in show_more_buttons:
+        # Find all "Show More" buttons. Adjust the selector as needed.
+        show_more_buttons = driver.find_elements(
+            By.XPATH, "//button[contains(text(), 'Show More')]"
+        )
+
+        for index, button in enumerate(show_more_buttons):
+            if index > 1:
+                break
+            # Scroll to each button and click it
+            driver.execute_script("arguments[0].scrollIntoView(true);", button)
+            time.sleep(1)  # Adjust timing as necessary
+
+            # Scroll up a little to adjust for fixed headers or other elements
+            driver.execute_script(
+                "window.scrollBy(0, -100);"
+            )  # Adjust the value as needed
+            time.sleep(
+                1
+            )  # Allow time for any dynamic content to load and for the page to settle
+
+            attempts = 5
+            for i in range(attempts):
                 try:
                     button.click()
-                    time.sleep(1)  # Wait for the content to load; adjust as necessary
-                except ElementClickInterceptedException:
-                    print("Button was not clickable.")
-                except:
-                    pass
-        except NoSuchElementException:
-            print("No 'Show more' buttons found.")
+                    time.sleep(1)  # Allow time for any dynamic content to load
+                    break
+                except Exception as e:
+                    print(f"Could not click the button: {e}")
+                    i += 1
 
-        # Wait for the "Resolution Criteria" section to load
-        resolution_criteria = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "react-resolution-criteria"))
+        resolution_criteria = WebDriverWait(driver, 1.5).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "react-resolution-criteria")
+            )
         )
-        resolution_criteria_text = resolution_criteria.text.replace('Show Less', '')
+        resolution_criteria_text = resolution_criteria.text.replace("Show Less", "")
 
-        # Wait for the "Background Info" section to load
-        background_info = WebDriverWait(driver, 10).until(
+        background_info = WebDriverWait(driver, 1.5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "react-background-info"))
         )
-        background_info_text = background_info.text.replace('Show Less', '')
+        background_info_text = background_info.text.replace("Show Less", "")
 
     finally:
-        # Clean up by closing the browser
         driver.quit()
 
     return resolution_criteria_text, background_info_text
+
 
 """
 # Example usage

@@ -1,0 +1,50 @@
+[
+    {
+        "id": 349,
+        "title": "Will SpaceX land people on Mars before 2030?",
+        "body": {
+            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if a SpaceX-branded mission successfully lands one or more living human beings on the surface of Mars before 2030. The landing itself of the human crew on Mars must occur before January 1, 2030, 00:00 UTC.\nAt least one person aboard the lander must survive the landing, however it is not necessary for the person to survive long-term or make a return trip to Earth, nor is it necessary for the mission to intend a return or long-term survival.\nA \"SpaceX-branded\" mission is defined to mean that the SpaceX-associated logos on the spacecraft involved (both the boosters and the Mars-bound craft) have a larger surface area than the logos of any other entity\n",
+            "background_info": "SpaceX recently released a detailed plan (transcription and slides here) to send people to Mars using an \"Interplanetary Transport System\" based on heavily reusable launch boosters, tanker-assisted refueling in low-Earth orbit, and a futuristic interplanetary spaceship. The ship is to traverse deep space and land intact on Mars after a high-speed retro-assisted atmospheric entry. The system will rely on in-situ fuel generation on Mars for return journeys, and it is envisioned that destinations across the Solar System may be within its reach.\nThe timeline has not been set in stone, but Elon Musk has noted that if SpaceX \"gets lucky and things go according to plan\", a manned flight could launch in the 2024 window with a landing on Mars in 2025. Subsequent launch windows, which are dictated by the Earth-Mars synodic period, occur at a roughly 2-year cadence.\nThere have been numerous proposals over the years for landing people on Mars. Perhaps the first one that was both concrete and marginally credible was Wernher von Braun's Marsprojekt of the late 1940s and early 1950s. For the past six decades, trips to Mars have tended to lie 20-30 years in the future. The SpaceX plan is particularly notable for aggressively compressing the timeline.\n"
+        },
+        "question_type": "binary",
+        "resolution_date": "Jan 02 2030 12:00AM",
+        "url": "https://www.metaculus.com/questions/349",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": 372,
+        "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
+        "body": {
+            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if an effort to create a viable (functioning, lasting, sane, etc.) emulated human, based on direct simulation of the neural connectome (and a requisite level of its physical instantiation), succeeds before another form of human-level digital intelligence. The latter will be defined as a digital entity capable of equalling or surpassing most or all core human cognitive capabilities.\nIf neither a whole human brain emulation nor a human-level digital intelligence has been successfully demonstrated before January 1, 2060, this question will resolve as Ambiguous.\n*(Edit 10/20/18 to state that it resolves ambiguous rather than negative in the event of no AGI by 2060.)\n",
+            "background_info": "In the quest for \"strong\" Artificial Intelligence, defined here as digital intelligences rivaling or surpassing that of humans, a number of potential path have been discussed. Among them is \"brain emulation,\" in which the physical functioning of a human brain is directly simulated, at some level of detail, in a digital computer.\nIn an interesting recent book, The Age of Em, Robin Hanson explores the potential dynamics of human society assuming such \"Ems\" can be created, and that this occurs prior to the advent of other forms of strong AI. (See also a recent post by Hanson discussing the relative timing of different AI paths.)\nThere is considerable debate about the technological feasibility of such simulation: though there is general (though not universal) agreement that the brain, being a physical system, is amenable to being simulated, the necessary computations (and data gathering) span many orders of magnitude depending upon the level of detail required. Significant intellectual effort and funding is being directed toward understanding the Brain well enough to simulate it, for example in the massive Blue Brain Project, but there is no clear consensus as to how much progress has been made toward the ultimate goal. See for example this NYT editorial with a skeptical evaluation of brain emulation, and this response by the Brain Preservation Foundation\nTo gather thinking about this and track how the relative probabilities of \"Ems\" vs. other types of AIs evolve with time, we ask here:\n"
+        },
+        "question_type": "binary",
+        "resolution_date": "Jan 01 2060 12:00AM",
+        "url": "https://www.metaculus.com/questions/372",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": 375,
+        "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
+        "body": {
+            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if, before January 1, 2027, one or more of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany triggers Article 50 of the Treaty of Lisbon by notifying the European Council of its intention to leave the union.\nIt also resolves as positive if by the same deadline the entity called European Union has dissolved completely or dissolved to create a new politico-economic union of some European nations under a different name\n",
+            "background_info": "Anti-European sentiment is running strong in the EU and it may grow stronger – strong enough to destroy it, maybe? The UK voted for Brexit and political pundits are already discussing Nexit, Frexit and Quitaly.\nSome commentators argue that Brexit is already the end of the EU as we know it, some would say that Brexit may be fine but if any other country was to leave would spell the end of the union. We choose an even stricter criterion by requiring then one of the 6 original founders of the ECSC leave the union to decree the end of the EU as we know it."
+        },
+        "question_type": "binary",
+        "resolution_date": "Jan 31 2027 11:59PM",
+        "url": "https://www.metaculus.com/questions/375",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    }
+]
