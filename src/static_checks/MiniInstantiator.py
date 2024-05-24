@@ -17,6 +17,8 @@ from question_generators import question_formatter
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
+
+
 class MiniInstantiator(ABC):
     def __init__(self):
         pass
@@ -52,23 +54,37 @@ class MiniInstantiator(ABC):
         )
 
     def title_body_sync_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
+        self,
+        base_sentences: "Self.BaseSentenceFormat_stripped",
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return answer_sync(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
 
     async def title_body_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
+        self,
+        base_sentences: "Self.BaseSentenceFormat_stripped",
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return await answer(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -97,7 +113,7 @@ class MiniInstantiator(ABC):
         dates = []
         for key in base_sentences:
             dt = base_sentences[key].resolution_date
-            if dt.tzinfo is None: 
+            if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=UTC)
             dates.append(dt)
         return max(dates)
@@ -158,7 +174,9 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    validate_result = await question_formatter.verify_question(fqs[k], **kwargs)
+                    validate_result = await question_formatter.verify_question(
+                        fqs[k], **kwargs
+                    )
                     valid[k] = validate_result.valid
                 if all([res is not None for res in fqs.values()]):
                     break
@@ -218,7 +236,7 @@ class Neg(MiniInstantiator):
             "answer. You should then give me the NEGATION of the question, i.e. the question that "
             "would be answered YES if the original question would be answered NO, and vice "
             "versa. Demorgan's laws should be followed with and/or negation. Avoid using the word "
-            "'won't'.  If applicable, the different parts of the question should be negated one to one. " 
+            "'won't'. If applicable, the different parts of the question should be negated one to one. "
             "For example the new title should be an negation of the original title.  Body questions should be negations"
             "of the original body questions.  Statements / background information can be kept the same."
         )
@@ -249,7 +267,7 @@ class Neg(MiniInstantiator):
                     P=ForecastingQuestion_stripped(
                         title="Will we reach the island of stability by 2050?",
                         body=(
-                            "Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain \"magic numbers\" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive the half-life of the isotope must be verified by an independent scientific team to be greater than one day prior to 2050.\n"
+                            'Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain "magic numbers" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive the half-life of the isotope must be verified by an independent scientific team to be greater than one day prior to 2050.\n'
                         ),
                     )
                 ),
@@ -257,12 +275,11 @@ class Neg(MiniInstantiator):
                     not_P=ForecastingQuestion_stripped(
                         title="Will we not reach the island of stability by 2050?",
                         body=(
-                            "Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain \"magic numbers\" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we not create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive there must not be a half-life of an isotope that has been verified by an independent scientific team to be greater than one day prior to 2050.\n"
+                            'Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain "magic numbers" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we not create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive there must not be a half-life of an isotope that has been verified by an independent scientific team to be greater than one day prior to 2050.\n'
                         ),
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -429,7 +446,6 @@ class And(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -464,7 +480,6 @@ class And(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -842,7 +857,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -863,7 +877,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -887,7 +900,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -908,7 +920,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -929,8 +940,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -950,7 +959,7 @@ class Consequence(MiniInstantiator):
                         ),
                     )
                 ),
-            ),            
+            ),
         ]
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
