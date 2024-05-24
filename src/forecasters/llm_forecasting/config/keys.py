@@ -19,7 +19,9 @@ TOGETHER_KEY = os.getenv("TOGETHER_KEY")
 GOOGLE_AI_KEY = os.getenv("GOOGLE_AI_KEY")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
-NEWSCATCHER_KEY = os.getenv("NEWSCATCHER_KEY")
+NEWSCATCHER_KEY = (
+    os.getenv("NEWSCATCHER_KEY") if not os.getenv("SKIP_NEWSCATCHER") else None
+)
 
 keys = {
     "AWS_ACCESS_KEY": AWS_ACCESS_KEY,

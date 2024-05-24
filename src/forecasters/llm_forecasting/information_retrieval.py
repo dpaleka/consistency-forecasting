@@ -679,6 +679,7 @@ async def get_search_queries_for_all_sources(
     question,
     background_info="",
     resolution_criteria="",
+    model_name="gpt-4-1106-preview",
     max_words_newscatcher=5,
     max_words_gnews=8,
 ):
@@ -742,6 +743,7 @@ async def get_search_queries_for_all_sources(
         search_query_responses_list,
     ) = await async_get_search_queries(
         search_query_prompts_list_gnews + search_query_prompts_list_nc,
+        model_name=model_name,
         num_keywords=num_queries,
         return_response=True,
     )

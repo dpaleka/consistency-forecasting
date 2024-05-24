@@ -110,9 +110,17 @@ class AdvancedForecaster(Forecaster):
             )
             print(f"kwargs: {kwargs}")
 
+        print("Initialized forecaster with settings:")
+        print(f"Retrieval config: {self.retrieval_config}")
+        print(f"Reasoning config: {self.reasoning_config}")
+
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         question = sentence.title
-        background_info = sentence.metadata["background_info"]
+        background_info = (
+            sentence.metadata["background_info"]
+            if "background_info" in sentence.metadata
+            else ""
+        )
         resolution_criteria = (
             sentence.body
         )  # resolution criteria and other info is in |body|
