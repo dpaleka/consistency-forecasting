@@ -2,8 +2,8 @@ from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import answer, answer_sync, Example
 
-class BasicForecaster(Forecaster):
 
+class BasicForecaster(Forecaster):
     def __init__(self, preface: str = None, examples: list = None):
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
@@ -27,7 +27,7 @@ class BasicForecaster(Forecaster):
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
         # Log the request details being sent to the OpenAI API
-        print(f"Sending the following request to OpenAI API:")
+        print("Sending the following request to OpenAI API:")
         print(f"Prompt: {sentence.__str__()}")
         print(f"Preface: {self.preface}")
         print(f"Examples: {self.examples}")
@@ -37,7 +37,7 @@ class BasicForecaster(Forecaster):
             preface=self.preface,
             examples=self.examples,
             response_model=sentence.expected_answer_type(),
-            **kwargs
+            **kwargs,
         )
         # Log the response from the OpenAI API
         print(f"Received the following response from OpenAI API: {response}")
@@ -45,7 +45,7 @@ class BasicForecaster(Forecaster):
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         # Log the request details being sent to the OpenAI API
-        print(f"Sending the following request to OpenAI API:")
+        print("Sending the following request to OpenAI API:")
         print(f"Prompt: {sentence.__str__()}")
         print(f"Preface: {self.preface}")
         print(f"Examples: {self.examples}")
@@ -55,7 +55,7 @@ class BasicForecaster(Forecaster):
             preface=self.preface,
             examples=self.examples,
             response_model=sentence.expected_answer_type(),
-            **kwargs
+            **kwargs,
         )
         # Log the response from the OpenAI API
         print(f"Received the following response from OpenAI API: {response}")
