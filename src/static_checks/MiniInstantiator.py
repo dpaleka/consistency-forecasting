@@ -783,17 +783,22 @@ class Consequence(MiniInstantiator):
         cons_P: ForecastingQuestion
 
     def __init__(self):
+
         self.preface = (
-            "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
-            "answer. You should then give me a question that expresses any logical consequence "
-            "of P. That is, a question that is necessarily true if P is true. If P is false, "
-            "the question could be either true or false. Make sure it is a perfect logical consequence. "
-            "It should also be very obvious that if P is true, then cons_P must be true.  It should be impossible for cons_P to occur without P also having occured. "
-            "P is in a way a stronger refinement of cons_P. "
-            "In logical notation we say P -> cons_P. "
-            "The relationship must be strict. "
-            "cons_P MUST be something that logically / mathematically is inevitable if P occurs. "
-            "cons_P also cannot just be the same question or rephrease of P. "
+            "You are a helpful assistant."
+            "I will give you a forecasting questions P with Yes/No answer. "
+            "You should then give me a guaranteed logical consequence of P. "
+            "Notes:\n\n"
+            " - Make sure that your output is truly a guaranteed logical consequence of P. "
+            "Look at the resolution criteria for P and make sure your output question will "
+            "necessarily resolve True if the resolution criteria for P are met.\n"
+            " - Most importantly: if there is any background information (not resolution criteria) "
+            "in the question body, make sure you retain all relevant information in the question body "
+            "of the output you give. We will be giving these questions to a population sample to see "
+            "if they give consistent answers (like giving a higher probability to 'Is Kelly a bank-'"
+            "teller?' than 'Is Kelly a bank-teller active in the feminist movement?') so it is critical "
+            "that any information that might inform someone's probability estimate to your output question "
+            "is clearly included."
         )
 
         self.examples = [
