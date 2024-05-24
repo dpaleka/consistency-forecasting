@@ -17,6 +17,8 @@ from question_generators import question_formatter
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
+
+
 class MiniInstantiator(ABC):
     def __init__(self):
         pass
@@ -52,23 +54,37 @@ class MiniInstantiator(ABC):
         )
 
     def title_body_sync_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
+        self,
+        base_sentences: "Self.BaseSentenceFormat_stripped",
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return answer_sync(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
 
     async def title_body_(
-        self, base_sentences: "Self.BaseSentenceFormat_stripped", **kwargs
+        self,
+        base_sentences: "Self.BaseSentenceFormat_stripped",
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return await answer(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -97,7 +113,7 @@ class MiniInstantiator(ABC):
         dates = []
         for key in base_sentences:
             dt = base_sentences[key].resolution_date
-            if dt.tzinfo is None: 
+            if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=UTC)
             dates.append(dt)
         return max(dates)
@@ -124,9 +140,14 @@ class MiniInstantiator(ABC):
         return {k: None for k in self.OutputFormat.model_fields}
 
     def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        use_examples=True,
+        **kwargs,
     ) -> "Self.OutputFormat":
-        title_body = self.title_body_sync(base_sentences, **kwargs)
+        title_body = self.title_body_sync(
+            base_sentences, use_examples=use_examples, **kwargs
+        )
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
@@ -143,11 +164,14 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verify=3,
+        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat":
         if verify_before_instantion:
             for i in range(n_verify):
-                title_body = await self.title_body(base_sentences, **kwargs)
+                title_body = await self.title_body(
+                    base_sentences, use_examples=use_examples, **kwargs
+                )
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
                 valid = {k: False for k in sd.keys()}
@@ -158,7 +182,9 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    validate_result = await question_formatter.verify_question(fqs[k], **kwargs)
+                    validate_result = await question_formatter.verify_question(
+                        fqs[k], **kwargs
+                    )
                     valid[k] = validate_result.valid
                 if all([res is not None for res in fqs.values()]):
                     break
@@ -218,7 +244,7 @@ class Neg(MiniInstantiator):
             "answer. You should then give me the NEGATION of the question, i.e. the question that "
             "would be answered YES if the original question would be answered NO, and vice "
             "versa. Demorgan's laws should be followed with and/or negation. Avoid using the word "
-            "'won't'  If applicable the different parts of the question should be negated one to one. " 
+            "'won't'. If applicable, the different parts of the question should be negated one to one. "
             "For example the new title should be an negation of the original title.  Body questions should be negations"
             "of the original body questions.  Statements / background information can be kept the same."
         )
@@ -249,7 +275,7 @@ class Neg(MiniInstantiator):
                     P=ForecastingQuestion_stripped(
                         title="Will we reach the island of stability by 2050?",
                         body=(
-                            "Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain \"magic numbers\" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive the half-life of the isotope must be verified by an independent scientific team to be greater than one day prior to 2050.\n"
+                            'Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain "magic numbers" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive the half-life of the isotope must be verified by an independent scientific team to be greater than one day prior to 2050.\n'
                         ),
                     )
                 ),
@@ -257,12 +283,11 @@ class Neg(MiniInstantiator):
                     not_P=ForecastingQuestion_stripped(
                         title="Will we not reach the island of stability by 2050?",
                         body=(
-                            "Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain \"magic numbers\" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we not create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive there must not be a half-life of an isotope that has been verified by an independent scientific team to be greater than one day prior to 2050.\n"
+                            'Resolution Criteria\nSince the synthesis of neptunium in 1940, we have been continually expanding the periodic table by creating new elements. Regrettably, as atoms have become bigger, they also have become less stable, the last few elements to be created having a half-life of less than a second.\nYet it is theorized that at some point, stability of new elements might start increasing again, creating an island of stability. There are certain "magic numbers" of protons that offer the chance of higher stability; 114, 120 and 126 are magic numbers. We have yet to reach elements 120 and 126 and there might still be more stable isotopes of element 114 that have not yet been created.\nIt is asked:\nWill we not create an isotope of an element that has more than 110 protons and that has a half-life of at least one day (86,400 seconds) prior to 2050?\nIn order for the question to resolve positive there must not be a half-life of an isotope that has been verified by an independent scientific team to be greater than one day prior to 2050.\n'
                         ),
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -341,20 +366,32 @@ class And(MiniInstantiator):
 
     def __init__(self):
         self.preface = (
-            "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
-            "answers. You should then give me the question that would be answered YES if both "
-            "questions would be answered YES, and NO otherwise. Make sure your response is "
-            "as clear as possible, since the words 'and' and 'or' are used quite ambiguously "
-            "in natural language. When the questions allow a simple rephrasing (e.g. using words "
-            "like 'respectively' or 'either'), go for it."
-            "Additionally, if the existing question is already a logical combination of "
-            "two or more questions, you just add the additional question to the current combination."
-            "For example if P is (A and B), and given Q, then P and Q are (A and B and Q)."
-            "If P is (A or B), and given Q, then P and Q are ((A or B) and Q)."
-            "Also we should output the final question in as unambiguous phrasing as possible."
-            "All information in all sections from the two original questions should be retained. "
-            "For example information, in the body or resolution criteria should be kept "
-            "in the new question.  Do not remove any information of the original questions."
+            "You are a helpful assistant."
+            "I will give you two forecasting questions with Yes/No answers. "
+            "You should then give me the logical AND of these two questions, i.e. "
+            "the question that would be answered YES if BOTH questions are answered YES, "
+            "and NO otherwise. "
+            "Notes:\n\n"
+            " - Your response should be as clear as possible, since the words 'and' and 'or' "
+            "are used ambiguously in natural language. For example, 'Will P happen and will Q "
+            "happen? is usually confusing, as it sounds like you are asking two questions. "
+            "Instead, if there is any chance of confusion, you should give me something like: "
+            "Will both of the following occur: (a) and P (b) Q?\n\n"
+            " - When the questions allow for a simple rephrasing or factorization "
+            "(e.g. using words like 'respectively', 'both' or 'either'), go for it.\n"
+            " - If one or both of the given questions is already a logical combination of questions, "
+            "join them in the most natural way possible. E.g. \n"
+            "    - combine ((P1 AND P2) AND Q) how you would combine (P1 AND P2 AND Q)\n"
+            "    - ((P1 OR P2) AND Q) might have to be combined as something like: "
+            "Will BOTH of the following occur: (1) EITHER of the following occurs: (a) P1 OR (b) P2 "
+            "(2) Q. Unless a more natural formulation exists.\n"
+            " - Most importantly: make sure you retain ALL the information in the question bodies from "
+            "BOTH base questions! You cannot discard a single relevant detail. "
+            "All this is for an experiment to test the logical consistency of forecasters: "
+            "The combined question you give will be handed to the forecasters without having seen the "
+            "base questions, so it is critical that all the information in the base questions be included "
+            "in your logical combination; the resolution criterion for each component should be neatly and "
+            "clearly provided. "
         )
 
         self.examples = [
@@ -418,7 +455,6 @@ class And(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -453,7 +489,6 @@ class And(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -516,20 +551,34 @@ class Or(MiniInstantiator):
 
     def __init__(self):
         self.preface = (
-            "You are a helpful assistant. I will give you two forecasting questions with Yes/No "
-            "answers. You should then give me the question that would be answered YES if either "
-            "question would be answered YES, and NO otherwise. Make sure your response is as clear "
-            "as possible, since the words 'and' and 'or' are used quite ambiguously in natural language."
-            "When the questions allow a simple rephrasing (e.g. using words like 'respectively' or "
-            "'either'), go for it."
-            "Additionally, if the existing question is already a logical combination of "
-            "two or more questions, you just add the additional question to the current combination."
-            "For example if P is (A and B), and given Q, then P or Q is (A and B or Q)."
-            "If P is (A or B), and given Q, then P or Q is (A or B or Q)."
-            "Also we should output the final question in as unambiguous phrasing as possible."
-            "All information in all sections from the two original questions should be retained. "
-            "For example information, in the body or resolution criteria should be kept "
-            "in the new question.  Do not remove any information of the original questions."
+            "You are a helpful assistant."
+            "I will give you two forecasting questions with Yes/No answers. "
+            "You should then give me the logical OR of these two questions, i.e. "
+            "the question that would be answered YES if EITHER question is answered YES, "
+            "and NO otherwise. "
+            "Notes:\n\n"
+            " - Your response should be as clear as possible, since the words 'and' and 'or' "
+            "are used ambiguously in natural language. For example, 'Will P happen or will Q "
+            "happen? is usually confusing, as it sounds like you are asking which of the two "
+            "will happen (whereas you're actually seeking a YES/NO answer on whether either of "
+            "the two will happen). "
+            "Instead, if there is any chance of confusion, you should give me something like: "
+            "Will either of the following occur: (a) P (b) Q?\n\n"
+            " - When the questions allow for a simple rephrasing or factorization "
+            "(e.g. using words like 'respectively', 'both' or 'either'), go for it.\n"
+            " - If one or both of the given questions is already a logical combination of questions, "
+            "join them in the most natural way possible. E.g. \n"
+            "    - combine ((P1 OR P2) OR Q) how you would combine (P1 OR P2 OR Q)\n"
+            "    - ((P1 AND P2) OR Q) might have to be combined as something like: "
+            "Will EITHER of the following occur: (1) BOTH of the following occur: (a) P1 AND (b) P2 "
+            "(2) Q. Unless a more natural formulation exists.\n"
+            " - Most importantly: make sure you retain ALL the information in the question bodies from "
+            "BOTH base questions! You cannot discard a single relevant detail. "
+            "All this is for an experiment to test the logical consistency of forecasters: "
+            "The combined question you give will be handed to the forecasters without having seen the "
+            "base questions, so it is critical that all the information in the base questions be included "
+            "in your logical combination; the resolution criterion for each component should be neatly and "
+            "clearly provided. "
         )
 
         self.examples = [
@@ -626,7 +675,8 @@ class Paraphrase(MiniInstantiator):
             "answer. You should then give me a paraphrased version of the question that "
             "expresses the same underlying concept. The question should be as different as "
             "possible from the original question, while still meaning the exact same thing. "
-            "Use synonyms, etc. "
+            "Use synonyms, etc. Make sure to retain all the information in the question title "
+            "and body! This is very important."
         )
 
         self.examples = [
@@ -677,14 +727,30 @@ class Conditional(MiniInstantiator):
         Q_given_P: ForecastingQuestion
 
     def __init__(self):
+
         self.preface = (
-            "You are a helpful assistant. I will give you two forecasting questions P and Q with Yes/No "
-            "answers. You should then give me a question that expresses their *conditional* expression"
-            "i.e. 'GIVEN that P is true, then is Q true?'"
-            "Either P and Q can already be a composite question."
-            "All information in all sections from the two original questions should be retained. "
-            "For example information, in the body or resolution criteria should be kept "
-            "in the new question.  Do not remove any information of the original questions."
+            "You are a helpful assistant."
+            "I will give you two forecasting questions P and Q with Yes/No answers. "
+            "You should then give me the conditional expression of these two questions, i.e. "
+            "'GIVEN P is true, then is Q true?' P is the condition, Q is the outcome we are "
+            "interested in. "
+            "Notes:\n\n"
+            " - Your response should be as clear as possible. If writing the whole thing in a "
+            "single sentence becomes too long and cumbersome, you can write something like: "
+            "Suppose the following is true: P. Then is Q true?\n"
+            " - If the question allows for a simple rephrasing or factorization, go for it.\n"
+            " - If Q is already a conditional expression, you can just combine the conditions. "
+            "I.e. (Given P then (Given P2 then Q)) can just be written as (Given P AND P2 then Q). "
+            "Again if P and P2 is too long and cumbersome, you might want to write something like: "
+            "Suppose the following is true: P. Then is Q true? And as always if a more natural "
+            "formulation exists, always go for it.\n"
+            " - Most importantly: make sure you retain all relevant information in the question bodies. "
+            "of BOTH base questions. You cannot leave out a single relevant detail. "
+            "All this is for an experiment to test the logical consistency of forecasters: "
+            "The conditional question you give will be handed to the forecasters without having seen the "
+            "base questions, so it is critical that all the information in the base questions be included "
+            "in your conditional expression; the resolution criterion for each component should be neatly and "
+            "clearly provided. "
         )
 
         self.examples = [
@@ -743,17 +809,22 @@ class Consequence(MiniInstantiator):
         cons_P: ForecastingQuestion
 
     def __init__(self):
+
         self.preface = (
-            "You are a helpful assistant. I will give you a forecasting question P with Yes/No "
-            "answer. You should then give me a question that expresses any logical consequence "
-            "of P. That is, a question that is necessarily true if P is true. If P is false, "
-            "the question could be either true or false. Make sure it is a perfect logical consequence. "
-            "It should also be very obvious that if P is true, then cons_P must be true.  It should be impossible for cons_P to occur without P also having occured. "
-            "P is in a way a stronger refinement of cons_P. "
-            "In logical notation we say P -> cons_P. "
-            "The relationship must be strict. "
-            "cons_P MUST be something that logically / mathematically is inevitable if P occurs. "
-            "cons_P also cannot just be the same question or rephrease of P. "
+            "You are a helpful assistant."
+            "I will give you a forecasting questions P with Yes/No answer. "
+            "You should then give me a guaranteed logical consequence of P. "
+            "Notes:\n\n"
+            " - Make sure that your output is truly a guaranteed logical consequence of P. "
+            "Look at the resolution criteria for P and make sure your output question will "
+            "necessarily resolve True if the resolution criteria for P are met.\n"
+            " - Most importantly: if there is any background information (not resolution criteria) "
+            "in the question body, make sure you retain all relevant information in the question body "
+            "of the output you give. We will be giving these questions to a population sample to see "
+            "if they give consistent answers (like giving a higher probability to 'Is Kelly a bank-'"
+            "teller?' than 'Is Kelly a bank-teller active in the feminist movement?') so it is critical "
+            "that any information that might inform someone's probability estimate to your output question "
+            "is clearly included."
         )
 
         self.examples = [
@@ -797,7 +868,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -818,7 +888,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -842,7 +911,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -863,7 +931,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -884,8 +951,6 @@ class Consequence(MiniInstantiator):
                     )
                 ),
             ),
-
-
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
@@ -905,7 +970,7 @@ class Consequence(MiniInstantiator):
                         ),
                     )
                 ),
-            ),            
+            ),
         ]
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
