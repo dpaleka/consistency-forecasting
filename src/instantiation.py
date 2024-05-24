@@ -30,8 +30,8 @@ MODEL_RELEVANCE = "gpt-4o"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
-TUPLES_PATH: Path = get_data_path() / "tuples/"
-# TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
+# TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
 
 checkers: dict[str, Checker] = {
     "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
@@ -56,7 +56,7 @@ checkers: dict[str, Checker] = {
 }
 
 
-async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
+async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **kwargs):
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
     for line in jsonlines.open(BASE_DATA_PATH):
@@ -99,6 +99,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
             model=MODEL,
             overwrite=True,
             n_verification=3,
+            **kwargs
         )
 
 
@@ -110,6 +111,6 @@ if __name__ == "__main__":
             checker_list=checkers,
             n_relevance=10,
             length=3,
-            #use_examples=False,
+            use_examples=False,
         )
     )
