@@ -274,6 +274,12 @@ def get_provider(model: str) -> str:
         raise NotImplementedError(f"Model {model} is not supported for now")
 
 
+def is_model_name_valid(model: str) -> bool:
+    if len(model) > 40:
+        return False  # Model name is too long, probably a mistake
+    return get_provider(model) is not None
+
+
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     provider = get_provider(model)
     if provider == "togetherai":
@@ -572,6 +578,9 @@ async def answer(
     examples: list[Example] | None = None,
     **kwargs,
 ) -> BaseModel:
+    assert not is_model_name_valid(
+        prompt
+    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     default_options = {
         "model": "gpt-4-1106-preview",
@@ -588,6 +597,9 @@ def answer_sync(
     examples: list[Example] | None = None,
     **kwargs,
 ) -> BaseModel:
+    assert not is_model_name_valid(
+        prompt
+    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",

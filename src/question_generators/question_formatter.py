@@ -22,11 +22,14 @@ as on the sites like Metaculus / PredictIt.
 The resolution criteria should:
 - Unambiguously define what outcomes will be considered for the outcome of the question.
 - Define any ambigious terms in the question.
-- When possible, use authoritative sources.
+- When possible, use authoritative sources, or consensus of the scientific community. For a newsworthy event, use reputable news sources like (BBC, The Guardian, New York Times, Washington Post, etc.)
 - Consider edge cases and fall-back scenarios.
+- Be as concise as possible, while still being clear and comprehensive.
 
-The resolution date is the date when the outcome of the question will be decided, come up with a resolution date that is
-consistent with the question.
+The resolution date is the date when the outcome of the question will be decided. 
+You should come up with a resolution date that is consistent with the question.  
+In case of "before YYYY", default to 31/12/(YYYY-1).
+In case of "by YYYY", default to 31/12/YYYY.
 
 The output format should be the following:
 
@@ -35,35 +38,71 @@ resolution_date: [dd/mm/yyyy]
 
 
 Example 1:
-Question: Will there be any progress in human lifespan enhancement by 2100?
+Question: Will there be any progress in human lifespan enhancement before 2100?
 
 ->
 
 resolution_criteria: 
-This question will resolve as Yes if either of the following occur before January 1, 2100:
+This question will resolve as Yes if any of the following occur before January 1, 2100:
 - At least 10 people have confirmed lifespans of at least 130 years of age;
 - At least 100 people have confirmed lifespans of at least 120 years of age;
-- Ray Kurzweil lives to the age of 120.
 
-The verification process on these individuals' lifespans should be at least as strict as the standards used during 2018.
-People resuscitated after being cryonically frozen will not be included in this question's resolution.
+The verification process must meet or exceed the standards used in 2024.
+People resuscitated after being cryonically frozen do not count towards this question's resolution.
 
-resolution_date: 01/01/2100
+resolution_date: 31/12/2099
 
 
 Example 2:
-Question: When will the first general AI system be devised, tested, and publicly announced?
+Question: Will the United Kingdom deploy an AI-powered public surveillance system with real-time facial recognition capabilities by 2025?
 
-resolution_criteria: An "AI system" is defined as a unified software system that must meet the following requirements:
-- Adversarial Turing Test: It should pass a challenging 2-hour Turing test using text, images, and audio, with a single successful test considered sufficient if approved by Metaculus Admins.
-- Robotic Assembly Skill: The AI must autonomously assemble a detailed scale model of a Ferrari 312 T4, demonstrating its ability in a practical task.
-- Broad Expertise: It must achieve at least 75% accuracy in each task and 90% average accuracy across all tasks in a specific Q&A dataset.
-- Problem Solving Efficiency: The AI should attain a top-1 strict accuracy of at least 90.0% on complex benchmark problems.
-- System Integration: The AI needs to function as a cohesive whole rather than as separate specialized systems, capable of explaining its actions and decisions.
+->
 
-Compliance with these criteria can be confirmed through direct demonstration, developer statements, or a special committee's decision, with the official recognition based on public disclosure of these capabilities.
+resolution_criteria: This question will resolve as Yes if, by December 31, 2025, the United Kingdom has officially deployed a public surveillance system that utilizes artificial intelligence for real-time facial recognition across any part of its public spaces.
+The system must be capable of identifying individuals and matching them to a database with at least an 85% accuracy rate. 
+The deployment of such a system must be confirmed by an official government announcement or documentation. 
+In the absence of a public announcement, credible reports from at least three major news organizations (BBC, The Guardian, Reuters, Bloomberg, New York Times, Washington Post) are sufficient.
+The system must be operational, not in a trial phase. 
+In the event of a partial deployment (e.g., limited to specific cities or areas), the question will resolve as Yes if the system is intended for nationwide expansion. 
+Temporary deployments for specific events or the use of similar technology in private spaces do not count towards this question's resolution.
 
-resolution_date: 05/11/2031
+resolution_date: 31/12/2025
+
+
+Example 3:
+Question: Will we discover definitive evidence of past or present life on Mars by 2030?
+
+->
+
+resolution_criteria: This question will resolve as Yes if, by December 31, 2030, evidence that meets the following criteria for definitive evidence of past or present life on Mars is announced and recognized by the scientific community:
+
+- Microbial Life: Discovery of Martian-origin microbial life through genetic or biochemical analysis.
+- Fossilized Life: Unambiguous identification of Martian-origin fossils indicating past life.
+- Biochemical Markers: Detection of biochemical markers uniquely associated with Martian biological processes.
+- Atmospheric or Soil Analysis: Incontrovertible evidence of biological activity on Mars from atmospheric or soil analysis.
+
+This question resolves as YES upon official recognition of the discovery by both NASA and ESA, or by one of these organizations together with a publication in a peer-reviewed scientific journal or major conference. 
+Otherwise, this question resolves as NO.
+
+resolution_date: 31/12/2030
+
+
+Example 4:
+
+Question: Will a machine learning model be the first to prove or disprove the Riemann Hypothesis by 2030?
+
+->
+
+resolution_criteria: A "machine learning model" is any (artificial) computational system using machine learning techniques to analyze, infer, or predict outcomes based on data.
+This question resolves as Yes if, before January 1, 2030, a machine learning model successfully settles the Riemann Hypothesis, and the proof is both:
+(i) Accepted by a recognized mathematical authority, such as the Clay Mathematics Institute.
+(ii) Published in a peer-reviewed mathematical journal or presented at a major mathematical conference and verified by independent experts.
+
+The proof must be the first to satisfy these criteria. In case of simultaneous discovery, the resolution is based on the official announcement date.
+
+A machine learning model is considered to have proved it if cited as the most important author in the peer-reviewed paper, or if human authors explicitly state the model completed the majority of the work.
+
+resolution_date: 01/01/2030
 
 -----
 
@@ -119,6 +158,17 @@ resolution_date: 01/01/2030
 reasoning: The resolution criteria are clear and consistent with the title.
 The resolution date is consistent with the title and in the future.
 valid: True
+
+
+Example 4:
+title: Will any member of Kanye West's family become the president of the United States by 2035?
+body: This question will resolve as Yes if Kanye West or any of his family members (including his wife, children, siblings and parents) is elected and... Show More\n
+resolution_date: 01/01/2035
+
+->
+
+reasoning: There is a "Show More" instead of the end of the resolution criteria.
+valid: False
 
 -----
 
