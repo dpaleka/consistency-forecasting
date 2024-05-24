@@ -56,6 +56,7 @@ from .datatypes import (
     ValidationResult,
     VerificationResult,
     BodyAndDate,
+    ResolutionDate,
 )
 
 perscache_supported_models = {
@@ -68,6 +69,7 @@ perscache_supported_models = {
     "ValidationResult": ValidationResult,
     "VerificationResult": VerificationResult,
     "BodyAndDate": BodyAndDate,
+    "ResolutionDate": ResolutionDate,
 }
 
 # Note: we cannot cache dynamically created BaseModels as in MiniInstantiator.py.

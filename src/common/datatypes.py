@@ -183,6 +183,10 @@ class BodyAndDate(BaseModel):
     resolution_criteria: str
 
 
+class ResolutionDate(BaseModel):
+    resolution_date: datetime
+
+
 ### end Pydantic models ###
 class SyntheticTagQuestion(BaseModel):
     title: str
