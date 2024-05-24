@@ -30,7 +30,8 @@ MODEL_RELEVANCE = "gpt-4o"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
-TUPLES_PATH: Path = get_data_path() / "tuples/"
+# TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
 
 checkers: dict[str, Checker] = {
     "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
@@ -55,7 +56,7 @@ checkers: dict[str, Checker] = {
 }
 
 
-async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
+async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **kwargs):
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
     for line in jsonlines.open(BASE_DATA_PATH):
@@ -67,7 +68,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
             continue
     print(f"Loaded {len(bqs)} questions.")
 
-    possible_tuples = {} # {i: list of i-tuples}
+    possible_tuples = {}  # {i: list of i-tuples}
     for i in [1, 2, 3]:
         if i > len(bqs):
             break
@@ -88,7 +89,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
             possible_ituples.sort(
                 key=lambda x: x[1]["relevance"]["score"], reverse=True
             )
-        
+
         possible_tuples[i] = possible_ituples
 
     for checker in checker_list.values():
@@ -98,10 +99,18 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3):
             model=MODEL,
             overwrite=True,
             n_verification=3,
+            **kwargs
         )
+
 
 # this should probably go in scripts
 if __name__ == "__main__":
     asyncio.run(
-        instantiate(BASE_DATA_PATH=BASE_DATA_PATH, checker_list=checkers, n_relevance=50, length=5)
+        instantiate(
+            BASE_DATA_PATH=BASE_DATA_PATH,
+            checker_list=checkers,
+            n_relevance=10,
+            length=3,
+            use_examples=False,
+        )
     )
