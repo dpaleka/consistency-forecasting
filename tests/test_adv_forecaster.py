@@ -11,6 +11,7 @@ import json
 from forecasters.advanced_forecaster import AdvancedForecaster
 
 
+old_openrouter = os.environ.get("USE_OPENROUTER", "False")
 os.environ["USE_OPENROUTER"] = "True"
 os.environ["SKIP_NEWSCATCHER"] = "True"
 
@@ -49,3 +50,6 @@ for question in data[:num_questions_to_run]:
     final_prob = asyncio.run(af.call_async(sentence=fq))
 
     print("Final LLM probability", final_prob)
+
+
+os.environ["USE_OPENROUTER"] = old_openrouter

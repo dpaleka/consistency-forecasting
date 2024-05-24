@@ -280,7 +280,7 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
             # https://python.useinstructor.com/blog/2024/03/20/announcing-anthropic-support/
             kwargs["mode"] = instructor.Mode.ANTHROPIC_JSON
         client = (
-            get_openrouter_client_pydantic(**kwargs)
+            get_async_openrouter_client_pydantic(**kwargs)
             if use_async
             else get_openrouter_client_pydantic(**kwargs)
         )
