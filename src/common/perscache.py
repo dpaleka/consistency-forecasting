@@ -54,6 +54,7 @@ from .datatypes import (
     Prob,
     Prob_cot,
     ValidationResult,
+    VerificationResult,
     BodyAndDate,
 )
 
@@ -65,6 +66,7 @@ perscache_supported_models = {
     "ForecastingQuestion": ForecastingQuestion,
     "ForecastingQuestions": ForecastingQuestions,
     "ValidationResult": ValidationResult,
+    "VerificationResult": VerificationResult,
     "BodyAndDate": BodyAndDate,
 }
 
