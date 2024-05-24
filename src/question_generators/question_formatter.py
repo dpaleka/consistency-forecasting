@@ -22,8 +22,9 @@ as on the sites like Metaculus / PredictIt.
 The resolution criteria should:
 - Unambiguously define what outcomes will be considered for the outcome of the question.
 - Define any ambigious terms in the question.
-- When possible, use authoritative sources.
+- When possible, use authoritative sources. For example if the question is about a scientific discovery, use peer-reviewed papers. When its a news event, use reputable news sources. Like BBC, CNN, etc.
 - Consider edge cases and fall-back scenarios.
+- As concise as possible, while still being clear and comprehensive.
 
 The resolution date is the date when the outcome of the question will be decided, come up with a resolution date that is
 consistent with the question.
@@ -52,18 +53,53 @@ resolution_date: 01/01/2100
 
 
 Example 2:
-Question: When will the first general AI system be devised, tested, and publicly announced?
+Question: Will the United Kingdom deploy an AI-powered public surveillance system with real-time facial recognition capabilities by 2025?
 
-resolution_criteria: An "AI system" is defined as a unified software system that must meet the following requirements:
-- Adversarial Turing Test: It should pass a challenging 2-hour Turing test using text, images, and audio, with a single successful test considered sufficient if approved by Metaculus Admins.
-- Robotic Assembly Skill: The AI must autonomously assemble a detailed scale model of a Ferrari 312 T4, demonstrating its ability in a practical task.
-- Broad Expertise: It must achieve at least 75% accuracy in each task and 90% average accuracy across all tasks in a specific Q&A dataset.
-- Problem Solving Efficiency: The AI should attain a top-1 strict accuracy of at least 90.0% on complex benchmark problems.
-- System Integration: The AI needs to function as a cohesive whole rather than as separate specialized systems, capable of explaining its actions and decisions.
+resolution_criteria: This question will resolve as Yes if, by December 31, 2025, the United Kingdom has officially deployed a public surveillance system
+that utilizes artificial intelligence for real-time facial recognition across any part of its public spaces.
+The system must be capable of identifying individuals and matching them to a database with at least an 85% accuracy rate. 
+The deployment of such a system must be confirmed by an official government announcement or documentation. In the absence of a public announcement,
+ credible reports from at least three major news organizations (BBC, The Guardian, Reuters, Bloomberg, New York Times, Washington Post) will be considered sufficient evidence.
+The system must be operational and not in a trial phase. If multiple systems are deployed, the resolution will consider the first system that meets these criteria.
+In the event of a partial deployment (e.g., limited to specific cities or areas), the question will resolve as Yes if the system is intended to be expanded nationwide. 
+Edge cases, such as temporary deployments for specific events or the use of similar technology in private spaces, will not count towards this question's resolution.
 
-Compliance with these criteria can be confirmed through direct demonstration, developer statements, or a special committee's decision, with the official recognition based on public disclosure of these capabilities.
+resolution_date: 31/12/2025
 
-resolution_date: 05/11/2031
+Example 3:
+Question: Will NASA discover definitive evidence of past or present life on Mars by 2030?
+
+resolution_criteria: This question will resolve as Yes if, by December 31, 2030, NASA (or any entity recognized by NASA) publicly announces and provides evidence that meets the following criteria for definitive evidence of past or present life on Mars:
+
+Microbial Life: Discovery of microbial life forms that are conclusively identified as having originated on Mars, through genetic or biochemical analysis.
+
+Fossilized Life: Unambiguous identification of fossils that are conclusively determined to be of Martian origin, indicating past life.
+
+Biochemical Markers: Detection of biochemical markers such as specific isotopes or molecules that are uniquely associated with biological processes and are indisputably Martian in origin.
+
+Atmospheric or Soil Analysis: Results from atmospheric or soil analysis that provide incontrovertible evidence of biological activity on Mars.
+
+This question will resolve as YES only if evidence is published in a peer-reviewed scientific journal or officially announced at a major scientific conference. Otherwise it resolves NO.
+
+resolution_date: 31/12/2030
+
+Example 4:
+
+Question: Will a machine learning model be the first to prove the Riemann Hypothesis by 2030?
+
+resolution_criteria: A "machine learning model" is defined as any computational system that utilizes machine learning techniques to analyze, infer, or predict outcomes based on data. This question will resolve as Yes if, before January 1, 2030:
+
+A machine learning model successfully proves the Riemann Hypothesis, and this proof is accepted by a recognized mathematical authority, such as the Clay Mathematics Institute or an equivalent organization.
+
+The proof must be published in a peer-reviewed mathematical journal or presented at a major mathematical conference and subsequently verified by independent experts in the field.
+
+In the event that multiple proofs are presented, the resolution will be based on the first proof that is verified and accepted by the mathematical community.
+
+If the Riemann Hypothesis is disproved by a machine learning model, this will also result in a Yes resolution.
+
+We will define a machine learning model as proving it if either the model is cited as a first authorship or equivalent in the peer-reviewed paper, or said paper explicitly mentions that it was the model that completed the majority of the proof work.
+
+resolution_date: 01/01/2030
 
 -----
 

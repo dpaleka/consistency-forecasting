@@ -1,4 +1,5 @@
 from typing import Optional
+import os
 import asyncio
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async, write_jsonl_async_from_str
@@ -10,7 +11,7 @@ import random
 from pydantic import BaseModel
 
 
-file_path = get_data_path()/'other'/'high-quality-questions-all-domains.jsonl'
+file_path = get_data_path()/'other'/'may24_forfeeback.jsonl'
 model = "gpt-4-0125-preview"
 
 categories = [
@@ -103,16 +104,20 @@ class QuestionGenerationResponse(BaseModel):
     question_3: SyntheticTagQuestion
 
 def load_questions_from_jsonl(file_path):
+    if not os.path.exists(file_path):
+        return {}
+
     questions_dict = {}
     with open(file_path, 'r') as file:
         for line in file:
-            json_data = json.loads(line) 
-            category = json_data['category']  
-            question_tuple = (json_data['title'], json_data['category'], json_data['tags'])  
+            json_data = json.loads(line)
+            category = json_data['category']
+            question_tuple = (json_data['title'], json_data['category'], json_data['tags'])
             if category not in questions_dict:
-                questions_dict[category] = [question_tuple]  
+                questions_dict[category] = [question_tuple]
             else:
                 questions_dict[category].append(question_tuple)
+                
     return questions_dict
 
 
@@ -124,9 +129,8 @@ def get_example_question(initial_questions, questions):
     else:
         return random.choice(questions)
 
-
 async def generate_questions_for_category(initial_questions, questions_dict):
-    category = random.choice(list(questions_dict.keys()))
+    category = random.choice(categories)
     tags = random.sample(topics, 3)
 
     example_1, example_2 = random.sample(initial_questions, 2)
@@ -137,6 +141,8 @@ async def generate_questions_for_category(initial_questions, questions_dict):
         cat1, cat2 = random.sample(other_categories, 2)
         example_3 = random.choice(questions_dict[cat1])
         example_4 = random.choice(questions_dict[cat2])
+    elif len(questions_dict) == 0:
+        example_1, example_2, example_3, example_4, example_5, example_6 = random.sample(initial_questions, 6)
     else:
         chosen_categories = random.sample(list(questions_dict.keys()), 4)
         example_3 = random.choice(questions_dict[chosen_categories[0]])
@@ -174,7 +180,7 @@ async def generate_questions(n=3):
 
 
 if __name__ == "__main__":
-    asyncio.run(generate_questions(1))
+    asyncio.run(generate_questions(8))
 
 
 

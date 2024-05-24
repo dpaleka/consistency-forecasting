@@ -12,6 +12,9 @@ from pathlib import Path
 
 
 def read_json_or_jsonl(file_path: Path):
+    if not file_path.exists():
+        return []
+
     if file_path.suffix == ".json":
         with open(file_path, "r") as file:
             return json.load(file)
@@ -203,7 +206,7 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
+        default=f"{get_data_path()}/other/may24_forfeedback.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
@@ -218,7 +221,7 @@ if __name__ == "__main__":
         "--out_file_name",
         "-o",
         type=str,
-        default="high-quality-questions-all-domains.jsonl",
+        default="may24_forfeedback_full.jsonl",
         help="Name of the output file",
     )
     parser.add_argument(
@@ -245,7 +248,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--fill_in_body",
         "-F",
-        action="store_true",
+        type=bool,
+        default=False,
         help="If a real question does not have a question body, fill it in with an LLM call",
     )
 
