@@ -52,6 +52,7 @@ write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 verify_before_instantiation = (
     os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 )
+verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
 
 
 async def write_verification_result(tuple_type, generated_tuple, verification):
@@ -142,7 +143,13 @@ class Checker(ABC):
             for _ in range(n_verification):
                 instantiated_object = self.instantiate_sync(base_sentences, **kwargs)
                 verification_result = self.verify_sync(instantiated_object, **kwargs)
-                if verification_result.valid:
+                if verify_length:
+                    length_check = self.verify_length(
+                        instantiated_object, base_sentences, **kwargs
+                    )
+                else:
+                    length_check = True
+                if verification_result.valid and length_check:
                     return instantiated_object
             return instantiated_object
         else:
@@ -168,7 +175,13 @@ class Checker(ABC):
             for _ in range(n_verification):
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
-                if verification_result.valid:
+                if verify_length:
+                    length_check = self.verify_length(
+                        instantiated_object, base_sentences, **kwargs
+                    )
+                else:
+                    length_check = True
+                if verification_result.valid and length_check:
                     return instantiated_object
             return instantiated_object
         else:
@@ -218,6 +231,14 @@ class Checker(ABC):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         pass
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return True
 
     async def instantiate_and_write(
         self,
@@ -513,6 +534,14 @@ class NegChecker(Checker):
             await write_verification_result("negation", generated_tuple, verification)
         return verification
 
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.not_P.body) > 0.8 * len(generated_tuple.P.body)
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -573,6 +602,16 @@ class AndChecker(Checker):
         if write_verification:
             await write_verification_result("and", generated_tuple, verification)
         return verification
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.P_and_Q.body) > 1.4 * max(
+            len(generated_tuple.P.body), len(generated_tuple.Q.body)
+        )
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -640,6 +679,16 @@ class OrChecker(Checker):
         if write_verification:
             await write_verification_result("or", generated_tuple, verification)
         return verification
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
+            len(generated_tuple.P.body), len(generated_tuple.Q.body)
+        )
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -741,6 +790,18 @@ class AndOrChecker(Checker):
             await write_verification_result("AndOr", generated_tuple, verification)
         return verification
 
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
+            len(generated_tuple.P.body), len(generated_tuple.Q.body)
+        ) and len(generated_tuple.P_and_Q.body) > 1.4 * max(
+            len(generated_tuple.P.body), len(generated_tuple.Q.body)
+        )
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -813,6 +874,18 @@ class ButChecker(Checker):
         if write_verification:
             await write_verification_result("But", generated_tuple, verification)
         return verification
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.Q_and_not_P.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        ) and len(generated_tuple.P_or_Q.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        )
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -899,6 +972,18 @@ class CondChecker(Checker):
             )
         return verification
 
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.Q_given_P.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        ) and len(generated_tuple.P_and_Q.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        )
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -976,6 +1061,14 @@ class ConsequenceChecker(Checker):
             )
         return verification
 
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return True
+
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
@@ -1035,6 +1128,14 @@ class ParaphraseChecker(Checker):
         if write_verification:
             await write_verification_result("Paraphrase", generated_tuple, verification)
         return verification
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.para_P.body) > 0.65 * len(generated_tuple.P.body)
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -1139,6 +1240,18 @@ class SymmetryAndChecker(Checker):
             )
 
         return verification_result
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.P_and_Q.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        ) and len(generated_tuple.Q_and_P.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        )
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
@@ -1255,6 +1368,18 @@ class SymmetryOrChecker(Checker):
             )
 
         return verification_result
+
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        ) and len(generated_tuple.Q_or_P.body) > 1.4 * max(
+            len(base_sentences["P"].body), len(base_sentences["Q"].body)
+        )
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
