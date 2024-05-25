@@ -21,7 +21,7 @@ class BasicForecaster(Forecaster):
                         "geographic boundaries) that is at least a mile tall."
                     ),
                 ),
-                assistant=0.03,
+                assistant="0.03",
             )
         ]
 
@@ -60,3 +60,12 @@ class BasicForecaster(Forecaster):
         # Log the response from the OpenAI API
         print(f"Received the following response from OpenAI API: {response}")
         return response.prob
+
+    def dump_config(self):
+        return {
+            "preface": self.preface,
+            "examples": [
+                {"user": e.user.model_dump_json(), "assistant": e.assistant}
+                for e in self.examples
+            ],
+        }

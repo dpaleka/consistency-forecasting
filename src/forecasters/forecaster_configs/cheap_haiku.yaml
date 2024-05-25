@@ -1,0 +1,11 @@
+MAX_WORDS_NEWSCATCHER: 0
+MAX_WORDS_GNEWS: 2
+NUM_ARTICLES_PER_QUERY: 1
+SEARCH_QUERY_MODEL_NAME: "anthropic/claude-3-haiku"
+SUMMARIZATION_MODEL_NAME: "anthropic/claude-3-haiku"
+BASE_REASONING_MODEL_NAMES:
+  - "anthropic/claude-3-haiku"
+  - "anthropic/claude-3-haiku"
+RANKING_MODEL_NAME: "anthropic/claude-3-haiku"
+AGGREGATION_MODEL_NAME: "anthropic/claude-3-haiku"
+

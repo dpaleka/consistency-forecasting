@@ -1,7 +1,10 @@
 import jsonlines
+import json
 from dotenv import load_dotenv
 import os
+import functools
 import numpy as np
+from datetime import datetime
 from numpy.random import random
 from scipy.optimize import (
     minimize,
@@ -460,7 +463,77 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
-    def test(self, forecaster: Forecaster, **kwargs) -> list[dict[str, Any]]:
+    def get_line_obj(self, line: dict[str, Any]) -> "Self.TupleFormat":
+        metadata = line.pop("metadata", None)
+        line_obj = self.TupleFormat.model_validate(line)
+        return line_obj
+
+    def check_from_elicited_probs(self, answers: dict[str, Prob]) -> dict[str, Any]:
+        print(f"answers: {answers}\n")
+        if any([a is None for a in answers.values()]):
+            print("ERROR: Some answers are None!")
+            return {"successful_elicitation": False}
+        loss: float = self.violation(answers)
+        res_bool: bool = self.check(answers)
+        res: str = {True: "Passed", False: "Failed"}[res_bool]
+        print(f"Violation: {loss}\nCheck result: {res}\n")
+        return {
+            "violation": loss,
+            "check": res_bool,
+            "check_result": res,
+            "successful_elicitation": True,
+        }
+
+    def check_all_from_elicited_probs(
+        self, all_answers: list[dict[str, Prob]]
+    ) -> list[dict[str, Any]]:
+        results = []
+        for answers in all_answers:
+            result = self.check_from_elicited_probs(answers)
+            results.append(result)
+        return results
+
+    def test_sync(
+        self, forecaster: Forecaster, num_lines: int = -1, do_check=True, **kwargs
+    ) -> list[dict[str, Any]]:
+        results = []
+        log_path = (
+            get_data_path()
+            / "check_tuple_logs"
+            / f"{self.__class__.__name__}_test_log.jsonl"
+        )
+
+        with jsonlines.open(log_path, mode="a") as writer:
+            writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+            with open(self.path, "r") as file:
+                data: list[dict[str, Any]] = [json.loads(line) for line in file]
+            if num_lines >= 0:
+                print(f"Limiting to {num_lines} lines of {self.path}")
+                data = data[:num_lines]
+
+            for line in data:
+                print(f"START\nline: {line}\n")
+                line_obj: "Self.TupleFormat" = self.get_line_obj(line)
+                answers: dict[str, Prob | None] = forecaster.elicit(line_obj, **kwargs)
+                if do_check:
+                    result_without_line: dict[
+                        str, Any
+                    ] = self.check_from_elicited_probs(line_obj, answers)
+                else:
+                    result_without_line = {}
+
+                for question, prob in answers.items():
+                    line[question]["elicited_prob"] = prob
+
+                result = {"line": line, **result_without_line}
+                results.append(result)
+                writer.write(result)
+
+        return results
+
+    async def test(
+        self, forecaster: Forecaster, num_lines: int = -1, do_check=True, **kwargs
+    ) -> list[dict[str, Any]]:
         results = []
         log_path = (
             get_data_path()
@@ -468,35 +541,41 @@ class Checker(ABC):
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
         with jsonlines.open(log_path, mode="a") as writer:
-            for line in jsonlines.open(self.path):
-                print("START")
-                print(f"line: {line}")
-                metadata = line.pop(
-                    "metadata", None
-                )  # remove metadata before validation
-                line_obj = self.TupleFormat.model_validate(line)
-                answers = forecaster.elicit(line_obj, **kwargs)
-                print(answers)
-                if any([a is None for a in answers.values()]):
-                    print("ERROR: Some answers are None!")
-                    continue
-                loss = self.violation(answers)
-                res_bool = self.check(answers)
-                res = {True: "Passed", False: "Failed"}[res_bool]
-                print(f"Violation: {loss}")
-                print(f"Check result: {res}")
-                print("")
-                # get the probability into line for each question
+            writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+
+            with open(self.path, "r") as file:
+                data = [json.loads(line) for line in file]
+            if num_lines >= 0:
+                print(f"Limiting to {num_lines} lines of {self.path}")
+                data = data[:num_lines]
+
+            validated_lines: list[BaseModel] = [
+                self.get_line_obj(line) for line in data
+            ]
+
+            print("Starting async elicitation")
+            elicit_func = functools.partial(forecaster.elicit, **kwargs)
+            all_answers = await parallelized_call(
+                elicit_func, validated_lines, max_concurrent_queries=10
+            )
+
+            if do_check:
+                print("Starting checking")
+                results_without_line = self.check_all_from_elicited_probs(all_answers)
+            else:
+                results_without_line = [{} for _ in data]
+
+            for line, answers, result_without_line in zip(
+                data, all_answers, results_without_line
+            ):
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
-                result = {
-                    "line": line,
-                    "violation": loss,
-                    "check": res_bool,
-                    "check_result": res,
-                }
+
+                result = {"line": line, **result_without_line}
+
                 results.append(result)
                 writer.write(result)
+
         return results
 
 
