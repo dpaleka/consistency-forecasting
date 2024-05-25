@@ -9,6 +9,7 @@ import json
 from common.llm_utils import answer
 import random
 from pydantic import BaseModel
+from common.llm_utils import parallelized_call
 
 
 categories = [
@@ -348,7 +349,7 @@ async def generate_questions(file_path, model, n=3):
         generate_questions_for_category(initial_questions, questions, model)
         for _ in range(n)
     ]
-    results = await asyncio.gather(*tasks)
+    results = await parallelized_call(generate_questions_for_category, tasks)
 
     generated_questions = [item for sublist in results for item in sublist]
 

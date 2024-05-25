@@ -4,6 +4,7 @@ from typing import Any
 import asyncio
 from common.datatypes import *
 from common.utils import shallow_dict
+from common.llm_utils import parallelized_call
 
 class Forecaster(ABC):
 
@@ -13,7 +14,7 @@ class Forecaster(ABC):
     async def elicit_async(self, sentences: BaseModel, **kwargs) -> dict[str, Any]:
         keys, values = zip(*sentences.model_fields.items())
         tasks = [self.call_async(v, **kwargs) for v in values]
-        results = await asyncio.gather(*tasks)
+        results = await parallelized_call(self.call_async, tasks)
         return {k: v for k, v in zip(keys, results)}
 
     @abstractmethod
