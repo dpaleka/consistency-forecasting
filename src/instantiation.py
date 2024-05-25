@@ -1,4 +1,3 @@
-import itertools as it
 import jsonlines
 import asyncio
 
@@ -21,6 +20,8 @@ from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
 from common.path_utils import get_data_path
 from pathlib import Path
+from common.llm_utils import parallelized_call
+import functools
 import random
 
 # MODEL = "gpt-3.5-turbo"
@@ -81,9 +82,12 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **
 
         if i > 1:
             print("Setting task to get relevance scores ...")
-            tasks = [relevance(tup, model=MODEL_RELEVANCE) for tup in possible_ituples]
+
             print("Getting relevance scores ...")
-            relevances = await asyncio.gather(*tasks)
+            func = functools.partial(relevance, model=MODEL_RELEVANCE)
+            relevances = await parallelized_call(
+                func=func, data=possible_ituples, max_concurrent_queries=50
+            )
             print("Sorting by relevance scores ...")
             possible_ituples = list(zip(possible_ituples, relevances))
             possible_ituples.sort(
@@ -99,7 +103,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **
             model=MODEL,
             overwrite=True,
             n_verification=3,
-            **kwargs
+            **kwargs,
         )
 
 
