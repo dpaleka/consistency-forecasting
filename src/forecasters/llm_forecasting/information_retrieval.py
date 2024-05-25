@@ -17,6 +17,7 @@ from config.keys import NEWSCATCHER_KEY
 from config.site_whitelist import NEWS_WHITE_LIST
 import model_eval
 from utils import time_utils, string_utils
+from common.llm_utils import parallelized_call
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -648,13 +649,19 @@ async def async_get_search_queries(
     """
     # Query LLM's API for the subject keywords in batch
     search_query_tasks = [
-        # apparently this doesn't resolve
-        model_eval.get_async_response(
-            prompt, model_name=model_name, temperature=temperature
+        functools.partial(
+            model_eval.get_async_response,
+            prompt,
+            model_name=model_name,
+            temperature=temperature
         )
         for prompt in prompts
     ]
-    search_query_responses = await asyncio.gather(*search_query_tasks)
+    search_query_responses = await parallelized_call(
+        func=model_eval.get_async_response,
+        data=prompts,
+        max_concurrent_queries=50
+    )
     keywords_list = [
         extract_search_queries(response) for response in search_query_responses
     ]
