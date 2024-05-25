@@ -111,14 +111,15 @@ class AdvancedForecaster(Forecaster):
             print(f"kwargs: {kwargs}")
 
         print("Initialized forecaster with settings:")
-        print(f"Retrieval config: {self.retrieval_config}")
-        print(f"Reasoning config: {self.reasoning_config}")
+        # print(f"Retrieval config: {self.retrieval_config}")
+        # print(f"Reasoning config: {self.reasoning_config}")
 
     async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
         question = sentence.title
         background_info = (
             sentence.metadata["background_info"]
-            if "background_info" in sentence.metadata
+            if getattr(sentence, "metadata", None)
+            and "background_info" in sentence.metadata
             else ""
         )
         resolution_criteria = (
@@ -176,7 +177,13 @@ class AdvancedForecaster(Forecaster):
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
         # This won't work inside a Jupyter notebook or similar; but there you can use await
-        asyncio.run(self.call_async(sentence, **kwargs))
+        return asyncio.run(self.call_async(sentence, **kwargs))
+
+    def dump_config(self):
+        return {
+            "retrieval_config": self.retrieval_config.to_dict(),
+            "reasoning_config": self.reasoning_config.to_dict(),
+        }
 
 
 # TODO: make a cheaper/faster version of this that uses a different default config

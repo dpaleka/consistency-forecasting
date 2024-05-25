@@ -220,3 +220,6 @@ class DictLikeDataclass:
 
     def items(self):
         return ((key, getattr(self, key)) for key in self.keys())
+
+    def to_dict(self) -> dict:
+        return {key: getattr(self, key) for key in self.keys()}

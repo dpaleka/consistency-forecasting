@@ -1,7 +1,11 @@
 import sys
 import io
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any
 
-from forecasters import BasicForecaster
+from forecasters import Forecaster, AdvancedForecaster
 from static_checks.Checker import (
     Checker,
     NegChecker,
@@ -16,14 +20,13 @@ from static_checks.Checker import (
     SymmetryOrChecker,
     CondCondChecker,
 )
-from pathlib import Path
-from common.path_utils import get_data_path
-
-basic_forecaster = BasicForecaster()
+from common.path_utils import get_data_path, get_src_path
 
 BASE_DATA_PATH: Path = get_data_path() / "tuples/"
+BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
+CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 model = "gpt-3.5-turbo"
 # model = "gpt-4-turbo-2024-04-09"
@@ -81,32 +84,151 @@ def get_stats(results: dict, label: str = "") -> dict:
     }
 
 
-# relevant_keys = ["ConsequenceChecker"]
-relevant_keys = list(checkers.keys())
+relevant_checks = ["CondChecker"]
+# relevant_checks = list(checkers.keys())
+
+# load config
+config_path = CONFIGS_DIR / "cheap_haiku.yaml"
+# load all of yaml into a dict
+import yaml
+
+with open(config_path, "r") as f:
+    config: dict[str, Any] = yaml.safe_load(f)
+
+forecaster = AdvancedForecaster(**config)
+print(forecaster.dump_config())
+
+
+def make_folder_name(forecaster: Forecaster, model: str, timestamp: datetime) -> str:
+    return f"{forecaster.__class__.__name__}_{timestamp.strftime('%m-%d-%H-%M-%S')}"
+
+
+most_recent_directory = (
+    BASE_FORECASTS_OUTPUT_PATH / f"A_{forecaster.__class__.__name__}_most_recent"
+)
+if not most_recent_directory.exists():
+    most_recent_directory.mkdir(parents=True, exist_ok=True)
+
+timestamp_start_run = datetime.now()
+output_directory = BASE_FORECASTS_OUTPUT_PATH / make_folder_name(
+    forecaster, model, timestamp_start_run
+)
+if not output_directory.exists():
+    output_directory.mkdir(parents=True, exist_ok=True)
+    print(f"Directory '{output_directory}' created.")
+else:
+    user_input = input(
+        f"Directory '{output_directory}' already exists. Do you want to continue? (y/N): "
+    )
+    if user_input.lower() != "y":
+        print("Operation aborted by the user.")
+        exit(1)
+
+
+NUM_LINES = 3
+
+
+logged_config = {
+    "forecaster_class": forecaster.__class__.__name__,
+    "forecaster": forecaster.dump_config(),
+    "model": model,
+    "num_lines": NUM_LINES,
+}
+
+with open(output_directory / "config.jsonl", "w") as f, open(
+    most_recent_directory / "config.jsonl", "w"
+) as f2:
+    f.write(json.dumps(logged_config) + "\n")
+    f2.write(json.dumps(logged_config) + "\n")
+
+RUN = False
+# LOAD_DIR = BASE_FORECASTS_OUTPUT_PATH / "AdvancedForecaster_05-25-22-32-52"
+LOAD_DIR = most_recent_directory
+
+
+def validate_result(result: dict, keys: list[str]) -> None:
+    assert "line" in result, "results must contain a 'line' key"
+    for key in keys:
+        assert key in result["line"], f"line must contain a '{key}' key"
+        assert (
+            "elicited_prob" in result["line"][key]
+        ), f"line[{key}] must contain an 'elicited_prob' key"
+    return True
+
 
 all_stats = {}
-for key in relevant_keys:
-    print("Checker: ", key)
-    results = checkers[key].test(basic_forecaster, model=model)
-    # Log the messages being sent to the OpenAI API if results is a dict
-    if isinstance(results, dict) and "messages" in results:
-        print(f"Messages sent to OpenAI API for {key}: {results['messages']}")
-    elif isinstance(results, list) and results:
-        # Assuming each item in results is a dict that contains a 'messages' key
-        messages = [result.get("messages", "No messages found") for result in results]
-        print(f"Messages sent to OpenAI API for {key}: {messages}")
-    else:
-        print(f"No messages sent to OpenAI API for {key}")
-    stats = get_stats(results, label=key)
-    all_stats[key] = stats
+for check_name in relevant_checks:
+    print("Checker: ", check_name)
+    with open(checkers[check_name].path, "r") as f:
+        checker_tuples = [json.loads(line) for line in f.readlines()]
+        checker_tuples = checker_tuples[:NUM_LINES]
 
-for key, stats in all_stats.items():
+    keys = [key for key in checker_tuples[0].keys() if key not in ["metadata"]]
+    print(f"keys: {keys}")
+
+    if RUN:
+        assert LOAD_DIR is None, "LOAD_DIR must be None if RUN is True"
+        if isinstance(forecaster, AdvancedForecaster):
+            results = checkers[check_name].test_sync(
+                forecaster, do_check=False, num_lines=NUM_LINES, **config
+            )
+        else:
+            results = checkers[check_name].test_sync(
+                forecaster, do_check=False, num_lines=NUM_LINES, model=model
+            )
+
+        assert len(results) == NUM_LINES, "results must be of length NUM_LINES"
+        assert all(validate_result(result, keys) for result in results)
+
+        with open(output_directory / f"{check_name}.jsonl", "w") as f, open(
+            most_recent_directory / f"{check_name}.jsonl", "w"
+        ) as f2:
+            for result in results:
+                f.write(json.dumps(result) + "\n")
+                f2.write(json.dumps(result) + "\n")
+    else:
+        assert LOAD_DIR is not None, "LOAD_DIR must be set if RUN is False"
+        LOAD_DIR = Path(LOAD_DIR)
+
+        with open(LOAD_DIR / f"{check_name}.jsonl", "r") as f:
+            results = [json.loads(line) for line in f.readlines()]
+
+        assert (
+            len(results) >= NUM_LINES
+        ), "results must contain at least NUM_LINES elements"
+        assert all(validate_result(result, keys) for result in results)
+
+    for result, checker_tuple in zip(results, checker_tuples):
+        for key in keys:
+            assert (
+                result["line"][key]["id"] == checker_tuple[key]["id"]
+            ), f"result['line'][{key}]['id'] must match checker_tuple[{key}]['id']"
+            assert (
+                result["line"][key]["title"] == checker_tuple[key]["title"]
+            ), f"result['line'][{key}]['title'] must match checker_tuple[{key}]['title']"
+
+    data = [result["line"] for result in results]
+    all_answers = [
+        {key: result["line"][key]["elicited_prob"] for key in keys}
+        for result in results
+    ]
+    for line, answers, result in zip(data, all_answers, results):
+        # print(f"line: {line}")
+        print(f"answers: {answers}")
+        violation_data = checkers[check_name].check_from_elicited_probs(answers)
+        print(f"violation_data: {violation_data}")
+        result.update(violation_data)
+
+    stats = get_stats(results, label=check_name)
+    all_stats[check_name] = stats
+
+for check_name, stats in all_stats.items():
     print(f"{stats['label']}: {stats['num_violations']}/{stats['num_samples']}")
 
 print("\n\n")
-for key, stats in all_stats.items():
+for check_name, stats in all_stats.items():
     print(
-        f"{key} | avg: {stats['avg_violation']:.3f}, median: {stats['median_violation']:.3f}"
+        f"{check_name} | avg: {stats['avg_violation']:.3f}, median: {stats['median_violation']:.3f}"
     )
 
 # to save the output to a file, run this script as
