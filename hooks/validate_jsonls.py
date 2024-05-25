@@ -9,9 +9,15 @@ import git
 
 # Need to do this hack to import stuff
 sys.path.append(".")
-from src.common.path_utils import get_data_path, get_src_path
+from src.common.path_utils import get_data_path, get_src_path, get_root_path
 
-validate_all = os.getenv("VALIDATE_ALL", False)
+from dotenv import load_dotenv
+
+dotenv_path = str(get_root_path() / ".env")
+print(f"Loading dotenv from {dotenv_path}")
+load_dotenv(dotenv_path=dotenv_path)
+
+validate_all = os.getenv("VALIDATE_ALL", False) == "True"
 
 script = f"{get_src_path()}/validate_fq_jsonl.py"
 jsonl_files = []
@@ -46,22 +52,16 @@ for file in tuple_data_dir.rglob("*.jsonl"):
 
 print(f"{len(jsonl_files)} jsonl files found")
 
-# now get the git diff ones
-
-repo = git.Repo(search_parent_directories=True)
-diff = repo.git.diff("HEAD", name_only=True)
-
-
-try:
-    diff_files: list[str] = diff.splitlines()
-    diff_files = [f for f in diff_files if f.endswith(".jsonl")]
-
-except TypeError:
-    diff_files = []
 
 if validate_all:
     jsonl_files_to_check = jsonl_files
 else:
+    # now get the git diff ones
+    repo = git.Repo(search_parent_directories=True)
+    diff = repo.git.diff("HEAD", name_only=True)
+    diff_files: list[str] = diff.splitlines()
+    diff_files = [f for f in diff_files if f.endswith(".jsonl")]
+
     jsonl_files_to_check = []
     for file_path in jsonl_files:
         for diff_file in diff_files:
