@@ -54,6 +54,7 @@ verify_before_instantiation = (
 )
 verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
 
+
 async def write_verification_result(tuple_type, generated_tuple, verification):
     filename = get_data_path() / "verification/tuple_verifications.jsonl"
     verification_jsonl = generated_tuple.model_dump_json()
@@ -290,7 +291,9 @@ class Checker(ABC):
         # )
         # Added print statement to log the base sentences being processed
         print(f"Base sentences: {base_sentencess}")
-        results = await parallelized_call(_instantiate_and_write, base_sentencess)
+        results = await parallelized_call(
+            _instantiate_and_write, base_sentencess, max_concurrent_queries=50
+        )
         # Added print statement to log the results of instantiation
         print(f"Results of instantiation: {results}")
 
@@ -498,7 +501,6 @@ class Checker(ABC):
 
 
 class NegChecker(Checker):
-
     num_base_questions = 1
 
     class TupleFormat(BaseModel):
@@ -566,7 +568,6 @@ class NegChecker(Checker):
 
 
 class AndChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -643,7 +644,6 @@ class AndChecker(Checker):
 
 
 class OrChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -720,7 +720,6 @@ class OrChecker(Checker):
 
 
 class AndOrChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -834,7 +833,6 @@ class AndOrChecker(Checker):
 
 
 class ButChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -923,7 +921,6 @@ class ButChecker(Checker):
 
 
 class CondChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -1023,7 +1020,6 @@ class CondChecker(Checker):
 
 
 class ConsequenceChecker(Checker):
-
     num_base_questions = 1
 
     class TupleFormat(BaseModel):
@@ -1093,7 +1089,6 @@ class ConsequenceChecker(Checker):
 
 
 class ParaphraseChecker(Checker):
-
     num_base_questions = 1
 
     class TupleFormat(BaseModel):
@@ -1161,7 +1156,6 @@ class ParaphraseChecker(Checker):
 
 
 class SymmetryAndChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -1289,7 +1283,6 @@ class SymmetryAndChecker(Checker):
 
 
 class SymmetryOrChecker(Checker):
-
     num_base_questions = 2
 
     class TupleFormat(BaseModel):
@@ -1417,7 +1410,6 @@ class SymmetryOrChecker(Checker):
 
 
 class CondCondChecker(Checker):
-
     num_base_questions = 3
 
     class TupleFormat(BaseModel):
