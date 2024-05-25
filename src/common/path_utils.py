@@ -9,5 +9,9 @@ def get_data_path() -> Path:
     return get_src_path() / "data"
 
 
+def get_root_path() -> Path:
+    return get_src_path().parent
+
+
 def get_scripts_path() -> Path:
-    return get_src_path().parent / "scripts"
+    return get_root_path() / "scripts"
