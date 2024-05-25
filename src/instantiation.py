@@ -5,17 +5,7 @@ import asyncio
 import os
 from static_checks import Checker
 from static_checks.Checker import (
-    NegChecker,
-    AndChecker,
-    OrChecker,
-    AndOrChecker,
-    ButChecker,
-    CondChecker,
-    ConsequenceChecker,
-    ParaphraseChecker,
-    SymmetryAndChecker,
     SymmetryOrChecker,
-    CondCondChecker,
 )
 from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
@@ -44,7 +34,7 @@ checkers: dict[str, Checker] = {
     # "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
     # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
     # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
-    "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
+    # "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
     # "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
     # "ConsequenceChecker": ConsequenceChecker(
     #     path=TUPLES_PATH / "ConsequenceChecker.jsonl"
@@ -55,9 +45,9 @@ checkers: dict[str, Checker] = {
     # "SymmetryAndChecker": SymmetryAndChecker(
     #     path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
     # ),
-    # "SymmetryOrChecker": SymmetryOrChecker(
-    #     path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
-    # ),
+    "SymmetryOrChecker": SymmetryOrChecker(
+        path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
+    ),
     # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
 }
 
