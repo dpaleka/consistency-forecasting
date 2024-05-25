@@ -1,18 +1,16 @@
-from common.datatypes import *
+from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob_cot
 from common.llm_utils import answer, answer_sync, Example
 from .forecaster import Forecaster
 
 
 class COT_Forecaster(Forecaster):
-
     def __init__(self, preface: str = None, examples: list[Example] = None):
-        
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
             "your best probability estimate for the following sentence or question resolving YES. "
             "I want you to first provide a reasoning for your answer, and then give me the probability. "
         )
-        
+
         self.examples = examples or [
             Example(
                 user=ForecastingQuestion_stripped(
@@ -53,3 +51,15 @@ class COT_Forecaster(Forecaster):
             **kwargs,
         )
         return response.prob
+
+    def dump_config(self):
+        return {
+            "preface": self.preface,
+            "examples": [
+                {
+                    "user": e.user.model_dump_json(),
+                    "assistant": e.assistant.model_dump_json(),
+                }
+                for e in self.examples
+            ],
+        }

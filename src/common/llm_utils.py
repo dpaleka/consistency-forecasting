@@ -3,6 +3,7 @@
 
 # %%
 import os
+from typing import Coroutine
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
@@ -11,6 +12,7 @@ from instructor.client import Instructor
 import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from dotenv import load_dotenv
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
@@ -543,6 +545,7 @@ def query_api_chat_sync_native(
     return text_response
 
 
+@dataclass_json
 @dataclass
 class Example:
     user: str | BaseModel
@@ -640,12 +643,12 @@ def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
 
 
 async def parallelized_call(
-    func: callable,
-    data=list[str],
+    func: Coroutine,
+    data: list[str],
     max_concurrent_queries: int = 100,
-) -> list[dict]:
+) -> list[any]:
     """
-    Run func in parallel on the given data.
+    Run async func in parallel on the given data.
     func will usually be a partial which uses query_api or whatever in some way.
 
     Example usage:
