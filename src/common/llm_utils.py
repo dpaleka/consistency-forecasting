@@ -579,7 +579,7 @@ async def answer(
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
-        prompt
+        str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     default_options = {
@@ -598,7 +598,7 @@ def answer_sync(
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
-        prompt
+        str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages(prompt, preface, examples)
     options = {

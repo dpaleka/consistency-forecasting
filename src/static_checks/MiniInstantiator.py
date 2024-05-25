@@ -17,7 +17,7 @@ from question_generators import question_formatter
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
-
+use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 
 class MiniInstantiator(ABC):
     def __init__(self):
@@ -56,7 +56,6 @@ class MiniInstantiator(ABC):
     def title_body_sync_(
         self,
         base_sentences: "Self.BaseSentenceFormat_stripped",
-        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
         if use_examples:
@@ -74,7 +73,6 @@ class MiniInstantiator(ABC):
     async def title_body_(
         self,
         base_sentences: "Self.BaseSentenceFormat_stripped",
-        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
         if use_examples:
@@ -142,11 +140,10 @@ class MiniInstantiator(ABC):
     def instantiate_sync(
         self,
         base_sentences: dict[str, ForecastingQuestion],
-        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat":
         title_body = self.title_body_sync(
-            base_sentences, use_examples=use_examples, **kwargs
+            base_sentences, **kwargs
         )
         return self.OutputFormat(
             **{
@@ -164,13 +161,12 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verify=3,
-        use_examples=True,
         **kwargs,
     ) -> "Self.OutputFormat":
         if verify_before_instantion:
             for i in range(n_verify):
                 title_body = await self.title_body(
-                    base_sentences, use_examples=use_examples, **kwargs
+                    base_sentences, **kwargs
                 )
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}

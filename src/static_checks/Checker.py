@@ -54,7 +54,6 @@ verify_before_instantiation = (
 )
 verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
 
-
 async def write_verification_result(tuple_type, generated_tuple, verification):
     filename = get_data_path() / "verification/tuple_verifications.jsonl"
     verification_jsonl = generated_tuple.model_dump_json()
