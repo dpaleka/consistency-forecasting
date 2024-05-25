@@ -109,7 +109,7 @@ if __name__ == "__main__":
         instantiate(
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
-            n_relevance=10,
-            length=3
+            n_relevance=1000,
+            length=100,
         )
     )
