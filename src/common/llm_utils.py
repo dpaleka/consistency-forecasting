@@ -32,6 +32,8 @@ from .perscache import (
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
+max_concurrent_queries = os.getenv("MAX_CONCURRENT_QUERIES", 100)
+
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
 
@@ -640,7 +642,7 @@ def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
 async def parallelized_call(
     func: callable,
     data=list[str],
-    max_concurrent_queries: int = 100,
+    # max_concurrent_queries: int = 100,
 ) -> list[dict]:
     """
     Run func in parallel on the given data.
