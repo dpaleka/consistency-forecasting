@@ -2,6 +2,7 @@ import jsonlines
 import asyncio
 
 # from static_checks.MiniInstantiator import MiniInstantiator
+import os
 from static_checks import Checker
 from static_checks.Checker import (
     NegChecker,
@@ -26,13 +27,17 @@ import random
 
 # MODEL = "gpt-3.5-turbo"
 MODEL = "gpt-4-turbo"
-MODEL_RELEVANCE = "gpt-4o"
+MODEL_RELEVANCE = "gpt-4-turbo"
 # MODEL = 'gpt-4o'
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
-# TUPLES_PATH: Path = get_data_path() / "tuples/"
-TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
+
+use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
+if use_examples:
+    TUPLES_PATH: Path = get_data_path() / "tuples/"
+else:
+    TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
 
 checkers: dict[str, Checker] = {
     "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
