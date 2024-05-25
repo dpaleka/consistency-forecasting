@@ -110,7 +110,6 @@ if __name__ == "__main__":
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
             n_relevance=10,
-            length=3,
-            use_examples=False,
+            length=3
         )
     )
