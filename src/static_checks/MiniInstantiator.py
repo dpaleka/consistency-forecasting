@@ -8,7 +8,12 @@ from abc import ABC, abstractmethod
 from typing import Type, Any, Optional, Self  # noqa
 from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str  # noqa
-from common.llm_utils import answer, answer_sync, Example, parallelized_call  # noqa
+from common.llm_utils import (
+    answer,
+    answer_sync,
+    Example,
+    prepare_messages_alt,
+)  # noqa
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
@@ -18,6 +23,7 @@ from question_generators import question_formatter
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
+
 
 class MiniInstantiator(ABC):
     def __init__(self):
@@ -83,6 +89,7 @@ class MiniInstantiator(ABC):
             prompt=base_sentences,
             preface=self.preface,
             examples=examples,
+            prepare_messages_func=prepare_messages_alt,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -142,9 +149,7 @@ class MiniInstantiator(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         **kwargs,
     ) -> "Self.OutputFormat":
-        title_body = self.title_body_sync(
-            base_sentences, **kwargs
-        )
+        title_body = self.title_body_sync(base_sentences, **kwargs)
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
@@ -165,9 +170,7 @@ class MiniInstantiator(ABC):
     ) -> "Self.OutputFormat":
         if verify_before_instantion:
             for i in range(n_verify):
-                title_body = await self.title_body(
-                    base_sentences, **kwargs
-                )
+                title_body = await self.title_body(base_sentences, **kwargs)
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
                 valid = {k: False for k in sd.keys()}
@@ -723,7 +726,6 @@ class Conditional(MiniInstantiator):
         Q_given_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant."
             "I will give you two forecasting questions P and Q with Yes/No answers. "
@@ -805,7 +807,6 @@ class Consequence(MiniInstantiator):
         cons_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant."
             "I will give you a forecasting questions P with Yes/No answer. "
