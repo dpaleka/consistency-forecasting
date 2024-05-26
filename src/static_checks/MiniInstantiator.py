@@ -403,7 +403,10 @@ class And(MiniInstantiator):
             "The combined question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own."
         )
 
         self.examples = [
@@ -590,7 +593,10 @@ class Or(MiniInstantiator):
             "The combined question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own."
         )
 
         self.examples = [
@@ -761,7 +767,10 @@ class Conditional(MiniInstantiator):
             "The conditional question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your conditional expression; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own."
         )
 
         self.examples = [
@@ -834,7 +843,10 @@ class Consequence(MiniInstantiator):
             "if they give consistent answers (like giving a higher probability to 'Is Kelly a bank-'"
             "teller?' than 'Is Kelly a bank-teller active in the feminist movement?') so it is critical "
             "that any information that might inform someone's probability estimate to your output question "
-            "is clearly included."
+            "is clearly included.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own."
         )
 
         self.examples = [
