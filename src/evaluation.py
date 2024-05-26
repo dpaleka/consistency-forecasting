@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 import click
 import yaml
+import logging
 
 from forecasters import Forecaster, AdvancedForecaster, BasicForecaster, COT_Forecaster
 from static_checks.Checker import (
@@ -28,6 +29,9 @@ from common.path_utils import get_data_path, get_src_path
 BASE_DATA_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
