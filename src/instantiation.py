@@ -40,10 +40,10 @@ else:
     TUPLES_PATH: Path = get_data_path() / "tuples_alt_noex/"
 
 checkers: dict[str, Checker] = {
-    # "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
+    "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
     "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
-    "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
-    "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
+    # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
+    # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
     "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
     "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
     "ConsequenceChecker": ConsequenceChecker(
