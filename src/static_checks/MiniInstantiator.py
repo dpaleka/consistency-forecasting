@@ -404,9 +404,9 @@ class And(MiniInstantiator):
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
             "clearly provided.\n"
-            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
-            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
-            "the body, but the title should be basically a well-formed question on its own."
+            "- Also, make sure that the title is self-sufficient independent of the body, i.e. "
+            "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?' "
         )
 
         self.examples = [
@@ -594,9 +594,9 @@ class Or(MiniInstantiator):
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
             "clearly provided.\n"
-            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
-            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
-            "the body, but the title should be basically a well-formed question on its own."
+            "- Also, make sure that the title is self-sufficient independent of the body, i.e. "
+            "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?' "
         )
 
         self.examples = [
