@@ -446,9 +446,13 @@ class Checker(ABC):
 
         return arbitrage_argmax, arbitrage_max
 
-    def violation(self, answers: dict[str, Any]) -> float:
+    def violation(self, answers: dict[str, Any], force_pos=True) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
-        return self.max_min_arbitrage(answers)[1]
+        v = self.max_min_arbitrage(answers)[1]
+        if force_pos:
+            return max(0, v)
+        else:
+            return v
 
     def check(self, answers: dict[str, Any]) -> bool:
         return bool(self.violation(answers) < self.tolerance)
