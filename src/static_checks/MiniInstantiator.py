@@ -64,12 +64,15 @@ class MiniInstantiator(ABC):
         base_sentences: "Self.BaseSentenceFormat_stripped",
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return answer_sync(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             prepare_messages_func=prepare_messages_alt,
-            discard_examples=not use_examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -79,12 +82,15 @@ class MiniInstantiator(ABC):
         base_sentences: "Self.BaseSentenceFormat_stripped",
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
+        if use_examples:
+            examples = self.examples
+        else:
+            examples = None
         return await answer(
             prompt=base_sentences,
             preface=self.preface,
-            examples=self.examples,
+            examples=examples,
             prepare_messages_func=prepare_messages_alt,
-            discard_examples=not use_examples,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
