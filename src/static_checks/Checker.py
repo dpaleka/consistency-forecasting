@@ -561,7 +561,9 @@ class Checker(ABC):
             print("Starting async elicitation")
             elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers = await parallelized_call(
-                elicit_func, validated_lines, max_concurrent_queries=10
+                elicit_func,
+                validated_lines,
+                max_concurrent_queries=10,  # is giving "Request timed out" even for 5
             )
 
             if do_check:

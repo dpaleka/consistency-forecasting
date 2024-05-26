@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 import click
 import yaml
+import logging
 
 from forecasters import Forecaster, AdvancedForecaster, BasicForecaster, COT_Forecaster
 from static_checks.Checker import (
@@ -28,6 +29,9 @@ from common.path_utils import get_data_path, get_src_path
 BASE_DATA_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
+
+logging.basicConfig()
+logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
@@ -64,23 +68,25 @@ def get_stats(results: dict, label: str = "") -> dict:
     num_failed = sum(1 for c in checks if not c)
 
     # Calculate the average violation
-    avg_violation = sum(v for v in violations) / len(violations)
+    avg_abs_violation = sum(abs(v) for v in violations) / len(violations)
 
     # Calculate the median violation
-    sorted_violations = sorted(violations)
+    sorted_violations = sorted(violations, key=abs)
     n = len(sorted_violations)
-    median_violation = (sorted_violations[n // 2] + sorted_violations[~n // 2]) / 2
+    median_abs_violation = (
+        abs(sorted_violations[n // 2]) + abs(sorted_violations[~n // 2])
+    ) / 2
 
     print(f"Number of violations: {num_failed}/{len(checks)}")
-    print(f"Average violation: {avg_violation:.3f}")
-    print(f"Median violation: {median_violation:.3f}")
+    print(f"Average absolute violation: {avg_abs_violation:.3f}")
+    print(f"Median absolute violation: {median_abs_violation:.3f}")
 
     return {
         "label": label,
         "num_samples": len(violations),
         "num_violations": num_failed,
-        "avg_violation": avg_violation,
-        "median_violation": median_violation,
+        "avg_abs_violation": avg_abs_violation,
+        "median_abs_violation": median_abs_violation,
     }
 
 

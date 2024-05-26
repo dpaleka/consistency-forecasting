@@ -1,5 +1,4 @@
 # Standard library imports
-import asyncio
 import logging
 import re
 from datetime import datetime
@@ -17,6 +16,8 @@ from config.keys import NEWSCATCHER_KEY
 from config.site_whitelist import NEWS_WHITE_LIST
 import model_eval
 from utils import time_utils, string_utils
+import functools
+from common.llm_utils import parallelized_call
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -647,14 +648,12 @@ async def async_get_search_queries(
         If return_response is True, also returns a list of responses.
     """
     # Query LLM's API for the subject keywords in batch
-    search_query_tasks = [
-        # apparently this doesn't resolve
-        model_eval.get_async_response(
-            prompt, model_name=model_name, temperature=temperature
-        )
-        for prompt in prompts
-    ]
-    search_query_responses = await asyncio.gather(*search_query_tasks)
+    get_response_func = functools.partial(
+        model_eval.get_async_response, model_name=model_name, temperature=temperature
+    )
+    search_query_responses = await parallelized_call(
+        get_response_func, prompts, max_concurrent_queries=30
+    )
     keywords_list = [
         extract_search_queries(response) for response in search_query_responses
     ]
