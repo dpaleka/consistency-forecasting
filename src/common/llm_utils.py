@@ -581,8 +581,8 @@ def prepare_messages_alt(
     prompt: str, preface: str | None = None, examples: list[Example] | None = None
 ) -> list[dict[str, str]]:
     sys_preface = "You are a helpful assistant."
-    examples = examples or []
     messages = [{"role": "system", "content": sys_preface}]
+    examples = examples or []
     if not preface:
         preface = ""
     for example in examples:
@@ -611,14 +611,11 @@ async def answer(
     preface: str | None = None,
     examples: list[Example] | None = None,
     prepare_messages_func=prepare_messages,
-    discard_examples=False,
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
         str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
-    if discard_examples:
-        examples = None
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
         "model": "gpt-4-1106-preview",
@@ -634,14 +631,11 @@ def answer_sync(
     preface: str | None = None,
     examples: list[Example] | None = None,
     prepare_messages_func=prepare_messages,
-    discard_examples=False,
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
         str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
-    if discard_examples:
-        examples = None
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",
