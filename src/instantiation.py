@@ -42,8 +42,8 @@ else:
 checkers: dict[str, Checker] = {
     "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
     "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
-    # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
-    # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
+    "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
+    "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
     "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
     "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
     "ConsequenceChecker": ConsequenceChecker(
@@ -118,7 +118,7 @@ if __name__ == "__main__":
         instantiate(
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
-            n_relevance=100,
+            n_relevance=50,
             length=10,
         )
     )
