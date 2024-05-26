@@ -26,7 +26,7 @@ import functools
 import random
 
 # MODEL = "gpt-3.5-turbo"
-MODEL = "gpt-4-turbo"
+MODEL = "gpt-4o"
 MODEL_RELEVANCE = "gpt-4o"
 # MODEL = 'gpt-4o'
 BASE_DATA_PATH: Path = (
