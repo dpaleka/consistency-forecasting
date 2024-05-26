@@ -12,9 +12,10 @@ class Forecaster(ABC):
         return {k: self.call(v, **kwargs) for k, v in shallow_dict(sentences).items()}
 
     async def elicit_async(self, sentences: BaseModel, **kwargs) -> dict[str, Any]:
-        keys, values = zip(*sentences.model_fields.items())
+        list_kv = shallow_dict(sentences).items()
+        keys, questions = zip(*list_kv)
         call_func = functools.partial(self.call_async, **kwargs)
-        results = await parallelized_call(call_func, values)
+        results = await parallelized_call(call_func, questions)
         return {k: v for k, v in zip(keys, results)}
 
     @abstractmethod

@@ -553,8 +553,9 @@ class Checker(ABC):
                 self.get_line_obj(line) for line in data
             ]
 
+            print(validated_lines)
             print("Starting async elicitation")
-            elicit_func = functools.partial(forecaster.elicit, **kwargs)
+            elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers = await parallelized_call(
                 elicit_func, validated_lines, max_concurrent_queries=10
             )

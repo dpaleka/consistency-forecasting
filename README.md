@@ -106,16 +106,17 @@ It writes into `src/data/feedback/`.
 
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions. Does not write anything.
 
-
 - [`src/instantiation.py`](src/instantiation.py) Runs instantiation. Takes a JSONL file (a list of ForecastingQuestions), and writes multiple JSONL files (each a list of QuestionTuples) into `src/data/tuples`.
 
-- [`evaluation.py`](src/evaluation.py)
-elicits forecasts and scores them. 
-Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit_and_violation methods.
-  - Run: `python src/evaluation.py | tee src/data/evaluation.txt`
+- [`src/evaluation.py`](src/evaluation.py) runs forecasters on checks and scores them. 
+Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit methods.
+Please run `python src/evaluation.py --help` and read what it says before using this script.
+  - Run example: 
+```
+python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_configs/cheap_haiku.yaml -num_lines 3 --relevant_checks all [--run] [--load_dir src/data/forecasts/...] [--async] 
+```
 
-
-- [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Not merged yet.
+- [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything.
 
 - [`src/playground.py`](src/playground.py) various testing and playing around.
 
