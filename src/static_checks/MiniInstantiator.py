@@ -243,10 +243,19 @@ class Neg(MiniInstantiator):
             "You are a helpful assistant. I will give you a forecasting question with Yes/No "
             "answer. You should then give me the NEGATION of the question, i.e. the question that "
             "would be answered YES if the original question would be answered NO, and vice "
-            "versa. Demorgan's laws should be followed with and/or negation. Avoid using the word "
-            "'won't'. If applicable, the different parts of the question should be negated one to one. "
-            "For example the new title should be an negation of the original title.  Body questions should be negations"
-            "of the original body questions.  Statements / background information can be kept the same."
+            "versa. Notes to keep in mind:\n"
+            "- Demorgan's laws should be followed with and/or negation.\n"
+            "- Avoid using the word 'won't'.\n"
+            "- If applicable, the different parts of the question should be negated one to one. "
+            "For example the new title should be an negation of the original title. Body questions "
+            "should be negations of the original body questions. Statements / background information "
+            "would generally be kept the same.\n"
+            "- Pay attention to correctly negate existential and universal quantifiers. For example, "
+            "the negation of 'Will Elon Musk's net worth, at any point before 2050, exceed 1 trillion "
+            "USD?' is 'Will Elon Musk's net worth never exceed 1 trillion USD before 2050?', and NOT "
+            "'Will Elon Musk's net worth, at any point before 2050, not exceed 1 trillion USD?'.\n"
+            "- Make sure you retain ALL the information in the question title and body! You cannot "
+            "discard a single relevant detail. "
         )
 
         self.examples = [
