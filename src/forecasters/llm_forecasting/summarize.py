@@ -1,5 +1,4 @@
 # Standard library imports
-import asyncio
 import logging
 import time
 import tiktoken
@@ -9,6 +8,8 @@ from config.constants import MODEL_TOKEN_LIMITS
 import model_eval
 from prompts.prompts import PROMPT_DICT
 from common.llm_utils import get_provider
+import functools
+from common.llm_utils import parallelized_call
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -287,13 +288,12 @@ async def async_summarize(
     else:
         prompts = [prompt.format(article=article.text_cleaned) for article in articles]
 
-    summarization_tasks = [
-        model_eval.get_async_response(
-            prompt, model_name=model_name, temperature=temperature
-        )
-        for prompt in prompts
-    ]
-    all_summaries = await asyncio.gather(*summarization_tasks)
+    get_response_func = functools.partial(
+        model_eval.get_async_response, model_name=model_name, temperature=temperature
+    )
+    all_summaries = await parallelized_call(
+        get_response_func, prompts, max_concurrent_queries=10
+    )
     if update_object:
         for i, article in enumerate(articles):
             article.summary = all_summaries[i]
