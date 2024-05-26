@@ -1,6 +1,7 @@
 import sys
 import io
 import json
+import asyncio
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -138,8 +139,22 @@ def validate_result(result: dict, keys: list[str]) -> None:
     default=["CondChecker"],
     help='Relevant checks to perform. In case of "all", all checkers are used.',
 )
+@click.option(
+    "--async",
+    "is_async",
+    is_flag=True,
+    default=False,
+    help="Await gather the forecaster over all lines in a check",
+)
 def main(
-    forecaster_class, config_path, model, run, load_dir, num_lines, relevant_checks
+    forecaster_class,
+    config_path,
+    model,
+    run,
+    load_dir,
+    num_lines,
+    relevant_checks,
+    is_async,
 ):
     match forecaster_class:
         case "BasicForecaster":
@@ -216,13 +231,31 @@ def main(
         if run:
             match forecaster_class:
                 case "BasicForecaster" | "CoTForecaster":
-                    results = checkers[check_name].test_sync(
-                        forecaster, do_check=False, num_lines=num_lines, model=model
-                    )
+                    if is_async:
+                        results = asyncio.run(
+                            checkers[check_name].test(
+                                forecaster,
+                                do_check=False,
+                                num_lines=num_lines,
+                                model=model,
+                            )
+                        )
+                    else:
+                        results = checkers[check_name].test_sync(
+                            forecaster, do_check=False, num_lines=num_lines, model=model
+                        )
+
                 case "AdvancedForecaster":
-                    results = checkers[check_name].test_sync(
-                        forecaster, do_check=False, num_lines=num_lines
-                    )
+                    if is_async:
+                        results = asyncio.run(
+                            checkers[check_name].test(
+                                forecaster, do_check=False, num_lines=num_lines
+                            )
+                        )
+                    else:
+                        results = checkers[check_name].test_sync(
+                            forecaster, do_check=False, num_lines=num_lines
+                        )
 
             assert len(results) == num_lines, "results must be of length num_lines"
             assert all(validate_result(result, keys) for result in results)
@@ -264,6 +297,12 @@ def main(
 
         stats = get_stats(results, label=check_name)
         all_stats[check_name] = stats
+
+    with open(output_directory / "stats_summary.json", "w") as f, open(
+        most_recent_directory / "stats_summary.json", "w"
+    ) as f2:
+        json.dump(all_stats, f, indent=4)
+        json.dump(all_stats, f2, indent=4)
 
     for check_name, stats in all_stats.items():
         print(f"{stats['label']}: {stats['num_violations']}/{stats['num_samples']}")
