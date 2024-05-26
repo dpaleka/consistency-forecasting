@@ -258,7 +258,14 @@ class Neg(MiniInstantiator):
             "USD?' is 'Will Elon Musk's net worth never exceed 1 trillion USD before 2050?', and NOT "
             "'Will Elon Musk's net worth, at any point before 2050, not exceed 1 trillion USD?'.\n"
             "- Make sure you retain ALL the information in the question title and body! You cannot "
-            "discard a single relevant detail. "
+            "discard a single relevant detail.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly negate such a combination with de Morgan's law."
         )
 
         self.examples = [
@@ -397,6 +404,8 @@ class And(MiniInstantiator):
             "    - ((P1 OR P2) AND Q) might have to be combined as something like: "
             "Will BOTH of the following occur: (1) EITHER of the following occurs: (a) P1 OR (b) P2 "
             "(2) Q. Unless a more natural formulation exists.\n"
+            " - Be careful when combining conditional questions. 'Given A then P' AND 'Given B then Q' "
+            "should be combined as 'Given (A AND B) then (P AND Q)'.\n"
             " - Most importantly: make sure you retain ALL the information in the question bodies from "
             "BOTH base questions! You cannot discard a single relevant detail. "
             "All this is for an experiment to test the logical consistency of forecasters: "
@@ -404,9 +413,16 @@ class And(MiniInstantiator):
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
             "clearly provided.\n"
-            "- Also, make sure that the title is self-sufficient independent of the body, i.e. "
+            " - Also, make sure that the title is self-sufficient independent of the body, i.e. "
             "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
-            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?' "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?'\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly combine such combinations as previously described."
         )
 
         self.examples = [
@@ -587,6 +603,8 @@ class Or(MiniInstantiator):
             "    - ((P1 AND P2) OR Q) might have to be combined as something like: "
             "Will EITHER of the following occur: (1) BOTH of the following occur: (a) P1 AND (b) P2 "
             "(2) Q. Unless a more natural formulation exists.\n"
+            " - Be careful when combining conditional questions. 'Given A then P' AND 'Given B then Q' "
+            "should be combined as 'Given (A AND B) then (P AND Q)'.\n"
             " - Most importantly: make sure you retain ALL the information in the question bodies from "
             "BOTH base questions! You cannot discard a single relevant detail. "
             "All this is for an experiment to test the logical consistency of forecasters: "
@@ -596,7 +614,14 @@ class Or(MiniInstantiator):
             "clearly provided.\n"
             "- Also, make sure that the title is self-sufficient independent of the body, i.e. "
             "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
-            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?' "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?'\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly combine such combinations as previously described."
         )
 
         self.examples = [
@@ -770,7 +795,13 @@ class Conditional(MiniInstantiator):
             "clearly provided.\n"
             "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
             "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
-            "the body, but the title should be basically a well-formed question on its own."
+            "the body, but the title should be basically a well-formed question on its own.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030."
         )
 
         self.examples = [
@@ -846,7 +877,13 @@ class Consequence(MiniInstantiator):
             "is clearly included.\n"
             "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
             "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
-            "the body, but the title should be basically a well-formed question on its own."
+            "the body, but the title should be basically a well-formed question on its own.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030."
         )
 
         self.examples = [
