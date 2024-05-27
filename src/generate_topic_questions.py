@@ -306,6 +306,7 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
         ) = random.sample(initial_questions, 6)
     else:
         chosen_categories = random.sample(list(questions_dict.keys()), 4)
+        chosen_categories = random.choices(list(questions_dict.keys()), k=4)
         example_3 = random.choice(questions_dict[chosen_categories[0]])
         example_4 = random.choice(questions_dict[chosen_categories[1]])
         example_5 = random.choice(questions_dict[chosen_categories[2]])
@@ -369,6 +370,7 @@ if __name__ == "__main__":
         "-f",
         type=str,
         default=get_data_path() / "other" / "may24_forfeedback.jsonl",
+        default=get_data_path() / "other" / "may27_forfeedback.jsonl",
     )
     parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
     parser.add_argument("--n", "-n", type=int, default=3)
