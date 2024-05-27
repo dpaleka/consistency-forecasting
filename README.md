@@ -5,7 +5,7 @@ Create a virtual environment, and ensure it has Python 3.11 installed.
 
 ```python
 import sys
-assert sys.version_info >= (3, 11), "Python 3.11 or later is required."
+assert sys.version_info[:2] == (3, 11), "Python 3.11 is required."
 ```
 
 Then do:
