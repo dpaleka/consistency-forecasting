@@ -221,7 +221,7 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_data_path()}/other/may27_forfeedback.jsonl",
+        default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
@@ -236,7 +236,7 @@ if __name__ == "__main__":
         "--out_file_name",
         "-o",
         type=str,
-        default="may27_forfeedback_full.jsonl",
+        default="high-quality-questions--all-domains.jsonl",
         help="Name of the output file",
     )
     parser.add_argument(

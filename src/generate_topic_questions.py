@@ -11,7 +11,7 @@ import random
 from pydantic import BaseModel
 
 
-categories = [
+all_categories = [
     "Artificial Intelligence",
     "Computing and Math",
     "Cryptocurrencies",
@@ -283,13 +283,15 @@ def get_example_question(initial_questions, questions):
         return random.choice(questions)
 
 
-async def generate_questions_for_category(initial_questions, questions_dict, model):
+async def generate_questions_for_category(initial_questions, questions_dict, model, categories = None):
+    if categories is None:
+        categories = all_categories
     category = random.choice(categories)
     tags = random.sample(topics, 3)
 
     example_1, example_2 = random.sample(initial_questions, 2)
 
-    if category in questions_dict and len(questions_dict[category]) >= 2:
+    if category in questions_dict and len(questions_dict[category]) >= 2 and len(categories) > 1:
         example_5, example_6 = random.sample(questions_dict[category], 2)
         other_categories = [cat for cat in questions_dict if cat != category]
         cat1, cat2 = random.sample(other_categories, 2)
@@ -305,7 +307,6 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
             example_6,
         ) = random.sample(initial_questions, 6)
     else:
-        chosen_categories = random.sample(list(questions_dict.keys()), 4)
         chosen_categories = random.choices(list(questions_dict.keys()), k=4)
         example_3 = random.choice(questions_dict[chosen_categories[0]])
         example_4 = random.choice(questions_dict[chosen_categories[1]])
@@ -339,14 +340,14 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
     ]
 
 
-async def generate_questions(file_path, model, n=3):
+async def generate_questions(file_path, model, n=3, categories = None):
     questions = load_questions_from_jsonl(file_path)
 
     print(f"len of questions: {len(questions)}")
     print(f"len of initial questions: {len(initial_questions)}")
 
     tasks = [
-        generate_questions_for_category(initial_questions, questions, model)
+        generate_questions_for_category(initial_questions, questions, model, categories)
         for _ in range(n)
     ]
     results = await asyncio.gather(*tasks)
@@ -369,12 +370,12 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=get_data_path() / "other" / "may24_forfeedback.jsonl",
-        default=get_data_path() / "other" / "may27_forfeedback.jsonl",
+        default=get_data_path() / "other" / "high-quality-questions-all-domains.jsonl",
     )
     parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
     parser.add_argument("--n", "-n", type=int, default=3)
+    parser.add_argument("--categories", "-c", type=str, nargs="+", default=None)
     args = parser.parse_args()
     asyncio.run(
-        generate_questions(file_path=args.file_path, model=args.model, n=args.n)
+        generate_questions(file_path=args.file_path, model=args.model, n=args.n, categories=args.categories)
     )
