@@ -62,7 +62,28 @@ checkers: dict[str, Checker] = {
 }
 
 
-async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **kwargs):
+async def instantiate(
+    BASE_DATA_PATH: Path,
+    checker_list: dict[str, Checker],
+    n_relevance: int = 10,
+    n_top_relevance: int = 3,
+    n_write: int = -1,
+    **kwargs,
+):
+    """
+    Tests n_relevance potential combinations for relevance, and sorts by relevance score.
+    Writes the top n_top_relevance tuples to the Checker.
+    Checker stops instantiating after n_write tuples have successfully passed verification.
+
+    Args:
+        BASE_DATA_PATH (Path): path to a jsonl file of ForecastingQuestions
+        checker_list (dict[str, Checker]): dictionary of Checkers to instantiate with
+        n_relevance (int, optional): _description_. number of possible tuples to test for relevance
+        n_top_relevance (int, optional): _description_. top n relevant possible tuples;
+            usually > n_write because some might fail verification
+        n_write (int, optional): _description_. max number of tuples we actually want to write.
+            Leave as -1 to write all tuples that pass verification
+    """
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
     for line in jsonlines.open(BASE_DATA_PATH):
@@ -75,7 +96,8 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **
     print(f"Loaded {len(bqs)} questions.")
 
     possible_tuples = {}  # {i: list of i-tuples}
-    for i in [1, 2, 3]:
+    i_set = {checker.num_base_questions for checker in checker_list.values()}
+    for i in i_set:
         if i > len(bqs):
             break
 
@@ -104,8 +126,9 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **
     for checker in checker_list.values():
         print(f"Instantiating and writing {checker.__class__.__name__}")
         await checker.instantiate_and_write_many(
-            possible_tuples[checker.num_base_questions][:length],
+            possible_tuples[checker.num_base_questions][:n_top_relevance],
             model=MODEL,
+            n_write=n_write,
             overwrite=True,
             n_verification=3,
             **kwargs,
@@ -119,6 +142,7 @@ if __name__ == "__main__":
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
             n_relevance=50,
-            length=10,
+            n_top_relevance=16,
+            n_write=10,
         )
     )
