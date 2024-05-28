@@ -89,6 +89,7 @@ class Checker(ABC):
             self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
         else:
             self.path = path
+        self.counter = 0  # number of tuples successfully instantiated
 
     @property
     @abstractmethod
@@ -153,12 +154,14 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
                     return instantiated_object
             return instantiated_object
         else:
             instantiated_object = self.instantiate_sync(
                 base_sentences, supplied_metadata, **kwargs
             )
+            self.counter += 1
             return instantiated_object
 
     async def instantiate_with_verification(
@@ -185,10 +188,14 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
+                    print(f"-----------------{self.counter}-------------")
                     return instantiated_object
             return None
         else:
             instantiated_object = await self.instantiate(base_sentences, **kwargs)
+            self.counter += 1
+            print(f"-----------------{self.counter}-------------")
             return instantiated_object
 
     def instantiate_sync_with_metadata(
@@ -267,9 +274,16 @@ class Checker(ABC):
             list[dict[str, ForecastingQuestion]]
             | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
         ),
+        n_write: int = -1,
         overwrite=False,
         **kwargs,
     ):
+        """
+        Args:
+            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
+            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
+                because some will fail verification). If -1, will make as many as possible.
+        """
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
@@ -280,21 +294,20 @@ class Checker(ABC):
                 | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
             ),
         ):
-            if isinstance(base_sentences, tuple):
-                base_sentences, supplied_metadata = base_sentences
+            print("N_WRITE IS:-----", n_write)
+            print("SELF.COUNTER IS:---", self.counter)
+            if self.counter >= n_write > 0:
+                print("---------RETVRN--------")
+                return
             else:
-                supplied_metadata = None
-            return self.instantiate_and_write(
-                base_sentences, supplied_metadata=supplied_metadata, **kwargs
-            )
+                if isinstance(base_sentences, tuple):
+                    base_sentences, supplied_metadata = base_sentences
+                else:
+                    supplied_metadata = None
+                return self.instantiate_and_write(
+                    base_sentences, supplied_metadata=supplied_metadata, **kwargs
+                )
 
-        # _instantiate_and_write = (
-        #     lambda base_sentences_with_metadata: self.instantiate_and_write(  # noqa
-        #         base_sentences_with_metadata[0],
-        #         supplied_metadata=base_sentences_with_metadata[1],
-        #         **kwargs,
-        #     )
-        # )
         # Added print statement to log the base sentences being processed
         print(f"Base sentences: {base_sentencess}")
         results = await parallelized_call(
