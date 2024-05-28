@@ -618,7 +618,7 @@ async def answer(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o",
         "temperature": 0.0,
         "response_model": PlainText,
     }

@@ -142,7 +142,7 @@ if __name__ == "__main__":
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
             n_relevance=50,
-            n_top_relevance=16,
+            n_top_relevance=50,
             n_write=10,
         )
     )
