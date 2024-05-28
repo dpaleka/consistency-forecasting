@@ -145,7 +145,7 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent.
 
 Example 1:
 
@@ -158,18 +158,18 @@ Valid: True
 
 Example 2:
 
-P: It is raining.
-Q: The ground is wet.
+P: The ground is wet.
+Q: It is raining.
 
-Reasoning: If it is raining (P), then the ground is likely to be wet (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket), which means that Q does not strictly require P to be true. Therefore, Q can be true without P necessarily being true.
+Reasoning: If the ground is wet (P), it is possible it could be from rain (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket, or rain in the recent past), which means that P does not strictly require Q to be true. Therefore, P can be true without Q necessarily being true.
 Valid: False
 
 Example 3:
 
-P: The car engine is running.
-Q: The car is moving.
+P: It is daytime.
+Q: The sun has risen and not set yet.
 
-Reasoning: If the car engine is running (P), it is possible for the car to be moving (Q), but the car could be stationary (e.g., if it's in neutral or parked with the handbrake applied). Hence, Q can be true or false independently of P. Q does not exclusively depend on P being true.
+Reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P; however, they are completely equivalent and therefore not useful to us.
 Valid: False
 
 ----
