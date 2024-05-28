@@ -145,14 +145,15 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that could only be true if P is true. In other words, validate whether Q is logically contingent on P, ensuring that Q can only occur if P is true.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true.
 
 Example 1:
 
-P: A computer is connected to the internet.
-Q: A computer can receive emails.
+P: A computer can receive emails.
+Q: A computer is connected to the internet.
 
-Reasoning: If a computer is connected to the internet (P), then it is capable of receiving emails (Q). If P is false (the computer is not connected to the internet), then Q must also be false (the computer cannot receive emails), since receiving emails inherently requires an internet connection. Thus, Q's truth is contingent upon P being true.
+Reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Or, contrapositively: If a computer is not connected to the internet, it cannot receive emails. Therefore, Q is a logical consequence of P, meaning that if P is true, Q must also be true.
+
 Valid: True
 
 Example 2:
@@ -217,6 +218,3 @@ Valid: False
 P: {P}
 Q: {para_P}
 """
-
-
-
