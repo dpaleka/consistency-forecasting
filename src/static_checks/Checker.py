@@ -178,7 +178,8 @@ class Checker(ABC):
         """
         if verify_before_instantiation:
             print(f"verifying before instantiation {n_verification} times")
-            for _ in range(n_verification):
+            for i in range(n_verification):
+                print(f"VERIFICATION ATTEMPT {i}")
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
                 if verify_length:
