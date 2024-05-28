@@ -5,7 +5,17 @@ import asyncio
 import os
 from static_checks import Checker
 from static_checks.Checker import (
-    SymmetryOrChecker,
+    NegChecker,  # noqa
+    AndChecker,  # noqa
+    OrChecker,  # noqa
+    AndOrChecker,  # noqa
+    ButChecker,  # noqa
+    CondChecker,  # noqa
+    ConsequenceChecker,  # noqa
+    ParaphraseChecker,  # noqa
+    SymmetryAndChecker,  # noqa
+    SymmetryOrChecker,  # noqa
+    CondCondChecker,  # noqa
 )
 from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
@@ -16,8 +26,8 @@ import functools
 import random
 
 # MODEL = "gpt-3.5-turbo"
-MODEL = "gpt-4-turbo"
-MODEL_RELEVANCE = "gpt-4-turbo"
+MODEL = "gpt-4o"
+MODEL_RELEVANCE = "gpt-4o"
 # MODEL = 'gpt-4o'
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
@@ -25,16 +35,16 @@ BASE_DATA_PATH: Path = (
 
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 if use_examples:
-    TUPLES_PATH: Path = get_data_path() / "tuples/"
+    TUPLES_PATH: Path = get_data_path() / "tuples_alt/"
 else:
-    TUPLES_PATH: Path = get_data_path() / "tuples_noex/"
+    TUPLES_PATH: Path = get_data_path() / "tuples_alt_noex/"
 
 checkers: dict[str, Checker] = {
-    # "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
+    "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
     # "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
     # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
     # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
-    # "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
+    "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
     # "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
     # "ConsequenceChecker": ConsequenceChecker(
     #     path=TUPLES_PATH / "ConsequenceChecker.jsonl"
@@ -45,9 +55,9 @@ checkers: dict[str, Checker] = {
     # "SymmetryAndChecker": SymmetryAndChecker(
     #     path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
     # ),
-    "SymmetryOrChecker": SymmetryOrChecker(
-        path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
-    ),
+    # "SymmetryOrChecker": SymmetryOrChecker(
+    #     path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
+    # ),
     # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
 }
 
@@ -81,7 +91,7 @@ async def instantiate(BASE_DATA_PATH, checker_list, n_relevance=10, length=3, **
             print("Getting relevance scores ...")
             func = functools.partial(relevance, model=MODEL_RELEVANCE)
             relevances = await parallelized_call(
-                func=func, data=possible_ituples, max_concurrent_queries=50
+                func=func, data=possible_ituples, max_concurrent_queries=25
             )
             print("Sorting by relevance scores ...")
             possible_ituples = list(zip(possible_ituples, relevances))
@@ -108,7 +118,7 @@ if __name__ == "__main__":
         instantiate(
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
-            n_relevance=1000,
-            length=100,
+            n_relevance=50,
+            length=10,
         )
     )
