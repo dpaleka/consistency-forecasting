@@ -306,10 +306,12 @@ class Checker(ABC):
         while n_write == -1 or self.counter < n_write:
             results = await parallelized_call(
                 _instantiate_and_write,
-                base_sentencess[bq_counter : bq_counter + n_write - self.counter],
+                base_sentencess[bq_counter : bq_counter + n_write],
                 max_concurrent_queries=10,
             )
-            bq_counter += n_write - self.counter
+            bq_counter += n_write
+            print(f"Counter: {self.counter}")
+            print(f"BQ Counter: {bq_counter}")
         # # Added print statement to log the results of instantiation
         # print(f"Results of instantiation: {results}")
 
