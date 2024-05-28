@@ -16,7 +16,7 @@ from scipy.optimize import (
 )
 from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any, Self, Callable
+from typing import Type, Any, Self, Callable, Optional
 from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import (
     ForecastingQuestion,
@@ -89,6 +89,7 @@ class Checker(ABC):
             self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
         else:
             self.path = path
+        self.counter = 0  # number of tuples successfully instantiated
 
     @property
     @abstractmethod
@@ -153,12 +154,14 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
                     return instantiated_object
             return instantiated_object
         else:
             instantiated_object = self.instantiate_sync(
                 base_sentences, supplied_metadata, **kwargs
             )
+            self.counter += 1
             return instantiated_object
 
     async def instantiate_with_verification(
@@ -167,7 +170,7 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> "Self.TupleFormat":
+    ) -> Optional["Self.TupleFormat"]:
         """
         If the global variable 'verify_before_instantiation' is True, this method
         will instantiate and verify the tuple format with metadata three times,
@@ -185,10 +188,12 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
                     return instantiated_object
-            return instantiated_object
+            return None
         else:
             instantiated_object = await self.instantiate(base_sentences, **kwargs)
+            self.counter += 1
             return instantiated_object
 
     def instantiate_sync_with_metadata(
@@ -212,7 +217,7 @@ class Checker(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         supplied_metadata=None,
         **kwargs,
-    ) -> "Self.TupleFormat_with_metadata":
+    ) -> Optional["Self.TupleFormat_with_metadata"]:
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
@@ -221,7 +226,10 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+        if result:
+            return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+        else:
+            return None
 
     @abstractmethod
     def verify_sync(
@@ -264,9 +272,16 @@ class Checker(ABC):
             list[dict[str, ForecastingQuestion]]
             | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
         ),
+        n_write: int = -1,
         overwrite=False,
         **kwargs,
     ):
+        """
+        Args:
+            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
+            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
+                because some will fail verification). If -1, will make as many as possible.
+        """
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
@@ -285,20 +300,18 @@ class Checker(ABC):
                 base_sentences, supplied_metadata=supplied_metadata, **kwargs
             )
 
-        # _instantiate_and_write = (
-        #     lambda base_sentences_with_metadata: self.instantiate_and_write(  # noqa
-        #         base_sentences_with_metadata[0],
-        #         supplied_metadata=base_sentences_with_metadata[1],
-        #         **kwargs,
-        #     )
-        # )
         # Added print statement to log the base sentences being processed
-        print(f"Base sentences: {base_sentencess}")
-        results = await parallelized_call(
-            _instantiate_and_write, base_sentencess, max_concurrent_queries=50
-        )
-        # Added print statement to log the results of instantiation
-        print(f"Results of instantiation: {results}")
+        # print(f"Base sentences: {base_sentencess}")
+        bq_counter = 0  # number of base sentences processed
+        while n_write == -1 or self.counter < n_write:
+            results = await parallelized_call(
+                _instantiate_and_write,
+                base_sentencess[bq_counter : bq_counter + n_write - self.counter],
+                max_concurrent_queries=10,
+            )
+            bq_counter += n_write - self.counter
+        # # Added print statement to log the results of instantiation
+        # print(f"Results of instantiation: {results}")
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:

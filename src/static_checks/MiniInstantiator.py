@@ -8,7 +8,12 @@ from abc import ABC, abstractmethod
 from typing import Type, Any, Optional, Self  # noqa
 from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str  # noqa
-from common.llm_utils import answer, answer_sync, Example, parallelized_call  # noqa
+from common.llm_utils import (
+    answer,
+    answer_sync,
+    Example,
+    prepare_messages_alt,
+)  # noqa
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
@@ -18,6 +23,7 @@ from question_generators import question_formatter
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
+
 
 class MiniInstantiator(ABC):
     def __init__(self):
@@ -66,6 +72,7 @@ class MiniInstantiator(ABC):
             prompt=base_sentences,
             preface=self.preface,
             examples=examples,
+            prepare_messages_func=prepare_messages_alt,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -83,6 +90,7 @@ class MiniInstantiator(ABC):
             prompt=base_sentences,
             preface=self.preface,
             examples=examples,
+            prepare_messages_func=prepare_messages_alt,
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
@@ -142,9 +150,7 @@ class MiniInstantiator(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         **kwargs,
     ) -> "Self.OutputFormat":
-        title_body = self.title_body_sync(
-            base_sentences, **kwargs
-        )
+        title_body = self.title_body_sync(base_sentences, **kwargs)
         return self.OutputFormat(
             **{
                 k: v.cast_FQ(
@@ -165,9 +171,7 @@ class MiniInstantiator(ABC):
     ) -> "Self.OutputFormat":
         if verify_before_instantion:
             for i in range(n_verify):
-                title_body = await self.title_body(
-                    base_sentences, **kwargs
-                )
+                title_body = await self.title_body(base_sentences, **kwargs)
                 sd = shallow_dict(title_body)
                 fqs = {k: None for k in sd.keys()}
                 valid = {k: False for k in sd.keys()}
@@ -239,10 +243,38 @@ class Neg(MiniInstantiator):
             "You are a helpful assistant. I will give you a forecasting question with Yes/No "
             "answer. You should then give me the NEGATION of the question, i.e. the question that "
             "would be answered YES if the original question would be answered NO, and vice "
-            "versa. Demorgan's laws should be followed with and/or negation. Avoid using the word "
-            "'won't'. If applicable, the different parts of the question should be negated one to one. "
-            "For example the new title should be an negation of the original title.  Body questions should be negations"
-            "of the original body questions.  Statements / background information can be kept the same."
+            "versa. Notes to keep in mind:\n"
+            "- Demorgan's laws should be followed with and/or negation.\n"
+            "- In a conditional question, do not negate the condition. E.g. 'If it rains tomorrow, "
+            "will the temperature be less than 15 degrees Celsius?' should be negated to 'If it rains "
+            "tomorrow, will the temperature be 15 degrees Celsius or more?'.\n"
+            "- The negation of 'Will there be proof/evidence/reports of X?' is usually "
+            "'Will there be no proof/evidence/reports of X?', not "
+            "'Will there be proof/evidence/reports of not X?.' "
+            "This also applies to the resolution criteria: "
+            "'Resolves YES if there is proof/evidence reports of X' should be negated to "
+            "'Resolves YES if there is no proof/evidence/reports of X' "
+            "unless explicit resolution criteria are given for the original question to resolve NO, "
+            "in which case those explicit criteria should be given as the resolution criteria for the negated "
+            "question.\n"
+            "- If applicable, the different parts of the question should be negated one to one. "
+            "For example the new title should be an negation of the original title. Body questions "
+            "should be negations of the original body questions. Statements / background information "
+            "would generally be kept the same.\n"
+            "- Pay attention to correctly negate existential and universal quantifiers. For example, "
+            "the negation of 'Will Elon Musk's net worth, at any point before 2050, exceed 1 trillion "
+            "USD?' is 'Will Elon Musk's net worth never exceed 1 trillion USD before 2050?', and NOT "
+            "'Will Elon Musk's net worth, at any point before 2050, not exceed 1 trillion USD?'.\n"
+            "- Make sure you retain ALL the information in the question title and body! You cannot "
+            "discard a single relevant detail.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. "
+            "You can negate this normally, i.e. 'Which of these countries will not legalize human cloning by 2030? (Japan)'. "
+            "Such a question may also itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly negate such a combination with de Morgan's law."
         )
 
         self.examples = [
@@ -381,13 +413,28 @@ class And(MiniInstantiator):
             "    - ((P1 OR P2) AND Q) might have to be combined as something like: "
             "Will BOTH of the following occur: (1) EITHER of the following occurs: (a) P1 OR (b) P2 "
             "(2) Q. Unless a more natural formulation exists.\n"
+            " - Be careful when combining conditional expressions (which often have words like 'given' and 'if'). "
+            "'(Given A then P) AND (Given B then Q) "
+            "should be combined as 'Given (A AND B) then (P AND Q)'. \n"
+            " - When only one of the questions is conditional, the combined question should be conditional. "
+            "i.e. '(Given A then P) AND Q' should be combined as 'Given A then (P AND Q)'.\n"
             " - Most importantly: make sure you retain ALL the information in the question bodies from "
             "BOTH base questions! You cannot discard a single relevant detail. "
             "All this is for an experiment to test the logical consistency of forecasters: "
             "The combined question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            " - Also, make sure that the title is self-sufficient independent of the body, i.e. "
+            "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?'\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly combine such combinations as previously described."
         )
 
         self.examples = [
@@ -568,13 +615,32 @@ class Or(MiniInstantiator):
             "    - ((P1 AND P2) OR Q) might have to be combined as something like: "
             "Will EITHER of the following occur: (1) BOTH of the following occur: (a) P1 AND (b) P2 "
             "(2) Q. Unless a more natural formulation exists.\n"
+            " - Be careful when combining conditional expressions (which often have words like 'given' and 'if'). "
+            "'(Given A then P) OR (Given B then Q) "
+            "should be combined as is, rather than messing up the conditions. E.g. a phrasing like "
+            "'Will either of the following occur given their respective conditions: (a) Given A then P? "
+            "(b) Given B then Q?' is good.\n"
+            " - This also applies when only one of the questions is conditional. Like 'P OR (Given A then Q)'"
+            "should be phrased as something like: "
+            "'Will either of the following occur given their respective conditions are met? "
+            "(a) P (b) Given A, then Q?'.\n"
             " - Most importantly: make sure you retain ALL the information in the question bodies from "
             "BOTH base questions! You cannot discard a single relevant detail. "
             "All this is for an experiment to test the logical consistency of forecasters: "
             "The combined question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your logical combination; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            "- Also, make sure that the title is self-sufficient independent of the body, i.e. "
+            "is a question that can be meaningfully answered without looking at the body. So you CANNOT "
+            "give me a question title like 'Is the following true?' or 'What will happen if the following happens?'\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030. "
+            "Make sure to correctly combine such combinations as previously described."
         )
 
         self.examples = [
@@ -723,7 +789,6 @@ class Conditional(MiniInstantiator):
         Q_given_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant."
             "I will give you two forecasting questions P and Q with Yes/No answers. "
@@ -746,7 +811,16 @@ class Conditional(MiniInstantiator):
             "The conditional question you give will be handed to the forecasters without having seen the "
             "base questions, so it is critical that all the information in the base questions be included "
             "in your conditional expression; the resolution criterion for each component should be neatly and "
-            "clearly provided. "
+            "clearly provided.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030."
         )
 
         self.examples = [
@@ -805,7 +879,6 @@ class Consequence(MiniInstantiator):
         cons_P: ForecastingQuestion
 
     def __init__(self):
-
         self.preface = (
             "You are a helpful assistant."
             "I will give you a forecasting questions P with Yes/No answer. "
@@ -820,7 +893,16 @@ class Consequence(MiniInstantiator):
             "if they give consistent answers (like giving a higher probability to 'Is Kelly a bank-'"
             "teller?' than 'Is Kelly a bank-teller active in the feminist movement?') so it is critical "
             "that any information that might inform someone's probability estimate to your output question "
-            "is clearly included."
+            "is clearly included.\n"
+            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
+            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
+            "the body, but the title should be basically a well-formed question on its own.\n"
+            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
+            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
+            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
+            "itself be a logical combination -- e.g. "
+            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030."
         )
 
         self.examples = [
