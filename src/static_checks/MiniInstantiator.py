@@ -887,6 +887,7 @@ class Consequence(MiniInstantiator):
             " - Make sure that your output is truly a guaranteed logical consequence of P. "
             "Look at the resolution criteria for P and make sure your output question will "
             "necessarily resolve True if the resolution criteria for P are met.\n"
+            " - Do not make any asssumptions. Your output must follow from P without any assumptions. \n"
             " - It should not be just something completely equivalent to P. Think of something "
             "that is different but logically follows from P.\n"
             " - Most importantly: if there is any background information (not resolution criteria) "

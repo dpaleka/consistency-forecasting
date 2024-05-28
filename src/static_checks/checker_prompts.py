@@ -145,7 +145,7 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P.
 
 Example 1:
 
@@ -170,6 +170,14 @@ P: It is daytime.
 Q: The sun has risen and not set yet.
 
 Reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P; however, they are completely equivalent and therefore not useful to us.
+Valid: False
+
+Example 4:
+
+P: Will at least 50 percent of the world's population live in Asia by 2050?
+Q: Will Asia have at least 3 billion residents by 2050?
+
+Reasoning: They probably thought Q was a logical consequence of P because the world population is 8 billion, half of that is 4 billion, so if Asia has more than 4 billion people it must have more than 3 billion people. However, this assumes that the world population in 2050 is 8 billion, which we do not know for certain. Without knowing the world population in 2050, we cannot judge if 50 percent of that is more or less than 3 billion.
 Valid: False
 
 ----
