@@ -45,10 +45,10 @@ checkers: dict[str, Checker] = {
     # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
     # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
     # "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
-    # "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
-    "ConsequenceChecker": ConsequenceChecker(
-        path=TUPLES_PATH / "ConsequenceChecker.jsonl"
-    ),
+    "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
+    # "ConsequenceChecker": ConsequenceChecker(
+    #     path=TUPLES_PATH / "ConsequenceChecker.jsonl"
+    # ),
     # "ParaphraseChecker": ParaphraseChecker(
     #     path=TUPLES_PATH / "ParaphraseChecker.jsonl"
     # ),
@@ -58,7 +58,7 @@ checkers: dict[str, Checker] = {
     # "SymmetryOrChecker": SymmetryOrChecker(
     #     path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
     # ),
-    # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
+    "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
 }
 
 
@@ -66,8 +66,9 @@ async def instantiate(
     BASE_DATA_PATH: Path,
     checker_list: dict[str, Checker],
     n_relevance: int = 10,
-    n_top_relevance: int = 3,
+    # n_top_relevance: int = 3,
     n_write: int = -1,
+    n_write_after=None,
     **kwargs,
 ):
     """
@@ -79,10 +80,11 @@ async def instantiate(
         BASE_DATA_PATH (Path): path to a jsonl file of ForecastingQuestions
         checker_list (dict[str, Checker]): dictionary of Checkers to instantiate with
         n_relevance (int, optional): _description_. number of possible tuples to test for relevance
-        n_top_relevance (int, optional): _description_. top n relevant possible tuples;
-            usually > n_write because some might fail verification
+        # n_top_relevance (int, optional): _description_. top n relevant possible tuples;
+        #     usually > n_write because some might fail verification -- cancelled, just sort don't truncate
         n_write (int, optional): _description_. max number of tuples we actually want to write.
             Leave as -1 to write all tuples that pass verification
+        n_write_after (int, optional): number to try at a time after trying full n_write once
     """
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
@@ -126,9 +128,10 @@ async def instantiate(
     for checker in checker_list.values():
         print(f"Instantiating and writing {checker.__class__.__name__}")
         await checker.instantiate_and_write_many(
-            possible_tuples[checker.num_base_questions][:n_top_relevance],
+            possible_tuples[checker.num_base_questions],
             model=MODEL,
             n_write=n_write,
+            n_write_after=n_write_after,
             overwrite=True,
             n_verification=3,
             **kwargs,
@@ -142,7 +145,8 @@ if __name__ == "__main__":
             BASE_DATA_PATH=BASE_DATA_PATH,
             checker_list=checkers,
             n_relevance=50,
-            n_top_relevance=50,
+            # n_top_relevance=50,
             n_write=10,
+            n_write_after=5,
         )
     )
