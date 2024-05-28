@@ -145,30 +145,47 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that could only be true if P is true. In other words, validate whether Q is logically contingent on P, ensuring that Q can only occur if P is true.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P.
 
 Example 1:
 
-P: A computer is connected to the internet.
-Q: A computer can receive emails.
+P: A computer can receive emails.
+Q: A computer is connected to the internet.
 
-Reasoning: If a computer is connected to the internet (P), then it is capable of receiving emails (Q). If P is false (the computer is not connected to the internet), then Q must also be false (the computer cannot receive emails), since receiving emails inherently requires an internet connection. Thus, Q's truth is contingent upon P being true.
+Reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Or, contrapositively: If a computer is not connected to the internet, it cannot receive emails. Therefore, Q is a logical consequence of P, meaning that if P is true, Q must also be true.
+
 Valid: True
 
 Example 2:
 
-P: It is raining.
-Q: The ground is wet.
+P: The ground is wet.
+Q: It is raining.
 
-Reasoning: If it is raining (P), then the ground is likely to be wet (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket), which means that Q does not strictly require P to be true. Therefore, Q can be true without P necessarily being true.
+Reasoning: If the ground is wet (P), it is possible it could be from rain (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket, or rain in the recent past), which means that P does not strictly require Q to be true. Therefore, P can be true without Q necessarily being true.
 Valid: False
 
 Example 3:
 
-P: The car engine is running.
-Q: The car is moving.
+P: It is daytime.
+Q: The sun has risen and not set yet.
 
-Reasoning: If the car engine is running (P), it is possible for the car to be moving (Q), but the car could be stationary (e.g., if it's in neutral or parked with the handbrake applied). Hence, Q can be true or false independently of P. Q does not exclusively depend on P being true.
+Reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P; however, they are completely equivalent and therefore not useful to us.
+Valid: False
+
+Example 4:
+
+P: Will at least 50 percent of the world's population live in Asia by 2050?
+Q: Will Asia have at least 3 billion residents by 2050?
+
+Reasoning: They probably thought Q was a logical consequence of P because the world population is 8 billion, half of that is 4 billion, so if Asia has more than 4 billion people it must have more than 3 billion people. However, this assumes that the world population in 2050 is 8 billion, which we do not know for certain. Without knowing the world population in 2050, we cannot judge if 50 percent of that is more or less than 3 billion.
+Valid: False
+
+Example 5:
+
+P: Will ANY of the following happen in 2025? (a) A manned mission to Mars (b) A new Starship launch by SpaceX?
+Q: Will a manned mission to Mars happen in 2025?
+
+Reasoning: No, P is a disjunction of two events, either of which happening will make P true. Q is a specific event, which is a subset of the events in P. So P can be true without Q being true.
 Valid: False
 
 ----
@@ -217,6 +234,3 @@ Valid: False
 P: {P}
 Q: {para_P}
 """
-
-
-
