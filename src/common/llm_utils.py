@@ -577,16 +577,46 @@ def prepare_messages(
     return messages
 
 
+def prepare_messages_alt(
+    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+) -> list[dict[str, str]]:
+    sys_preface = "You are a helpful assistant."
+    messages = [{"role": "system", "content": sys_preface}]
+    examples = examples or []
+    if not preface:
+        preface = ""
+    for example in examples:
+        if isinstance(example.user, BaseModel):
+            example.user = example.user.model_dump_json()
+        if isinstance(example.assistant, BaseModel):
+            example.assistant = example.assistant.model_dump_json()
+        messages.append({"role": "user", "content": example.user})
+        example.user = preface + "\n\n" + example.user
+        # Convert assistant's response to string if it's not already
+        assistant_content = (
+            str(example.assistant)
+            if isinstance(example.assistant, (float, int))
+            else example.assistant
+        )
+        messages.append({"role": "assistant", "content": assistant_content})
+    if isinstance(prompt, BaseModel):
+        prompt = prompt.model_dump_json()
+    prompt = preface + "\n\n" + prompt
+    messages.append({"role": "user", "content": prompt})
+    return messages
+
+
 async def answer(
     prompt: str,
     preface: str | None = None,
     examples: list[Example] | None = None,
+    prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
         str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
-    messages = prepare_messages(prompt, preface, examples)
+    messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
         "model": "gpt-4-1106-preview",
         "temperature": 0.0,
@@ -600,12 +630,13 @@ def answer_sync(
     prompt: str,
     preface: str | None = None,
     examples: list[Example] | None = None,
+    prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
     assert not is_model_name_valid(
         str(prompt)
     ), "Are you sure you want to pass the model name as a prompt?"
-    messages = prepare_messages(prompt, preface, examples)
+    messages = prepare_messages_func(prompt, preface, examples)
     options = {
         "model": "gpt-4-1106-preview",
         "temperature": 0.0,
