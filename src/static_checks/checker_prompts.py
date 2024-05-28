@@ -180,6 +180,14 @@ Q: Will Asia have at least 3 billion residents by 2050?
 Reasoning: They probably thought Q was a logical consequence of P because the world population is 8 billion, half of that is 4 billion, so if Asia has more than 4 billion people it must have more than 3 billion people. However, this assumes that the world population in 2050 is 8 billion, which we do not know for certain. Without knowing the world population in 2050, we cannot judge if 50 percent of that is more or less than 3 billion.
 Valid: False
 
+Example 5:
+
+P: Will ANY of the following happen in 2025? (a) A manned mission to Mars (b) A new Starship launch by SpaceX?
+Q: Will a manned mission to Mars happen in 2025?
+
+Reasoning: No, P is a disjunction of two events, either of which happening will make P true. Q is a specific event, which is a subset of the events in P. So P can be true without Q being true.
+Valid: False
+
 ----
 
 P: {P}
