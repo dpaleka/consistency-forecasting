@@ -16,7 +16,7 @@ from scipy.optimize import (
 )
 from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any, Self, Callable
+from typing import Type, Any, Self, Callable, Optional
 from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import (
     ForecastingQuestion,
@@ -167,7 +167,7 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> "Self.TupleFormat" | None:
+    ) -> Optional["Self.TupleFormat"]:
         """
         If the global variable 'verify_before_instantiation' is True, this method
         will instantiate and verify the tuple format with metadata three times,
@@ -212,7 +212,7 @@ class Checker(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         supplied_metadata=None,
         **kwargs,
-    ) -> "Self.TupleFormat_with_metadata" | None:
+    ) -> Optional["Self.TupleFormat_with_metadata"]:
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
