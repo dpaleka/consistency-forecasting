@@ -189,13 +189,11 @@ class Checker(ABC):
                     length_check = True
                 if verification_result.valid and length_check:
                     self.counter += 1
-                    print(f"-----------------{self.counter}-------------")
                     return instantiated_object
             return None
         else:
             instantiated_object = await self.instantiate(base_sentences, **kwargs)
             self.counter += 1
-            print(f"-----------------{self.counter}-------------")
             return instantiated_object
 
     def instantiate_sync_with_metadata(
@@ -294,27 +292,26 @@ class Checker(ABC):
                 | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
             ),
         ):
-            print("N_WRITE IS:-----", n_write)
-            print("SELF.COUNTER IS:---", self.counter)
-            if self.counter >= n_write > 0:
-                print("---------RETVRN--------")
-                return
+            if isinstance(base_sentences, tuple):
+                base_sentences, supplied_metadata = base_sentences
             else:
-                if isinstance(base_sentences, tuple):
-                    base_sentences, supplied_metadata = base_sentences
-                else:
-                    supplied_metadata = None
-                return self.instantiate_and_write(
-                    base_sentences, supplied_metadata=supplied_metadata, **kwargs
-                )
+                supplied_metadata = None
+            return self.instantiate_and_write(
+                base_sentences, supplied_metadata=supplied_metadata, **kwargs
+            )
 
         # Added print statement to log the base sentences being processed
-        print(f"Base sentences: {base_sentencess}")
-        results = await parallelized_call(
-            _instantiate_and_write, base_sentencess, max_concurrent_queries=50
-        )
-        # Added print statement to log the results of instantiation
-        print(f"Results of instantiation: {results}")
+        # print(f"Base sentences: {base_sentencess}")
+        bq_counter = 0  # number of base sentences processed
+        while n_write == -1 or self.counter < n_write:
+            results = await parallelized_call(
+                _instantiate_and_write,
+                base_sentencess[bq_counter : bq_counter + n_write - self.counter],
+                max_concurrent_queries=10,
+            )
+            bq_counter += n_write - self.counter
+        # # Added print statement to log the results of instantiation
+        # print(f"Results of instantiation: {results}")
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
