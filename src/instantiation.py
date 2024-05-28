@@ -132,7 +132,7 @@ async def instantiate(
             model=MODEL,
             n_write=n_write,
             overwrite=True,
-            n_verification=3,
+            n_verification=1,
             **kwargs,
         )
 
