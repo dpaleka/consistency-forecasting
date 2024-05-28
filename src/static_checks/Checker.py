@@ -273,7 +273,6 @@ class Checker(ABC):
             | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
         ),
         n_write: int = -1,
-        n_write_after=None,
         overwrite=False,
         **kwargs,
     ):
@@ -301,20 +300,17 @@ class Checker(ABC):
                 base_sentences, supplied_metadata=supplied_metadata, **kwargs
             )
 
-        if n_write_after is None:
-            n_write_after = n_write // 2
-        n_write_now = n_write
         # Added print statement to log the base sentences being processed
         # print(f"Base sentences: {base_sentencess}")
         bq_counter = 0  # number of base sentences processed
         while n_write == -1 or self.counter < n_write:
+            counter_prev = self.counter
             results = await parallelized_call(
                 _instantiate_and_write,
-                base_sentencess[bq_counter : bq_counter + n_write_now],
+                base_sentencess[bq_counter : bq_counter + n_write - counter_prev],
                 max_concurrent_queries=10,
             )
-            bq_counter += n_write_now
-            n_write_now = n_write_after
+            bq_counter += n_write - counter_prev
             print(f"Counter: {self.counter}")
             print(f"BQ Counter: {bq_counter}")
         # # Added print statement to log the results of instantiation
