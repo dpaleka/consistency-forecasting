@@ -946,7 +946,9 @@ class Consequence(MiniInstantiator):
             "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
             "itself be a logical combination -- e.g. "
             "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
-            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030."
+            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030.\n"
+            " - If you really cannot think of any consequence, just don't rather than coming up with something "
+            "dumb. Just output 'ERROR: NO CONSEQUENCE FOUND'."
         )
 
         self.examples = [
