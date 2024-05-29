@@ -211,15 +211,18 @@ class Checker(ABC):
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
         result = self.instantiate_with_verification_sync(base_sentences, **kwargs)
-        if verify_before_instantiation:
-            instantiated_object, verification_result = result
-            more_metadata = {"verification_result": verification_result.dict()}
-            update_recursive(metadata, more_metadata)
+        if result:
+            if verify_before_instantiation:
+                instantiated_object, verification_result = result
+                more_metadata = {"verification_result": verification_result.dict()}
+                update_recursive(metadata, more_metadata)
+            else:
+                instantiated_object = result
+            return self.TupleFormat_with_metadata(
+                **instantiated_object.dict(), metadata=metadata
+            )
         else:
-            instantiated_object = result
-        return self.TupleFormat_with_metadata(
-            **instantiated_object.dict(), metadata=metadata
-        )
+            return None
 
     async def instantiate_with_metadata(
         self,
@@ -235,13 +238,13 @@ class Checker(ABC):
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
         result = await self.instantiate_with_verification(base_sentences, **kwargs)
-        if verify_before_instantiation:
-            instantiated_object, verification_result = result
-            more_metadata = {"verification_result": verification_result.dict()}
-            update_recursive(metadata, more_metadata)
-        else:
-            instantiated_object = result
         if result:
+            if verify_before_instantiation:
+                instantiated_object, verification_result = result
+                more_metadata = {"verification_result": verification_result.dict()}
+                update_recursive(metadata, more_metadata)
+            else:
+                instantiated_object = result
             return self.TupleFormat_with_metadata(
                 **instantiated_object.dict(), metadata=metadata
             )
