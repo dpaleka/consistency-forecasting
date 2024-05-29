@@ -24,7 +24,7 @@ In case of "by YYYY", default to 31/12/YYYY.
 In case of "by DD MM YYYY" or "on DD MM YYYY", of course, default to DD MM YYYY."""
 
 resolution_date_prompt = """\
-I want you to help me craft  an appropiate resolution date for a forecasting question,
+I want you to help me craft an appropriate resolution date for a forecasting question,
 as on the sites like Metaculus / PredictIt.
 
 {resolution_date_specification}
@@ -34,7 +34,7 @@ Question: Will there be any progress in human lifespan enhancement before 2100?
 
 ->
 
-resolution_date: 31/12/2099
+resolution_date: 2099-12-31 00:00:00
 
 
 Example 2:
@@ -42,7 +42,7 @@ Question: Will the United Kingdom deploy an AI-powered public surveillance syste
 
 ->
 
-resolution_date: 31/06/2026
+resolution_date: 2026-06-30 00:00:00
 
 ---
 
@@ -81,7 +81,7 @@ This question will resolve as Yes if any of the following occur before January 1
 The verification process must meet or exceed the standards used in 2024.
 People resuscitated after being cryonically frozen do not count towards this question's resolution.
 
-resolution_date: 31/12/2099
+resolution_date: 2099-12-31 00:00:00
 
 
 Example 2:
@@ -97,7 +97,7 @@ The system must be operational, not in a trial phase.
 In the event of a partial deployment (e.g., limited to specific cities or areas), the question will resolve as Yes if the system is intended for nationwide expansion. 
 Temporary deployments for specific events or the use of similar technology in private spaces do not count towards this question's resolution.
 
-resolution_date: 31/12/2025
+resolution_date: 2025-12-31 00:00:00
 
 
 Example 3:
@@ -115,7 +115,7 @@ resolution_criteria: This question will resolve as Yes if, by December 31, 2030,
 This question resolves as YES upon official recognition of the discovery by both NASA and ESA, or by one of these organizations together with a publication in a peer-reviewed scientific journal or major conference. 
 Otherwise, this question resolves as NO.
 
-resolution_date: 31/12/2030
+resolution_date: 2030-12-31 00:00:00
 
 
 Example 4:
@@ -133,7 +133,7 @@ The proof must be the first to satisfy these criteria. In case of simultaneous d
 
 A machine learning model is considered to have proved it if cited as the most important author in the peer-reviewed paper, or if human authors explicitly state the model completed the majority of the work.
 
-resolution_date: 31/12/2030
+resolution_date: 2030-12-31 00:00:00
 
 -----
 
@@ -160,7 +160,7 @@ valid: [True/False]
 Example 1:
 title: Will Kanye West become the president of the United States by 2020?
 body: This question will resolve as Yes if Kanye West is elected as the president of the United States before January 1, 2020.
-resolution_date: 01/01/2020
+resolution_date: 2020-01-01 00:00:00
 
 ->
 
@@ -171,7 +171,7 @@ valid: False
 Example 2:
 title: Will Kanye West become the president of the United States by 2030?
 body: This question will resolve as Yes if it happens.
-resolution_date: 01/01/2030
+resolution_date: 2030-01-01 00:00:00
 
 ->
 
@@ -182,7 +182,7 @@ valid: False
 Example 3:
 title: Will Kanye West become the president of the United States by 2030?
 body: This question will resolve as Yes if Kanye West is elected and inaugurated as the president of the United States before January 1, 2030.
-resolution_date: 01/01/2030
+resolution_date: 2030-01-01 00:00:00
 
 ->
 
@@ -194,7 +194,7 @@ valid: True
 Example 4:
 title: Will any member of Kanye West's family become the president of the United States by 2035?
 body: This question will resolve as Yes if Kanye West or any of his family members (including his wife, children, siblings and parents) is elected and... Show More\n
-resolution_date: 01/01/2035
+resolution_date: 2035-01-01 00:00:00
 
 ->
 
