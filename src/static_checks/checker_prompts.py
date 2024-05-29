@@ -1,81 +1,126 @@
-neg_verification_prompt = """I am going to give you two questions, P and Q, and I want you to validate wether Q is the negation of P.
+neg_verification_prompt = """I am going to give you two questions, P and Q, and I want you to validate whether Q is the negation of P.
 So if P is true, Q should be false, and if P is false, Q should be true.
 
 Example 1:
 
-P: What is probability of getting a 6 when rolling a dice?
-Q: What is probability of not getting a 6 when rolling a dice?
-
-reasoning: Both events are mutually exclusive and exhaustive. So if the probability of getting a 6 is 1/6, the probability of not getting a 6 is 5/6.
+P:
+  Title: Will the Second Amendment of the United States Constitution be amended or repealed before 2025?
+  Body: This question will resolve as Yes if, at any time between January 1, 2019 to January 1, 2025, the Second Amendment is repealed, amended, or modified in any way through the procedure in Article Five of the US Constitution.
+        
+Q:
+  Title: Will the Second Amendment of the United States Constitution remain unchanged until 2025?
+  Body: This question will resolve as Yes if, from January 1, 2019 to January 1, 2025, the Second Amendment is not repealed, amended, or modified in any way through the procedure in Article Five of the US Constitution.
+        
+reasoning: Both events are mutually exclusive and exhaustive. So if the Second Amendment is amended or repealed before 2025, it cannot remain unchanged until 2025, and vice versa.
 valid: True
 
 Example 2:
 
-P: What is the probability of getting a 6 when rolling a dice?
-Q: What is the probability of getting a 5 when rolling a dice?
+P:
+  Title: Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?
+  Body: This question will resolve as Yes if, before January 1, 2027, one or more of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany triggers Article 50 of the Treaty of Lisbon by notifying the European Council of its intention to leave the union.
+        It also resolves as positive if by the same deadline the entity called European Union has dissolved completely or dissolved to create a new politico-economic union of some European nations under a different name.
 
-reasoning: These two events are not mutually exclusive. In most cases, both will be false.
+Q:
+  Title: Will none of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?
+  Body: This question will resolve as Yes if, before January 1, 2027, none of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany triggers Article 50 of the Treaty of Lisbon by notifying the European Council of its intention to leave the union.
+        It also resolves as positive if by the same deadline the entity called European Union remains unchanged.
+        
+reasoning: These two events are not mutually exclusive. It is possible for both to be false if the EU dissolves to create a new politico-economic union under a different name.
 valid: False
 
 ----
 
-P: {P}
-Q: {not_P}
+P title: {P_title}
+P body: {P_body}
+Q title: {not_P_title}
+Q body: {not_P_body}
 """
 
-and_verification_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the conjunction of P and Q.
+and_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the conjunction of P and Q.
 This means that R is true if and only if both P and Q are true.
 
 Example 1:
 
-P: What is the probability of getting a 6 when rolling a dice?
-Q: What is the probability of getting a 5 when rolling a dice?
-R: What is the probability of getting a number larger than 4 when rolling a dice?
+P:
+  Title: What is the probability of getting a 6 when rolling a dice?
+  Body: The event occurs if a 6 appears on the top face when a fair six-sided die is rolled.
+Q:
+  Title: What is the probability of getting a 5 when rolling a dice?
+  Body: The event occurs if a 5 appears on the top face when a fair six-sided die is rolled.
+R:
+  Title: What is the probability of getting a number larger than 4 when rolling a dice?
+  Body: The event occurs if either a 5 or a 6 appears on the top face when a fair six-sided die is rolled.
 
 reasoning: The event of getting a number larger than 4 is the conjunction of getting a 5 and getting a 6.
 valid: True
 
 Example 2:
-P: What is the probability of Tesla switching to gasoline cars before 2030?
-Q: What is the probability of Elon Musk becoming the president of the United States before 2030?
-R: What is the probability of Spain leaving the European Union before 2030?
+
+P:
+  Title: What is the probability of Tesla switching to gasoline cars before 2030?
+  Body: The event occurs if Tesla announces and implements a complete switch to gasoline-powered cars before January 1, 2030.
+Q:
+  Title: What is the probability of Elon Musk becoming the president of the United States before 2030?
+  Body: The event occurs if Elon Musk is inaugurated as the President of the United States at any time before January 1, 2030.
+R:
+  Title: What is the probability of Spain leaving the European Union before 2030?
+  Body: The event occurs if Spain formally triggers Article 50 of the Treaty on European Union to leave the EU before January 1, 2030.
 
 reasoning: None of the events are related to each other. So the probability of Spain leaving the EU is not the conjunction of the other two events.
 valid: False
 
 ----
 
-P: {P}
-Q: {Q}
-R: {P_and_Q}
+P title: {P_title}
+P body: {P_body}
+Q title: {Q_title}
+Q body: {Q_body}
+R title: {R_title}
+R body: {R_body}
 """
 
-or_verification_prompt = """I am going to give you three questions P, Q and R, and I want you to validate wether R is the disjunction of P and Q.
+or_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the disjunction of P and Q.
 This means that R is true if at least one of P or Q is true.
 
 Example 1:
 
-P: What is the probability of the republican party winning the 2024 US elections?
-Q: What is the probability of the democratic party winning the 2024 US elections?
-R: What is the probability of one of two major US parties winning the 2024 US elections? 
+P:
+  Title: What is the probability of the republican party winning the 2024 US elections?
+  Body: The event occurs if the Republican party candidate is elected as the President of the United States in the 2024 elections.
+Q:
+  Title: What is the probability of the democratic party winning the 2024 US elections?
+  Body: The event occurs if the Democratic party candidate is elected as the President of the United States in the 2024 elections.
+R:
+  Title: What is the probability of one of the two major US parties winning the 2024 US elections?
+  Body: The event occurs if either the Republican party candidate or the Democratic party candidate is elected as the President of the United States in the 2024 elections.
 
-reasoning: The event of one of the two major US parties winning the 2024 US elections is the disjunction of the republican party winning and the democratic party winning.
+reasoning: The event of one of the two major US parties winning the 2024 US elections is the disjunction of the Republican party winning and the Democratic party winning.
 valid: True
 
 Example 2:
 
-P: What is the probability of the republican party winning the 2024 US elections?
-Q: What is the probability of the democratic party winning the 2024 US elections?
-R: What is the probability of an atheist winning the 2024 US elections?
+P:
+  Title: What is the probability of the republican party winning the 2024 US elections?
+  Body: The event occurs if the Republican party candidate is elected as the President of the United States in the 2024 elections.
+Q:
+  Title: What is the probability of the democratic party winning the 2024 US elections?
+  Body: The event occurs if the Democratic party candidate is elected as the President of the United States in the 2024 elections.
+R:
+  Title: What is the probability of an atheist winning the 2024 US elections?
+  Body: The event occurs if a candidate who identifies as an atheist is elected as the President of the United States in the 2024 elections.
 
 reasoning: Either P or Q can happen, but R is not related to either of them.
 valid: False
 
 ----
 
-P: {P}
-Q: {Q}
-R: {P_or_Q}
+P title: {P_title}
+P body: {P_body}
+Q title: {Q_title}
+Q body: {Q_body}
+R title: {R_title}
+R body: {R_body}
 """
 
 but_verification_prompt = """
@@ -88,28 +133,44 @@ Your task is to validate whether the relationships between P, Q, R, and S are lo
 
 Example 1:
 
-P: What is the probability of a Spanish manned mission to the moon before 2030?
-R: What is the probability of the US manned mission to the moon before 2030 and there not being a Spanish manned mission before 2030?
-S: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
+P:
+  Title: What is the probability of a Spanish manned mission to the moon before 2030?
+  Body: The event occurs if a Spanish crewed spacecraft lands on the moon before January 1, 2030.
+R:
+  Title: What is the probability of a US manned mission to the moon before 2030 and there not being a Spanish manned mission before 2030?
+  Body: The event occurs if a US crewed spacecraft lands on the moon before January 1, 2030, and a Spanish crewed spacecraft does not land on the moon before January 1, 2030.
+S:
+  Title: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
+  Body: The event occurs if either a Spanish crewed spacecraft or a US crewed spacecraft lands on the moon before January 1, 2030.
 
 Reasoning: Assuming Q is the occurrence of a US manned mission before 2030, R combines this with the negation of P, i.e., no Spanish mission before 2030. S is true if either mission happens. The definitions for R as Q and not P, and S as P or Q, are logically coherent.
 Valid: True
 
 Example 2:
 
-P: What is the probability of a Spanish manned mission to the moon before 2030?
-R: What is the probability of both a Spanish and a US manned mission to the moon before 2030?
-S: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
+P:
+  Title: What is the probability of a Spanish manned mission to the moon before 2030?
+  Body: The event occurs if a Spanish crewed spacecraft lands on the moon before January 1, 2030.
+R:
+  Title: What is the probability of both a Spanish and a US manned mission to the moon before 2030?
+  Body: The event occurs if both a Spanish crewed spacecraft and a US crewed spacecraft land on the moon before January 1, 2030.
+S:
+  Title: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
+  Body: The event occurs if either a Spanish crewed spacecraft or a US crewed spacecraft lands on the moon before January 1, 2030.
 
-Reasoning: In this scenario, R doesnt contain the negation of P, so the relationship between P, Q, R, and S is not the ones we are looking for.
+Reasoning: In this scenario, R doesn't contain the negation of P, so the relationship between P, Q, R, and S is not the ones we are looking for.
 Valid: False
 
 ----
 
-P: {P}
-R: {Q_and_not_P}
-S: {P_or_Q}
+P title: {P_title}
+P body: {P_body}
+R title: {R_title}
+R body: {R_body}
+S title: {S_title}
+S body: {S_body}
 """
+
 
 conditional_verification_prompt = """
 I will provide three questions: P, R, and S. In this scenario:
