@@ -178,7 +178,8 @@ class Checker(ABC):
         """
         if verify_before_instantiation:
             print(f"verifying before instantiation {n_verification} times")
-            for _ in range(n_verification):
+            for i in range(n_verification):
+                print(f"VERIFICATION ATTEMPT {i}")
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
                 if verify_length:
@@ -304,12 +305,13 @@ class Checker(ABC):
         # print(f"Base sentences: {base_sentencess}")
         bq_counter = 0  # number of base sentences processed
         while n_write == -1 or self.counter < n_write:
+            counter_prev = self.counter
             results = await parallelized_call(
                 _instantiate_and_write,
-                base_sentencess[bq_counter : bq_counter + n_write],
+                base_sentencess[bq_counter : bq_counter + n_write - counter_prev],
                 max_concurrent_queries=10,
             )
-            bq_counter += n_write
+            bq_counter += n_write - counter_prev
             print(f"Counter: {self.counter}")
             print(f"BQ Counter: {bq_counter}")
         # # Added print statement to log the results of instantiation
