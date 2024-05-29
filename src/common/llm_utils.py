@@ -435,7 +435,7 @@ async def query_api_chat_native(
     options = default_options | kwargs
     options["model"] = model or options["model"]
 
-    client, client_name = get_client_native(model, use_async=True)
+    client, client_name = get_client_native(options["model"], use_async=True)
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
@@ -718,7 +718,7 @@ def get_embeddings_sync(
     texts: list[str],
     embedding_model: str = "text-embedding-3-small",
     model: str = "gpt-3.5-turbo",
-) -> list[float]:
+) -> list[list[float]]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=False)
     response = client.client.embeddings.create(input=texts, model=embedding_model)
