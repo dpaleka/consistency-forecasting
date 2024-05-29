@@ -26,6 +26,8 @@ use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 
 
 class MiniInstantiator(ABC):
+    use_examples_here = use_examples
+
     def __init__(self):
         pass
 
@@ -64,7 +66,7 @@ class MiniInstantiator(ABC):
         base_sentences: "Self.BaseSentenceFormat_stripped",
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
-        if use_examples:
+        if self.use_examples_here:
             examples = self.examples
         else:
             examples = None
@@ -82,7 +84,7 @@ class MiniInstantiator(ABC):
         base_sentences: "Self.BaseSentenceFormat_stripped",
         **kwargs,
     ) -> "Self.OutputFormat_stripped":
-        if use_examples:
+        if self.use_examples_here:
             examples = self.examples
         else:
             examples = None
@@ -737,8 +739,12 @@ class Paraphrase(MiniInstantiator):
             "answer. You should then give me a paraphrased version of the question that "
             "expresses the same underlying concept. The question should be as different as "
             "possible from the original question, while still meaning the exact same thing. "
-            "Use synonyms, etc. Make sure to retain all the information in the question title "
-            "and body! This is very important."
+            "Use synonyms, etc. Notes:\n\n"
+            " - Make sure to retain all information in the question title and body! "
+            "Paraphrase, but don't discard the essential meaning. This is very important.\n"
+            " - Something to note: you cannot rephrase P to 'Do you think that P?', 'Is P likely?' "
+            "or 'Will there be evidence of P?'. These are not paraphrases, they mean different "
+            "things (something may be likely and not happen, etc.)."
         )
 
         self.examples = [
@@ -769,6 +775,8 @@ class Paraphrase(MiniInstantiator):
 
 
 class Conditional(MiniInstantiator):
+    use_examples_here = True
+
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
         Q: ForecastingQuestion
@@ -827,31 +835,50 @@ class Conditional(MiniInstantiator):
             Example(
                 user=self.BaseSentenceFormat_stripped(
                     P=ForecastingQuestion_stripped(
-                        title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                        title="Will Kristaps Porzingis miss at least one playoff game due to injury?",
                         body=(
-                            "Resolves YES if the spot price of Bitcoin against USD is more than "
-                            "100,000 on 1st January 2025. Resolves NO otherwise."
+                            "The sportswriter Dan Devine recently wrote an article titled "
+                            "''Why Kristaps Porziņģis is the key to the Celtics' title hopes'':\n\n"
+                            "With the addition of Porzingis’ varied scoring game, a Celtics attack "
+                            "that was below league-average in fourth-quarter scoring last season has "
+                            "now jumped up to eighth. A group that finished 11th last season in scoring "
+                            "efficiency in the “clutch” — when the score’s within five points in the last "
+                            "five minutes — is up to fifth.\n\n"
+                            "However, Porzingis has an extensive injury history, and many fear that he won't be "
+                            "available for the playoffs. Will Kristaps Porzingis miss at least one playoff game due to injury?\n\n"
+                            "Resolution criteria: Kristaps Porzingis needs to miss at least one full game, and he needs to "
+                            "show up in the Celtics injury report for it to count."
                         ),
                     ),
                     Q=ForecastingQuestion_stripped(
-                        title="Will the price of Ethereum be above $10,000 on 1st January 2025?",
+                        title="Will the Celtics win the NBA title?",
                         body=(
-                            "Resolves YES if the spot price of Ethereum against USD is more than "
-                            "10,000 on 1st January 2025. Resolves NO otherwise."
+                            "Resolves YES if the Boston Celtics win the 2023-2024 NBA championship, "
+                            "and NO if they do not win the title.."
                         ),
                     ),
                 ),
                 assistant=self.OutputFormat_stripped(
                     Q_given_P=ForecastingQuestion_stripped(
                         title=(
-                            "Given that on 1st January 2025, the price of Bitcoin will be above $100,000, "
-                            "will the price of Ethereum be above $10,000 on the same date?"
+                            "Conditional on Kristaps Porzingis missing at least one playoff game due to injury, "
+                            "will the Celtics win the NBA title?"
                         ),
                         body=(
-                            "Resolves N/A if the price of Bitcoin is not above $100,000 on 1st January 2025. "
-                            "If the condition is met (if the price of Bitcoin is above $100,000 on 1st Jan 2025 "
-                            ", then resolves YES if the spot price of Ethereum against USD is more than 10,000 "
-                            "and NO if it's not on 1st Jan 2025."
+                            "The sportswriter Dan Devine recently wrote an article titled "
+                            "''Why Kristaps Porziņģis is the key to the Celtics' title hopes'':\n\n"
+                            "With the addition of Porzingis’ varied scoring game, a Celtics attack "
+                            "that was below league-average in fourth-quarter scoring last season has "
+                            "now jumped up to eighth. A group that finished 11th last season in scoring "
+                            "efficiency in the “clutch” — when the score’s within five points in the last "
+                            "five minutes — is up to fifth.\n\n"
+                            "However, Porzingis has an extensive injury history, and many fear that he won't be "
+                            "available for the playoffs. How much impact impact would a Kristaps Porzingis injury have? \n\n"
+                            "Criterion for condition: Kristaps Porzingis needs to miss at least one full game, and he needs to "
+                            "show up in the Celtics injury report for it to count.\n"
+                            "Resolution criteria for the outcome: Resolves YES if Boston Celtics win the 2023-2024 "
+                            "NBA championship. Resolves NO otherwise.\n"
+                            "If the condition is not met, resolves N/A."
                         ),
                     )
                 ),
@@ -890,6 +917,20 @@ class Consequence(MiniInstantiator):
             " - Do not make any asssumptions. Your output must follow from P without any assumptions. \n"
             " - It should not be just something completely equivalent to P. Think of something "
             "that is different but logically follows from P.\n"
+            " - Be careful with deriving consequences of conditional statements! If a question asks "
+            "'Will A happen if B?' or 'Given B then A' or 'Conditional on B, then A', then A is *not* "
+            "a consequence of this question! Instead, you should provide a statement with the same condition "
+            "(B), but an outcome that is a logical consequence of the original outcome (A).\n"
+            " - If P resolves when any of a set of conditions are met, then you CANNOT give one of those "
+            "conditions as a consequence, since P can be true due to one of the other conditions. This is "
+            "important! You keep making this mistake.\n"
+            " - Your result should be exactly a consequence of P, not just 'something whose truth value "
+            "can be derived from P's truth value. Sometimes you literally give me a consequence of not P, "
+            "that's not what I want.\n"
+            " - You cannot just make the resolution criteria more vague and call it a day. You can certainly "
+            "*loosen* the resolution criteria and call it a day, as long as it is still precise. "
+            "But e.g. just removing some clarification of a vague word does not count as a consequence, as "
+            "that's just removing information.\n"
             " - Most importantly: if there is any background information (not resolution criteria) "
             "in the question body, make sure you retain all relevant information in the question body "
             "of the output you give. We will be giving these questions to a population sample to see "
