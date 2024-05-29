@@ -291,10 +291,9 @@ async def from_string(
     )
 
 
-async def verify_question(question: ForecastingQuestion, **kwargs):
-    current_date = datetime.now()
-    print(f"question.body: {question.body}")
-    print(f"current_date: {current_date}")
+async def verify_question_llm(
+    question: ForecastingQuestion, current_date: datetime, **kwargs
+) -> VerificationResult:
     prompt = validate_forecasting_question_prompt.format(
         title=question.title,
         body=question.body,
@@ -303,6 +302,53 @@ async def verify_question(question: ForecastingQuestion, **kwargs):
     )
     print(f"kwargs: {kwargs}")
     verification = await answer(prompt, response_model=VerificationResult, **kwargs)
+    return verification
+
+
+async def verify_question_filter_known_smells(
+    question: ForecastingQuestion,
+) -> VerificationResult:
+    """
+    This function checks if the question matches any of the known smells (issues) with the question body or title.
+    If the question matches a known smell, the verification result is set to False.
+    If the question does not match any known smell, the verification result is set to True.
+    """
+    if "Sister questions" in question.body:
+        return VerificationResult(
+            reasoning="The question body contains references to sister questions",
+            valid=False,
+        )
+
+    if "Ragnarök Question Series" in question.title:
+        return VerificationResult(
+            reasoning="The Ragnarök Question Series questions from Metaculus do not include enough information about the resolution criteria on their own.",
+            valid=False,
+        )
+
+    return VerificationResult(
+        reasoning="The question does not match any known smells", valid=True
+    )
+
+
+async def verify_question_all_methods(
+    question: ForecastingQuestion, **kwargs
+) -> VerificationResult:
+    current_date = datetime.now()
+    print(f"question.body: {question.body}")
+    print(f"current_date: {current_date}")
+
+    verification = await verify_question_filter_known_smells(question)
+    if not verification.valid:
+        return verification
+
+    verification = await verify_question_llm(question, current_date, **kwargs)
+    return verification
+
+
+async def verify_question(
+    question: ForecastingQuestion, **kwargs
+) -> VerificationResult:
+    verification = await verify_question_all_methods(question, **kwargs)
 
     if write_verification:
         filename = get_data_path() / "verification/question_verification.jsonl"
