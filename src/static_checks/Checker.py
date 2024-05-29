@@ -16,7 +16,7 @@ from scipy.optimize import (
 )
 from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any, Self, Callable
+from typing import Type, Any, Self, Callable, Optional
 from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import (
     ForecastingQuestion,
@@ -89,6 +89,7 @@ class Checker(ABC):
             self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
         else:
             self.path = path
+        self.counter = 0  # number of tuples successfully instantiated
 
     @property
     @abstractmethod
@@ -153,12 +154,14 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
                     return instantiated_object
             return instantiated_object
         else:
             instantiated_object = self.instantiate_sync(
                 base_sentences, supplied_metadata, **kwargs
             )
+            self.counter += 1
             return instantiated_object
 
     async def instantiate_with_verification(
@@ -167,7 +170,7 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> "Self.TupleFormat":
+    ) -> Optional["Self.TupleFormat"]:
         """
         If the global variable 'verify_before_instantiation' is True, this method
         will instantiate and verify the tuple format with metadata three times,
@@ -175,7 +178,8 @@ class Checker(ABC):
         """
         if verify_before_instantiation:
             print(f"verifying before instantiation {n_verification} times")
-            for _ in range(n_verification):
+            for i in range(n_verification):
+                print(f"VERIFICATION ATTEMPT {i}")
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
                 if verify_length:
@@ -185,10 +189,12 @@ class Checker(ABC):
                 else:
                     length_check = True
                 if verification_result.valid and length_check:
+                    self.counter += 1
                     return instantiated_object
-            return instantiated_object
+            return None
         else:
             instantiated_object = await self.instantiate(base_sentences, **kwargs)
+            self.counter += 1
             return instantiated_object
 
     def instantiate_sync_with_metadata(
@@ -212,7 +218,7 @@ class Checker(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         supplied_metadata=None,
         **kwargs,
-    ) -> "Self.TupleFormat_with_metadata":
+    ) -> Optional["Self.TupleFormat_with_metadata"]:
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
@@ -221,7 +227,10 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+        if result:
+            return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+        else:
+            return None
 
     @abstractmethod
     def verify_sync(
@@ -264,9 +273,16 @@ class Checker(ABC):
             list[dict[str, ForecastingQuestion]]
             | list[tuple[dict[str, ForecastingQuestion], dict[str, Any]]]  # +metadata
         ),
+        n_write: int = -1,
         overwrite=False,
         **kwargs,
     ):
+        """
+        Args:
+            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
+            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
+                because some will fail verification). If -1, will make as many as possible.
+        """
         if overwrite:
             with open(self.path, "w") as f:
                 f.write("")
@@ -285,20 +301,21 @@ class Checker(ABC):
                 base_sentences, supplied_metadata=supplied_metadata, **kwargs
             )
 
-        # _instantiate_and_write = (
-        #     lambda base_sentences_with_metadata: self.instantiate_and_write(  # noqa
-        #         base_sentences_with_metadata[0],
-        #         supplied_metadata=base_sentences_with_metadata[1],
-        #         **kwargs,
-        #     )
-        # )
         # Added print statement to log the base sentences being processed
-        print(f"Base sentences: {base_sentencess}")
-        results = await parallelized_call(
-            _instantiate_and_write, base_sentencess, max_concurrent_queries=50
-        )
-        # Added print statement to log the results of instantiation
-        print(f"Results of instantiation: {results}")
+        # print(f"Base sentences: {base_sentencess}")
+        bq_counter = 0  # number of base sentences processed
+        while n_write == -1 or self.counter < n_write:
+            counter_prev = self.counter
+            results = await parallelized_call(
+                _instantiate_and_write,
+                base_sentencess[bq_counter : bq_counter + n_write - counter_prev],
+                max_concurrent_queries=10,
+            )
+            bq_counter += n_write - counter_prev
+            print(f"Counter: {self.counter}")
+            print(f"BQ Counter: {bq_counter}")
+        # # Added print statement to log the results of instantiation
+        # print(f"Results of instantiation: {results}")
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
@@ -603,8 +620,10 @@ class NegChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = neg_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-             not_P_title=generated_tuple.not_P.title, not_P_body=generated_tuple.not_P.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            not_P_title=generated_tuple.not_P.title,
+            not_P_body=generated_tuple.not_P.body,
         )
         verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
@@ -615,8 +634,10 @@ class NegChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = neg_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-             not_P_title=generated_tuple.not_P.title, not_P_body=generated_tuple.not_P.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            not_P_title=generated_tuple.not_P.title,
+            not_P_body=generated_tuple.not_P.body,
         )
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
@@ -673,9 +694,12 @@ class AndChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title, R_body=generated_tuple.P_and_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
@@ -686,15 +710,17 @@ class AndChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title, R_body=generated_tuple.P_and_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result("and", generated_tuple, verification)
         return verification
-
 
     def verify_length(
         self,
@@ -754,9 +780,12 @@ class OrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title, R_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
@@ -767,15 +796,17 @@ class OrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title, R_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result("or", generated_tuple, verification)
         return verification
-
 
     def verify_length(
         self,
@@ -836,17 +867,23 @@ class AndOrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title, R_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         or_verification_result = answer_sync(
             prompt, response_model=VerificationResult, **kwargs
         )
         prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title, R_body=generated_tuple.P_and_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         and_verification_result = answer_sync(
             prompt, response_model=VerificationResult, **kwargs
@@ -866,17 +903,23 @@ class AndOrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title, R_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         or_verification_result = await answer(
             prompt, response_model=VerificationResult, **kwargs
         )
         prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title, Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title, R_body=generated_tuple.P_and_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         and_verification_result = await answer(
             prompt, response_model=VerificationResult, **kwargs
@@ -891,7 +934,6 @@ class AndOrChecker(Checker):
         if write_verification:
             await write_verification_result("AndOr", generated_tuple, verification)
         return verification
-
 
     def verify_length(
         self,
@@ -955,28 +997,33 @@ class ButChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = but_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_not_P.title, R_body=generated_tuple.Q_and_not_P.body,
-            S_title=generated_tuple.P_or_Q.title, S_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_and_not_P.title,
+            R_body=generated_tuple.Q_and_not_P.body,
+            S_title=generated_tuple.P_or_Q.title,
+            S_body=generated_tuple.P_or_Q.body,
         )
         verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             write_verification_result_sync("But", generated_tuple, verification)
         return verification
-    
+
     async def verify(
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         prompt = but_verification_prompt.format(
-            P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_not_P.title, R_body=generated_tuple.Q_and_not_P.body,
-            S_title=generated_tuple.P_or_Q.title, S_body=generated_tuple.P_or_Q.body
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_and_not_P.title,
+            R_body=generated_tuple.Q_and_not_P.body,
+            S_title=generated_tuple.P_or_Q.title,
+            S_body=generated_tuple.P_or_Q.body,
         )
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result("But", generated_tuple, verification)
         return verification
-
 
     def verify_length(
         self,

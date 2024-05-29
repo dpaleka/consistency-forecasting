@@ -206,31 +206,63 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that could only be true if P is true. In other words, validate whether Q is logically contingent on P, ensuring that Q can only occur if P is true.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything).
 
 Example 1:
 
-P: A computer is connected to the internet.
-Q: A computer can receive emails.
+P: A computer can receive emails.
+Q: A computer is connected to the internet.
 
-reasoning: If a computer is connected to the internet (P), then it is capable of receiving emails (Q). If P is false (the computer is not connected to the internet), then Q must also be false (the computer cannot receive emails), since receiving emails inherently requires an internet connection. Thus, Q's truth is contingent upon P being true.
+reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Or, contrapositively: If a computer is not connected to the internet, it cannot receive emails. Therefore, Q is a logical consequence of P, meaning that if P is true, Q must also be true.
 valid: True
 
 Example 2:
 
-P: It is raining.
-Q: The ground is wet.
+P: The ground is wet.
+Q: It is raining.
 
-reasoning: If it is raining (P), then the ground is likely to be wet (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket), which means that Q does not strictly require P to be true. Therefore, Q can be true without P necessarily being true.
+reasoning: If the ground is wet (P), it is possible it could be from rain (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket, or rain in the recent past), which means that P does not strictly require Q to be true. Therefore, P can be true without Q necessarily being true.
 valid: False
 
 Example 3:
 
-P: The car engine is running.
-Q: The car is moving.
+P: It is daytime.
+Q: The sun has risen and not set yet.
 
-reasoning: If the car engine is running (P), it is possible for the car to be moving (Q), but the car could be stationary (e.g., if it's in neutral or parked with the handbrake applied). Hence, Q can be true or false independently of P. Q does not exclusively depend on P being true.
+reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P; however, they are completely equivalent and therefore not useful to us.
 valid: False
+
+Example 4:
+
+P: Will at least 50 percent of the world's population live in Asia by 2050?
+Q: Will Asia have at least 3 billion residents by 2050?
+
+reasoning: They probably thought Q was a logical consequence of P because the world population is 8 billion, half of that is 4 billion, so if Asia has more than 4 billion people it must have more than 3 billion people. However, this assumes that the world population in 2050 is 8 billion, which we do not know for certain. Without knowing the world population in 2050, we cannot judge if 50 percent of that is more or less than 3 billion.
+valid: False
+
+Example 5:
+
+P: Will ANY of the following happen in 2025? (a) A manned mission to Mars (b) A new Starship launch by SpaceX?
+Q: Will a manned mission to Mars happen in 2025?
+
+reasoning: No, P is a disjunction of two events, either of which happening will make P true. Q is a specific event, which is a subset of the events in P. So P can be true without Q being true.
+valid: False
+
+Example 6:
+
+P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
+Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease that infects a large number of people over a short span of time.)
+
+reasoning: Q just makes the definition of an epidemic more vague, so we do not count it.
+valid: False
+
+Example 7:
+
+P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
+Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 10 per 100,000 people over a span of two consecutive weeks.)
+
+reasoning: Q is a logical consequence of P, as the definition of an epidemic in Q is a subset of the definition of an epidemic in P. If an epidemic is defined as infecting more than 15 per 100,000 people, it must also be true that it infects more than 10 per 100,000 people, as 15 is more than 10.
+valid: True
 
 ----
 
@@ -239,7 +271,7 @@ Q: {cons_P}
 """
 
 paraphrase_verification_prompt = """
-I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but in different ways.
+I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer.
 
 Example 1:
 
@@ -270,15 +302,15 @@ Example 4:
 P: How far is it from Earth to Mars?
 Q: What is the distance between Earth and the Moon?
 
-reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
-valid: False
+Reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
+Valid: False
 
 Example 5:
 
-P: Will more than 100 million people in the world use GLP-1 agonists daily in 2032?
-Q: Is it likely that more than 100 million people worldwide will be using GLP-1 agonists daily in 2032?
+P: Will there be a manned Mars mission in 2025?
+Q: Is it probable that a manned mission to Mars will happen in 2025?
 
-reasoning: The second question is asking about whether it should be considered probable that more than 100 million people will use GLP-1 agonists daily in 2032, while the first question asks for a definitive answer on whether this will happen.
+reasoning: It's a bit subtle, but these questions do not necessarily have the same answer. For example, it is possible that a manned Mars mission will happen in 2025, but it was not a priori probable; or that a manned Mars mission will not happen in 2025, but it was regarded as probable before that. So they are not paraphrases.
 valid: False
 
 ----
@@ -286,6 +318,3 @@ valid: False
 P: {P}
 Q: {para_P}
 """
-
-
-
