@@ -26,7 +26,7 @@ Q:
   Body: This question will resolve as Yes if, before January 1, 2027, none of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany triggers Article 50 of the Treaty of Lisbon by notifying the European Council of its intention to leave the union.
         It also resolves as positive if by the same deadline the entity called European Union remains unchanged.
         
-reasoning: These two events are not mutually exclusive. It is possible for both to be false if the EU dissolves to create a new politico-economic union under a different name.
+reasoning: These two events are not mutually exclusive. It is possible for both to be false if the EU dissolves to create a similar international union under a different name.
 valid: False
 
 ----
@@ -37,7 +37,7 @@ Q title: {not_P_title}
 Q body: {not_P_body}
 """
 
-and_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the conjunction of P and Q.
+and_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the logical conjunction of P and Q.
 This means that R is true if and only if both P and Q are true.
 
 Example 1:
@@ -67,7 +67,7 @@ R:
   Title: What is the probability of Spain leaving the European Union before 2030?
   Body: The event occurs if Spain formally triggers Article 50 of the Treaty on European Union to leave the EU before January 1, 2030.
 
-reasoning: None of the events are related to each other. So the probability of Spain leaving the EU is not the conjunction of the other two events.
+reasoning: The event of Spain leaving the EU has little to do with the other two events, so it is definitely not their conjunction.
 valid: False
 
 ----
@@ -80,22 +80,22 @@ R title: {R_title}
 R body: {R_body}
 """
 
-or_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the disjunction of P and Q.
+or_verification_prompt = """I am going to give you three questions P, Q, and R, and I want you to validate whether R is the logical disjunction of P and Q.
 This means that R is true if at least one of P or Q is true.
 
 Example 1:
 
 P:
-  Title: What is the probability of the republican party winning the 2024 US elections?
-  Body: The event occurs if the Republican party candidate is elected as the President of the United States in the 2024 elections.
+  Title: Will the Republican Party win the 2024 US elections?
+  Body: The event occurs if the Republican candidate is elected as the President of the United States in the 2024 elections.
 Q:
-  Title: What is the probability of the democratic party winning the 2024 US elections?
-  Body: The event occurs if the Democratic party candidate is elected as the President of the United States in the 2024 elections.
+  Title: Will the Democratic Party win the 2024 US elections?
+  Body: The event occurs if the Democratic candidate is elected as the President of the United States in the 2024 elections.
 R:
   Title: What is the probability of one of the two major US parties winning the 2024 US elections?
-  Body: The event occurs if either the Republican party candidate or the Democratic party candidate is elected as the President of the United States in the 2024 elections.
+  Body: The event occurs if either the Republican candidate or the Democratic candidate is elected as the President of the United States in the 2024 elections.
 
-reasoning: The event of one of the two major US parties winning the 2024 US elections is the disjunction of the Republican party winning and the Democratic party winning.
+reasoning: The event of one of the two major US parties winning the 2024 US elections is the disjunction of the Republican Party winning and the Democratic Party winning.
 valid: True
 
 Example 2:
@@ -125,9 +125,9 @@ R body: {R_body}
 
 but_verification_prompt = """
 I will present you with three questions: P, R, and S. In these questions:
-- P is a straightforward proposition.
+- P is a question (no specific requirements).
 - R is intended to represent another question Q, combined with the negation of P (not P).
-- S represents the disjunction of P and Q.
+- S represents the logical disjunction of P and Q.
 
 Your task is to validate whether the relationships between P, Q, R, and S are logically consistent and plausible.
 
@@ -143,8 +143,8 @@ S:
   Title: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
   Body: The event occurs if either a Spanish crewed spacecraft or a US crewed spacecraft lands on the moon before January 1, 2030.
 
-Reasoning: Assuming Q is the occurrence of a US manned mission before 2030, R combines this with the negation of P, i.e., no Spanish mission before 2030. S is true if either mission happens. The definitions for R as Q and not P, and S as P or Q, are logically coherent.
-Valid: True
+reasoning: Assuming Q is the occurrence of a US manned mission before 2030, R combines this with the negation of P, i.e., no Spanish mission before 2030. S is true if either mission happens. The definitions for R as Q and not P, and S as P or Q, are logically coherent.
+valid: True
 
 Example 2:
 
@@ -158,8 +158,8 @@ S:
   Title: What is the probability of either a Spanish manned mission to the moon before 2030 or a US manned mission before 2030?
   Body: The event occurs if either a Spanish crewed spacecraft or a US crewed spacecraft lands on the moon before January 1, 2030.
 
-Reasoning: In this scenario, R doesn't contain the negation of P, so the relationship between P, Q, R, and S is not the ones we are looking for.
-Valid: False
+reasoning: In this scenario, R doesn't contain the negation of P, so the relationship between P, Q, R, and S is not the ones we are looking for.
+valid: False
 
 ----
 
@@ -186,8 +186,8 @@ P: Will it rain tomorrow?
 R: Will there be a thunderstorm tomorrow given that it rains?
 S: Will it rain tomorrow and there be a thunderstorm?
 
-Reasoning: Assuming Q is the occurrence of a thunderstorm, R evaluates the probability of a thunderstorm given that it rains (P). S checks if both events, rain and thunderstorm, occur simultaneously. Thus, the conditions for R and S logically follow from the definitions of conditional probability and conjunction respectively.
-Valid: True
+reasoning: Assuming Q is the occurrence of a thunderstorm, R evaluates the probability of a thunderstorm given that it rains (P). S checks if both events, rain and thunderstorm, occur simultaneously. Thus, the conditions for R and S logically follow from the definitions of conditional probability and conjunction respectively.
+valid: True
 
 Example 2:
 
@@ -195,8 +195,8 @@ P: Will it rain tomorrow?
 R: If tomorrow is sunny, will it rain?
 S: Will it be sunny tomorrow and rain?
 
-Reasoning: In this scenario, R does not represent the conditional probability of Q given P, and S does not represent the conjunction of P and Q. The relationships between P, Q, R, and S are not logically consistent.
-Valid: False
+reasoning: In this scenario, R does not represent the conditional probability of Q given P, and S does not represent the conjunction of P and Q. The relationships between P, Q, R, and S are not logically consistent.
+valid: False
 
 ----
 
@@ -213,24 +213,24 @@ Example 1:
 P: A computer is connected to the internet.
 Q: A computer can receive emails.
 
-Reasoning: If a computer is connected to the internet (P), then it is capable of receiving emails (Q). If P is false (the computer is not connected to the internet), then Q must also be false (the computer cannot receive emails), since receiving emails inherently requires an internet connection. Thus, Q's truth is contingent upon P being true.
-Valid: True
+reasoning: If a computer is connected to the internet (P), then it is capable of receiving emails (Q). If P is false (the computer is not connected to the internet), then Q must also be false (the computer cannot receive emails), since receiving emails inherently requires an internet connection. Thus, Q's truth is contingent upon P being true.
+valid: True
 
 Example 2:
 
 P: It is raining.
 Q: The ground is wet.
 
-Reasoning: If it is raining (P), then the ground is likely to be wet (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket), which means that Q does not strictly require P to be true. Therefore, Q can be true without P necessarily being true.
-Valid: False
+reasoning: If it is raining (P), then the ground is likely to be wet (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket), which means that Q does not strictly require P to be true. Therefore, Q can be true without P necessarily being true.
+valid: False
 
 Example 3:
 
 P: The car engine is running.
 Q: The car is moving.
 
-Reasoning: If the car engine is running (P), it is possible for the car to be moving (Q), but the car could be stationary (e.g., if it's in neutral or parked with the handbrake applied). Hence, Q can be true or false independently of P. Q does not exclusively depend on P being true.
-Valid: False
+reasoning: If the car engine is running (P), it is possible for the car to be moving (Q), but the car could be stationary (e.g., if it's in neutral or parked with the handbrake applied). Hence, Q can be true or false independently of P. Q does not exclusively depend on P being true.
+valid: False
 
 ----
 
@@ -239,39 +239,47 @@ Q: {cons_P}
 """
 
 paraphrase_verification_prompt = """
-I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways.
+I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but in different ways.
 
 Example 1:
 
 P: What is the current temperature in New York City?
 Q: How warm is it right now in New York City?
 
-Reasoning: Both questions inquire about the present temperature in New York City. Despite slight differences in phrasing ("current temperature" vs. "how warm"), the essential inquiry is the same, focusing on the temperature at this moment.
-Valid: True
+reasoning: Both questions inquire about the present temperature in New York City. Despite slight differences in phrasing ("current temperature" vs. "how warm"), the essential inquiry is the same, focusing on the temperature at this moment.
+valid: True
 
 Example 2:
 
 P: Who won the Best Actor award at the Oscars last year?
 Q: Who was the recipient of the last Academy Award for Best Actress?
 
-Reasoning: These questions appear similar as they both pertain to Oscar winners, but they ask about different categories—Best Actor and Best Actress. Therefore, they are not paraphrases because they request distinct information.
-Valid: False
+reasoning: These questions appear similar as they both pertain to Oscar winners, but they ask about different categories—Best Actor and Best Actress. Therefore, they are not paraphrases because they request distinct information.
+valid: False
 
 Example 3:
 
 P: Can dogs eat chocolate?
 Q: Is it safe for dogs to consume chocolate?
 
-Reasoning: Both questions address the safety of chocolate consumption for dogs. The essence of the inquiry is whether chocolate poses a risk to dogs, which makes them paraphrases of each other despite the subtle difference in wording.
-Valid: True
+reasoning: Both questions address the safety of chocolate consumption for dogs. The essence of the inquiry is whether chocolate poses a risk to dogs, which makes them paraphrases of each other despite the subtle difference in wording.
+valid: True
 
 Example 4:
 
 P: How far is it from Earth to Mars?
 Q: What is the distance between Earth and the Moon?
 
-Reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
-Valid: False
+reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
+valid: False
+
+Example 5:
+
+P: Will more than 100 million people in the world use GLP-1 agonists daily in 2032?
+Q: Is it likely that more than 100 million people worldwide will be using GLP-1 agonists daily in 2032?
+
+reasoning: The second question is asking about whether it should be considered probable that more than 100 million people will use GLP-1 agonists daily in 2032, while the first question asks for a definitive answer on whether this will happen.
+valid: False
 
 ----
 
