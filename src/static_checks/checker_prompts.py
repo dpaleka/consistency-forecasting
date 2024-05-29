@@ -206,14 +206,14 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything).
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything). Reject if Q is 'ERROR: NO CONSEQUENCE FOUND' or something like that.
 
 Example 1:
 
 P: A computer can receive emails.
 Q: A computer is connected to the internet.
 
-reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Or, contrapositively: If a computer is not connected to the internet, it cannot receive emails. Therefore, Q is a logical consequence of P, meaning that if P is true, Q must also be true.
+reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Therefore, Q is a logical consequence of P.
 valid: True
 
 Example 2:
@@ -221,7 +221,7 @@ Example 2:
 P: The ground is wet.
 Q: It is raining.
 
-reasoning: If the ground is wet (P), it is possible it could be from rain (Q). However, the ground could also be wet for other reasons (such as sprinklers or a spilled bucket, or rain in the recent past), which means that P does not strictly require Q to be true. Therefore, P can be true without Q necessarily being true.
+reasoning: I can easily imagine the ground being wet (P true) without it raining (Q false). So P does not imply Q.
 valid: False
 
 Example 3:
@@ -229,7 +229,7 @@ Example 3:
 P: It is daytime.
 Q: The sun has risen and not set yet.
 
-reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P; however, they are completely equivalent and therefore not useful to us.
+reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P, but also completely equivalent to it, therefore not useful to us.
 valid: False
 
 Example 4:
@@ -245,7 +245,7 @@ Example 5:
 P: Will ANY of the following happen in 2025? (a) A manned mission to Mars (b) A new Starship launch by SpaceX?
 Q: Will a manned mission to Mars happen in 2025?
 
-reasoning: No, P is a disjunction of two events, either of which happening will make P true. Q is a specific event, which is a subset of the events in P. So P can be true without Q being true.
+reasoning: Suppose only a new starship launch happens, but no manned mission to Mars. Then P is true, but Q is false. So Q is not a logical consequence of P.
 valid: False
 
 Example 6:
