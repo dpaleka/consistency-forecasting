@@ -138,7 +138,7 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> "Self.TupleFormat":
+    ) -> Optional[tuple["Self.TupleFormat", VerificationResult]]:
         """
         Synchronously instantiate and verify the tuple format with metadata multiple times, returning the instantiated
         object if verification succeeds within the given attempts.
@@ -155,7 +155,7 @@ class Checker(ABC):
                     length_check = True
                 if verification_result.valid and length_check:
                     self.counter += 1
-                    return instantiated_object
+                    return instantiated_object, verification_result
             return instantiated_object
         else:
             instantiated_object = self.instantiate_sync(
@@ -170,7 +170,7 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> Optional["Self.TupleFormat"]:
+    ) -> Optional[tuple["Self.TupleFormat", VerificationResult]]:
         """
         If the global variable 'verify_before_instantiation' is True, this method
         will instantiate and verify the tuple format with metadata three times,
@@ -190,7 +190,7 @@ class Checker(ABC):
                     length_check = True
                 if verification_result.valid and length_check:
                     self.counter += 1
-                    return instantiated_object
+                    return instantiated_object, verification_result
             return None
         else:
             instantiated_object = await self.instantiate(base_sentences, **kwargs)
@@ -206,12 +206,20 @@ class Checker(ABC):
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
-        result = self.instantiate_with_verification_sync(base_sentences, **kwargs)
         if supplied_metadata is None:
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+        result = self.instantiate_with_verification_sync(base_sentences, **kwargs)
+        if verify_before_instantiation:
+            instantiated_object, verification_result = result
+            more_metadata = {"verification_result": verification_result.dict()}
+            update_recursive(metadata, more_metadata)
+        else:
+            instantiated_object = result
+        return self.TupleFormat_with_metadata(
+            **instantiated_object.dict(), metadata=metadata
+        )
 
     async def instantiate_with_metadata(
         self,
@@ -222,13 +230,21 @@ class Checker(ABC):
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
-        result = await self.instantiate_with_verification(base_sentences, **kwargs)
         if supplied_metadata is None:
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
+        result = await self.instantiate_with_verification(base_sentences, **kwargs)
+        if verify_before_instantiation:
+            instantiated_object, verification_result = result
+            more_metadata = {"verification_result": verification_result.dict()}
+            update_recursive(metadata, more_metadata)
+        else:
+            instantiated_object = result
         if result:
-            return self.TupleFormat_with_metadata(**result.dict(), metadata=metadata)
+            return self.TupleFormat_with_metadata(
+                **instantiated_object.dict(), metadata=metadata
+            )
         else:
             return None
 
