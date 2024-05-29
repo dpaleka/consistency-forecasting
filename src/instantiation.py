@@ -49,9 +49,9 @@ checkers: dict[str, Checker] = {
     "ConsequenceChecker": ConsequenceChecker(
         path=TUPLES_PATH / "ConsequenceChecker.jsonl"
     ),
-    # "ParaphraseChecker": ParaphraseChecker(
-    #     path=TUPLES_PATH / "ParaphraseChecker.jsonl"
-    # ),
+    "ParaphraseChecker": ParaphraseChecker(
+        path=TUPLES_PATH / "ParaphraseChecker.jsonl"
+    ),
     # "SymmetryAndChecker": SymmetryAndChecker(
     #     path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
     # ),

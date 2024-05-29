@@ -145,7 +145,7 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P.
+I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything).
 
 Example 1:
 
@@ -188,6 +188,22 @@ Q: Will a manned mission to Mars happen in 2025?
 Reasoning: No, P is a disjunction of two events, either of which happening will make P true. Q is a specific event, which is a subset of the events in P. So P can be true without Q being true.
 Valid: False
 
+Example 6:
+
+P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
+Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease that infects a large number of people over a short span of time.)
+
+Reasoning: Q just makes the definition of an epidemic more vague, so we do not count it.
+Valid: False
+
+Example 7:
+
+P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
+Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 10 per 100,000 people over a span of two consecutive weeks.)
+
+Reasoning: Q is a logical consequence of P, as the definition of an epidemic in Q is a subset of the definition of an epidemic in P. If an epidemic is defined as infecting more than 15 per 100,000 people, it must also be true that it infects more than 10 per 100,000 people, as 15 is more than 10.
+Valid: True
+
 ----
 
 P: {P}
@@ -195,7 +211,7 @@ Q: {cons_P}
 """
 
 paraphrase_verification_prompt = """
-I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways.
+I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer.
 
 Example 1:
 
@@ -227,6 +243,14 @@ P: How far is it from Earth to Mars?
 Q: What is the distance between Earth and the Moon?
 
 Reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
+Valid: False
+
+Example 5:
+
+P: Will there be a manned Mars mission in 2025?
+Q: Is it probable that a manned mission to Mars will happen in 2025?
+
+Reasoning: It's a bit subtle, but these questions do not necessarily have the same answer. For example, it is possible that a manned Mars mission will happen in 2025, but it was not a priori probable; or that a manned Mars mission will not happen in 2025, but it was regarded as probable before that. So they are not paraphrases.
 Valid: False
 
 ----
