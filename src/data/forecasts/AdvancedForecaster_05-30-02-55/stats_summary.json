@@ -10,8 +10,8 @@
     "ConsequenceChecker": {
         "label": "ConsequenceChecker",
         "num_samples": 50,
-        "num_violations": 14,
-        "avg_abs_violation": 0.014657,
+        "num_violations": 6,
+        "avg_abs_violation": 0.001487,
         "median_abs_violation": 0.0
     }
 }{
