@@ -29,7 +29,7 @@ from static_checks.Checker import (
 )
 from common.path_utils import get_data_path, get_src_path
 
-BASE_DATA_PATH: Path = get_data_path() / "tuples/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
@@ -38,27 +38,19 @@ logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-checkers: dict[str, Checker] = {
-    "NegChecker": NegChecker(path=BASE_DATA_PATH / "NegChecker.jsonl"),
-    "AndChecker": AndChecker(path=BASE_DATA_PATH / "AndChecker.jsonl"),
-    "OrChecker": OrChecker(path=BASE_DATA_PATH / "OrChecker.jsonl"),
-    "AndOrChecker": AndOrChecker(path=BASE_DATA_PATH / "AndOrChecker.jsonl"),
-    "ButChecker": ButChecker(path=BASE_DATA_PATH / "ButChecker.jsonl"),
-    "CondChecker": CondChecker(path=BASE_DATA_PATH / "CondChecker.jsonl"),
-    "ConsequenceChecker": ConsequenceChecker(
-        path=BASE_DATA_PATH / "ConsequenceChecker.jsonl"
-    ),
-    "ParaphraseChecker": ParaphraseChecker(
-        path=BASE_DATA_PATH / "ParaphraseChecker.jsonl"
-    ),
-    "SymmetryAndChecker": SymmetryAndChecker(
-        path=BASE_DATA_PATH / "SymmetryAndChecker.jsonl"
-    ),
-    "SymmetryOrChecker": SymmetryOrChecker(
-        path=BASE_DATA_PATH / "SymmetryOrChecker.jsonl"
-    ),
-    "CondCondChecker": CondCondChecker(path=BASE_DATA_PATH / "CondCondChecker.jsonl"),
-}
+checker_classes = [
+    ("NegChecker", NegChecker),
+    ("AndChecker", AndChecker),
+    ("OrChecker", OrChecker),
+    ("AndOrChecker", AndOrChecker),
+    ("ButChecker", ButChecker),
+    ("CondChecker", CondChecker),
+    ("ConsequenceChecker", ConsequenceChecker),
+    ("ParaphraseChecker", ParaphraseChecker),
+    ("SymmetryAndChecker", SymmetryAndChecker),
+    ("SymmetryOrChecker", SymmetryOrChecker),
+    ("CondCondChecker", CondCondChecker),
+]
 
 
 def get_stats(results: dict, label: str = "") -> dict:
@@ -127,6 +119,7 @@ def write_to_dirs(
 
 def process_check(
     check_name: str,
+    checkers: dict[str, Checker],
     forecaster: Forecaster,
     model: str,
     num_lines: int,
@@ -305,6 +298,13 @@ def process_check(
     default=False,
     help="Use threads to run the forecaster on different checks",
 )
+@click.option(
+    "-p",
+    "--tuple_dir",
+    type=click.Path(),
+    required=False,
+    help="Path to the tuple file",
+)
 def main(
     forecaster_class: str,
     config_path: str,
@@ -315,7 +315,17 @@ def main(
     relevant_checks: list[str],
     is_async: bool,
     use_threads: bool,
+    tuple_dir: str | None = None,
 ):
+    if tuple_dir is None:
+        tuple_dir = BASE_TUPLES_PATH
+    tuple_dir = Path(tuple_dir)
+
+    checkers: dict[str, Checker] = {
+        checker_name: cls(path=tuple_dir / f"{checker_name}.jsonl")
+        for checker_name, cls in checker_classes
+    }
+
     match forecaster_class:
         case "BasicForecaster":
             forecaster = BasicForecaster()
@@ -353,20 +363,6 @@ def main(
         #    print("Operation aborted by the user.")
         #    exit(1)
 
-    logged_config = {
-        "forecaster_class": forecaster.__class__.__name__,
-        "forecaster": forecaster.dump_config(),
-        "model": model,
-        "num_lines": num_lines,
-    }
-
-    write_to_dirs(
-        [logged_config],
-        "config.jsonl",
-        [output_directory, most_recent_directory],
-        overwrite=True,
-    )
-
     if run:
         assert load_dir is None, "LOAD_DIR must be None if RUN is True"
     else:
@@ -378,6 +374,26 @@ def main(
             load_dir.exists() and load_dir.is_dir()
         ), "LOAD_DIR must be a valid directory"
 
+    logged_config = {
+        "forecaster_class": forecaster.__class__.__name__,
+        "forecaster": forecaster.dump_config(),
+        "model": model,
+        "is_async": is_async,
+        "use_threads": use_threads,
+        "run": run,
+        "load_dir": str(load_dir),
+        "relevant_checks": relevant_checks,
+        "tuple_dir": str(tuple_dir),
+        "num_lines": num_lines,
+    }
+
+    write_to_dirs(
+        [logged_config],
+        "config.jsonl",
+        [output_directory, most_recent_directory],
+        overwrite=True,
+    )
+
     all_stats = {}
     if relevant_checks[0] == "all":
         relevant_checks = list(checkers.keys())
@@ -388,6 +404,7 @@ def main(
         ) as executor:
             process_check_func = functools.partial(
                 process_check,
+                checkers=checkers,
                 forecaster=forecaster,
                 model=model,
                 num_lines=num_lines,
@@ -408,6 +425,7 @@ def main(
         for check_name in relevant_checks:
             stats = process_check(
                 check_name=check_name,
+                checkers=checkers,
                 forecaster=forecaster,
                 model=model,
                 num_lines=num_lines,
