@@ -145,7 +145,7 @@ if __name__ == "__main__":
             checker_list=checkers,
             n_relevance=1000,
             # n_top_relevance=50,
-            n_write=150,
+            n_write=100,
             # n_write_after=5,
         )
     )
