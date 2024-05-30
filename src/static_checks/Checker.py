@@ -177,9 +177,7 @@ class Checker(ABC):
         returning the instantiated object and a list of verification results from each iteration.
         """
         if verify_before_instantiation:
-            print(f"verifying before instantiation {n_verification} times")
             for i in range(n_verification):
-                print(f"VERIFICATION ATTEMPT {i}")
                 instantiated_object = await self.instantiate(base_sentences, **kwargs)
                 verification_result = await self.verify(instantiated_object, **kwargs)
                 if verify_length:
@@ -211,15 +209,18 @@ class Checker(ABC):
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
         result = self.instantiate_with_verification_sync(base_sentences, **kwargs)
-        if verify_before_instantiation:
-            instantiated_object, verification_result = result
-            more_metadata = {"verification_result": verification_result.dict()}
-            update_recursive(metadata, more_metadata)
+        if result:
+            if verify_before_instantiation:
+                instantiated_object, verification_result = result
+                more_metadata = {"verification_result": verification_result.dict()}
+                update_recursive(metadata, more_metadata)
+            else:
+                instantiated_object = result
+            return self.TupleFormat_with_metadata(
+                **instantiated_object.dict(), metadata=metadata
+            )
         else:
-            instantiated_object = result
-        return self.TupleFormat_with_metadata(
-            **instantiated_object.dict(), metadata=metadata
-        )
+            return None
 
     async def instantiate_with_metadata(
         self,
@@ -235,13 +236,13 @@ class Checker(ABC):
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
         result = await self.instantiate_with_verification(base_sentences, **kwargs)
-        if verify_before_instantiation:
-            instantiated_object, verification_result = result
-            more_metadata = {"verification_result": verification_result.dict()}
-            update_recursive(metadata, more_metadata)
-        else:
-            instantiated_object = result
         if result:
+            if verify_before_instantiation:
+                instantiated_object, verification_result = result
+                more_metadata = {"verification_result": verification_result.dict()}
+                update_recursive(metadata, more_metadata)
+            else:
+                instantiated_object = result
             return self.TupleFormat_with_metadata(
                 **instantiated_object.dict(), metadata=metadata
             )
@@ -1343,14 +1344,24 @@ class SymmetryAndChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         and_pq_prompt = and_verification_prompt.format(
-            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         verification_pq = answer_sync(
             and_pq_prompt, response_model=VerificationResult, **kwargs
         )
 
         and_qp_prompt = and_verification_prompt.format(
-            P=generated_tuple.Q, Q=generated_tuple.P, P_and_Q=generated_tuple.Q_and_P
+            P_title=generated_tuple.Q.title,
+            P_body=generated_tuple.Q.body,
+            Q_title=generated_tuple.P.title,
+            Q_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_and_P.title,
+            R_body=generated_tuple.Q_and_P.body,
         )
         verification_qp = answer_sync(
             and_qp_prompt, response_model=VerificationResult, **kwargs
@@ -1375,14 +1386,23 @@ class SymmetryAndChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         and_pq_prompt = and_verification_prompt.format(
-            P=generated_tuple.P, Q=generated_tuple.Q, P_and_Q=generated_tuple.P_and_Q
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_and_Q.title,
+            R_body=generated_tuple.P_and_Q.body,
         )
         verification_pq = await answer(
             and_pq_prompt, response_model=VerificationResult, **kwargs
         )
-
         and_qp_prompt = and_verification_prompt.format(
-            P=generated_tuple.Q, Q=generated_tuple.P, P_and_Q=generated_tuple.Q_and_P
+            P_title=generated_tuple.Q.title,
+            P_body=generated_tuple.Q.body,
+            Q_title=generated_tuple.P.title,
+            Q_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_and_P.title,
+            R_body=generated_tuple.Q_and_P.body,
         )
         verification_qp = await answer(
             and_qp_prompt, response_model=VerificationResult, **kwargs
@@ -1470,14 +1490,23 @@ class SymmetryOrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         or_pq_prompt = or_verification_prompt.format(
-            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         verification_pq = answer_sync(
             or_pq_prompt, response_model=VerificationResult, **kwargs
         )
-
         or_qp_prompt = or_verification_prompt.format(
-            P=generated_tuple.Q, Q=generated_tuple.P, P_or_Q=generated_tuple.Q_or_P
+            P_title=generated_tuple.Q.title,
+            P_body=generated_tuple.Q.body,
+            Q_title=generated_tuple.P.title,
+            Q_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_or_P.title,
+            R_body=generated_tuple.Q_or_P.body,
         )
         verification_qp = answer_sync(
             or_qp_prompt, response_model=VerificationResult, **kwargs
@@ -1502,14 +1531,23 @@ class SymmetryOrChecker(Checker):
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
         or_pq_prompt = or_verification_prompt.format(
-            P=generated_tuple.P, Q=generated_tuple.Q, P_or_Q=generated_tuple.P_or_Q
+            P_title=generated_tuple.P.title,
+            P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.Q.title,
+            Q_body=generated_tuple.Q.body,
+            R_title=generated_tuple.P_or_Q.title,
+            R_body=generated_tuple.P_or_Q.body,
         )
         verification_pq = await answer(
             or_pq_prompt, response_model=VerificationResult, **kwargs
         )
-
         or_qp_prompt = or_verification_prompt.format(
-            P=generated_tuple.Q, Q=generated_tuple.P, P_or_Q=generated_tuple.Q_or_P
+            P_title=generated_tuple.Q.title,
+            P_body=generated_tuple.Q.body,
+            Q_title=generated_tuple.P.title,
+            Q_body=generated_tuple.P.body,
+            R_title=generated_tuple.Q_or_P.title,
+            R_body=generated_tuple.Q_or_P.body,
         )
         verification_qp = await answer(
             or_qp_prompt, response_model=VerificationResult, **kwargs
