@@ -21,7 +21,7 @@ else
 fi
 
 # List of values for foo
-foos=("NegChecker" "AndChecker" "OrChecker" "ConsequenceChecker" "ParaphraseChecker" "CondChecker" "CondCondChecker")
+foos=("NegChecker" "AndOrChecker" "ConsequenceChecker" "ParaphraseChecker" "CondChecker" "CondCondChecker" "AndChecker" "OrChecker" "ButChecker")
 
 # Create a new tmux session named 'fc'
 tmux new-session -d -s fc
@@ -43,7 +43,7 @@ python evaluation.py \
 $forecaster_command \
 $config_command \
 $async_command \
--n 3 \
+-n 50 \
 --run \
 -k $foo \
 | tee eval_${foo}.log \

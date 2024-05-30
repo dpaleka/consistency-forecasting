@@ -1,0 +1,7 @@
+{
+    "label": "ParaphraseChecker",
+    "num_samples": 50,
+    "num_violations": 34,
+    "avg_abs_violation": 0.01054,
+    "median_abs_violation": 0.005063
+}
