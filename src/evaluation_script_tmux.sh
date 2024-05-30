@@ -1,17 +1,43 @@
 #!/bin/bash
 
-# Check if the first argument is provided
-if [ -z "$1" ]; then
-  echo "Usage: $0 <simple|full>"
+# Check if the -t, -p, or -n argument is provided
+while getopts ":t:p:n:" opt; do
+  case $opt in
+    t)
+      type_arg=$OPTARG
+      ;;
+    p)
+      tuple_dir=$OPTARG
+      ;;
+    n)
+      num_lines=$OPTARG
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      echo "Usage: $0 -t <simple|full> -p <tuple_dir> -n <num_lines>"
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      echo "Usage: $0 -t <simple|full> -p <tuple_dir> -n <num_lines>"
+      exit 1
+      ;;
+  esac
+done
+
+
+# Check if the type argument is set
+if [ -z "$type_arg" ]; then
+  echo "Usage: $0 -t <simple|full>"
   exit 1
 fi
 
 # Determine the forecaster based on the argument
-if [ "$1" == "simple" ]; then
+if [ "$type_arg" == "simple" ]; then
   forecaster_command="-f BasicForecaster"
   config_command=""
   async_command="--async"
-elif [ "$1" == "full" ]; then
+elif [ "$type_arg" == "full" ]; then
   forecaster_command="-f AdvancedForecaster"
   config_command=" -c forecasters/forecaster_configs/default_gpt4o.yaml"
   async_command=""
@@ -40,10 +66,11 @@ do
 NO_CACHE=True \
 MAX_CONCURRENT_QUERIES=5 \
 python evaluation.py \
+--tuple_dir $tuple_dir \
 $forecaster_command \
 $config_command \
 $async_command \
--n 50 \
+--num_lines $num_lines \
 --run \
 -k $foo \
 | tee eval_${foo}.log \
