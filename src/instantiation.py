@@ -40,25 +40,25 @@ BASE_DATA_PATH: Path = (
 TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
 
 checkers: dict[str, Checker] = {
-    "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
-    "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
-    "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
-    "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
-    "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
-    "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
-    # "ConsequenceChecker": ConsequenceChecker(
-    #     path=TUPLES_PATH / "ConsequenceChecker.jsonl"
+    # "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
+    # "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
+    # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
+    # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
+    # "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
+    # "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
+    "ConsequenceChecker": ConsequenceChecker(
+        path=TUPLES_PATH / "ConsequenceChecker.jsonl"
+    ),
+    # "ParaphraseChecker": ParaphraseChecker(
+    #     path=TUPLES_PATH / "ParaphraseChecker.jsonl"
     # ),
-    "ParaphraseChecker": ParaphraseChecker(
-        path=TUPLES_PATH / "ParaphraseChecker.jsonl"
-    ),
-    "SymmetryAndChecker": SymmetryAndChecker(
-        path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
-    ),
-    "SymmetryOrChecker": SymmetryOrChecker(
-        path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
-    ),
-    "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
+    # "SymmetryAndChecker": SymmetryAndChecker(
+    #     path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
+    # ),
+    # "SymmetryOrChecker": SymmetryOrChecker(
+    #     path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
+    # ),
+    # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
 }
 
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             checker_list=checkers,
             n_relevance=1000,
             # n_top_relevance=50,
-            n_write=100,
+            n_write=150,
             # n_write_after=5,
         )
     )
