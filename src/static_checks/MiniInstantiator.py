@@ -919,6 +919,8 @@ class Consequence(MiniInstantiator):
             " - Do not make any asssumptions. Your output must follow from P without any assumptions. \n"
             " - It should not be just something completely equivalent to P. Think of something "
             "that is different but logically follows from P.\n"
+            " - The question title of your output should itself be a logical consequence of the question title of P. "
+            "And once again, not just something logically equivalent to the title of P. This is very important!\n"
             " - Be careful with deriving consequences of conditional statements! If a question asks "
             "'Will A happen if B?' or 'Given B then A' or 'Conditional on B, then A', then A is *not* "
             "a consequence of this question! Instead, you should provide a statement with the same condition "
