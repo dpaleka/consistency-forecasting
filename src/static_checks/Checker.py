@@ -532,22 +532,38 @@ class Checker(ABC):
         return results
 
     def test_sync(
-        self, forecaster: Forecaster, num_lines: int = -1, do_check=True, **kwargs
+        self,
+        forecaster: Forecaster,
+        line_begin: int = 0,
+        line_end: int = -1,
+        do_check=True,
+        **kwargs,
     ) -> list[dict[str, Any]]:
+        """
+        Args:
+            [line_begin, line_end) : closed-open range of lines to check.
+            If line_end = -1, defaults to the end of the file.
+
+            do_check (bool): Whether to compute violation on the elicited probabilities.
+        """
         results = []
         log_path = (
             get_data_path()
             / "check_tuple_logs"
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
+        if line_end != -1:
+            assert (
+                line_begin >= 0 and line_begin < line_end
+            ), "We want a non-empty range"
 
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             with open(self.path, "r") as file:
                 data: list[dict[str, Any]] = [json.loads(line) for line in file]
-            if num_lines >= 0:
-                print(f"Limiting to {num_lines} lines of {self.path}")
-                data = data[:num_lines]
+            if line_end >= 0:
+                print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
+                data = data[line_begin:line_end]
 
             for line in data:
                 print(f"START\nline: {line}\n")
@@ -570,27 +586,43 @@ class Checker(ABC):
         return results
 
     async def test(
-        self, forecaster: Forecaster, num_lines: int = -1, do_check=True, **kwargs
+        self,
+        forecaster: Forecaster,
+        line_begin: int = 0,
+        line_end: int = -1,
+        do_check=True,
+        **kwargs,
     ) -> list[dict[str, Any]]:
+        """
+        Args:
+            [line_begin, line_end) : closed-open range of lines to check.
+            If line_end = -1, defaults to the end of the file.
+
+            do_check (bool): Whether to compute violation on the elicited probabilities.
+        """
         results = []
         log_path = (
             get_data_path()
             / "check_tuple_logs"
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
+        if line_end != -1:
+            assert (
+                line_begin >= 0 and line_begin < line_end
+            ), "We want a non-empty range"
+
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
             with open(self.path, "r") as file:
                 data = [json.loads(line) for line in file]
-            if num_lines >= 0:
-                print(f"Limiting to {num_lines} lines of {self.path}")
-                data = data[:num_lines]
+            if line_end >= 0:
+                print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
+                data = data[line_begin:line_end]
 
             validated_lines: list[BaseModel] = [
                 self.get_line_obj(line) for line in data
             ]
-
             print(validated_lines)
             print("Starting async elicitation")
             elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
