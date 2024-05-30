@@ -1,0 +1,7 @@
+{
+    "label": "ConsequenceChecker",
+    "num_samples": 50,
+    "num_violations": 14,
+    "avg_abs_violation": 0.014657,
+    "median_abs_violation": 0.0
+}

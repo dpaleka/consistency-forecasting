@@ -88,8 +88,8 @@ def get_stats(results: dict, label: str = "") -> dict:
         "label": label,
         "num_samples": len(violations),
         "num_violations": num_failed,
-        "avg_abs_violation": avg_abs_violation,
-        "median_abs_violation": median_abs_violation,
+        "avg_abs_violation": round(avg_abs_violation, 6),
+        "median_abs_violation": round(median_abs_violation, 6),
     }
 
 

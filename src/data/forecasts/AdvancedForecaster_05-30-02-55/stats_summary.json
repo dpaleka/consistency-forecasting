@@ -1,0 +1,73 @@
+{
+    "NegChecker": {
+        "label": "NegChecker",
+        "num_samples": 50,
+        "num_violations": 43,
+        "avg_abs_violation": 0.114687,
+        "median_abs_violation": 0.01124
+    }
+}{
+    "ConsequenceChecker": {
+        "label": "ConsequenceChecker",
+        "num_samples": 50,
+        "num_violations": 14,
+        "avg_abs_violation": 0.014657,
+        "median_abs_violation": 0.0
+    }
+}{
+    "ParaphraseChecker": {
+        "label": "ParaphraseChecker",
+        "num_samples": 50,
+        "num_violations": 34,
+        "avg_abs_violation": 0.01054,
+        "median_abs_violation": 0.005063
+    }
+}{
+    "AndChecker": {
+        "label": "AndChecker",
+        "num_samples": 50,
+        "num_violations": 10,
+        "avg_abs_violation": 0.019236,
+        "median_abs_violation": 0.0
+    }
+}{
+    "ButChecker": {
+        "label": "ButChecker",
+        "num_samples": 50,
+        "num_violations": 42,
+        "avg_abs_violation": 0.089259,
+        "median_abs_violation": 0.031527
+    }
+}{
+    "CondChecker": {
+        "label": "CondChecker",
+        "num_samples": 50,
+        "num_violations": 34,
+        "avg_abs_violation": 0.032781,
+        "median_abs_violation": 0.004334
+    }
+}{
+    "OrChecker": {
+        "label": "OrChecker",
+        "num_samples": 50,
+        "num_violations": 29,
+        "avg_abs_violation": 0.057262,
+        "median_abs_violation": 0.002998
+    }
+}{
+    "AndOrChecker": {
+        "label": "AndOrChecker",
+        "num_samples": 50,
+        "num_violations": 38,
+        "avg_abs_violation": 0.077125,
+        "median_abs_violation": 0.013752
+    }
+}{
+    "CondCondChecker": {
+        "label": "CondCondChecker",
+        "num_samples": 50,
+        "num_violations": 16,
+        "avg_abs_violation": 0.013241,
+        "median_abs_violation": 0.0
+    }
+}
