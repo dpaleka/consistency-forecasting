@@ -206,7 +206,14 @@ S: {P_and_Q}
 """
 
 consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything). Reject if Q is 'ERROR: NO CONSEQUENCE FOUND' or something like that.
+I will provide you with two propositions, P and Q. 
+Your task is to assess whether Q is a proposition that will always be true if P is true. 
+In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. 
+Reject if P and Q are completely equivalent. Q should be a logical consequence of P, but not necessarily the other way around.
+Reject if you need any additional assumptions to derive Q from P. 
+Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them 
+(but accept if it is made by actually loosening some resolution criteria while still precisely defining everything). 
+Reject if Q is 'ERROR: NO CONSEQUENCE FOUND' or something like that.
 
 Example 1:
 
