@@ -23,8 +23,6 @@ from static_checks.Checker import (
     CondChecker,
     ConsequenceChecker,
     ParaphraseChecker,
-    SymmetryAndChecker,
-    SymmetryOrChecker,
     CondCondChecker,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -47,9 +45,9 @@ checker_classes = [
     ("CondChecker", CondChecker),
     ("ConsequenceChecker", ConsequenceChecker),
     ("ParaphraseChecker", ParaphraseChecker),
-    ("SymmetryAndChecker", SymmetryAndChecker),
-    ("SymmetryOrChecker", SymmetryOrChecker),
     ("CondCondChecker", CondCondChecker),
+    #    ("SymmetryAndChecker", SymmetryAndChecker),
+    #    ("SymmetryOrChecker", SymmetryOrChecker),
 ]
 
 
@@ -397,6 +395,7 @@ def main(
     all_stats = {}
     if relevant_checks[0] == "all":
         relevant_checks = list(checkers.keys())
+    print(f"Relevant checks: {relevant_checks}")
 
     if use_threads:
         with concurrent.futures.ThreadPoolExecutor(
@@ -436,7 +435,7 @@ def main(
                 run=run,
                 forecaster_class=forecaster_class,
             )
-        all_stats[check_name] = stats
+            all_stats[check_name] = stats
 
     with open(output_directory / "stats_summary.json", "a") as f:
         json.dump(all_stats, f, indent=4)

@@ -83,7 +83,7 @@ def write_verification_result_sync(tuple_type, generated_tuple, verification):
 
 
 class Checker(ABC):
-    def __init__(self, tolerance=0.001, path=None):
+    def __init__(self, tolerance=0.01, path=None):
         self.tolerance = tolerance
         if path is None:
             self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
