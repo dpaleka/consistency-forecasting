@@ -1,0 +1,65 @@
+{
+    "NegChecker": {
+        "label": "NegChecker",
+        "num_samples": 30,
+        "num_violations": 8,
+        "avg_abs_violation": 0.019391,
+        "median_abs_violation": 0.005063
+    },
+    "AndChecker": {
+        "label": "AndChecker",
+        "num_samples": 30,
+        "num_violations": 0,
+        "avg_abs_violation": 0.000309,
+        "median_abs_violation": 0.0
+    },
+    "OrChecker": {
+        "label": "OrChecker",
+        "num_samples": 30,
+        "num_violations": 16,
+        "avg_abs_violation": 0.057236,
+        "median_abs_violation": 0.036466
+    },
+    "AndOrChecker": {
+        "label": "AndOrChecker",
+        "num_samples": 30,
+        "num_violations": 12,
+        "avg_abs_violation": 0.046284,
+        "median_abs_violation": 0.001006
+    },
+    "ButChecker": {
+        "label": "ButChecker",
+        "num_samples": 30,
+        "num_violations": 22,
+        "avg_abs_violation": 0.126931,
+        "median_abs_violation": 0.024691
+    },
+    "CondChecker": {
+        "label": "CondChecker",
+        "num_samples": 30,
+        "num_violations": 13,
+        "avg_abs_violation": 0.015301,
+        "median_abs_violation": 0.005617
+    },
+    "ConsequenceChecker": {
+        "label": "ConsequenceChecker",
+        "num_samples": 30,
+        "num_violations": 4,
+        "avg_abs_violation": 0.010886,
+        "median_abs_violation": 0.0
+    },
+    "ParaphraseChecker": {
+        "label": "ParaphraseChecker",
+        "num_samples": 30,
+        "num_violations": 9,
+        "avg_abs_violation": 0.011879,
+        "median_abs_violation": 0.0
+    },
+    "CondCondChecker": {
+        "label": "CondCondChecker",
+        "num_samples": 30,
+        "num_violations": 14,
+        "avg_abs_violation": 0.027431,
+        "median_abs_violation": 0.002904
+    }
+}
