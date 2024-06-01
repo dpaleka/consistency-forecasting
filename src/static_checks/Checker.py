@@ -85,8 +85,9 @@ def write_verification_result_sync(tuple_type, generated_tuple, verification):
 class Checker(ABC):
     def __init__(self, tolerance=0.01, path=None):
         self.tolerance = tolerance
+        self.name = self.__class__.__name__
         if path is None:
-            self.path = get_data_path() / "tuples" / f"{self.__class__.__name__}.jsonl"
+            self.path = get_data_path() / "tuples" / f"{self.name}.jsonl"
         else:
             self.path = path
         self.counter = 0  # number of tuples successfully instantiated
@@ -480,7 +481,9 @@ class Checker(ABC):
 
         return arbitrage_argmax, arbitrage_max
 
-    def violation(self, answers: dict[str, Any], force_pos=True) -> float:
+    def violation(
+        self, answers: dict[str, Any], force_pos=True, metric="default"
+    ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         v = self.max_min_arbitrage(answers)[1]
         if force_pos:
