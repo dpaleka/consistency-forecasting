@@ -1,0 +1,56 @@
+{
+    "NegChecker": {
+        "total": 80,
+        "violated": 42,
+        "viol_avg": 0.08107038155143356,
+        "viol_med": 0.012003963322659406
+    },
+    "AndChecker": {
+        "total": 80,
+        "violated": 10,
+        "viol_avg": 0.013045615353630451,
+        "viol_med": 0
+    },
+    "OrChecker": {
+        "total": 80,
+        "violated": 26,
+        "viol_avg": 0.0427748038021051,
+        "viol_med": 0.0011562017713721007
+    },
+    "AndOrChecker": {
+        "total": 80,
+        "violated": 47,
+        "viol_avg": 0.05720283428163264,
+        "viol_med": 0.013922362338024671
+    },
+    "ButChecker": {
+        "total": 80,
+        "violated": 61,
+        "viol_avg": 0.08227914917600146,
+        "viol_med": 0.04405019791793724
+    },
+    "CondChecker": {
+        "total": 80,
+        "violated": 35,
+        "viol_avg": 0.028831506968880587,
+        "viol_med": 0.006316285317530826
+    },
+    "ConsequenceChecker": {
+        "total": 80,
+        "violated": 4,
+        "viol_avg": 0.047908967331713306,
+        "viol_med": 0
+    },
+    "ParaphraseChecker": {
+        "total": 80,
+        "violated": 30,
+        "viol_avg": 0.00995249022016039,
+        "viol_med": 0.004352320476355587
+    },
+    "CondCondChecker": {
+        "total": 80,
+        "violated": 25,
+        "viol_avg": 0.015019096219717754,
+        "viol_med": 0
+    }
+}

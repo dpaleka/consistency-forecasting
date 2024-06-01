@@ -45,6 +45,7 @@ def append_violation(
     if "violations" not in tuple:
         tuple["violations"] = {}
     v = checker.violation(answers, metric=metric)
+    print(f"It's {v}. is_inconsistent: {v > 0.01}.")
     tuple["violations"][metric] = v
     return tuple
 
@@ -53,6 +54,7 @@ def append_violations(
     checker: Checker,
     tuples_files: Path,
     metric=None,
+    recalc=False,
     write=False,
 ):
     """append_violation to each tuple in the jsonl file and write
@@ -61,6 +63,8 @@ def append_violations(
         checker (Checker): Checker object
         tuples_path (Path): Folder within FORECASTS_PATH or path to jsonl file
         metric (str): metric name
+        recalc (bool): recalculate violations? Or just read them?
+        write (bool): write the updated tuples back to the file? Or just return the violations?
     """
     print(f"Appending violations for {checker.name} in {tuples_files} ...")
     viols = []
@@ -74,8 +78,16 @@ def append_violations(
         tuples_files = FORECASTS_PATH / tuples_files
     with open(tuples_files, "r", encoding="utf-8") as f:
         tuples = [json.loads(line) for line in f]
-    tuples = [append_violation(checker, tuple, metric=metric) for tuple in tuples]
-    viols = [tuple["violations"][metric] for tuple in tuples]
+    if recalc:
+        tuples = [append_violation(checker, tuple, metric=metric) for tuple in tuples]
+        viols = [tuple["violations"][metric] for tuple in tuples]
+    else:
+        for tuple in tuples:
+            if "violations" in tuple and metric in tuple["violations"]:
+                viols.append(tuple["violations"][metric])
+            else:
+                tuple = append_violation(checker, tuple, metric=metric)
+                viols.append(tuple["violations"][metric])
     if write:
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
@@ -83,12 +95,14 @@ def append_violations(
     return viols
 
 
-def append_violations_all(tuples_folders: list[Path], metric=None, write=False):
+def append_violations_all(
+    tuples_folders: list[Path], metric=None, recalc=False, write=False
+):
     checker_viols = {checker: [] for checker in checkers}
     for tuples_folder in tuples_folders:
         for name, checker in checkers.items():
             viols = append_violations(
-                checker, tuples_folder, metric=metric, write=write
+                checker, tuples_folder, metric=metric, recalc=recalc, write=write
             )
             checker_viols[name].extend(viols)
     return checker_viols
@@ -129,12 +143,27 @@ def get_stats(checker_viols):
     return stats
 
 
-paths = [
+def get_stats_from_paths(paths, metric=None, write: Path | None = None):
+    checker_viols = append_violations_all(
+        paths, metric=metric, recalc=False, write=False
+    )
+    stats = get_stats(checker_viols)
+    if write:
+        if isinstance(write, str):
+            write = FORECASTS_PATH / write
+        with open(write, "w", encoding="utf-8") as f:
+            f.write(json.dumps(stats, indent=4))
+
+
+paths_adv = [
     "AdvancedForecaster_05-30-02-55",  # real qs
     "AdvancedForecaster_05-30-11-34",  # synthetic qs
+]
+paths_basic = [
     "BasicForecaster_05-31-12-24",  # real qs
     "BasicForecaster_05-31-12-18",  # synthetic qs
 ]
+paths = paths_adv + paths_basic
 
 if __name__ == "__main__":
     # if len(sys.argv) < 2:
@@ -144,4 +173,6 @@ if __name__ == "__main__":
     # append_violations_all(tuples_folder)
     # print("Done.")
     # reset_all_appended_viols(paths)
-    append_violations_all(paths, write=True)
+    # append_violations_all(paths, recalc=True, write=True)
+    print(get_stats_from_paths(paths_basic, write="stats_basic.json"))
+    print(get_stats_from_paths(paths_adv, write="stats_adv.json"))
