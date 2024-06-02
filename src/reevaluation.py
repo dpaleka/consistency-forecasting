@@ -56,7 +56,7 @@ def append_violations(
     metrics: list[str] | None = None,
     recalc: bool = False,
     write: bool = False,
-):
+) -> dict[str, list[float]]:
     """append_violation to each tuple in the jsonl file and write
 
     Args:
@@ -65,6 +65,9 @@ def append_violations(
         metrics (list[str]): metric names
         recalc (bool): recalculate violations? Or just read them?
         write (bool): write the updated tuples back to the file? Or just return the violations?
+
+    Returns:
+        dict[str, list[float]]: {metric: [violations]}
     """
     print(f"Appending violations for {checker.name} in {tuples_files} ...")
     viols = []
@@ -80,6 +83,7 @@ def append_violations(
         tuples = [json.loads(line) for line in f]
         print(f"Number of tuples: {len(tuples)}")
 
+    viols_all = {metric: [] for metric in metrics}
     for metric in metrics:
         if recalc:
             tuples = [
@@ -87,30 +91,50 @@ def append_violations(
             ]
             viols = [tuple["violations"][metric] for tuple in tuples]
         else:
+            viols = []
             for tuple in tuples:
                 if "violations" in tuple and metric in tuple["violations"]:
                     viols.append(tuple["violations"][metric])
                 else:
                     tuple = append_violation(checker, tuple, metric=metric)
                     viols.append(tuple["violations"][metric])
+        viols_all[metric] = viols
 
     if write:
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
                 f.write(json.dumps(tuple) + "\n")
-    return viols
+    return viols_all
 
 
 def append_violations_all(
-    tuples_folders: list[Path], metrics=None, recalc=False, write=False
-):
-    checker_viols = {checker: [] for checker in checkers}
+    tuples_folders: list[Path],
+    metrics=None,
+    recalc=False,
+    write=False,
+) -> dict[str, dict[str, list[float]]]:
+    """append_violations for all checkers in all tuples_folders
+
+    Args:
+        checkers (dict[str, Checker]): {name: Checker}
+        tuples_folders (list[Path]): list of folders within FORECASTS_PATH
+        metrics (list[str]): metric names
+        recalc (bool): recalculate violations? Or just read them?
+        write (bool): write the updated tuples back to the file? Or just return the violations?
+
+    Returns:
+        dict[str, dict[str, list[float]]]: {checker: {metric: [violations]}}
+    """
+    checker_viols = {
+        checker: {metric: [] for metric in metrics} for checker in checkers
+    }
     for tuples_folder in tuples_folders:
         for name, checker in checkers.items():
             viols = append_violations(
                 checker, tuples_folder, metrics=metrics, recalc=recalc, write=write
             )
-            checker_viols[name].extend(viols)
+            for metric, v in viols.items():
+                checker_viols[name][metric].extend(v)
     return checker_viols
 
 
@@ -137,15 +161,39 @@ def reset_all_appended_viols(tuples_folders: list[Path]):
 
 
 def get_stats(checker_viols):
+    """get stats from checker_viols
+
+    Args:
+        checker_viols (dict[str, dict[str, list[float]]): {checker: {metric: [violations]}}
+
+    Returns:
+        dict[str, dict[str, float]]:
+        {  checker:
+            {
+                {  metric:
+                    {  n: int,
+                       violated: int,
+                       viol_avg: float,
+                       viol_med: float
+                    }
+                }
+            }
+        }
+    """
     stats = {}
     for checker, viols in checker_viols.items():
-        stats[checker] = {
-            "total": len(viols),
-            "violated": len([v for v in viols if v > 0.01]),
-            "viol_avg": sum(viols) / len(viols),
-            "viol_med": sorted(viols)[len(viols) // 2],
-        }
-    print(stats)
+        stats[checker] = {}
+        for metric, v in viols.items():
+            n = len(v)
+            violated = len([vi for vi in v if vi > 0.01])
+            viol_avg = sum(v) / n
+            viol_med = sorted(v)[n // 2]
+            stats[checker][metric] = {
+                "n": n,
+                "violated": violated,
+                "viol_avg": viol_avg,
+                "viol_med": viol_med,
+            }
     return stats
 
 
@@ -170,9 +218,11 @@ paths_basic = [
     "BasicForecaster_05-31-12-18",  # synthetic qs
 ]
 paths = paths_adv + paths_basic
-# metrics = ["default", "frequentist"]
-metrics = ["default"]
+metrics = ["default", "frequentist"]
+# metrics = ["default"]
 
 if __name__ == "__main__":
+    append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
+    append_violations_all(paths_basic, metrics=metrics, recalc=True, write=True)
     print(get_stats_from_paths(paths_basic, metrics=metrics, write="stats_basic.json"))
     print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
