@@ -86,7 +86,7 @@ class Checker(ABC):
     def __init__(self, default_tolerance=0.01, frequentist_hparams=None, path=None):
         self.default_tolerance = default_tolerance
         if frequentist_hparams is None:
-            frequentist_hparams = {"sigma": 0.01, "gamma": 3}
+            frequentist_hparams = {"sigma": 0.01, "gamma": 3, "UB_FREQUENTIST": 1}
         self.frequentist_hparams = frequentist_hparams
         self.name = self.__class__.__name__
         if path is None:
@@ -496,7 +496,10 @@ class Checker(ABC):
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
-            v = self.frequentist_violation(answers)
+            try:
+                v = self.frequentist_violation(answers)
+            except ZeroDivisionError:
+                v = self.frequentist_hparams["UB_FREQUENTIST"]
         else:
             raise ValueError(f"Metric {metric} not implemented")
 
@@ -528,16 +531,19 @@ class Checker(ABC):
         line_obj = self.TupleFormat.model_validate(line)
         return line_obj
 
-    def check_from_elicited_probs(self, answers: dict[str, Prob]) -> dict[str, Any]:
+    def check_from_elicited_probs(
+        self, answers: dict[str, Prob], metric: str = "default"
+    ) -> dict[str, Any]:
         print(f"answers: {answers}\n")
         if any([a is None for a in answers.values()]):
             print("ERROR: Some answers are None!")
             return {"successful_elicitation": False}
-        loss: float = self.violation(answers)
-        res_bool: bool = self.check(answers)
+        loss: float = self.violation(answers, metric=metric)
+        res_bool: bool = self.check(answers, metric=metric)
         res: str = {True: "Passed", False: "Failed"}[res_bool]
         print(f"Violation: {loss}\nCheck result: {res}\n")
         return {
+            "metric": metric,
             "violation": loss,
             "check": res_bool,
             "check_result": res,
@@ -827,7 +833,7 @@ class AndChecker(Checker):
         self, answers: dict[str, Any], sigma: float = 0.01, gamma: float = 3
     ) -> float:
         P, Q, P_and_Q = answers["P"], answers["Q"], answers["P_and_Q"]
-        if max(P + Q - 1, 0) <= P_and_Q:
+        if P + Q - 1 <= P_and_Q:
             v_lhs = 0
         else:
             denom = (P * (1 - P) + Q * (1 - Q) + P_and_Q * (1 - P_and_Q)) ** 0.5
@@ -1359,6 +1365,15 @@ class ConsequenceChecker(Checker):
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
 
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, cons_P = answers["P"], answers["cons_P"]
+        if P <= cons_P:
+            v = 0
+        else:
+            denom = (P * (1 - P) + cons_P * (1 - cons_P)) ** 0.5
+            v = abs(P - cons_P) / denom
+        return v
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
@@ -1531,12 +1546,6 @@ class CondCondChecker(Checker):
             P_and_Q_and_R=P_and_Q_and_R,
         )
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(
-    #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
-    #         - answers["P_and_Q_and_R"]
-    #     )
-
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, R_given_P_and_Q, P_and_Q_and_R = (
             answers["P"],
@@ -1545,10 +1554,7 @@ class CondCondChecker(Checker):
             answers["P_and_Q_and_R"],
         )
         denom = (
-            P
-            * Q_given_P
-            * R_given_P_and_Q
-            * ((1 - P) + (1 - Q_given_P) + (1 - R_given_P_and_Q))
+            P * Q_given_P * R_given_P_and_Q * (3 - (P + Q_given_P + R_given_P_and_Q))
             + P_and_Q_and_R * (1 - P_and_Q_and_R)
         ) ** 0.5
         v = abs(P * Q_given_P * R_given_P_and_Q - P_and_Q_and_R) / denom
