@@ -50,37 +50,43 @@ checker_classes = [
     #    ("SymmetryOrChecker", SymmetryOrChecker),
 ]
 
+metrics = ["default", "frequentist"]
+
 
 def get_stats(results: dict, label: str = "") -> dict:
-    # Extract the violation and check results from the test
-    violations = [result["violation"] for result in results]
-    checks = [result["check"] for result in results]
+    ret = {}
+    for metric in metrics:
+        print(f"{metric}")
 
-    # Calculate the number of violations
-    print(f"checks: {checks}")
-    num_failed = sum(1 for c in checks if not c)
+        # Extract the violation and check results from the test
+        violations = [result[metric]["violation"] for result in results]
+        checks = [result[metric]["check"] for result in results]
 
-    # Calculate the average violation
-    avg_abs_violation = sum(abs(v) for v in violations) / len(violations)
+        # Calculate the number of violations
+        print(f"checks: {checks}")
+        num_failed = sum(1 for c in checks if not c)
 
-    # Calculate the median violation
-    sorted_violations = sorted(violations, key=abs)
-    n = len(sorted_violations)
-    median_abs_violation = (
-        abs(sorted_violations[n // 2]) + abs(sorted_violations[~n // 2])
-    ) / 2
+        # Calculate the average violation
+        avg_violation = sum(v for v in violations) / len(violations)
 
-    print(f"Number of violations: {num_failed}/{len(checks)}")
-    print(f"Average violation: {avg_abs_violation:.3f}")
-    print(f"Median violation: {median_abs_violation:.3f}")
+        # Calculate the median violation
+        sorted_violations = sorted(violations, key=abs)
+        n = len(sorted_violations)
+        median_violation = (sorted_violations[n // 2] + sorted_violations[~n // 2]) / 2
 
-    return {
-        "label": label,
-        "num_samples": len(violations),
-        "num_violations": num_failed,
-        "avg_abs_violation": round(avg_abs_violation, 6),
-        "median_abs_violation": round(median_abs_violation, 6),
-    }
+        print(f"Number of violations: {num_failed}/{len(checks)}")
+        print(f"Average violation: {avg_violation:.3f}")
+        print(f"Median violation: {median_violation:.3f}")
+
+        ret[metric] = {
+            "label": label,
+            "num_samples": len(violations),
+            "num_violations": num_failed,
+            "avg_abs_violation": round(avg_violation, 6),
+            "median_abs_violation": round(median_violation, 6),
+        }
+
+    return ret
 
 
 def make_folder_name(forecaster: Forecaster, model: str, timestamp: datetime) -> str:
@@ -233,7 +239,11 @@ def process_check(
     ]
     for line, answers, result in zip(data, all_answers, results):
         print(f"answers: {answers}")
-        violation_data = checkers[check_name].check_from_elicited_probs(answers)
+        violation_data = {}
+        for metric in metrics:
+            violation_data[metric] = checkers[check_name].check_from_elicited_probs(
+                answers, metric
+            )
         print(f"violation_data: {violation_data}")
         result.update(violation_data)
 
@@ -437,6 +447,8 @@ def main(
             )
             all_stats[check_name] = stats
 
+    # TODO figure out how to write to the load_dir
+
     with open(output_directory / "stats_summary.json", "a") as f:
         json.dump(all_stats, f, indent=4)
     with open(most_recent_directory / "stats_summary.json", "a") as f2:
@@ -450,14 +462,18 @@ def main(
             json.dump(stats, f, indent=4)
             json.dump(stats, f2, indent=4)
 
-    for check_name, stats in all_stats.items():
-        print(f"{stats['label']}: {stats['num_violations']}/{stats['num_samples']}")
+    for metric in metrics:
+        print(f"{metric}")
+        for check_name, stats in all_stats.items():
+            print(
+                f"{stats[metric]['label']}: {stats[metric]['num_violations']}/{stats[metric]['num_samples']}"
+            )
 
-    print("\n\n")
-    for check_name, stats in all_stats.items():
-        print(
-            f"{check_name} | avg: {stats['avg_abs_violation']:.3f}, median: {stats['median_abs_violation']:.3f}"
-        )
+        print("\n\n")
+        for check_name, stats in all_stats.items():
+            print(
+                f"{check_name} | avg: {stats[metric]['avg_abs_violation']:.3f}, median: {stats[metric]['median_abs_violation']:.3f}"
+            )
 
 
 if __name__ == "__main__":
