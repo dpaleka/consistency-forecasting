@@ -83,8 +83,11 @@ def write_verification_result_sync(tuple_type, generated_tuple, verification):
 
 
 class Checker(ABC):
-    def __init__(self, tolerance=0.01, path=None):
-        self.tolerance = tolerance
+    def __init__(self, default_tolerance=0.01, frequentist_hparams=None, path=None):
+        self.default_tolerance = default_tolerance
+        if frequentist_hparams is None:
+            frequentist_hparams = {"sigma": 0.01, "gamma": 3}
+        self.frequentist_hparams = frequentist_hparams
         self.name = self.__class__.__name__
         if path is None:
             self.path = get_data_path() / "tuples" / f"{self.name}.jsonl"
@@ -481,18 +484,34 @@ class Checker(ABC):
 
         return arbitrage_argmax, arbitrage_max
 
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        raise NotImplementedError("Subclasses must implement this")
+
     def violation(
         self, answers: dict[str, Any], force_pos=True, metric="default"
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
-        v = self.max_min_arbitrage(answers)[1]
-        if force_pos:
-            return max(0, v)
+        if metric == "default":
+            v = self.max_min_arbitrage(answers)[1]
+            if force_pos:
+                v = max(0, v)
+        elif metric == "frequentist":
+            v = self.frequentist_violation(answers)
         else:
-            return v
+            raise ValueError(f"Metric {metric} not implemented")
 
-    def check(self, answers: dict[str, Any]) -> bool:
-        return bool(self.violation(answers) < self.tolerance)
+        return v
+
+    def check(self, answers: dict[str, Any], metric: str = "default") -> bool:
+        if metric == "default":
+            return bool(self.violation(answers) < self.default_tolerance)
+        elif metric == "frequentist":
+            return bool(
+                self.frequentist_violation(answers)
+                < self.frequentist_hparams["gamma"] * self.frequentist_hparams["sigma"]
+            )
+        else:
+            raise ValueError(f"Metric {metric} not implemented")
 
     def elicit_and_violation(
         self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
@@ -718,8 +737,12 @@ class NegChecker(Checker):
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P"] + answers["not_P"] - 1)
+    def frequentist_violation(
+        self, answers: dict[str, Any], sigma: float = 0.01, gamma: float = 3
+    ) -> float:
+        P, not_P = answers["P"], answers["not_P"]
+        v = abs(P + not_P - 1) / (2 * (1 - P) * P) ** 0.5
+        return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -800,11 +823,24 @@ class AndChecker(Checker):
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return max(
-    #         max(answers["P"] + answers["Q"] - 1, 0) - answers["P_and_Q"],
-    #         answers["P_and_Q"] - min(answers["P"], answers["Q"]),
-    #     )
+    def frequentist_violation(
+        self, answers: dict[str, Any], sigma: float = 0.01, gamma: float = 3
+    ) -> float:
+        P, Q, P_and_Q = answers["P"], answers["Q"], answers["P_and_Q"]
+        if max(P + Q - 1, 0) <= P_and_Q:
+            v_lhs = 0
+        else:
+            denom = (P * (1 - P) + Q * (1 - Q) + P_and_Q * (1 - P_and_Q)) ** 0.5
+            v_lhs = (P + Q - 1 - P_and_Q) / denom
+
+        R = min(P, Q)
+        if R >= P_and_Q:
+            v_rhs = 0
+        else:
+            denom = (P_and_Q * (1 - P_and_Q) + R * (1 - R)) ** 0.5
+            v_rhs = (P_and_Q - R) / denom
+
+        return max(v_lhs, v_rhs)
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -886,11 +922,23 @@ class OrChecker(Checker):
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return max(
-    #         max(answers["P"], answers["Q"]) - answers["P_or_Q"],
-    #         answers["P_or_Q"] - min(1, answers["P"] + answers["Q"]),
-    #     )
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        # This is essentially the reverse of the AndChecker.frequentist_violation
+        P, Q, P_or_Q = answers["P"], answers["Q"], answers["P_or_Q"]
+        S = max(P, Q)
+        if S <= P_or_Q:
+            v_lhs = 0
+        else:
+            denom = (S * (1 - S) + P_or_Q * (1 - P_or_Q)) ** 0.5
+            v_lhs = (S - P_or_Q) / denom
+
+        if P + Q >= P_or_Q:
+            v_rhs = 0
+        else:
+            denom = (P * (1 - P) + Q * (1 - Q) + P_or_Q * (1 - P_or_Q)) ** 0.5
+            v_rhs = (P_or_Q - P - Q) / denom
+
+        return max(v_lhs, v_rhs)
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -1021,8 +1069,22 @@ class AndOrChecker(Checker):
             P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"])
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, Q, P_or_Q, P_and_Q = (
+            answers["P"],
+            answers["Q"],
+            answers["P_or_Q"],
+            answers["P_and_Q"],
+        )
+
+        denom = (
+            (P * (1 - P))
+            + (Q * (1 - Q))
+            + (P_or_Q * (1 - P_or_Q))
+            + (P_and_Q * (1 - P_and_Q))
+        ) ** 0.5
+        v = abs(P + Q - P_or_Q - P_and_Q) / denom
+        return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -1115,8 +1177,14 @@ class ButChecker(Checker):
             P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
         )
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"])
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, Q_and_not_P, P_or_Q = answers["P"], answers["Q_and_not_P"], answers["P_or_Q"]
+
+        denom = (
+            P_or_Q * (1 - P_or_Q) + P * (1 - P) + Q_and_not_P * (1 - Q_and_not_P)
+        ) ** 0.5
+        v = abs(P_or_Q - (P + Q_and_not_P)) / denom
+        return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -1205,8 +1273,13 @@ class CondChecker(Checker):
             P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
         )
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"])
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
+        denom = (
+            P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
+        ) ** 0.5
+        v = abs(P * Q_given_P - P_and_Q) / denom
+        return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return answers in [
@@ -1350,14 +1423,169 @@ class ParaphraseChecker(Checker):
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, para_P=para_P.para_P)
 
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P"] - answers["para_P"])
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, para_P = answers["P"], answers["para_P"]
+        denom = (P * (1 - P) + para_P * (1 - para_P)) ** 0.5
+        v = abs(P - para_P) / denom
+        return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
             and answers["P"] == answers["para_P"]
         )
+
+
+class CondCondChecker(Checker):
+    num_base_questions = 3
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        Q_given_P: ForecastingQuestion
+        R_given_P_and_Q: ForecastingQuestion
+        P_and_Q_and_R: ForecastingQuestion
+
+        @field_validator("P", "P_and_Q_and_R")
+        def check_question_type(cls, value):  # noqa
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("Q_given_P", "R_given_P_and_Q")
+        def check_question_type(cls, value):  # noqa
+            if value.question_type != "conditional_binary":
+                raise ValueError("Question type must be conditional binary")
+            return value
+
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
+        # TODO(Alejadnro): Implement this
+        return VerificationResult(reasoning="", valid=True)
+
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
+        # TODO(Alejadnro): Implement this
+        return VerificationResult(reasoning="", valid=True)
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
+
+        P_obj = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        P = P_obj.P
+
+        Q_given_P_obj = Conditional().instantiate_sync(base_sentences_PQ, **kwargs)
+        Q_given_P = Q_given_P_obj.Q_given_P
+
+        P_and_Q_obj = And().instantiate_sync(base_sentences_PQ, **kwargs)
+        P_and_Q = P_and_Q_obj.P_and_Q
+
+        R_given_P_and_Q_obj = Conditional().instantiate_sync(
+            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
+        )
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
+
+        P_and_Q_and_R_obj = And().instantiate_sync(
+            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
+        )
+        P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
+
+        return self.TupleFormat(
+            P=P,
+            Q_given_P=Q_given_P,
+            R_given_P_and_Q=R_given_P_and_Q,
+            P_and_Q_and_R=P_and_Q_and_R,
+        )
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
+
+        P_obj = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        P = P_obj.P
+
+        Q_given_P_obj = await Conditional().instantiate(base_sentences_PQ, **kwargs)
+        Q_given_P = Q_given_P_obj.Q_given_P
+
+        P_and_Q_obj = await And().instantiate(base_sentences_PQ, **kwargs)
+        P_and_Q = P_and_Q_obj.P_and_Q
+
+        R_given_P_and_Q_obj = await Conditional().instantiate(
+            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
+        )
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
+
+        P_and_Q_and_R_obj = await And().instantiate(
+            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
+        )
+        P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
+
+        return self.TupleFormat(
+            P=P,
+            Q_given_P=Q_given_P,
+            R_given_P_and_Q=R_given_P_and_Q,
+            P_and_Q_and_R=P_and_Q_and_R,
+        )
+
+    # def violation(self, answers: dict[str, Prob]) -> float:
+    #     return abs(
+    #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
+    #         - answers["P_and_Q_and_R"]
+    #     )
+
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        P, Q_given_P, R_given_P_and_Q, P_and_Q_and_R = (
+            answers["P"],
+            answers["Q_given_P"],
+            answers["R_given_P_and_Q"],
+            answers["P_and_Q_and_R"],
+        )
+        denom = (
+            P
+            * Q_given_P
+            * R_given_P_and_Q
+            * ((1 - P) + (1 - Q_given_P) + (1 - R_given_P_and_Q))
+            + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        ) ** 0.5
+        v = abs(P * Q_given_P * R_given_P_and_Q - P_and_Q_and_R) / denom
+        return v
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return answers in [
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": True,
+                "P_and_Q_and_R": True,
+            },
+            {
+                "P": True,
+                "Q_given_P": True,
+                "R_given_P_and_Q": False,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": True,
+                "Q_given_P": False,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
+            {
+                "P": False,
+                "Q_given_P": None,
+                "R_given_P_and_Q": None,
+                "P_and_Q_and_R": False,
+            },
+        ]
+
+
+"""
+The following checks are deprecated. We should rethink how those integrate with Paraphrase.
+"""
 
 
 class SymmetryAndChecker(Checker):
@@ -1498,6 +1726,9 @@ class SymmetryAndChecker(Checker):
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
+
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        raise NotImplementedError
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
@@ -1644,138 +1875,11 @@ class SymmetryOrChecker(Checker):
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
 
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        raise NotImplementedError
+
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
             and answers["P_or_Q"] == answers["Q_or_P"]
         )
-
-
-class CondCondChecker(Checker):
-    num_base_questions = 3
-
-    class TupleFormat(BaseModel):
-        P: ForecastingQuestion
-        Q_given_P: ForecastingQuestion
-        R_given_P_and_Q: ForecastingQuestion
-        P_and_Q_and_R: ForecastingQuestion
-
-        @field_validator("P", "P_and_Q_and_R")
-        def check_question_type(cls, value):  # noqa
-            if value.question_type != "binary":
-                raise ValueError("Question type must be binary")
-            return value
-
-        @field_validator("Q_given_P", "R_given_P_and_Q")
-        def check_question_type(cls, value):  # noqa
-            if value.question_type != "conditional_binary":
-                raise ValueError("Question type must be conditional binary")
-            return value
-
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning="", valid=True)
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning="", valid=True)
-
-    def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
-        base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
-
-        P_obj = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
-        Q_given_P_obj = Conditional().instantiate_sync(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
-        P_and_Q_obj = And().instantiate_sync(base_sentences_PQ, **kwargs)
-        P_and_Q = P_and_Q_obj.P_and_Q
-
-        R_given_P_and_Q_obj = Conditional().instantiate_sync(
-            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
-        )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
-        P_and_Q_and_R_obj = And().instantiate_sync(
-            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
-        )
-        P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
-
-        return self.TupleFormat(
-            P=P,
-            Q_given_P=Q_given_P,
-            R_given_P_and_Q=R_given_P_and_Q,
-            P_and_Q_and_R=P_and_Q_and_R,
-        )
-
-    async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
-        base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
-
-        P_obj = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
-        Q_given_P_obj = await Conditional().instantiate(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
-        P_and_Q_obj = await And().instantiate(base_sentences_PQ, **kwargs)
-        P_and_Q = P_and_Q_obj.P_and_Q
-
-        R_given_P_and_Q_obj = await Conditional().instantiate(
-            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
-        )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
-        P_and_Q_and_R_obj = await And().instantiate(
-            {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
-        )
-        P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
-
-        return self.TupleFormat(
-            P=P,
-            Q_given_P=Q_given_P,
-            R_given_P_and_Q=R_given_P_and_Q,
-            P_and_Q_and_R=P_and_Q_and_R,
-        )
-
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(
-    #         answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
-    #         - answers["P_and_Q_and_R"]
-    #     )
-
-    def check_exact(self, answers: dict[str, Prob]) -> bool:
-        return answers in [
-            {
-                "P": True,
-                "Q_given_P": True,
-                "R_given_P_and_Q": True,
-                "P_and_Q_and_R": True,
-            },
-            {
-                "P": True,
-                "Q_given_P": True,
-                "R_given_P_and_Q": False,
-                "P_and_Q_and_R": False,
-            },
-            {
-                "P": True,
-                "Q_given_P": False,
-                "R_given_P_and_Q": None,
-                "P_and_Q_and_R": False,
-            },
-            {
-                "P": False,
-                "Q_given_P": None,
-                "R_given_P_and_Q": None,
-                "P_and_Q_and_R": False,
-            },
-        ]
