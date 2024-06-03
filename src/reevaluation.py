@@ -237,17 +237,25 @@ paths_adv = [
     "AdvancedForecaster_05-30-02-55",  # real qs
     "AdvancedForecaster_05-30-11-34",  # synthetic qs
 ]
-paths_basic = [
+paths_gpt_3_5 = [
     "BasicForecaster_05-31-12-24",  # real qs
     "BasicForecaster_05-31-12-18",  # synthetic qs
 ]
-paths = paths_adv + paths_basic
+paths_gpt_4o = [
+    "BasicForecaster_05-30-23-27",  # real qs
+    "BasicForecaster_05-30-23-26",  # synthetic qs
+]
+
+paths = paths_adv + paths_gpt_3_5 + paths_gpt_4o
 metrics = ["default", "frequentist"]
-# metrics = ["default"]
 
 if __name__ == "__main__":
     # TODO add some notifications about what files will get modified, and y/n. ideally together with the edits that introduces cli args to this
-    append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
-    append_violations_all(paths_basic, metrics=metrics, recalc=True, write=True)
-    print(get_stats_from_paths(paths_basic, metrics=metrics, write="stats_basic.json"))
-    print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
+    # append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
+    # append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=True, write=True)
+    append_violations_all(paths_gpt_4o, metrics=metrics, recalc=True, write=True)
+    # print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
+    # print(get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json"))
+    print(
+        get_stats_from_paths(paths_gpt_4o, metrics=metrics, write="stats_gpt_4o.json")
+    )
