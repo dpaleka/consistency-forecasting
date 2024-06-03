@@ -45,9 +45,13 @@ def append_violation(
     print(f"Computing violation for {answers} ...")
     if "violations" not in tuple:
         tuple["violations"] = {}
+    if "checks" not in tuple:
+        tuple["checks"] = {}
     v = checker.violation(answers, metric=metric)
-    print(f"It's {v}. is_inconsistent: {v > 0.01}.")
+    c = checker.check(answers, metric=metric)
+    print(f"Violation: {v}. Check: {c}.")
     tuple["violations"][metric] = v
+    tuple["checks"][metric] = c
     return tuple
 
 
@@ -71,7 +75,7 @@ def append_violations(
         dict[str, list[float]]: {metric: [violations]}
     """
     print(f"Appending violations for {checker.name} in {tuples_files} ...")
-    viols = []
+
     if metrics is None:
         metrics = ["default"]
     if isinstance(tuples_files, str):
@@ -85,28 +89,34 @@ def append_violations(
         print(f"Number of tuples: {len(tuples)}")
 
     viols_all = {metric: [] for metric in metrics}
+    checks_all = {metric: [] for metric in metrics}
     for metric in metrics:
         if recalc:
             tuples = [
                 append_violation(checker, tuple, metric=metric) for tuple in tuples
             ]
             viols = [tuple["violations"][metric] for tuple in tuples]
+            checks = [tuple["checks"][metric] for tuple in tuples]
         else:
             viols = []
+            checks = []
             for tuple in tuples:
                 if "violations" in tuple and metric in tuple["violations"]:
                     viols.append(tuple["violations"][metric])
+                    checks.append(tuple["checks"][metric])
                 else:
                     tuple = append_violation(checker, tuple, metric=metric)
                     viols.append(tuple["violations"][metric])
+                    checks.append(tuple["checks"][metric])
         viols_all[metric] = viols
+        checks_all[metric] = checks
 
     if write:
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
                 tuple = round_floats(tuple, precision=7)
                 f.write(json.dumps(tuple) + "\n")
-    return viols_all
+    return viols_all, checks_all
 
 
 def append_violations_all(
@@ -130,14 +140,19 @@ def append_violations_all(
     checker_viols = {
         checker: {metric: [] for metric in metrics} for checker in checkers
     }
+    checker_checks = {
+        checker: {metric: [] for metric in metrics} for checker in checkers
+    }
     for tuples_folder in tuples_folders:
         for name, checker in checkers.items():
-            viols = append_violations(
+            viols, checks = append_violations(
                 checker, tuples_folder, metrics=metrics, recalc=recalc, write=write
             )
             for metric, v in viols.items():
                 checker_viols[name][metric].extend(v)
-    return checker_viols
+            for metric, c in checks.items():
+                checker_checks[name][metric].extend(c)
+    return checker_viols, checker_checks
 
 
 def reset_appended_viols(tuples_folder: Path):
@@ -150,6 +165,8 @@ def reset_appended_viols(tuples_folder: Path):
         for tuple in tuples:
             if "violations" in tuple:
                 del tuple["violations"]
+            if "checks" in tuple:
+                del tuple["checks"]
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
                 f.write(json.dumps(tuple) + "\n")
@@ -162,11 +179,12 @@ def reset_all_appended_viols(tuples_folders: list[Path]):
     return
 
 
-def get_stats(checker_viols):
-    """get stats from checker_viols
+def get_stats(checker_viols, checker_checks):
+    """get stats from checker_viols, checker_checks
 
     Args:
         checker_viols (dict[str, dict[str, list[float]]): {checker: {metric: [violations]}}
+        checker_checks (dict[str, dict[str, list[bool]]): {checker: {metric: [checks]}}
 
     Returns:
         dict[str, dict[str, float]]:
@@ -183,11 +201,15 @@ def get_stats(checker_viols):
         }
     """
     stats = {}
-    for checker, viols in checker_viols.items():
+    for checker in checkers:
+        viols = checker_viols[checker]
+        checks = checker_checks[checker]
         stats[checker] = {}
-        for metric, v in viols.items():
+        for metric in viols:
+            v = viols[metric]
+            c = checks[metric]
             n = len(v)
-            violated = len([vi for vi in v if vi > 0.01])
+            violated = len(c) - sum(c)
             viol_avg = sum(v) / n
             viol_med = sorted(v)[n // 2]
             stats[checker][metric] = {
@@ -200,10 +222,10 @@ def get_stats(checker_viols):
 
 
 def get_stats_from_paths(paths, metrics=None, write: Path | None = None):
-    checker_viols = append_violations_all(
+    checker_viols, checker_checks = append_violations_all(
         paths, metrics=metrics, recalc=False, write=False
     )
-    stats = get_stats(checker_viols)
+    stats = get_stats(checker_viols, checker_checks)
     if write:
         if isinstance(write, str):
             write = FORECASTS_PATH / write
