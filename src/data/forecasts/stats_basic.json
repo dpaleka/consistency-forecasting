@@ -3,12 +3,12 @@
         "default": {
             "n": 80,
             "violated": 34,
-            "viol_avg": 0.1939663,
-            "viol_med": 0.0092737
+            "viol_avg": 0.19397332000000006,
+            "viol_med": 0.0092706
         },
         "frequentist": {
             "n": 80,
-            "violated": 59,
+            "violated": 42,
             "viol_avg": 0.4475754187500005,
             "viol_med": 0.1343523
         }
@@ -17,12 +17,12 @@
         "default": {
             "n": 80,
             "violated": 8,
-            "viol_avg": 0.02210637875,
+            "viol_avg": 0.022105121250000005,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
-            "violated": 14,
+            "violated": 13,
             "viol_avg": 0.06609725125,
             "viol_med": 0
         }
@@ -31,12 +31,12 @@
         "default": {
             "n": 80,
             "violated": 45,
-            "viol_avg": 0.20132644250000004,
-            "viol_med": 0.0297615
+            "viol_avg": 0.20132384500000003,
+            "viol_med": 0.0297613
         },
         "frequentist": {
             "n": 80,
-            "violated": 56,
+            "violated": 48,
             "viol_avg": 0.4938162462499999,
             "viol_med": 0.2383656
         }
@@ -44,13 +44,13 @@
     "AndOrChecker": {
         "default": {
             "n": 80,
-            "violated": 36,
-            "viol_avg": 0.12455327375000003,
-            "viol_med": 0.0032422
+            "violated": 39,
+            "viol_avg": 0.12710608000000007,
+            "viol_med": 0.0075938
         },
         "frequentist": {
             "n": 80,
-            "violated": 71,
+            "violated": 50,
             "viol_avg": 0.39228669875000005,
             "viol_med": 0.2067787
         }
@@ -59,12 +59,12 @@
         "default": {
             "n": 80,
             "violated": 63,
-            "viol_avg": 0.30925777125,
+            "viol_avg": 0.30915512125,
             "viol_med": 0.0891956
         },
         "frequentist": {
             "n": 80,
-            "violated": 77,
+            "violated": 67,
             "viol_avg": 0.6500761537500004,
             "viol_med": 0.4651303
         }
@@ -73,12 +73,12 @@
         "default": {
             "n": 80,
             "violated": 26,
-            "viol_avg": 0.04785727375,
+            "viol_avg": 0.047830671250000005,
             "viol_med": 0.0037324
         },
         "frequentist": {
             "n": 80,
-            "violated": 71,
+            "violated": 21,
             "viol_avg": 0.13214237375000001,
             "viol_med": 0.0761608
         }
@@ -92,7 +92,7 @@
         },
         "frequentist": {
             "n": 80,
-            "violated": 13,
+            "violated": 11,
             "viol_avg": 0.06602951874999999,
             "viol_med": 0
         }
@@ -106,7 +106,7 @@
         },
         "frequentist": {
             "n": 80,
-            "violated": 38,
+            "violated": 32,
             "viol_avg": 0.19955631750000002,
             "viol_med": 0.0
         }
@@ -115,12 +115,12 @@
         "default": {
             "n": 80,
             "violated": 29,
-            "viol_avg": 0.022127796250000005,
+            "viol_avg": 0.022430040000000002,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
-            "violated": 77,
+            "violated": 36,
             "viol_avg": 0.1648684625,
             "viol_med": 0.0957826
         }
