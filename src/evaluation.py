@@ -74,16 +74,23 @@ def get_stats(results: dict, label: str = "") -> dict:
         n = len(sorted_violations)
         median_violation = (sorted_violations[n // 2] + sorted_violations[~n // 2]) / 2
 
+        outlier_tail: int = 1
+        avg_violation_no_outliers = sum(
+            sorted_violations[outlier_tail:-outlier_tail]
+        ) / (len(sorted_violations) - 2 * outlier_tail)
+
         print(f"Number of violations: {num_failed}/{len(checks)}")
         print(f"Average violation: {avg_violation:.3f}")
+        print(f"Average violation without outliers: {avg_violation_no_outliers:.3f}")
         print(f"Median violation: {median_violation:.3f}")
 
         ret[metric] = {
             "label": label,
             "num_samples": len(violations),
             "num_violations": num_failed,
-            "avg_abs_violation": round(avg_violation, 6),
-            "median_abs_violation": round(median_violation, 6),
+            "avg_violation": round(avg_violation, 6),
+            "avg_violation_no_outliers": round(avg_violation_no_outliers, 6),
+            "median_violation": round(median_violation, 6),
         }
 
     return ret
@@ -382,9 +389,18 @@ def main(
             load_dir.exists() and load_dir.is_dir()
         ), "LOAD_DIR must be a valid directory"
 
+    if relevant_checks[0] == "all":
+        relevant_checks = list(checkers.keys())
+    print(f"Relevant checks: {relevant_checks}")
+
     logged_config = {
         "forecaster_class": forecaster.__class__.__name__,
         "forecaster": forecaster.dump_config(),
+        "checkers": [
+            checker.dump_config()
+            for name, checker in checkers.items()
+            if name in relevant_checks
+        ],
         "model": model,
         "is_async": is_async,
         "use_threads": use_threads,
@@ -403,9 +419,6 @@ def main(
     )
 
     all_stats = {}
-    if relevant_checks[0] == "all":
-        relevant_checks = list(checkers.keys())
-    print(f"Relevant checks: {relevant_checks}")
 
     if use_threads:
         with concurrent.futures.ThreadPoolExecutor(
@@ -472,7 +485,7 @@ def main(
         print("\n\n")
         for check_name, stats in all_stats.items():
             print(
-                f"{check_name} | avg: {stats[metric]['avg_abs_violation']:.3f}, median: {stats[metric]['median_abs_violation']:.3f}"
+                f"{check_name} | avg: {stats[metric]['avg_violation']:.3f}, avg_no_outliers: {stats[metric]['avg_violation_no_outliers']:.3f}, median: {stats[metric]['median_violation']:.3f}"
             )
 
 

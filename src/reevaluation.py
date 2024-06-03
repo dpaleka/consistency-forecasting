@@ -14,6 +14,7 @@ from static_checks.Checker import (
     CondCondChecker,
 )
 from common.path_utils import get_data_path
+from common.utils import round_floats
 
 TUPLES_PATH: Path = get_data_path() / "tuples/"
 FORECASTS_PATH: Path = get_data_path() / "forecasts"
@@ -103,6 +104,7 @@ def append_violations(
     if write:
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
+                tuple = round_floats(tuple, precision=7)
                 f.write(json.dumps(tuple) + "\n")
     return viols_all
 
@@ -222,6 +224,7 @@ metrics = ["default", "frequentist"]
 # metrics = ["default"]
 
 if __name__ == "__main__":
+    # TODO add some notifications about what files will get modified, and y/n. ideally together with the edits that introduces cli args to this
     append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
     append_violations_all(paths_basic, metrics=metrics, recalc=True, write=True)
     print(get_stats_from_paths(paths_basic, metrics=metrics, write="stats_basic.json"))
