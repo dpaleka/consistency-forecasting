@@ -86,7 +86,7 @@ class Checker(ABC):
     def __init__(self, default_tolerance=0.01, frequentist_hparams=None, path=None):
         self.default_tolerance = default_tolerance
         if frequentist_hparams is None:
-            frequentist_hparams = {"sigma": 0.01, "gamma": 3, "UB_FREQUENTIST": 1}
+            frequentist_hparams = {"sigma": 0.05, "gamma": 2.58, "beta": 1e-3}
         self.frequentist_hparams = frequentist_hparams
         self.name = self.__class__.__name__
         if path is None:
@@ -94,6 +94,14 @@ class Checker(ABC):
         else:
             self.path = path
         self.counter = 0  # number of tuples successfully instantiated
+
+    def dump_config(self):
+        return {
+            "name": str(self.name),
+            "default_tolerance": self.default_tolerance,
+            "frequentist_hparams": self.frequentist_hparams,
+            "path": str(self.path),
+        }
 
     @property
     @abstractmethod
@@ -496,10 +504,7 @@ class Checker(ABC):
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
-            try:
-                v = self.frequentist_violation(answers)
-            except ZeroDivisionError:
-                v = self.frequentist_hparams["UB_FREQUENTIST"]
+            v = self.frequentist_violation(answers)
         else:
             raise ValueError(f"Metric {metric} not implemented")
 
@@ -744,10 +749,13 @@ class NegChecker(Checker):
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
     def frequentist_violation(
-        self, answers: dict[str, Any], sigma: float = 0.01, gamma: float = 3
+        self,
+        answers: dict[str, Any],
     ) -> float:
         P, not_P = answers["P"], answers["not_P"]
-        v = abs(P + not_P - 1) / (2 * (1 - P) * P) ** 0.5
+        denom = (1 - P) * P + (1 - not_P) * not_P
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
+        v = abs(P + not_P - 1) / denom
         return v
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
@@ -836,14 +844,16 @@ class AndChecker(Checker):
         if P + Q - 1 <= P_and_Q:
             v_lhs = 0
         else:
-            denom = (P * (1 - P) + Q * (1 - Q) + P_and_Q * (1 - P_and_Q)) ** 0.5
+            denom = P * (1 - P) + Q * (1 - Q) + P_and_Q * (1 - P_and_Q)
+            denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
             v_lhs = (P + Q - 1 - P_and_Q) / denom
 
         R = min(P, Q)
         if R >= P_and_Q:
             v_rhs = 0
         else:
-            denom = (P_and_Q * (1 - P_and_Q) + R * (1 - R)) ** 0.5
+            denom = P_and_Q * (1 - P_and_Q) + R * (1 - R)
+            denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
             v_rhs = (P_and_Q - R) / denom
 
         return max(v_lhs, v_rhs)
@@ -935,13 +945,15 @@ class OrChecker(Checker):
         if S <= P_or_Q:
             v_lhs = 0
         else:
-            denom = (S * (1 - S) + P_or_Q * (1 - P_or_Q)) ** 0.5
+            denom = S * (1 - S) + P_or_Q * (1 - P_or_Q)
+            denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
             v_lhs = (S - P_or_Q) / denom
 
         if P + Q >= P_or_Q:
             v_rhs = 0
         else:
-            denom = (P * (1 - P) + Q * (1 - Q) + P_or_Q * (1 - P_or_Q)) ** 0.5
+            denom = P * (1 - P) + Q * (1 - Q) + P_or_Q * (1 - P_or_Q)
+            denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
             v_rhs = (P_or_Q - P - Q) / denom
 
         return max(v_lhs, v_rhs)
@@ -1084,11 +1096,9 @@ class AndOrChecker(Checker):
         )
 
         denom = (
-            (P * (1 - P))
-            + (Q * (1 - Q))
-            + (P_or_Q * (1 - P_or_Q))
-            + (P_and_Q * (1 - P_and_Q))
-        ) ** 0.5
+            P * (1 - P) + Q * (1 - Q) + P_or_Q * (1 - P_or_Q) + P_and_Q * (1 - P_and_Q)
+        )
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P + Q - P_or_Q - P_and_Q) / denom
         return v
 
@@ -1186,9 +1196,8 @@ class ButChecker(Checker):
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_and_not_P, P_or_Q = answers["P"], answers["Q_and_not_P"], answers["P_or_Q"]
 
-        denom = (
-            P_or_Q * (1 - P_or_Q) + P * (1 - P) + Q_and_not_P * (1 - Q_and_not_P)
-        ) ** 0.5
+        denom = P_or_Q * (1 - P_or_Q) + P * (1 - P) + Q_and_not_P * (1 - Q_and_not_P)
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P_or_Q - (P + Q_and_not_P)) / denom
         return v
 
@@ -1281,9 +1290,8 @@ class CondChecker(Checker):
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
-        denom = (
-            P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
-        ) ** 0.5
+        denom = P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P - P_and_Q) / denom
         return v
 
@@ -1370,7 +1378,8 @@ class ConsequenceChecker(Checker):
         if P <= cons_P:
             v = 0
         else:
-            denom = (P * (1 - P) + cons_P * (1 - cons_P)) ** 0.5
+            denom = P * (1 - P) + cons_P * (1 - cons_P)
+            denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
             v = abs(P - cons_P) / denom
         return v
 
@@ -1440,7 +1449,8 @@ class ParaphraseChecker(Checker):
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, para_P = answers["P"], answers["para_P"]
-        denom = (P * (1 - P) + para_P * (1 - para_P)) ** 0.5
+        denom = P * (1 - P) + para_P * (1 - para_P)
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P - para_P) / denom
         return v
 
@@ -1553,10 +1563,10 @@ class CondCondChecker(Checker):
             answers["R_given_P_and_Q"],
             answers["P_and_Q_and_R"],
         )
-        denom = (
-            P * Q_given_P * R_given_P_and_Q * (3 - (P + Q_given_P + R_given_P_and_Q))
-            + P_and_Q_and_R * (1 - P_and_Q_and_R)
-        ) ** 0.5
+        denom = P * Q_given_P * R_given_P_and_Q * (
+            3 - (P + Q_given_P + R_given_P_and_Q)
+        ) + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P * R_given_P_and_Q - P_and_Q_and_R) / denom
         return v
 
