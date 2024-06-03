@@ -1,6 +1,6 @@
 import json
 import aiofiles
-from typing import List
+from typing import List, Any
 import jsonlines
 from copy import deepcopy
 import hashlib
@@ -8,15 +8,17 @@ from pydantic import BaseModel
 from common.datatypes import ForecastingQuestion
 
 
-def format_float(x) -> str:
-    if isinstance(x, float) or isinstance(x, int):
-        return "{:.3f}".format(x)
+def round_floats(x, precision: int = 3, convert_ints: bool = False) -> Any:
+    if isinstance(x, float):
+        return round(x, precision)
+    if convert_ints and isinstance(x, int):
+        return round(float(x), precision)
     if isinstance(x, dict):
-        return {k: format_float(v) for k, v in x.items()}
+        return {k: round_floats(v, precision, convert_ints) for k, v in x.items()}
     if isinstance(x, tuple):
-        return tuple(format_float(v) for v in x)
+        return tuple(round_floats(v, precision, convert_ints) for v in x)
     if isinstance(x, list):
-        return [format_float(v) for v in x]
+        return [round_floats(v, precision, convert_ints) for v in x]
     return x
 
 
