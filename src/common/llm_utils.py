@@ -34,7 +34,6 @@ from .perscache import (
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
-# max_concurrent_queries = os.getenv("MAX_CONCURRENT_QUERIES", 100)
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
@@ -82,7 +81,7 @@ embeddings_cache = Cache(
 FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
 
 client = None
-load_dotenv(override=True)
+load_dotenv(override=True)  # TODO check what this means for CLI-provided env vars
 
 
 PROVIDERS = ["openai", "mistral", "anthropic", "togetherai", "huggingface_local"]
@@ -186,7 +185,7 @@ def get_mistral_client_native() -> MistralClient:
 def get_anthropic_async_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.ANTHROPIC_JSON)
+    return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
@@ -199,7 +198,7 @@ def get_anthropic_async_client_native() -> AsyncAnthropic:
 def get_anthropic_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = Anthropic(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.ANTHROPIC_JSON)
+    return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
@@ -292,13 +291,20 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
         )
 
     if os.getenv("USE_OPENROUTER"):
+        print(
+            "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+        )
         kwargs = {}
         if provider == "mistral":
             # https://python.useinstructor.com/hub/mistral/
+            print(
+                "Only some Mistral endpoints have `response_format` on OpenRouter. If you encounter errors, please check on the OpenRouter website."
+            )
             kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
         elif provider == "anthropic":
-            # https://python.useinstructor.com/blog/2024/03/20/announcing-anthropic-support/
-            kwargs["mode"] = instructor.Mode.ANTHROPIC_JSON
+            raise NotImplementedError(
+                "Anthropic over OpenRouter does not work as of June 4 2024"
+            )
         client = (
             get_async_openrouter_client_pydantic(**kwargs)
             if use_async
@@ -315,6 +321,12 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
             get_mistral_async_client_pydantic()
             if use_async
             else get_mistral_client_pydantic()
+        )
+    elif provider == "anthropic":
+        client = (
+            get_anthropic_async_client_pydantic()
+            if use_async
+            else get_anthropic_client_pydantic()
         )
     else:
         raise NotImplementedError(f"Model {model} is not supported for now")
@@ -408,6 +420,9 @@ async def query_api_chat(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
+    if client_name == "anthropic":
+        options["max_tokens"] = options.get("max_tokens", 1024)
+
     print(
         options,
         f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
@@ -488,6 +503,9 @@ def query_api_chat_sync(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+
+    if client_name == "anthropic":
+        options["max_tokens"] = options.get("max_tokens", 1024)
 
     print(
         options,
@@ -686,10 +704,18 @@ async def parallelized_call(
         partial_eval_method = functools.partial(eval_method, model=model, **kwargs)
         results = await parallelized_call(partial_eval_method, [format_post(d) for d in data])
     """
-    print(f"Running {func} on {len(data)} datapoints")
 
     if os.getenv("SINGLE_THREAD"):
+        print(f"Running {func} on {len(data)} datapoints sequentially")
         return [await func(d) for d in data]
+
+    max_concurrent_queries = int(
+        os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)
+    )
+
+    print(
+        f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
+    )
 
     sem = asyncio.Semaphore(max_concurrent_queries)
 

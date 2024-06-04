@@ -662,7 +662,7 @@ class Checker(ABC):
             all_answers = await parallelized_call(
                 elicit_func,
                 validated_lines,
-                max_concurrent_queries=10,  # is giving "Request timed out" even for 5
+                max_concurrent_queries=10,
             )
 
             if do_check:
