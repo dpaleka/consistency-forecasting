@@ -285,9 +285,9 @@ def is_model_name_valid(model: str) -> bool:
 
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     provider = get_provider(model)
-    if provider == "togetherai":
+    if provider == "togetherai" and "nitro" not in model:
         raise NotImplementedError(
-            "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now."
+            "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
         )
 
     if os.getenv("USE_OPENROUTER"):
