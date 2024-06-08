@@ -23,6 +23,7 @@ In case of "before YYYY", default to 31/12/(YYYY-1).
 In case of "by YYYY", default to 31/12/YYYY.
 In case of "by DD MM YYYY" or "on DD MM YYYY", of course, default to DD MM YYYY."""
 
+# We use this mainly for questions that are scraped and do have body/resolution criteria, but do not have a resolution date.
 resolution_date_prompt = """\
 I want you to help me craft an appropriate resolution date for a forecasting question,
 as on the sites like Metaculus / PredictIt.

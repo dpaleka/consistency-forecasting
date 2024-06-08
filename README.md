@@ -116,7 +116,10 @@ Please run `python src/evaluation.py --help` and read what it says before using 
 python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_configs/cheap_haiku.yaml -num_lines 3 --relevant_checks all [--run] [--load_dir src/data/forecasts/...] [--async] 
 ```
 
-- [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything.
+- [`src/reevaluation.py`](src/reevaluation.py) recomputes violation metrics from files of forecasts made with `src/evaluation.py`, 
+and aggregates metrics across multiple forecast files. The `forecasts/` directories it draws from are given in the file, edit them as needed.
+
+- [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Writes to `src/data/forecasts/stats_*.jsonl`.
 
 - [`src/playground.py`](src/playground.py) various testing and playing around.
 

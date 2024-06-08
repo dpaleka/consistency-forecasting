@@ -66,7 +66,7 @@ async def get_similar_questions(
 
 async def deduplicate(questions, embedding_model: str = "text-embedding-3-small"):
     print(f"In deduplicate, type of questions is {type(questions[0])}")
-    distances = await get_distances(questions)
+    distances = await get_distances(questions, embedding_model=embedding_model)
     ids_to_remove = set()
 
     for i, dist in enumerate(distances):
