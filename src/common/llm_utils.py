@@ -9,6 +9,7 @@ from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
 import instructor
 from instructor.client import Instructor
+from instructor.mode import Mode
 import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
@@ -135,7 +136,7 @@ def get_openai_client_native() -> OpenAI:
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
     api_key = os.getenv("OPENROUTER_API_KEY")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
-    return instructor.from_openai(_client, **kwargs)
+    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
 
 
 @singleton_constructor
@@ -152,7 +153,7 @@ def get_openrouter_client_pydantic(**kwargs) -> Instructor:
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
-    return instructor.from_openai(_client, **kwargs)
+    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
 
 
 @singleton_constructor
