@@ -1,0 +1,2537 @@
+[
+    {
+        "id": 5427,
+        "title": "Will the Russian government introduce a tax on childlessness prior to the 2024 presidential election?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-15T23:50:00Z",
+        "url": "https://www.metaculus.com/questions/5427",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 6369,
+        "title": "Will Scotland hold an official, sanctioned referendum on independence before May 3, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-03T23:36:00Z",
+        "url": "https://www.metaculus.com/questions/6369",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 10551,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (50,000)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-07T19:32:00Z",
+        "url": "https://www.metaculus.com/questions/10551",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": -1.0
+    },
+    {
+        "id": 10554,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (100,000)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-07T19:31:00Z",
+        "url": "https://www.metaculus.com/questions/10554",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": -1.0
+    },
+    {
+        "id": 12215,
+        "title": "If Trump is disqualified from holding the presidency, will that disqualification be ruled unconstitutional before January 20, 2025?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T15:00:00Z",
+        "url": "https://www.metaculus.com/questions/12215",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 13809,
+        "title": "Will Sadiq Khan win re-election in the 2024 London Mayoral Elections?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-04T16:33:00Z",
+        "url": "https://www.metaculus.com/questions/13809",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 13831,
+        "title": "Will any state hold a caucus instead of a primary for the Democratic Presidential nomination in 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-13T14:35:00Z",
+        "url": "https://www.metaculus.com/questions/13831",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 14032,
+        "title": "In 2023 will any other war have more casualties than Russia-Ukraine?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/14032",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14275,
+        "title": "On January 1, 2024, will an ordinary person be able to take a self-driving taxi from Oakland \u2192 SF during rush hour?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/14275",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14276,
+        "title": "In 2023 will a cultured meat product be available in at least one US store or restaurant for less than $30?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/14276",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14277,
+        "title": "In 2023 will a successful deepfake attempt causing real damage make the front page of a major news source?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/14277",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 14325,
+        "title": "Will Avraham Eisenberg be convicted of a felony in the United States before 2028?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-18T17:12:00Z",
+        "url": "https://www.metaculus.com/questions/14325",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 14501,
+        "title": "Will Bing's search engine market share be at least 5% in March of 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-22T03:51:00Z",
+        "url": "https://www.metaculus.com/questions/14501",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14657,
+        "title": "Will the Democratic Progressive Party (DPP) win the 2024 presidential election in Taiwan?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-20T02:42:00Z",
+        "url": "https://www.metaculus.com/questions/14657",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 15106,
+        "title": "Will at least one mink farm worker die from any strain of bird flu in 2023?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-01T23:58:00Z",
+        "url": "https://www.metaculus.com/questions/15106",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 15532,
+        "title": "Will a nuclear weapon be detonated in or above a European Union state before the following dates? (March 15, 2024)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-15T23:35:00Z",
+        "url": "https://www.metaculus.com/questions/15532",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 15550,
+        "title": "Will chips covered by the 2022 US export controls be exported to China before the following dates? (2024)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-28T22:59:33.564000Z",
+        "url": "https://www.metaculus.com/questions/15550",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": 15563,
+        "title": "Will the estimated training FLOPs of any exfiltrated AI exceed the indicated amount before the indicated year? (Year: 2026 FLOPs: 10e26)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-02T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/15563",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": 15778,
+        "title": "Will Donald Trump be found guilty of any crime in the Manhattan case before Election Day 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-30T21:00:00Z",
+        "url": "https://www.metaculus.com/questions/15778",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 16592,
+        "title": "Will there be an open-source LLM with the capabilities of GPT 4 before 2027?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-21T03:59:00Z",
+        "url": "https://www.metaculus.com/questions/16592",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 16762,
+        "title": "Will the US Housing Market crash in 2023?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T23:32:00Z",
+        "url": "https://www.metaculus.com/questions/16762",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 17593,
+        "title": "Will the Sacramento Kings advance to the second round of the NBA playoffs in 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-20T04:06:00Z",
+        "url": "https://www.metaculus.com/questions/17593",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 18047,
+        "title": "Will Spain announce a snap general election before March 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T15:22:00Z",
+        "url": "https://www.metaculus.com/questions/18047",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 18695,
+        "title": "Will Erling Haaland score the most goals in the 2023/24 Premier League season?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-20T01:30:00Z",
+        "url": "https://www.metaculus.com/questions/18695",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19254,
+        "title": "Will the Pandemic and All Hazards Preparedness Act (PAHPA) be reauthorized for more than 4 years before April 1st, 2024, and December 31st, 2024? (2024 April 1)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-08T11:00:00Z",
+        "url": "https://www.metaculus.com/questions/19254",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": 19410,
+        "title": "Which team will win the 2024 NBA Finals? (Milwaukee Bucks)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-03T01:00:00Z",
+        "url": "https://www.metaculus.com/questions/19410",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19412,
+        "title": "Which team will win the 2024 NBA Finals? (Philadelphia 76ers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-03T03:42:00Z",
+        "url": "https://www.metaculus.com/questions/19412",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19413,
+        "title": "Which team will win the 2024 NBA Finals? (Cleveland Cavaliers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-16T01:20:00Z",
+        "url": "https://www.metaculus.com/questions/19413",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19414,
+        "title": "Which team will win the 2024 NBA Finals? (New York Knicks)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-19T22:05:00Z",
+        "url": "https://www.metaculus.com/questions/19414",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19415,
+        "title": "Which team will win the 2024 NBA Finals? (Brooklyn Nets)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-08T12:40:00Z",
+        "url": "https://www.metaculus.com/questions/19415",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19416,
+        "title": "Which team will win the 2024 NBA Finals? (Miami Heat)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-02T01:50:00Z",
+        "url": "https://www.metaculus.com/questions/19416",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19417,
+        "title": "Which team will win the 2024 NBA Finals? (Atlanta Hawks)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-18T04:21:00Z",
+        "url": "https://www.metaculus.com/questions/19417",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19418,
+        "title": "Which team will win the 2024 NBA Finals? (Toronto Raptors)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-28T04:00:00Z",
+        "url": "https://www.metaculus.com/questions/19418",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19419,
+        "title": "Which team will win the 2024 NBA Finals? (Chicago Bulls)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-20T01:30:00Z",
+        "url": "https://www.metaculus.com/questions/19419",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19420,
+        "title": "Which team will win the 2024 NBA Finals? (Indiana Pacers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-28T02:43:00Z",
+        "url": "https://www.metaculus.com/questions/19420",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19421,
+        "title": "Which team will win the 2024 NBA Finals? (Washington Wizards)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-10T17:22:00Z",
+        "url": "https://www.metaculus.com/questions/19421",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19422,
+        "title": "Which team will win the 2024 NBA Finals? (Orlando Magic)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-05T19:49:00Z",
+        "url": "https://www.metaculus.com/questions/19422",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19423,
+        "title": "Which team will win the 2024 NBA Finals? (Charlotte Hornets)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-24T04:00:00Z",
+        "url": "https://www.metaculus.com/questions/19423",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19424,
+        "title": "Which team will win the 2024 NBA Finals? (Detroit Pistons)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-09T23:22:00Z",
+        "url": "https://www.metaculus.com/questions/19424",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19425,
+        "title": "Which team will win the 2024 NBA Finals? (Denver Nuggets)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-20T02:32:00Z",
+        "url": "https://www.metaculus.com/questions/19425",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19426,
+        "title": "Which team will win the 2024 NBA Finals? (Memphis Grizzlies)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-22T03:00:00Z",
+        "url": "https://www.metaculus.com/questions/19426",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19427,
+        "title": "Which team will win the 2024 NBA Finals? (Sacremento Kings)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-20T04:01:00Z",
+        "url": "https://www.metaculus.com/questions/19427",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19428,
+        "title": "Which team will win the 2024 NBA Finals? (Phoenix Suns)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-29T00:17:00Z",
+        "url": "https://www.metaculus.com/questions/19428",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19429,
+        "title": "Which team will win the 2024 NBA Finals? (Los Angeles Clippers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-04T04:24:00Z",
+        "url": "https://www.metaculus.com/questions/19429",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19430,
+        "title": "Which team will win the 2024 NBA Finals? (Golden State Warriors)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-17T04:47:00Z",
+        "url": "https://www.metaculus.com/questions/19430",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19431,
+        "title": "Which team will win the 2024 NBA Finals? (Los Angeles Lakers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-30T04:30:00Z",
+        "url": "https://www.metaculus.com/questions/19431",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19432,
+        "title": "Which team will win the 2024 NBA Finals? (Minnesota Timberwolves)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T02:59:00Z",
+        "url": "https://www.metaculus.com/questions/19432",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19433,
+        "title": "Which team will win the 2024 NBA Finals? (New Orleans Pelicans)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-30T03:00:00Z",
+        "url": "https://www.metaculus.com/questions/19433",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19434,
+        "title": "Which team will win the 2024 NBA Finals? (Oklahoma City Thunder)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-19T02:41:00Z",
+        "url": "https://www.metaculus.com/questions/19434",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19436,
+        "title": "Which team will win the 2024 NBA Finals? (Utah Jazz)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-28T04:00:00Z",
+        "url": "https://www.metaculus.com/questions/19436",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19437,
+        "title": "Which team will win the 2024 NBA Finals? (Portland Trail Blazers)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-17T22:21:00Z",
+        "url": "https://www.metaculus.com/questions/19437",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19438,
+        "title": "Which team will win the 2024 NBA Finals? (Houston Rockets)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-08T12:39:00Z",
+        "url": "https://www.metaculus.com/questions/19438",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19439,
+        "title": "Which team will win the 2024 NBA Finals? (San Antonio Spurs)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-08T18:22:00Z",
+        "url": "https://www.metaculus.com/questions/19439",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19495,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Magnus Carlsen)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19495",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19496,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Ian Nepomniachtchi)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:34:00Z",
+        "url": "https://www.metaculus.com/questions/19496",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19497,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Fabiano Caruana)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:34:00Z",
+        "url": "https://www.metaculus.com/questions/19497",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19498,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Praggnanandhaa Rameshbabu)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:34:00Z",
+        "url": "https://www.metaculus.com/questions/19498",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19499,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Nijat Abasov)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:34:00Z",
+        "url": "https://www.metaculus.com/questions/19499",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19500,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Hikaru Nakamura)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:34:00Z",
+        "url": "https://www.metaculus.com/questions/19500",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19501,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Anish Giri)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19501",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19502,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Gukesh Dommaraju)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:35:00Z",
+        "url": "https://www.metaculus.com/questions/19502",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19503,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Wesley So)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19503",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19504,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Alireza Firouzja)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:35:00Z",
+        "url": "https://www.metaculus.com/questions/19504",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19505,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Vishwanathan Anand)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19505",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19506,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Arjun Erigaisi)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19506",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19507,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Amin Tabatabaei)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19507",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19508,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Sam Sevian)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:37:00Z",
+        "url": "https://www.metaculus.com/questions/19508",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19509,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Richard Rapport)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:37:00Z",
+        "url": "https://www.metaculus.com/questions/19509",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19510,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Levon Aronian)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:37:00Z",
+        "url": "https://www.metaculus.com/questions/19510",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19511,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Alexander Grischuk)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:37:00Z",
+        "url": "https://www.metaculus.com/questions/19511",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19512,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Maxime Vachier-Lagrave)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:37:00Z",
+        "url": "https://www.metaculus.com/questions/19512",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19513,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Jan-Krzysztof Duda)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:36:00Z",
+        "url": "https://www.metaculus.com/questions/19513",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19514,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Vincent Keymer)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19514",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19515,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Nodirbek Abdusattorov)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19515",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19516,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Nihal Sarin)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19516",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19517,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Hans Niemann)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19517",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19595,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Manchester City)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-17T22:11:00Z",
+        "url": "https://www.metaculus.com/questions/19595",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19597,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Arsenal)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-17T22:11:00Z",
+        "url": "https://www.metaculus.com/questions/19597",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19600,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Barcelona)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-16T22:23:00Z",
+        "url": "https://www.metaculus.com/questions/19600",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19602,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Athletico Madrid)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-16T22:39:00Z",
+        "url": "https://www.metaculus.com/questions/19602",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19603,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Real Sociedad)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T18:16:00Z",
+        "url": "https://www.metaculus.com/questions/19603",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19604,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Napoli)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-12T17:17:00Z",
+        "url": "https://www.metaculus.com/questions/19604",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19605,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Inter Milan)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-13T23:57:00Z",
+        "url": "https://www.metaculus.com/questions/19605",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19607,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Bayern Munich)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-08T22:30:00Z",
+        "url": "https://www.metaculus.com/questions/19607",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19609,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (RB Leipzig)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-06T18:15:00Z",
+        "url": "https://www.metaculus.com/questions/19609",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19611,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Paris Saint-Germain)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:30:00Z",
+        "url": "https://www.metaculus.com/questions/19611",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19614,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Porto)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-12T17:17:00Z",
+        "url": "https://www.metaculus.com/questions/19614",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19619,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Copenhagen)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-07T18:16:00Z",
+        "url": "https://www.metaculus.com/questions/19619",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19620,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (PSV)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-13T22:17:00Z",
+        "url": "https://www.metaculus.com/questions/19620",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19622,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Lazio)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T18:15:00Z",
+        "url": "https://www.metaculus.com/questions/19622",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19741,
+        "title": "Will Macky Sall step down as president of Senegal at or before the currently scheduled end of his term?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-02T18:28:00Z",
+        "url": "https://www.metaculus.com/questions/19741",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19768,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Vidit Gujrathi)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:35:00Z",
+        "url": "https://www.metaculus.com/questions/19768",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19769,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Alexandr Predke)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19769",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19770,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Etienne Bacrot)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:33:00Z",
+        "url": "https://www.metaculus.com/questions/19770",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19771,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Vladimir Fedoseev)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:32:00Z",
+        "url": "https://www.metaculus.com/questions/19771",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19772,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Andre Esipenko)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:32:00Z",
+        "url": "https://www.metaculus.com/questions/19772",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19773,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Yuriy Kuzubov)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:32:00Z",
+        "url": "https://www.metaculus.com/questions/19773",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19846,
+        "title": "Will Dutch supermarket Albert Heijn still sell crompouces by April 30, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-30T20:14:00Z",
+        "url": "https://www.metaculus.com/questions/19846",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19849,
+        "title": "Will there be United Nations peacekeeping troops in Gaza on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T15:57:00Z",
+        "url": "https://www.metaculus.com/questions/19849",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19850,
+        "title": "Will at least one of Egypt, Jordan, or Lebanon be at war with Israel on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T16:09:00Z",
+        "url": "https://www.metaculus.com/questions/19850",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19851,
+        "title": "Will Rishi Sunak be Prime Minister of the UK on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T23:56:00Z",
+        "url": "https://www.metaculus.com/questions/19851",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19867,
+        "title": "Will Elon Musk be chairman of X (formerly Twitter) on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T16:01:00Z",
+        "url": "https://www.metaculus.com/questions/19867",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19868,
+        "title": "Will X (formerly Twitter) be a public company on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T15:42:00Z",
+        "url": "https://www.metaculus.com/questions/19868",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19871,
+        "title": "Will any OpenAI or Anthropic model be in the top-10 model with a non-proprietary license on May 31, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T16:15:00Z",
+        "url": "https://www.metaculus.com/questions/19871",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19975,
+        "title": "Will a new SARS-CoV-2 variant be classified as a Variant of Concern (VOC) or worse in the United States before March 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-01T15:01:00Z",
+        "url": "https://www.metaculus.com/questions/19975",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20024,
+        "title": "Will Sweden join NATO before 2025?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-07T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/20024",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20049,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI against Microsoft)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T16:03:00Z",
+        "url": "https://www.metaculus.com/questions/20049",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20050,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI investors against OpenAI board)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T16:03:00Z",
+        "url": "https://www.metaculus.com/questions/20050",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20051,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI against Sam Altman)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T16:03:00Z",
+        "url": "https://www.metaculus.com/questions/20051",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20052,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (Government antitrust against Microsoft)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T16:03:00Z",
+        "url": "https://www.metaculus.com/questions/20052",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20055,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (Sam Altman against OpenAI)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T16:03:00Z",
+        "url": "https://www.metaculus.com/questions/20055",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20399,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Parham Maghsoodloo)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:32:00Z",
+        "url": "https://www.metaculus.com/questions/20399",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20400,
+        "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Leinier Dom\u00ednguez P\u00e9rez)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T20:32:00Z",
+        "url": "https://www.metaculus.com/questions/20400",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20409,
+        "title": "Musk Chairman Of Twitter in 2024? (Yes) \u2192 Twitter Public Company in May 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T16:01:00Z",
+        "url": "https://www.metaculus.com/questions/20409",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20547,
+        "title": "Will the Republican Party retain California's 20th District in the 2024 special election?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-22T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/20547",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20780,
+        "title": "Will a member of the United States Congress introduce legislation limiting the use of LLMs in 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-19T16:40:00Z",
+        "url": "https://www.metaculus.com/questions/20780",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20786,
+        "title": "Will Donald Trump be convicted of a felony before the 2024 presidential election?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-30T21:00:00Z",
+        "url": "https://www.metaculus.com/questions/20786",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20791,
+        "title": "Will a New or Joint \"Worst 82-Game Regular Season Record\" in NBA History be set in 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-08T03:15:00Z",
+        "url": "https://www.metaculus.com/questions/20791",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20876,
+        "title": "Will the 2024 Indonesian presidential election go to a runoff?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-06T15:37:00Z",
+        "url": "https://www.metaculus.com/questions/20876",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20921,
+        "title": "Which of the Big Five Oscars will Poor Things win? (Best Picture)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:06:00Z",
+        "url": "https://www.metaculus.com/questions/20921",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20922,
+        "title": "Which of the Big Five Oscars will Poor Things win? (Best Director)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:06:00Z",
+        "url": "https://www.metaculus.com/questions/20922",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20923,
+        "title": "Which of the Big Five Oscars will Poor Things win? (Best Actress)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:06:00Z",
+        "url": "https://www.metaculus.com/questions/20923",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20924,
+        "title": "Which of the Big Five Oscars will Poor Things win? (Best Adapted Screenplay)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:06:00Z",
+        "url": "https://www.metaculus.com/questions/20924",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21000,
+        "title": "Will Biden's approval rating with Americans aged 18 - 29 increase by the spring of 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-18T15:17:00Z",
+        "url": "https://www.metaculus.com/questions/21000",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21081,
+        "title": "Will the \"Dune: Part Two\" domestic opening box office be greater than that of \"Dune (2021)\"?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-05T21:22:00Z",
+        "url": "https://www.metaculus.com/questions/21081",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21120,
+        "title": "Before April 1, 2024, will Fani Willis cease to be an attorney for the prosecution in the State of Georgia v. Donald Trump, et al. case?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-01T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/21120",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21182,
+        "title": "Will a new or extended state of emergency be declared in Ecuador before April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-08T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/21182",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21183,
+        "title": "Will gang leader Jos\u00e9 Adolfo Mac\u00edas Villamar ('Fito') be in Ecuadorian custody before April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-01T16:13:00Z",
+        "url": "https://www.metaculus.com/questions/21183",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21207,
+        "title": "Gang Leader Fito in Custody by April 2024? (No) \u2192 Extended State of Emergency in Ecuador 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-01T16:13:00Z",
+        "url": "https://www.metaculus.com/questions/21207",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21256,
+        "title": "Will Tyson Fury defeat Oleksandr Usyk to become the Undisputed Heavyweight Boxing Champion?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-18T23:40:00Z",
+        "url": "https://www.metaculus.com/questions/21256",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21285,
+        "title": "Will a U.S. President\u2019s State of the Union address mention the issue of AI existential risk before the listed year? (2025)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:52:00Z",
+        "url": "https://www.metaculus.com/questions/21285",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21394,
+        "title": "Will the submarine cables running through the Red Sea be damaged by a hostile actor before the 15th of March?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-15T20:14:00Z",
+        "url": "https://www.metaculus.com/questions/21394",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21405,
+        "title": "Will Ariel Henry cease to be Acting Prime Minister or Prime Minister of Haiti before April 1, 2024, for any reason?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T14:00:00Z",
+        "url": "https://www.metaculus.com/questions/21405",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21438,
+        "title": "Will Israel expand its ground invasion to the city of Rafah on or before the first day of Ramadan (before March 12, 2024)?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-13T02:35:00Z",
+        "url": "https://www.metaculus.com/questions/21438",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21439,
+        "title": "Will India enact a law expanding the Minimum Support Price for crops before April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T14:26:00Z",
+        "url": "https://www.metaculus.com/questions/21439",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21487,
+        "title": "Will Nikki Haley end her 2024 primary campaign before March 15, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-06T15:03:00Z",
+        "url": "https://www.metaculus.com/questions/21487",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21488,
+        "title": "Will Nvidia be in the top four companies by market capitalization on March 29, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-29T20:30:00Z",
+        "url": "https://www.metaculus.com/questions/21488",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21489,
+        "title": "Will President Biden issue an executive order on immigration before the State of the Union on March 7, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T16:11:00Z",
+        "url": "https://www.metaculus.com/questions/21489",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21493,
+        "title": "Will Oppenheimer win the most Oscar awards?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T16:13:00Z",
+        "url": "https://www.metaculus.com/questions/21493",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21546,
+        "title": "Will salvage operations commence on the cargo vessel \u201cM/V Rubymar\u201d prior to April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-02T16:11:00Z",
+        "url": "https://www.metaculus.com/questions/21546",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21608,
+        "title": "Result of Ireland's constitutional referendums on March 8, 2024? (39th Amendment (\"The Family\"))",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:07:00Z",
+        "url": "https://www.metaculus.com/questions/21608",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21609,
+        "title": "Result of Ireland's constitutional referendums on March 8, 2024? (40th Amendment (\"Care\"))",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-11T17:07:00Z",
+        "url": "https://www.metaculus.com/questions/21609",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21774,
+        "title": "If Donald Trump wins the Republican nomination, will Nikki Haley endorse him before November 5th, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-22T20:49:00Z",
+        "url": "https://www.metaculus.com/questions/21774",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21789,
+        "title": "Will Ariel Henry return to Haiti before March 13, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-14T03:21:00Z",
+        "url": "https://www.metaculus.com/questions/21789",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21792,
+        "title": "Will there be a new confrontation between Chinese and Philippine military vessels before April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-03-23T00:10:00Z",
+        "url": "https://www.metaculus.com/questions/21792",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21796,
+        "title": "Will the United States government either ban TikTok or force a sale before 2025?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-24T15:13:00Z",
+        "url": "https://www.metaculus.com/questions/21796",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21864,
+        "title": "Will Paul Christiano be publicly confirmed to be joining the US AI Safety Institute before April 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-01T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/21864",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 21972,
+        "title": "Will a non-Disney-nominated board member be elected to Disney's board at the April 3, 2024, shareholder meeting?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-03T21:00:00Z",
+        "url": "https://www.metaculus.com/questions/21972",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22050,
+        "title": "Will the cherry blossoms reach full bloom in Tokyo before April 5, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-04T19:44:00Z",
+        "url": "https://www.metaculus.com/questions/22050",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22148,
+        "title": "Will Caitlin Clark be named the Most Outstanding Player in the 2024 NCAA Division I women's basketball tournament?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-07T21:28:00Z",
+        "url": "https://www.metaculus.com/questions/22148",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22149,
+        "title": "Will the Powerball jackpot be won before April 15, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-07T06:30:00Z",
+        "url": "https://www.metaculus.com/questions/22149",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22161,
+        "title": "Will Iran carry out a deadly attack within Israel before May 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-01T17:53:00Z",
+        "url": "https://www.metaculus.com/questions/22161",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22298,
+        "title": "Will Israel expand its ground invasion to the city of Rafah before June 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-13T18:00:00Z",
+        "url": "https://www.metaculus.com/questions/22298",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22299,
+        "title": "Will the result from Study 2 of \"Loss Aversion, the Endowment Effect, and Gain-Loss Framing Shape Preferences for Noninstrumental Information\" (PNAS, 2022) replicate?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-06T14:50:00Z",
+        "url": "https://www.metaculus.com/questions/22299",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22314,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Albania)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22314",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22315,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Armenia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22315",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22316,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Australia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22316",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22317,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Austria)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22317",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22318,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Azerbaijan)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22318",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22319,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Belgium)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22319",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22320,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Croatia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22320",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22321,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Cyprus)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22321",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22322,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Czechia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22322",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22323,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Denmark)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22323",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22324,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Estonia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22324",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22325,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Finland)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22325",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22326,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Georgia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22326",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22327,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Greece)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22327",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22328,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Iceland)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T23:30:00Z",
+        "url": "https://www.metaculus.com/questions/22328",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22329,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Ireland)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22329",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22330,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Israel)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22330",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22331,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Latvia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22331",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22332,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Lithuania)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22332",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22333,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Luxembourg)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22333",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22334,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Malta)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22334",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22335,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Moldova)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T23:30:00Z",
+        "url": "https://www.metaculus.com/questions/22335",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22336,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Netherlands)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22336",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22337,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Norway)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22337",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22338,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Poland)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T23:30:00Z",
+        "url": "https://www.metaculus.com/questions/22338",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22339,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Portugal)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22339",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22340,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (San Marino)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22340",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22341,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Serbia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22341",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22342,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Slovenia)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22342",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22343,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Switzerland)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T21:19:00Z",
+        "url": "https://www.metaculus.com/questions/22343",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22344,
+        "title": "Which of these countries will qualify for the Grand Final in Eurovision 2024? (Ukraine)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-07T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/22344",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22403,
+        "title": "Will Israel carry out a deadly attack within Iran before May 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-01T18:00:00Z",
+        "url": "https://www.metaculus.com/questions/22403",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22415,
+        "title": "Will Donald Trump testify at the hush money trial?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-21T14:32:00Z",
+        "url": "https://www.metaculus.com/questions/22415",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22421,
+        "title": "Iran deadly attack on Israel before May 2024? (No) \u2192 Israel Deadly Attack on Iran Before May 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-01T18:00:00Z",
+        "url": "https://www.metaculus.com/questions/22421",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22424,
+        "title": "Israel Deadly Attack on Iran Before May 2024? (No) \u2192 Iran deadly attack on Israel before May 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-01T18:00:00Z",
+        "url": "https://www.metaculus.com/questions/22424",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22547,
+        "title": "Will the governor of Gagauzia, Evghenia Gu\u021bul, travel to the Russian Federation before June 1, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-09T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/22547",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 22628,
+        "title": "Will the Columbia University Senate vote to censure university president Nemat Shafik on or before April 26, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-27T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/22628",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 22633,
+        "title": "Will Pedro Sanchez announce his resignation as Prime Minister of Spain before April 30, 2024?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-04-30T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/22633",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 23038,
+        "title": "Will the Crimean Bridge be hit with an attack before the listed dates? (May 9, 2024)",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-10T01:27:00Z",
+        "url": "https://www.metaculus.com/questions/23038",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 24590,
+        "title": "Trump guilty in Manhattan by Election Day (Yes) \u2192 Trump Felony Conviction Before Election?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-30T21:00:00Z",
+        "url": "https://www.metaculus.com/questions/24590",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 24753,
+        "title": "[Short Fuse] Will the proxy advisor Institutional Shareholder Services (ISS) advise Tesla shareholders to vote against Elon Musk's $57 billion package OR the re-election of Kimbal Musk?",
+        "body": null,
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/24753",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
+    }
+]
