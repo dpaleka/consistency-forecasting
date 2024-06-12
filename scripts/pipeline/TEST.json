@@ -1,50 +1,82 @@
 [
     {
-        "id": 349,
-        "title": "Will SpaceX land people on Mars before 2030?",
+        "id": 5427,
+        "title": "Will the Russian government introduce a tax on childlessness prior to the 2024 presidential election?",
         "body": {
-            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if a SpaceX-branded mission successfully lands one or more living human beings on the surface of Mars before 2030. The landing itself of the human crew on Mars must occur before January 1, 2030, 00:00 UTC.\nAt least one person aboard the lander must survive the landing, however it is not necessary for the person to survive long-term or make a return trip to Earth, nor is it necessary for the mission to intend a return or long-term survival.\nA \"SpaceX-branded\" mission is defined to mean that the SpaceX-associated logos on the spacecraft involved (both the boosters and the Mars-bound craft) have a larger surface area than the logos of any other entity\n",
-            "background_info": "SpaceX recently released a detailed plan (transcription and slides here) to send people to Mars using an \"Interplanetary Transport System\" based on heavily reusable launch boosters, tanker-assisted refueling in low-Earth orbit, and a futuristic interplanetary spaceship. The ship is to traverse deep space and land intact on Mars after a high-speed retro-assisted atmospheric entry. The system will rely on in-situ fuel generation on Mars for return journeys, and it is envisioned that destinations across the Solar System may be within its reach.\nThe timeline has not been set in stone, but Elon Musk has noted that if SpaceX \"gets lucky and things go according to plan\", a manned flight could launch in the 2024 window with a landing on Mars in 2025. Subsequent launch windows, which are dictated by the Earth-Mars synodic period, occur at a roughly 2-year cadence.\nThere have been numerous proposals over the years for landing people on Mars. Perhaps the first one that was both concrete and marginally credible was Wernher von Braun's Marsprojekt of the late 1940s and early 1950s. For the past six decades, trips to Mars have tended to lie 20-30 years in the future. The SpaceX plan is particularly notable for aggressively compressing the timeline.\n"
+            "resolution_criteria": "Resolution Criteria\nThe question resolves positively if the Russian government introduces, prior to the 2024 presidential election in Russia, either:\nAn explicit tax on childlessness.\nA tax levied on each person except those with children.\nFor the question to resolve positively, the tax should be active in at least 10 out of 85 federal subjects and apply to at least a quarter of all Russian adults under the age of 50.\nThe tax may apply either to married couples or individuals, in both cases the question resolves positively. A tax cut for people who do have children does not count.\nFine Print\nIf the presidential election 2024 doesn't take place, the question resolves on 17 March 2024 12:00 AM, as if the election had happened.\n",
+            "background_info": "The Tax on childlessness was a natalist policy in the USSR, Poland and Romania during certain periods in the 20th century.\nRecently, several public organizations urged the Russian government to re-enact that, or a similar, policy:\nRussia may introduce tax on childlessness;\nThe Ministry of Finance commented on the idea of introducing a tax on childlessness in Russia."
         },
         "question_type": "binary",
-        "resolution_date": "Jan 02 2030 12:00AM",
-        "url": "https://www.metaculus.com/questions/349",
+        "resolution_date": "2024-03-15T23:50:00Z",
+        "url": "https://www.metaculus.com/questions/5427",
         "data_source": "metaculus",
         "metadata": {
             "topics": []
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
-        "id": 372,
-        "title": "Will human brain emulation be the first successful route to human-level digital intelligence?",
+        "id": 6369,
+        "title": "Will Scotland hold an official, sanctioned referendum on independence before May 3, 2024?",
         "body": {
-            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if an effort to create a viable (functioning, lasting, sane, etc.) emulated human, based on direct simulation of the neural connectome (and a requisite level of its physical instantiation), succeeds before another form of human-level digital intelligence. The latter will be defined as a digital entity capable of equalling or surpassing most or all core human cognitive capabilities.\nIf neither a whole human brain emulation nor a human-level digital intelligence has been successfully demonstrated before January 1, 2060, this question will resolve as Ambiguous.\n*(Edit 10/20/18 to state that it resolves ambiguous rather than negative in the event of no AGI by 2060.)\n",
-            "background_info": "In the quest for \"strong\" Artificial Intelligence, defined here as digital intelligences rivaling or surpassing that of humans, a number of potential path have been discussed. Among them is \"brain emulation,\" in which the physical functioning of a human brain is directly simulated, at some level of detail, in a digital computer.\nIn an interesting recent book, The Age of Em, Robin Hanson explores the potential dynamics of human society assuming such \"Ems\" can be created, and that this occurs prior to the advent of other forms of strong AI. (See also a recent post by Hanson discussing the relative timing of different AI paths.)\nThere is considerable debate about the technological feasibility of such simulation: though there is general (though not universal) agreement that the brain, being a physical system, is amenable to being simulated, the necessary computations (and data gathering) span many orders of magnitude depending upon the level of detail required. Significant intellectual effort and funding is being directed toward understanding the Brain well enough to simulate it, for example in the massive Blue Brain Project, but there is no clear consensus as to how much progress has been made toward the ultimate goal. See for example this NYT editorial with a skeptical evaluation of brain emulation, and this response by the Brain Preservation Foundation\nTo gather thinking about this and track how the relative probabilities of \"Ems\" vs. other types of AIs evolve with time, we ask here:\n"
+            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if there is a referendum held in Scotland regarding Scotland's independence from the United Kingdom, and this referendum is held before May 3, 2024. This referendum may be an \"advisory\" referendum; that is, it is not necessary for the referendum to have any legally binding effect.\nIt shall not be deemed resolved by a “wildcat” or “Catalan” style of referendum where the UK government has declined permission for the vote, nor by a vote organised by civil society institutions. A referendum must be deemed to have the consent of the London government\n",
+            "background_info": "Scotland is one of the UK’s four constituent nations - and its politics are currently dominated by the Scottish National Party, a party whose core aim is to remove Scotland from the UK and become an independent country.\nThe SNP government in Edinburgh previously successfully negotiated with the UK-wide government for the right to hold a referendum, which took place in 2014. The “No” side (“Better Together”) won 55% to 45%. The SNP has, however, won every Scottish national election since that date.\nThe SNP wish to have a fresh vote - stating that Brexit has changed the terms of the argument. The UK government has, to date, refused to countenance permitting such a vote. Under the Scotland Act, the Edinburgh government does not have the power to hold one without permission."
         },
         "question_type": "binary",
-        "resolution_date": "Jan 01 2060 12:00AM",
-        "url": "https://www.metaculus.com/questions/372",
+        "resolution_date": "2024-05-03T23:36:00Z",
+        "url": "https://www.metaculus.com/questions/6369",
         "data_source": "metaculus",
         "metadata": {
             "topics": []
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
-        "id": 375,
-        "title": "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
+        "id": 10551,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (50,000)",
         "body": {
-            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if, before January 1, 2027, one or more of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany triggers Article 50 of the Treaty of Lisbon by notifying the European Council of its intention to leave the union.\nIt also resolves as positive if by the same deadline the entity called European Union has dissolved completely or dissolved to create a new politico-economic union of some European nations under a different name\n",
-            "background_info": "Anti-European sentiment is running strong in the EU and it may grow stronger – strong enough to destroy it, maybe? The UK voted for Brexit and political pundits are already discussing Nexit, Frexit and Quitaly.\nSome commentators argue that Brexit is already the end of the EU as we know it, some would say that Brexit may be fine but if any other country was to leave would spell the end of the union. We choose an even stricter criterion by requiring then one of the 6 original founders of the ECSC leave the union to decree the end of the EU as we know it."
+            "resolution_criteria": "Resolution Criteria\nThe Russo-Ukraine conflict intensified with an invasion of Ukraine on February 24, 2022. Reports vary widely on the number of military deaths for both Russia and Ukraine, and accurate, up-to-date information is often difficult or impossible to obtain as fighting on the ground continues.\nWill at least 25,000 Ukrainian soldiers be killed in the Russo-Ukrainian conflict before 2024?\nThis question will resolve as the number of Ukrainian soldiers or military personnel which have been killed while in service during the Russo-Ukrainian war, during the period from February 24, 2022 to January 1, 2024. The question will resolve as Yes if the number of deaths is greater than the following thresholds, and No if the number is fewer.\n\"Military personnel\" may include members of the Ukranian armed forces, national guard, and volunteer fighters.\nTo determine resolution, Metaculus Admins will consider reports by the Ukrainian and Russian governments, other governments such as the US or the UN, and credible media reports and experts in the conflict. Resolution will be determined by information available by March 1, 2024 (or earlier, if information is sufficiently clear).\n",
+            "background_info": ""
         },
         "question_type": "binary",
-        "resolution_date": "Jan 31 2027 11:59PM",
-        "url": "https://www.metaculus.com/questions/375",
+        "resolution_date": "2024-03-07T19:32:00Z",
+        "url": "https://www.metaculus.com/questions/10551",
         "data_source": "metaculus",
         "metadata": {
             "topics": []
         },
-        "resolution": null
+        "resolution": -1.0
+    },
+    {
+        "id": 10554,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (100,000)",
+        "body": {
+            "resolution_criteria": "Resolution Criteria\nThe Russo-Ukraine conflict intensified with an invasion of Ukraine on February 24, 2022. Reports vary widely on the number of military deaths for both Russia and Ukraine, and accurate, up-to-date information is often difficult or impossible to obtain as fighting on the ground continues.\nWill at least 25,000 Ukrainian soldiers be killed in the Russo-Ukrainian conflict before 2024?\nThis question will resolve as the number of Ukrainian soldiers or military personnel which have been killed while in service during the Russo-Ukrainian war, during the period from February 24, 2022 to January 1, 2024. The question will resolve as Yes if the number of deaths is greater than the following thresholds, and No if the number is fewer.\n\"Military personnel\" may include members of the Ukranian armed forces, national guard, and volunteer fighters.\nTo determine resolution, Metaculus Admins will consider reports by the Ukrainian and Russian governments, other governments such as the US or the UN, and credible media reports and experts in the conflict. Resolution will be determined by information available by March 1, 2024 (or earlier, if information is sufficiently clear).\n",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-03-07T19:31:00Z",
+        "url": "https://www.metaculus.com/questions/10554",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": -1.0
+    },
+    {
+        "id": 12215,
+        "title": "If Trump is disqualified from holding the presidency, will that disqualification be ruled unconstitutional before January 20, 2025?",
+        "body": {
+            "resolution_criteria": "Resolution Criteria\nThis question will resolve as Yes if prior to January 20, 2025, the question 'Will any US court rule that Donald J. Trump is disqualified from holding the presidency before January 20th 2025?' resolves as Yes, and if such disqualification is later ruled unconstitutional by the Supreme Court of the United States; OR if such disqualification is ruled unconstitutional by an appellate court inferior to the US Supreme Court, AND the US Supreme Court refuses to hear an appeal against a lower court's prior ruling that such a disqualification is unconstitutional\n",
+            "background_info": "Various criminal offenses against the United States include as a potential penalty legal disqualification from holding federal office, theoretically including the presidency of the United States.\nThese offenses include (inter alia) those under 18 U.S. Code § 2071, which states:\n(a)Whoever willfully and unlawfully conceals, removes, mutilates, obliterates, or destroys, or attempts to do so, or, with intent to do so takes and carries away any record, proceeding, map, book, paper, document, or other thing, filed or deposited with any clerk or officer of any court of the United States, or in any public office, or with any judicial or public officer of the United States, shall be fined under this title or imprisoned not more than three years, or both.\n(b)Whoever, having the custody of any such record, proceeding, map, book, document, paper, or other thing, willfully and unlawfully conceals, removes, mutilates, obliterates, falsifies, or destroys the same, shall be fined under this title or imprisoned not more than three years, or both; and shall forfeit his office and be disqualified from holding any office under the United States. As used in this subsection, the term “office” does not include the office held by any person as a retired officer of the Armed Forces of the United States.\nIn early August 2022, federal agents executed a search warrant at Mar-a-Lago, the primary residence of Donald J. Trump, the 45th president of the United States, in the course of an investigation into the handling of presidential documents, including classified documents, that may have been brought there. It has been speculated that Trump may eventually be charged with a crime in relation to these documents, potentially including an offense under 18 U.S. Code § 2071.\nAccording to Reuters:\nWhile the Presidential Records Act does not specify an enforcement mechanism, taking presidential records from the White House could open Trump up to charges of conspiring to impede the proper functioning of the National Archives, said Jeffrey Cohen, an associate professor at Boston College Law School and former federal prosecutor.\nHe could also be charged under a law, known by its code number 2071, making it a crime to conceal or destroy U.S. public documents, or laws making it illegal to steal or damage government property.\n...\nA provision of 2071 states that anyone convicted will be barred from holding federal office and face a prison term of up to three years.\nHowever, Reuters also notes:\nBut experts said that provision may not be constitutional. The U.S. Constitution sets forth the qualifications for holding federal elected office, and previous Supreme Court rulings have held that Congress cannot limit who can run for the presidency, the Senate or the House.\nIf convicted and disqualified from office, Trump would likely challenge it in court, where the outcome would be far from certain.\nAnother Metaculus question, 'Will any US court rule that Donald J. Trump is disqualified from holding the presidency before January 20th 2025?,' asks whether Trump will be disqualified from the presidency before inauguration day in 2025. This question asks, contingent on that happening, whether that disqualification will subsequently be ruled unconstitutional prior to inauguration day in 2025.\n"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-03-04T15:00:00Z",
+        "url": "https://www.metaculus.com/questions/12215",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": 1.0
     }
 ]
