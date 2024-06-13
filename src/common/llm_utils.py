@@ -136,7 +136,7 @@ def get_openai_client_native() -> OpenAI:
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
     api_key = os.getenv("OPENROUTER_API_KEY")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
-    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
+    return instructor.from_openai(_client, mode=Mode.MD_JSON, **kwargs)
 
 
 @singleton_constructor
@@ -288,7 +288,11 @@ def get_provider(model: str) -> str:
 def is_model_name_valid(model: str) -> bool:
     if len(model) > 40:
         return False  # Model name is too long, probably a mistake
-    return get_provider(model) is not None
+    try:
+        return get_provider(model) is not None
+    except NotImplementedError:
+        return False
+
 
 
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
@@ -298,7 +302,8 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
             "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
         )
 
-    if os.getenv("USE_OPENROUTER"):
+    use_openrouter = os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
+    if use_openrouter:
         print(
             "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
         )
