@@ -141,7 +141,7 @@ resolution_date: 2030-12-31 00:00:00
 Question: {title}
 """
 
-validate_forecasting_question_prompt = """\
+verify_forecasting_question_prompt = """\
 I want you to help me validate if a forecasting question (as on sites like Metaculus / PredictIt) is well defined. 
 The question will ask about an event in the future.
 The fields are:
@@ -237,7 +237,8 @@ async def from_string(
     url: Optional[str] = None,
     metadata: Optional[dict] = None,
     body: Optional[str] = None,
-    date: str = None,
+    date: Optional[str] = None,
+    resolution: Optional[bool] = None,
     model: str = "gpt-4o-2024-05-13",
     fill_in_body: bool = False,
     **kwargs,
@@ -288,14 +289,14 @@ async def from_string(
         data_source=data_source,
         url=url,
         metadata=metadata,
-        resolution=None,
+        resolution=resolution,
     )
 
 
 async def verify_question_llm(
     question: ForecastingQuestion, current_date: datetime, **kwargs
 ) -> VerificationResult:
-    prompt = validate_forecasting_question_prompt.format(
+    prompt = verify_forecasting_question_prompt.format(
         title=question.title,
         body=question.body,
         resolution_date=question.resolution_date,
