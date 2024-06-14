@@ -42,6 +42,7 @@ async def validate_and_format_question(
             metadata=question.get("metadata", None),
             body=question.get("body", None),
             date=question.get("resolution_date", None),
+            resolution=question.get("resolution", None),
             model=model,
             fill_in_body=fill_in_body,
         )
@@ -168,12 +169,9 @@ async def main(
     output_path = Path(f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}")
     if overwrite:
         if output_path.exists():
-            confirmation = input(
-                f"The file {output_path} already exists. The default is to append. Change to overwrite? (y/N): "
+            print(
+                f"The file {output_path} already exists. Overwriting as per the --overwrite flag."
             )
-            if confirmation.lower() != "y":
-                print("Operation cancelled by the user.")
-                return
     else:
         if output_path.exists():
             print(

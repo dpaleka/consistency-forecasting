@@ -51,7 +51,7 @@ class ForecastingQuestion_stripped(BaseModel):
         Keyword Args:
             url (Optional[str]): You probably shouldn't add this.
             metadata (Optional[dict]): Metadata.
-            resolution (Optional[str]): The resolution of the question.
+            resolution (Optional[bool]): The resolution of the question.
         """
         return ForecastingQuestion(
             title=self.title,
