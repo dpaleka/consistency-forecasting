@@ -3,8 +3,8 @@
         "default": {
             "n": 80,
             "violated": 34,
-            "viol_avg": 0.19397332000000006,
-            "viol_med": 0.0092706
+            "viol_avg": 0.1940055912500001,
+            "viol_med": 0.0092749
         },
         "frequentist": {
             "n": 80,
@@ -17,8 +17,8 @@
         "default": {
             "n": 80,
             "violated": 8,
-            "viol_avg": 0.022105121250000005,
-            "viol_med": 0
+            "viol_avg": 0.022113967500000005,
+            "viol_med": 0.0
         },
         "frequentist": {
             "n": 80,
@@ -31,8 +31,8 @@
         "default": {
             "n": 80,
             "violated": 45,
-            "viol_avg": 0.20132384500000003,
-            "viol_med": 0.0297613
+            "viol_avg": 0.20455732124999998,
+            "viol_med": 0.0297662
         },
         "frequentist": {
             "n": 80,
@@ -44,9 +44,9 @@
     "AndOrChecker": {
         "default": {
             "n": 80,
-            "violated": 39,
-            "viol_avg": 0.12710608000000007,
-            "viol_med": 0.0075938
+            "violated": 49,
+            "viol_avg": 0.14223558749999993,
+            "viol_med": 0.0217551
         },
         "frequentist": {
             "n": 80,
@@ -58,9 +58,9 @@
     "ButChecker": {
         "default": {
             "n": 80,
-            "violated": 63,
-            "viol_avg": 0.30915512125,
-            "viol_med": 0.0891956
+            "violated": 67,
+            "viol_avg": 0.31369847499999987,
+            "viol_med": 0.1089489
         },
         "frequentist": {
             "n": 80,
@@ -72,9 +72,9 @@
     "CondChecker": {
         "default": {
             "n": 80,
-            "violated": 26,
-            "viol_avg": 0.047830671250000005,
-            "viol_med": 0.0037324
+            "violated": 37,
+            "viol_avg": 0.05191125875000001,
+            "viol_med": 0.0086564
         },
         "frequentist": {
             "n": 80,
@@ -102,7 +102,7 @@
             "n": 80,
             "violated": 28,
             "viol_avg": 0.07093603125,
-            "viol_med": 0
+            "viol_med": 0.0
         },
         "frequentist": {
             "n": 80,
@@ -114,9 +114,9 @@
     "CondCondChecker": {
         "default": {
             "n": 80,
-            "violated": 29,
-            "viol_avg": 0.022430040000000002,
-            "viol_med": 0
+            "violated": 36,
+            "viol_avg": 0.032238406250000004,
+            "viol_med": 0.0089867
         },
         "frequentist": {
             "n": 80,

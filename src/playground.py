@@ -1,3 +1,22 @@
+#%% 
+
+from static_checks.Checker import *
+
+ex = {'P' : 0.15, 'Q_given_P': 0.6, 'P_and_Q': 0.15}
+exa = {'P': 0.175, 'Q_given_P': 0.667, 'P_and_Q': 0.1167}
+outcome1 = {'P': False, 'Q_given_P': None, 'P_and_Q': False}
+outcome2 = {'P': True, 'Q_given_P': False, 'P_and_Q': False}
+outcome3 = {'P': True, 'Q_given_P': True, 'P_and_Q': True}
+
+print(CondChecker().max_min_arbitrage(ex))
+# print('----------------')
+# print(CondChecker().min_arbitrage(ex, exa))
+# print('----------------')
+# print(CondChecker().arbitrage(outcome1, ex, exa))
+# print(CondChecker().arbitrage(outcome2, ex, exa))
+# print(CondChecker().arbitrage(outcome3, ex, exa))
+# print('----------------')
+
 #%%
 import json
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion, Prob_cot, Prob, PlainText

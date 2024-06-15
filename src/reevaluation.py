@@ -15,6 +15,8 @@ from static_checks.Checker import (
 )
 from common.path_utils import get_data_path
 from common.utils import round_floats
+import plotnine as p9
+import pandas as pd
 
 TUPLES_PATH: Path = get_data_path() / "tuples/"
 FORECASTS_PATH: Path = get_data_path() / "forecasts"
@@ -221,6 +223,44 @@ def get_stats(checker_viols, checker_checks):
     return stats
 
 
+def plot(viols: list[float], binwidth=0.005, cap=None):
+    """Plot a histogram of violations."""
+    df = pd.DataFrame({"violation": viols})
+    if cap:
+        df["viol_capped"] = df["violation"].apply(lambda x: min(x, cap))
+    else:
+        cap = 999999
+    return (
+        p9.ggplot(df, p9.aes(x="viol_capped"))
+        # + p9.geom_histogram(binwidth=binwidth, closed='left')
+        + p9.geom_density()
+        # + p9.scale_x_continuous(
+        #     #breaks=range(int(df['CappedValues'].min()), int(cap) + 1),
+        #     labels=lambda l: ["%.1f" % v if v != cap else ">{cap}" for v in l])
+        # + p9.theme_minimal()
+    )
+
+
+def plot_all(checker_viols, metric="default", binwidth=0.005, cap=None, ymax=30):
+    """Plot each checker's violations on the same overlapping plot."""
+
+    df = pd.DataFrame()
+    for checker, viols in checker_viols.items():
+        df = df._append(pd.DataFrame({"violation": viols[metric], "checker": checker}))
+    if not cap:
+        cap = 999999
+    df["viol_capped"] = df["violation"].apply(lambda x: min(x, cap))
+    return (
+        p9.ggplot(df, p9.aes(x="viol_capped", color="checker"))
+        + p9.geom_density()
+        + p9.ylim(0, ymax)
+        # + p9.scale_x_continuous(
+        #     #breaks=range(int(df['CappedValues'].min()), int(cap) + 1),
+        #     labels=lambda l: ["%.1f" % v if v != cap else ">{cap}" for v in l])
+        # + p9.theme_minimal()
+    )
+
+
 def get_stats_from_paths(paths, metrics=None, write: Path | None = None):
     checker_viols, checker_checks = append_violations_all(
         paths, metrics=metrics, recalc=False, write=False
@@ -251,11 +291,19 @@ metrics = ["default", "frequentist"]
 
 if __name__ == "__main__":
     # TODO add some notifications about what files will get modified, and y/n. ideally together with the edits that introduces cli args to this
-    # append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
-    # append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=True, write=True)
+    append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
+    append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=True, write=True)
     append_violations_all(paths_gpt_4o, metrics=metrics, recalc=True, write=True)
-    # print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
-    # print(get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json"))
+    print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
+    print(
+        get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json")
+    )
     print(
         get_stats_from_paths(paths_gpt_4o, metrics=metrics, write="stats_gpt_4o.json")
     )
+    # checker_viols, checker_checks = append_violations_all(
+    #     paths_adv, metrics=metrics, recalc=False, write=False
+    # )
+    # print(plot(checker_viols["CondChecker"]["default"], cap=0.1))
+    # print(plot_all(checker_viols, metric="default", cap=0.1))
+    # print(plot_all(checker_viols, metric="frequentist", cap=1.0, ymax=10))
