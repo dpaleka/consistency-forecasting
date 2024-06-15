@@ -3,7 +3,7 @@
         "default": {
             "n": 80,
             "violated": 48,
-            "viol_avg": 0.03713360125000001,
+            "viol_avg": 0.03717968625,
             "viol_med": 0.012004
         },
         "frequentist": {
@@ -17,7 +17,7 @@
         "default": {
             "n": 80,
             "violated": 2,
-            "viol_avg": 0.007546726250000001,
+            "viol_avg": 0.00755573125,
             "viol_med": 0
         },
         "frequentist": {
@@ -31,7 +31,7 @@
         "default": {
             "n": 80,
             "violated": 39,
-            "viol_avg": 0.03635748,
+            "viol_avg": 0.03639227625,
             "viol_med": 0.0078486
         },
         "frequentist": {
@@ -44,9 +44,9 @@
     "AndOrChecker": {
         "default": {
             "n": 80,
-            "violated": 48,
-            "viol_avg": 0.04723541875,
-            "viol_med": 0.016237
+            "violated": 52,
+            "viol_avg": 0.04904120624999999,
+            "viol_med": 0.0193676
         },
         "frequentist": {
             "n": 80,
@@ -58,9 +58,9 @@
     "ButChecker": {
         "default": {
             "n": 80,
-            "violated": 44,
-            "viol_avg": 0.04452882749999999,
-            "viol_med": 0.0187785
+            "violated": 52,
+            "viol_avg": 0.04872549749999998,
+            "viol_med": 0.0216439
         },
         "frequentist": {
             "n": 80,
@@ -72,9 +72,9 @@
     "CondChecker": {
         "default": {
             "n": 80,
-            "violated": 28,
-            "viol_avg": 0.01855538125,
-            "viol_med": 0.0056704
+            "violated": 31,
+            "viol_avg": 0.020196027500000005,
+            "viol_med": 0.0062755
         },
         "frequentist": {
             "n": 80,
@@ -114,9 +114,9 @@
     "CondCondChecker": {
         "default": {
             "n": 80,
-            "violated": 28,
-            "viol_avg": 0.013177988749999998,
-            "viol_med": 0.0021589
+            "violated": 39,
+            "viol_avg": 0.018710075000000007,
+            "viol_med": 0.0090574
         },
         "frequentist": {
             "n": 80,

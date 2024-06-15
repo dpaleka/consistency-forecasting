@@ -13,6 +13,7 @@ from scipy.optimize import (
     dual_annealing,
     shgo,
     brute,
+    root,
 )
 from itertools import product
 from abc import ABC, abstractmethod
@@ -373,15 +374,9 @@ class Checker(ABC):
                 score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
         return score
 
-    def min_arbitrage(
-        self,
-        answers: dict[str, Prob],
-        arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
-    ) -> float:
-        """Minimum arbitrage earned regardless of outcome, given forcaster answers
-        and arbitrageur_answers."""
-        x = answers.keys()
+    @property
+    def Omega(self):
+        x = self.TupleFormat.model_fields
         v = [True, False, None]
         outcomes = product(v, repeat=len(x))
 
@@ -391,6 +386,26 @@ class Checker(ABC):
             if self.check_exact(outcome_dict):
                 Omega.append(outcome_dict)
 
+        return Omega
+
+    def min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        """Minimum arbitrage earned regardless of outcome, given forcaster answers
+        and arbitrageur_answers."""
+        # x = answers.keys()
+        # v = [True, False, None]
+        # outcomes = product(v, repeat=len(x))
+
+        # Omega = []
+        # for outcome in outcomes:
+        #     outcome_dict = dict(zip(x, outcome))
+        #     if self.check_exact(outcome_dict):
+        #         Omega.append(outcome_dict)
+
         return np.amin(
             [
                 self.arbitrage(
@@ -399,7 +414,7 @@ class Checker(ABC):
                     arbitrageur_answers=arbitrageur_answers,
                     scoring=scoring,
                 )
-                for outcom in Omega
+                for outcom in self.Omega
             ]
         )
 
@@ -408,7 +423,7 @@ class Checker(ABC):
         answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
         initial_guess: list[float] | str | None = None,
-        method="shgo",
+        methods: tuple[str] = ("shgo", "differential_evolution", "dual_annealing"),
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -417,11 +432,14 @@ class Checker(ABC):
             answers (dict[str, Prob]): Forecaster answers.
             scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
-            method (str, optional): Optimization method. Options:
+            methods (tuple[str], optional): Optimization method. Options:
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
                 differential_evolution, shgo, dual_annealing -- working
+                root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
+                    arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
+                    arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
             Defaults to "shgo".
 
         """
@@ -449,48 +467,101 @@ class Checker(ABC):
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
-        if method == "differential_evolution":
-            result = differential_evolution(
-                fun_to_minimize,
-                bounds=bounds,
-                disp=False,
-            )
-        elif method == "brute":
-            result = brute(
-                fun_to_minimize,
-                ranges=bounds,
-                disp=False,
-            )
-        elif method == "shgo":
-            result = shgo(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "dual_annealing":
-            result = dual_annealing(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "basinhopping":
-            result = basinhopping(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                minimizer_kwargs={"bounds": bounds},
-            )
-        else:
-            result = minimize(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                bounds=bounds,
-                # options={"disp": True},
-                method=method,
-                # tol=1e-6,
+        maxes = []
+
+        for method in methods:
+            if method == "root":
+
+                def funs_to_equate(arbitrageur_answers_list):
+                    return [
+                        self.arbitrage(
+                            outcome,
+                            answers,
+                            dict(zip(x, arbitrageur_answers_list)),
+                            scoring,
+                        )
+                        for outcome in self.Omega
+                    ]
+
+                def funs_to_zero(arbitrageur_answers_list):
+                    return (
+                        np.array(funs_to_equate(arbitrageur_answers_list))
+                        - funs_to_equate(arbitrageur_answers_list)[0]
+                    )
+
+                solutions = root(
+                    funs_to_zero,
+                    arbitrageur_answers_list_initial,
+                    method="lm",
+                )
+                if solutions.success:
+                    arbitrage_argmax = dict(zip(x, solutions.x))
+                    arbitrage_max = self.arbitrage(
+                        self.Omega[0], answers, arbitrage_argmax, scoring
+                    )
+                    maxes.append(
+                        {
+                            "arbitrage_argmax": arbitrage_argmax,
+                            "arbitrage_max": arbitrage_max,
+                        }
+                    )
+                    # arbitrage_argmaxes = [dict(zip(x, sol)) for sol in solutions.x]
+                    # results = {arbitr_argmax:
+                    #     self.arbitrage(self.Omega[0], answers, arbitr_argmax, scoring)
+                    #     for arbitr_argmax in arbitrage_argmaxes
+                    # }
+                    # arbitrage_argmax = max(results, key=results.get)
+                    # arbitrage_max = results[arbitrage_argmax]
+                    # return arbitrage_argmax, arbitrage_max
+                else:
+                    print(f"Root optimization failed: {solutions.message}")
+            elif method == "differential_evolution":
+                result = differential_evolution(
+                    fun_to_minimize,
+                    bounds=bounds,
+                    disp=False,
+                )
+            elif method == "brute":
+                result = brute(
+                    fun_to_minimize,
+                    ranges=bounds,
+                    disp=False,
+                )
+            elif method == "shgo":
+                result = shgo(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "dual_annealing":
+                result = dual_annealing(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "basinhopping":
+                result = basinhopping(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    minimizer_kwargs={"bounds": bounds},
+                )
+            else:
+                result = minimize(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    bounds=bounds,
+                    # options={"disp": True},
+                    method=method,
+                    # tol=1e-6,
+                )
+
+            arbitrage_argmax = dict(zip(x, result.x))
+            arbitrage_max = -result.fun
+
+            maxes.append(
+                {"arbitrage_argmax": arbitrage_argmax, "arbitrage_max": arbitrage_max}
             )
 
-        arbitrage_argmax = dict(zip(x, result.x))
-        arbitrage_max = -result.fun
-
-        return arbitrage_argmax, arbitrage_max
+        best_max = max(maxes, key=lambda x: x["arbitrage_max"])
+        return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
