@@ -13,7 +13,7 @@ import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 from huggingface_hub import snapshot_download
@@ -21,7 +21,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
-from .path_utils import get_src_path
+from .path_utils import get_src_path, get_root_path
 
 
 from .perscache import (
@@ -37,6 +37,15 @@ from .perscache import (
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
+
+load_dotenv(override=False)
+
+# We override all keys and tokens (bc those could have been set globally in the user's system). Other flags stay if they are set.
+env_path = get_root_path() / ".env"
+env_vars = dotenv_values(env_path)
+KEYS = [k for k in env_vars.keys() if "KEY" in k or "TOKEN" in k]
+override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
+os.environ.update(override_env_vars)
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
@@ -80,10 +89,8 @@ embeddings_cache = Cache(
 
 FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
 
+
 client = None
-load_dotenv(override=True)  # TODO check what this means for CLI-provided env vars
-
-
 PROVIDERS = ["openai", "mistral", "anthropic", "togetherai", "huggingface_local"]
 
 
