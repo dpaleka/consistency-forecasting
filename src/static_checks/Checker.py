@@ -423,7 +423,7 @@ class Checker(ABC):
         answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
         initial_guess: list[float] | str | None = None,
-        methods: tuple[str] = ("shgo", "differential_evolution", "dual_annealing"),
+        methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -436,7 +436,9 @@ class Checker(ABC):
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
-                differential_evolution, shgo, dual_annealing -- working
+                shgo, differential_evolution, dual_annealing -- working. shgo takes negligible time but is unreliable
+                    for small violations; differential_evolution takes much longer but is more reliable. dual_annealing
+                    takes 2x the time as differential_evolution and doesn't seem to hold any advantage over it.
                 root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
                     arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
                     arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
