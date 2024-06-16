@@ -196,6 +196,13 @@ class SyntheticTagQuestion(BaseModel):
     fixed: Optional[bool] = False
 
 
+class SyntheticRelQuestion(BaseModel):
+    title: str
+    source_question: Optional[str] = None
+    feedback: Optional[str] = None
+    fixed: Optional[bool] = False
+
+
 ### Other useful classes
 
 
