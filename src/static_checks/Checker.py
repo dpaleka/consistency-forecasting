@@ -565,6 +565,17 @@ class Checker(ABC):
         best_max = max(maxes, key=lambda x: x["arbitrage_max"])
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
+    def arbitrage_violation(
+        self,
+        answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+        initial_guess: list[float] | str | None = None,
+        methods: tuple[str] = ("shgo", "differential_evolution"),
+    ) -> float:
+        return self.max_min_arbitrage(
+            answers, scoring=scoring, initial_guess=initial_guess, methods=methods
+        )[1]
+
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
 
@@ -573,7 +584,7 @@ class Checker(ABC):
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         if metric == "default":
-            v = self.max_min_arbitrage(answers)[1]
+            v = self.arbitrage_violation(answers)
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
@@ -820,6 +831,19 @@ class NegChecker(Checker):
         P = await Trivial().instantiate(base_sentences, **kwargs)
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * (1 - answers["not_P"]))
+        B = np.sqrt((1 - answers["P"]) * answers["not_P"])
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "not_P": 1 - p}, v
 
     def frequentist_violation(
         self,
@@ -1519,6 +1543,19 @@ class ParaphraseChecker(Checker):
         P = await Trivial().instantiate(base_sentences, **kwargs)
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, para_P=para_P.para_P)
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * answers["para_P"])
+        B = np.sqrt((1 - answers["P"]) * (1 - answers["para_P"]))
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "para_P": p}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, para_P = answers["P"], answers["para_P"]
