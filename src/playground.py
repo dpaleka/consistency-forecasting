@@ -51,6 +51,9 @@ for k,v in checkers.items():
     result_basinhopping = checker.max_min_arbitrage(answers, methods = ('basinhopping',))
     time4 = time()
     print('Basinhopping:', result_basinhopping, '\nTime:', time4-time3)
+    result_plain = checker.max_min_arbitrage(answers)
+    time5 = time()
+    print('No kwargs:', result_plain, '\nTime:', time5-time4)
     print('\n\n')
 
 
