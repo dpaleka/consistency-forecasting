@@ -59,6 +59,7 @@ Format 2 (example):
 {"id": "e1fe03a9-d89c-43a4-8d18-c9f160c27801", "title": "What is the probability that the United Kingdom will meet its target of reducing greenhouse gas emissions by 68% by 2030?", "body": "Resolution criteria: This question will resolve as Yes if the United Kingdom achieves a reduction in greenhouse gas emissions by 68% or more by December 31, 2030, compared to 1990 levels. The resolution will be based on the official data published by the UK's Department for Business, Energy & Industrial Strategy (BEIS) or its successor agency. The data must be the final confirmed statistics for the year 2030, not preliminary or projected figures. If the BEIS is dissolved or no longer publishes this data, the resolution will be based on the official statistics published by the United Nations Framework Convention on Climate Change (UNFCCC) or its successor agency.\n\nIn the event that neither the BEIS nor the UNFCCC publishes the relevant data by the resolution date, the question will resolve using the most recent data available from either of these sources, provided that the data covers the entirety of 2030.\n\nIf the UK undergoes significant changes in territory or sovereignty that would materially impact its ability to meet the emissions target (such as a secession of a part of the country), the question will resolve based on the emissions of the territory as defined at the time of the question's posting.\n\nIf the methodology for calculating greenhouse gas emissions is significantly altered from the one used as of 2021, the resolution will be based on the best available method that is consistent with the original methodology to the extent possible.\n\nEdge cases, such as significant natural disasters or other extraordinary events that could temporarily skew emissions data, will be considered by a panel of three climate policy experts chosen in good faith by the question author, for the sole purpose of resolving this question.\n\nResolution date: The resolution date will be set to allow for the official data to be published and confirmed. As such, the resolution date will be six months after the end of the target year to account for reporting and verification processes.\n\n", "data_source": "synthetic", "question_type": "Binary", "resolution_date": "\nResolution date: 30/06/2031", "url": null, "metadata": {}, "resolution": null}
 """
 
+
 def convert_format(format_1):
     format_2 = {
         "id": str(format_1["id"]),
@@ -69,14 +70,18 @@ def convert_format(format_1):
         "resolution_date": format_1["resolution_date"],
         "url": format_1.get("url", None),
         "metadata": format_1["metadata"],
-        "resolution": None
+        "resolution": format_1["resolution"],
     }
-    # Fix body into resolution criteria and metadata. 
+    # Fix body into resolution criteria and metadata.
     if isinstance(format_2["body"], dict) and "resolution_criteria" in format_2["body"]:
         format_2["metadata"]["background_info"] = format_2["body"]["background_info"]
         format_2["body"] = format_2["body"]["resolution_criteria"]
         assert isinstance(format_2["body"], str)
-    
+
+    if isinstance(format_1["resolution"], float) or isinstance(
+        format_1["resolution"], int
+    ):
+        format_2["resolution"] = bool(format_2["resolution"])
 
     return format_2
 
@@ -84,11 +89,14 @@ def convert_format(format_1):
 from dataclasses import dataclass
 from simple_parsing import ArgumentParser
 import json
+
 parser = ArgumentParser()
+
 
 @dataclass
 class Options:
-    filename: str       # Filename to apply the conversion to
+    filename: str  # Filename to apply the conversion to
+
 
 args = parser.add_arguments(Options, dest="opt")
 args = parser.parse_args()
@@ -96,14 +104,13 @@ args = args.opt
 print(type(args), dir(args))
 
 with open(args.filename, "r") as f:
-    if args.filename.endswith('.json'):
+    if args.filename.endswith(".json"):
         data = json.load(f)
-    elif args.filename.endswith('.jsonl'):
+    elif args.filename.endswith(".jsonl"):
         data = [json.loads(line) for line in f]
 
 # write jsonl
-out_filename = args.filename.replace('.json', '.jsonl')
+out_filename = args.filename.replace(".json", ".jsonl")
 with open(out_filename, "w") as f:
     for datum in data:
         f.write(json.dumps(convert_format(datum)) + "\n")
-
