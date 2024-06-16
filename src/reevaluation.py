@@ -270,6 +270,7 @@ def get_stats_from_paths(paths, metrics=None, write: Path | None = None):
         if isinstance(write, str):
             write = FORECASTS_PATH / write
         with open(write, "w", encoding="utf-8") as f:
+            stats = round_floats(stats, precision=7)
             f.write(json.dumps(stats, indent=4))
 
 
