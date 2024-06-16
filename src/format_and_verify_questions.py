@@ -1,14 +1,22 @@
 import asyncio
 import functools
 import json
-from typing import List, Optional
-from common.datatypes import ForecastingQuestion, SyntheticTagQuestion
+from typing import List, Optional, Union
+from common.datatypes import (
+    ForecastingQuestion,
+    SyntheticTagQuestion,
+    SyntheticRelQuestion,
+)
 from question_generators import question_formatter
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
 from common.path_utils import get_data_path, get_scripts_path
 from simple_parsing import ArgumentParser
 from pathlib import Path
+
+SyntheticQuestion = Union[
+    SyntheticTagQuestion, SyntheticRelQuestion
+]  # help functions dynamically handle Synthetic Questions
 
 
 def read_json_or_jsonl(file_path: Path):
@@ -64,12 +72,15 @@ async def validate_and_format_question(
 
 
 async def validate_and_format_synthetic_question(
-    question: SyntheticTagQuestion,
+    question: SyntheticQuestion,
     verify: bool = True,
     fill_in_body: bool = False,
     **kwargs,
 ) -> Optional[ForecastingQuestion]:
-    metadata = {"tags": question.tags, "category": question.category}
+    if isinstance(question, SyntheticRelQuestion):
+        metadata = {"source_question": question.source_question}
+    else:
+        metadata = {"tags": question.tags, "category": question.category}
     for i in range(2):
         forecasting_question = await question_formatter.from_string(
             question.title,
@@ -103,7 +114,18 @@ async def process_synthetic_questions_from_file(
     fill_in_body: bool = False,
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
-    questions = [SyntheticTagQuestion(**q) for q in questions]
+
+    # dynamically determine type of questions
+    if "source_question" in questions[0]:
+        question_type = "rel"
+    else:
+        question_type = "tag"
+
+    if question_type == "rel":
+        questions = [SyntheticRelQuestion(**q) for q in questions]
+    elif question_type == "tag":
+        questions = [SyntheticTagQuestion(**q) for q in questions]
+
     print(f"number of questions before removing duplicates: {len(questions)}")
     questions = remove_repeated_questions(questions, output_path)
     print(f"number of questions after removing duplicates:  {len(questions)}")
@@ -179,13 +201,17 @@ async def main(
             )
 
     if synthetic:
-        forecasting_questions, none_count = await process_synthetic_questions_from_file(
+        (
+            forecasting_questions,
+            none_count,
+        ) = await process_synthetic_questions_from_file(  # LOOK HERE
             file_path,
             output_path,
             max_questions=max_questions,
             model=model,
             fill_in_body=fill_in_body,
         )
+
     else:
         forecasting_questions, none_count = await process_questions_from_file(
             file_path,
