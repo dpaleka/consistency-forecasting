@@ -5,7 +5,7 @@ from common.utils import shallow_dict
 from datetime import datetime
 from dateutil.tz import UTC
 from abc import ABC, abstractmethod
-from typing import Type, Any, Optional, Self  # noqa
+from typing import Type, Any, Optional, Self, List  # noqa
 from pydantic import BaseModel, create_model, field_validator
 from common.utils import write_jsonl_async_from_str  # noqa
 from common.llm_utils import (
@@ -151,7 +151,7 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         **kwargs,
-    ) -> "Self.OutputFormat":
+    ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         title_body = self.title_body_sync(base_sentences, **kwargs)
         return self.OutputFormat(
             **{
@@ -170,7 +170,7 @@ class MiniInstantiator(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         n_verify=3,
         **kwargs,
-    ) -> "Self.OutputFormat":
+    ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         if verify_before_instantion:
             for i in range(n_verify):
                 title_body = await self.title_body(base_sentences, **kwargs)
