@@ -37,6 +37,8 @@ from .checker_prompts import (
     but_verification_prompt,
     conditional_verification_prompt,
     consequence_verification_prompt,
+    consequence_quantity_verification_prompt,
+    consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
 from forecasters import Forecaster
@@ -1364,9 +1366,18 @@ class ConsequenceChecker(Checker):
     async def verify(
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
-        prompt = consequence_verification_prompt.format(
-            P=generated_tuple.P, cons_P=generated_tuple.cons_P
-        )
+        metadata = generated_tuple.cons_P.metadata
+        consequence_type = metadata.get("consequence_type", None) if metadata else None
+        if consequence_type == "quantity":
+            prompt = consequence_quantity_verification_prompt.format(P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.cons_P.title, Q_body=generated_tuple.cons_P.body)
+        elif consequence_type == "time":
+            prompt = consequence_time_verification_prompt.format(P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.cons_P.title, Q_body=generated_tuple.cons_P.body)
+        else:
+            prompt = consequence_verification_prompt.format(P_title=generated_tuple.P.title, P_body=generated_tuple.P.body,
+            Q_title=generated_tuple.cons_P.title, Q_body=generated_tuple.cons_P.body)
+        
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result(
@@ -1386,15 +1397,15 @@ class ConsequenceChecker(Checker):
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
-        cons_P = Consequence().instantiate_sync(base_sentences, **kwargs)
-        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)]
+        cons_P_list = Consequence().instantiate_sync(base_sentences, **kwargs)
+        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P) for cons_P in cons_P_list]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
         P = await Trivial().instantiate(base_sentences, **kwargs)
-        cons_P = await Consequence().instantiate(base_sentences, **kwargs)
-        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)]
+        cons_P_list = await Consequence().instantiate(base_sentences, **kwargs)
+        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P) for cons_P in cons_P_list]
 
 
     # def violation(self, answers: dict[str, Prob]) -> float:
