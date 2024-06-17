@@ -205,70 +205,216 @@ R: {Q_given_P}
 S: {P_and_Q}
 """
 
-consequence_verification_prompt = """
-I will provide you with two propositions, P and Q. Your task is to assess whether Q is a proposition that will always be true if P is true. In other words, validate whether Q is a logical implication of P, ensuring that Q will always occur if P is true. Reject if P and Q are completely equivalent. Reject if you need any additional assumptions to derive Q from P. Reject if Q is just formed by making some resolution criteria more vague / not operationalizing them (but accept if it is made by actually loosening some resolution criteria while still precisely defining everything). Reject if Q is 'ERROR: NO CONSEQUENCE FOUND' or something like that.
+consequence_verification_prompt = (
+    "You are a critical assistant. I need your help to verify the relationship between two questions P and Q. \n"
+    "For a given P and Q, verify that Q is a consequence of P.\n"
+    "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+    "Both P and Q have Yes/No answers. Both P and Q have the following fields:\n"
+    "Title: The question statement.\n"
+    "Body: A longer description of the conditions and the resolution criteria.\n"
+    "Your response should have the following format:\n"
+    "reasoning: Your reasoning for why Q is a consequence of P or why not.\n"
+    "valid: a boolean, True or False.\n\n"
+    "Examples:\n"
+    "P:\n"
+    "title: Will the price of gold increase by at least 10% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 10% or more in the next year.\n"
+    "Q:\n"
+    "title: Will the price of gold increase by at least 5% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 5% or more in the next year.\n"
+    "reasoning: If the price of gold increases by 10%, it also increased by 5%.\n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will the price of gold increase by at least 10% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 10% or more in the next year.\n"
+    "Q:\n"
+    "title: Will the price of gold increase by at least 20% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 20% or more in the next year.\n"
+    "reasoning: If the price of gold increases by 10%, it doesn’t mean that it also increased by 20%.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will a Swiss person set foot on Mars before 2085?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will any human set foot on Mars before 2085?\n"
+    "body: Resolves YES if any human sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "reasoning: If a Swiss person sets foot on Mars, it means that a human has set foot on Mars. \n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will the global sales of electric vehicles exceed 5 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 5 million units in 2025. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the global sales of gucci handbags exceed 6 million units in 2025?\n"
+    "body: Resolves YES if the global sales of gucci handbags exceed 6 million units in 2025. Resolves NO otherwise.\n"
+    "reasoning: The global sales of electric vehicles exceeding 5 million units does not imply anything about the global sales of gucci handbags.\n"
+    "valid: False\n\n"
+    "Now the actual questions:\n\n"
+    "P:\n"
+    "title: {P_title}\n"
+    "body: {P_body}\n"
+    "Q:\n"
+    "title: {Q_title}\n"
+    "body: {Q_body}\n"
+)
 
-Example 1:
 
-P: A computer can receive emails.
-Q: A computer is connected to the internet.
+consequence_quantity_verification_prompt = (
+    "You are a critical assistant. I need your help to verify the relationship between two questions P and Q. \n"
+    "For a given P and Q, verify that Q is a consequence of P due to quantity monotonicity.\n"
+    "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+    "Both P and Q have Yes/No answers. Both P and Q have the following fields:\n"
+    "Title: The question statement.\n"
+    "Body: A longer description of the conditions and the resolution criteria.\n"
+    "If Q is a consequence of P, but because of quantity, mark it as invalid.\n"
+    "Your response should have the following format:\n"
+    "reasoning: Your reasoning for why Q is a consequence of P related to quantity or why not.\n"
+    "valid: a boolean, True of False.\n\n"
+    "Examples:\n"
+    "P:\n"
+    "title: Will the price of gold increase by at least 10% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 10% or more in the next year.\n"
+    "Q:\n"
+    "title: Will the price of gold increase by at least 20% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 20% or more in the next year.\n"
+    "reasoning: If the price of gold increases by 10%, it doesnt mean that it also increased by 20%.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will the price of gold increase by at least 10% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 10% or more in the next year.\n"
+    "Q:\n"
+    "title: Will the price of gold increase by at least 5% in the next year?\n"
+    "body: This question will resolve as Yes if the price of gold increases by 5% or more in the next year.\n"
+    "reasoning: If the price of gold increases by 10%, it also increased by 5%.\n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will a Swiss person set foot on Mars before 2085?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will any human set foot on Mars before 2085?\n"
+    "body: Resolves YES if any human sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "reasoning: If a Swiss person sets foot on Mars, it means that a human has set foot on Mars. However, this is not due to quantity, but due to the nature of the question.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2027?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2027. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2028?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2028. Resolves NO otherwise.\n"
+    "reasoning: If the price of Bitcoin reaches a peak of 100k before 2027, it also reached a peak of 100k before 2028. But this relation is due to time, not quantity.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will the global sales of electric vehicles exceed 5 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 5 million units in 2025. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the global sales of electric vehicles exceed 4 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 4 million units in 2025. Resolves NO otherwise.\n"
+    "reasoning: If the global sales of electric vehicles exceed 5 million units, it also exceeds 4 million units. This is due to quantity.\n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will the global sales of electric vehicles exceed 5 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 5 million units in 2025. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the global sales of gucci handbags exceed 6 million units in 2025?\n"
+    "body: Resolves YES if the global sales of gucci handbags exceed 6 million units in 2025. Resolves NO otherwise.\n"
+    "reasoning: The global sales of electric vehicles exceeding 5 million units does not imply anything about the global sales of gucci handbags.\n"
+    "valid: False\n\n"
+    "Now the actual questions:\n\n"
+    "P:\n"
+    "title: {P_title}\n"
+    "body: {P_body}\n"
+    "Q:\n"
+    "title: {Q_title}\n"
+    "body: {Q_body}\n"
+)
 
-reasoning: If a computer can receive emails (P), then it must be connected to the internet (Q), as an internet connection is necessary for receiving emails. Therefore, Q is a logical consequence of P.
-valid: True
+consequence_time_verification_prompt = (
+    "You are a critical assistant. I need your help to verify the relationship between two questions P and Q. \n"
+    "For a given P and Q, verify that Q is a consequence of P due to time monotonicity.\n"
+    "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+    "Both P and Q have Yes/No answers. Both P and Q have the following fields:\n"
+    "Title: The question statement.\n"
+    "Body: A longer description of the conditions and the resolution criteria.\n"
+    "Ensure that the resolution date for Q is logically aligned with the resolution date for P, given the context of time monotonicity.\n"
+    "Your response should have the following format:\n"
+    "reasoning: Your reasoning for why Q is a consequence of P related to time or why not.\n"
+    "valid: a boolean, True or False.\n\n"
+    "Examples:\n"
+    "P:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2027?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2027. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2028?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2028. Resolves NO otherwise.\n"
+    "reasoning: If the price of Bitcoin reaches a peak of 100k before 2027, it also reached a peak of 100k before 2028. This is due to time monotonicity.\n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2027?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2027. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the price of Bitcoin reach a peak of 100k at any point before 2026?\n"
+    "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2026. Resolves NO otherwise.\n"
+    "reasoning: If the price of Bitcoin reaches a peak of 100k before 2027, it does not imply that it also reached a peak of 100k before 2026.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will a Swiss person set foot on Mars before 2085?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "resolution date: 2085-01-01 00:00:00\n"
+    "Q:\n"
+    "title: Will a Swiss person set foot on Mars before 2086?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2086. Resolves NO otherwise.\n"
+    "resolution date: 2086-01-01 00:00:00\n"
+    "reasoning: If a Swiss person sets foot on Mars before 2085, they have also set foot on Mars before 2086. This is due to time monotonicity.\n"
+    "valid: True\n\n"
+    "title: Will a Swiss person set foot on Mars before 2085?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will any human set foot on Mars before 2085?\n"
+    "body: Resolves YES if any human sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "reasoning: If a Swiss person sets foot on Mars, it means that a human has set foot on Mars. However, this is not due to time, but due to the nature of the question.\n"
+    "valid: False\n\n"
+    "title: Will the global sales of electric vehicles exceed 5 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 5 million units in 2025. Resolves NO otherwise.\n"
+    "Q:\n"
+    "title: Will the global sales of electric vehicles exceed 4 million units in 2025?\n"
+    "body: Resolves YES if the global sales of electric vehicles exceed 4 million units in 2025. Resolves NO otherwise.\n"
+    "reasoning: If the global sales of electric vehicles exceed 5 million units, it also exceeds 4 million units. This is due to quantity, not time.\n"
+    "valid: False\n\n"
+    "P:\n"
+    "title: Will the Golden Bay Bridge remain standing in 2095?\n"
+    "body: The resolution of this question will be based on credible reports and sources available on January 1, 2095."
+    " Sources may include, but are not limited to, news articles, government publications, and official announcements "
+    "from the agency responsible for the bridge's maintenance.\n"
+    "If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome."
+    "Q:\n"
+    "title: Will the Golden Bay Bridge remain standing in 2090?\n"
+    "body: The resolution of this question will be based on credible reports and sources available on January 1, 2090."
+    " Sources may include, but are not limited to, news articles, government publications, and official announcements "
+    "from the agency responsible for the bridge's maintenance.\n"
+    "If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome."
+    "reasoning: If the Golden Bay Bridge remains standing in 2095, it also remains standing in 2090. This is due to time monotonicity.\n"
+    "valid: True\n\n"
+    "P:\n"
+    "title: Will the Golden Bay Bridge remain standing in 2095?\n"
+    "body: The resolution of this question will be based on credible reports and sources available on January 1, 2095."
+    " Sources may include, but are not limited to, news articles, government publications, and official announcements "
+    "from the agency responsible for the bridge's maintenance.\n"
+    "If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome."
+    "Q:\n"
+    "title: Will the Golden State Warrios win at least one more NBA championship before 2090?\n"
+    "body: The resolution of this question will be based on credible reports and sources available on January 1, 2090."
+    "reasoning: The Golden Bay Bridge remaining standing in 2095 does not imply anything about the Golden State Warriors winning an NBA championship before 2090.\n"
+    "valid: False\n\n"
+    "Now the actual questions:\n\n"
+    "P:\n"
+    "title: {P_title}\n"
+    "body: {P_body}\n"
+    "resolution date: {P_resolution_date}\n"
+    "Q:\n"
+    "title: {Q_title}\n"
+    "body: {Q_body}\n"
+    "resolution date: {Q_resolution_date}\n"
+)
 
-Example 2:
-
-P: The ground is wet.
-Q: It is raining.
-
-reasoning: I can easily imagine the ground being wet (P true) without it raining (Q false). So P does not imply Q.
-valid: False
-
-Example 3:
-
-P: It is daytime.
-Q: The sun has risen and not set yet.
-
-reasoning: The two statements are logically equivalent, as daytime (P) is defined by the sun being above the horizon and not having set yet (Q). So Q is a logical consequence of P, but also completely equivalent to it, therefore not useful to us.
-valid: False
-
-Example 4:
-
-P: Will at least 50 percent of the world's population live in Asia by 2050?
-Q: Will Asia have at least 3 billion residents by 2050?
-
-reasoning: They probably thought Q was a logical consequence of P because the world population is 8 billion, half of that is 4 billion, so if Asia has more than 4 billion people it must have more than 3 billion people. However, this assumes that the world population in 2050 is 8 billion, which we do not know for certain. Without knowing the world population in 2050, we cannot judge if 50 percent of that is more or less than 3 billion.
-valid: False
-
-Example 5:
-
-P: Will ANY of the following happen in 2025? (a) A manned mission to Mars (b) A new Starship launch by SpaceX?
-Q: Will a manned mission to Mars happen in 2025?
-
-reasoning: Suppose only a new starship launch happens, but no manned mission to Mars. Then P is true, but Q is false. So Q is not a logical consequence of P.
-valid: False
-
-Example 6:
-
-P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
-Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease that infects a large number of people over a short span of time.)
-
-reasoning: Q just makes the definition of an epidemic more vague, so we do not count it.
-valid: False
-
-Example 7:
-
-P: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 15 per 100,000 people over a span of two consecutive weeks.)
-Q: Will there be an epidemic of meningococcal diseases in 2025? (An epidemic is defined as a disease with an infection rate of over 10 per 100,000 people over a span of two consecutive weeks.)
-
-reasoning: Q is a logical consequence of P, as the definition of an epidemic in Q is a subset of the definition of an epidemic in P. If an epidemic is defined as infecting more than 15 per 100,000 people, it must also be true that it infects more than 10 per 100,000 people, as 15 is more than 10.
-valid: True
-
-----
-
-P: {P}
-Q: {cons_P}
-"""
 
 paraphrase_verification_prompt = """
 I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer.
