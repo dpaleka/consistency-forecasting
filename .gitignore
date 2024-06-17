@@ -6,7 +6,7 @@ src/data/check_tuple_logs/*.jsonl
 src/data/forecasts/A_AdvancedForecaster_most_recent/
 src/data/forecasts/A_COTForecaster_most_recent/
 src/data/forecasts/A_BasicForecaster_most_recent/
-scripts/pipeline/references/
+scripts/pipeline/references/*
 
 
 # Local
