@@ -22,9 +22,8 @@ source_questions = [
 ]
 
 
-prompt = """
-Objective: Generate a set of forecasting questions for a forecasting market site like Metaculus or PredictIt. I will provide a source question. 
-Your task is to generate 3 new related questions that are logically related to the provided source question. 
+prompt = """Objective: Generate a set of forecasting questions for a forecasting market site like Metaculus or PredictIt. I will provide a source question. 
+Your task is to generate {num_questions} new related questions that are logically related to the provided source question. 
 Each new question should be suitable for probabilistic evaluation and should logically combine with the source question in a meaningful way. 
 
 Guidelines:
@@ -56,9 +55,7 @@ Source question: {source_question}
 
 
 class QuestionGenerationResponse(BaseModel):
-    question_1: SyntheticRelQuestion
-    question_2: SyntheticRelQuestion
-    question_3: SyntheticRelQuestion
+    questions: list[SyntheticRelQuestion]
 
 
 def load_questions_from_jsonl(file_path):
@@ -96,8 +93,10 @@ def get_titles_from_fq(file_path):
     return titles
 
 
-async def generate_questions_from_question(source_question, model):
-    question_prompt = prompt.format(source_question=source_question)
+async def generate_questions_from_question(source_question, model, num_questions):
+    question_prompt = prompt.format(
+        source_question=source_question, num_questions=num_questions
+    )
     generated_questions = await answer(
         prompt=question_prompt,
         preface=None,
@@ -105,29 +104,44 @@ async def generate_questions_from_question(source_question, model):
         model=model,
     )
 
-    # print(generated_questions)
+    # Ensure each generated question has the source question field populated
+    for question in generated_questions.questions:
+        question.source_question = source_question
 
-    # Fill in the source_question manually if it's not provided by the LLM
-    for field_name, synthetic_question in generated_questions.model_dump().items():
-        print(synthetic_question)
-        # Instantiate SyntheticRelQuestion from the dictionary
-        synthetic_question = SyntheticRelQuestion.model_validate(synthetic_question)
-        # Check if the field contains a SyntheticRelQuestion by re-instantiating it from the data
-        synthetic_question.source_question = source_question
-        # Set the updated SyntheticRelQuestion back to the original response object
-        setattr(generated_questions, field_name, synthetic_question)
+    return generated_questions.questions
+    # question_prompt = prompt.format(source_question=source_question)
+    # generated_questions = await answer(
+    #     prompt=question_prompt,
+    #     preface=None,
+    #     response_model=QuestionGenerationResponse,
+    #     model=model,
+    # )
 
-    return [
-        q
-        for q in [
-            generated_questions.question_1,
-            generated_questions.question_2,
-            generated_questions.question_3,
-        ]
-    ]
+    # # print(generated_questions)
+
+    # # Fill in the source_question manually if it's not provided by the LLM
+    # for field_name, synthetic_question in generated_questions.model_dump().items():
+    #     print(synthetic_question)
+    #     # Instantiate SyntheticRelQuestion from the dictionary
+    #     synthetic_question = SyntheticRelQuestion.model_validate(synthetic_question)
+    #     # Check if the field contains a SyntheticRelQuestion by re-instantiating it from the data
+    #     synthetic_question.source_question = source_question
+    #     # Set the updated SyntheticRelQuestion back to the original response object
+    #     setattr(generated_questions, field_name, synthetic_question)
+
+    # return [
+    #     q
+    #     for q in [
+    #         generated_questions.question_1,
+    #         generated_questions.question_2,
+    #         generated_questions.question_3,
+    #     ]
+    # ]
 
 
-async def generate_questions(input_file, output_file, model, max_questions):
+async def generate_questions(
+    input_file, output_file, model, max_questions, questions_per_source
+):
     questions = get_titles_from_fq(input_file)
 
     print(f"len of questions: {len(questions)}")
@@ -138,7 +152,8 @@ async def generate_questions(input_file, output_file, model, max_questions):
     questions = questions[:max_questions]
 
     tasks = [
-        generate_questions_from_question(question, model) for question in questions
+        generate_questions_from_question(question, model, questions_per_source)
+        for question in questions
     ]
     results = await asyncio.gather(*tasks)
     generated_questions = [item for sublist in results for item in sublist]
@@ -167,10 +182,11 @@ if __name__ == "__main__":
         "--output_file",
         "-o",
         type=str,
-        default=get_data_path() / "fq" / "other" / "from_related.jsonl",
+        default=get_data_path() / "other" / "from_related.jsonl",
     )
     parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
     parser.add_argument("--n_max_questions", "-n", type=int, default=50)
+    parser.add_argument("--questions_per_source", "-q", type=int, default=5)
     args = parser.parse_args()
     asyncio.run(
         generate_questions(
@@ -178,5 +194,6 @@ if __name__ == "__main__":
             output_file=args.output_file,
             model=args.model,
             max_questions=args.n_max_questions,
+            questions_per_source=args.questions_per_source,
         )
     )
