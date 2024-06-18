@@ -4,7 +4,7 @@ In this project, we test the accuracy of our forecaster by using both recently r
 
 For example
 
-- [Already Resolved] (scripts/pipeline/questions_cleaned_formatted_20240301_20240601.jsonl)
+- [Already Resolved](scripts/pipeline/questions_cleaned_formatted_20240301_20240601.jsonl)
 scripts/pipeline/questions_cleaned_formatted_20240301_20240601.jsonl
 
 
