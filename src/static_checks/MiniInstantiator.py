@@ -923,45 +923,49 @@ class Consequence(MiniInstantiator):
         cons_P: ForecastingQuestion
 
     def __init__(self):
-        
         self.consequence_type_prompt = (
             "You are a helpful assistant. I want you to assist me with a task. \n"
-            "I want you to help me classify a forecasting question P with a Yes/No answer "
-            "into one or more of the following categories: quantity, time, misc or none. "
-            "We will do this depending on which questions can be found to be a consequence of P. "
-            "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q. "
-            "Quantity:\n"
-            "A question Q can be a consequence of P due to quantity monotonicity. Example: "
+            "We need to classify a forecasting question P with a Yes/No answer "
+            "into one or more of the following categories: (1) _quantity_, (2) _time_, (3) _misc_ or (4) _none_. "
+            "We will do this depending on which questions can be found to be logical consequences of P. "
+            "A question Q is a _consequence_ of P if a positive answer to P implies a positive answer to Q. "
+            "*Quantity:*\n"
+            "A question Q can be a consequence of P due to _quantity monotonicity_. Example: "
             "P: Will China win more than 10 gold medals in the 2026 Winter Olympics? "
             "Q: Will China win more than 8 medals in the 2026 Winter Olympics? "
-            "We will classify P as quantity monotonicity if we can find a question Q that is a consequence of P "
+            "We will classify P as _quantity-monotonic_ if we can find a question Q that is a consequence of P "
             "due to quantity monotonicity. "
             "Examples:\n"
-            "P: Will the republican nomine get more than 60\% of the vote in the 2028 presidential election? "
+            "P: Will the Republican nominee get more than 60\% of the vote in the 2028 presidential election? "
             "P: Will the record for 100m sprint will be lower than 9.30 seconds by 2030"
-            "Time:\n"
-            "A question Q can be a consequence of P due to time monotonicity. Example: "
+            "*Time:*\n"
+            "A question Q can be a consequence of P due to _time monotonicity_. Example: "
             "P: Will the price of Bitcoin reach a peak of 100k at any point before 2027? "
             "Q: Will the price of Bitcoin reach a peak of 100k at any point before 2028? "
-            "We will classify P as time monotonicity if we can find a question Q that is a consequence of P "
+            "We will classify P as _time-monotonic_ if we can find a question Q that is a consequence of P "
             "due to time monotonicity. "
             "Examples:\n"
             "P: Will a Swiss person set foot on Mars before 2085? "
             "P: Will Catalonia have a referendum on independence before 2030?"
-            "Misc:\n"
+            "*Misc:*\n"
             "A question Q can be a consequence of P due to other reasons. Example: "
             "P: Will a Swiss person set foot on Mars before 2085? "
-            "Q: Will any human set foot on Mars before 2085? "
-            "We will classify P as misc if we can find a question Q that is a consequence of P "
-            "due to other reasons. "
-            "None:\n"
+            "Q: Will any human set foot on Mars before 2085?\n "
+            "P: Will solar energy account for 50\% or more of the US energy production in 2030?\n"
+            "Q: Will renewables (solar, wind, hydro) account for 50\% or more of the US energy production in 2030?\n"
+            "We will classify P as _misc_ if we can find a question Q that is a consequence of P "
+            "due to other reasons, including but not limited to:\n"
+            "(i)  Generalization of subjects: If P involves a specific subject or group, Q can generalize this to a broader category, as in the Swiss person -> any human example above.\n"
+            "(ii) Inclusion of additional scenarios: If P involves a specific scenario, Q can include this scenario, as in the renewables -> solar, wind, hydro example above.\n"
+            "*None:*\n"
             "Finally there are cases where it is not clear if there is a consequence between the two questions. "
-            "Classify P if its hard to find a question Q that is a consequence of P. "
+            "Classify P as _none_ if it is not clear how to find a question Q that is a straightforward consequence of P. "
             "Examples:\n"
-            "P: Will the nobel prize for literature be awarded to an American in 2028? "
-            "P: Will Rihanna release a new album in 2025?"
+            "P: Will Rihanna release a new album in 2025?\n"
+            "P: Will there be a snowstorm in Toronto on New Year's Eve?\n"
+            "P: Will Germany win or draw against France in their next World Cup match?\n"
             "\n\n"
-            "Classify the following question into one or more of the categories: quantity, time, misc or none. "
+            "Your task now is to classify the following question into one or more of the categories: quantity, time, misc or none. "
             "P: {P}"
         )
 
@@ -1133,7 +1137,7 @@ class Consequence(MiniInstantiator):
             else:
                 instantiation_results.append(await self._instantiate(p, "misc"))
         return instantiation_results
-    
+
     def instantiate_sync(
         self,
         base_sentences: dict[str, ForecastingQuestion],
@@ -1153,18 +1157,20 @@ class Consequence(MiniInstantiator):
             else:
                 instantiation_results.append(self._instantiate_sync(p, "misc"))
         return instantiation_results
-    
+
     async def _classify_consequence(self, p: str) -> "Self.ClassifyOutput":
         prompt = self.consequence_type_prompt.format(P=p)
         consequence_types = await answer(prompt, response_model=self.ClassifyOutput)
         return consequence_types
-    
+
     def _classify_consequence_sync(self, p: str) -> "Self.ClassifyOutput":
         prompt = self.consequence_type_prompt.format(P=p)
         consequence_types = answer_sync(prompt, response_model=self.ClassifyOutput)
         return consequence_types
-    
-    async def _instantiate(self, p: ForecastingQuestion, consequence_type: str) -> "Self.OutputFormat":
+
+    async def _instantiate(
+        self, p: ForecastingQuestion, consequence_type: str
+    ) -> "Self.OutputFormat":
         if consequence_type == "quantity":
             prompt = self.quantity_instantiator_prompt.format(
                 title=p.title,
@@ -1183,9 +1189,13 @@ class Consequence(MiniInstantiator):
                 body=p.body,
                 resolution_date=p.resolution_date,
             )
-        return self._get_output_format(p, await answer(prompt, response_model=self.InstantiateOutput))
-    
-    def _instantiate_sync(self, p: ForecastingQuestion, consequence_type: str) -> "Self.OutputFormat":
+        return self._get_output_format(
+            p, await answer(prompt, response_model=self.InstantiateOutput)
+        )
+
+    def _instantiate_sync(
+        self, p: ForecastingQuestion, consequence_type: str
+    ) -> "Self.OutputFormat":
         if consequence_type == "quantity":
             prompt = self.quantity_instantiator_prompt.format(
                 title=p.title,
@@ -1204,9 +1214,13 @@ class Consequence(MiniInstantiator):
                 body=p.body,
                 resolution_date=p.resolution_date,
             )
-        return self._get_output_format(p, answer_sync(prompt, response_model=self.InstantiateOutput))
-    
-    def _get_output_format(self, p: ForecastingQuestion, instantiate_output: "Self.InstantiateOutput") -> "Self.OutputFormat":
+        return self._get_output_format(
+            p, answer_sync(prompt, response_model=self.InstantiateOutput)
+        )
+
+    def _get_output_format(
+        self, p: ForecastingQuestion, instantiate_output: "Self.InstantiateOutput"
+    ) -> "Self.OutputFormat":
         forecasting_question = ForecastingQuestion(
             title=instantiate_output.title,
             body=instantiate_output.body,
@@ -1215,6 +1229,6 @@ class Consequence(MiniInstantiator):
             metadata={**p.metadata, "consequence_type": "quantity"},
         )
         return self.OutputFormat(cons_P=forecasting_question)
-    
+
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
