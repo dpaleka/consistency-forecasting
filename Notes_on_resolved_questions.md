@@ -4,13 +4,12 @@ In this project, we test the accuracy of our forecaster by using both recently r
 
 For example
 
-- [Already Resolved](scripts/pipeline/questions_cleaned_formatted_20240301_20240601.jsonl)
-scripts/pipeline/questions_cleaned_formatted_20240301_20240601.jsonl
+- [Already Resolved](scripts/pipeline/metaculus/questions_cleaned_formatted_20240301_20240601.jsonl)
+scripts/pipeline/metaculus/questions_cleaned_formatted_20240301_20240601.jsonl
 
 
-- [Resolves Soon](scripts/pipeline/questions_cleaned_formatted_20240701_20241001.jsonl)
-scripts/pipeline/questions_cleaned_formatted_20240701_20241001.jsonl
-
+- [Resolves Soon](scripts/pipeline/metacluls/questions_cleaned_formatted_20240701_20241001.jsonl)
+scripts/pipeline/metacluls/questions_cleaned_formatted_20240701_20241001.jsonl
 
 Questions that already resolved imply a resolution date (in our case 3 months) in the past while those that resolve soon have an closing date in the near future (also 3 months).  To test the former, we already have the ground truths provided from the source we scraped from.  For the latter, we can wait for expiration to arrive and then a human judge can 'manually' resolve the questions.
 
