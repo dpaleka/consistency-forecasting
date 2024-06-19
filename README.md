@@ -98,7 +98,7 @@ It writes into `src/data/feedback/`.
 
 ## Entry points to the code
 
-- [`scripts/pipeline/scrape_questions.sh`](scripts/pipeline/scrape_questions.sh) runs pipeline to scrape metaculus for questions and stores them in `questions_cleaned_formatted.jsonl`.
+- [`scripts/pipeline/{DATASOURCE}/scrape_questions.sh`] runs pipeline to scrape the given DATASOURCE for questions and stores them in `{DATASOURCE}_cleaned_formatted.jsonl`.  By defalt the questions scraped will resolve in more than 30 days and less than 10 years.  To change this, adjust the arg params given to the {DATASOURCE}.py file.  For example ['scripts/pipeline/metaculus/scrape_questions.sh'](scripts/pipeline/metaculus/scrape_questions.sh) will retrieve data from metacluls.
 
 - [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions.
 
