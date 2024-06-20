@@ -1490,6 +1490,22 @@ class ConsequenceChecker(Checker):
         cons_P = await Consequence().instantiate(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        if answers["P"] <= answers["cons_P"]:
+            return answers, 0.0
+        else:
+            # _answers = {"P": answers["P"], "para_P": answers["cons_P"]}
+            answers["para_P"] = answers.pop("cons_P")
+            p, v = ParaphraseChecker().max_min_arbitrage(answers, **kwargs)
+            p["cons_P"] = p.pop("para_P")
+            return p, v
+
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
 
