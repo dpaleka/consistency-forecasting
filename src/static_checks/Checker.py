@@ -1407,7 +1407,12 @@ class CondChecker(Checker):
         q = 1 / (1 + b / a)
         r = 1 / (1 + b * a)
 
-        v = -2 * np.log(np.sqrt(p * q * r) + np.sqrt((1 - p * q) * (1 - r)))
+        v = -2 * np.log(
+            np.sqrt(answers["P"] * answers["Q_given_P"] * answers["P_and_Q"])
+            + np.sqrt(
+                (1 - answers["P"] * answers["Q_given_P"]) * (1 - answers["P_and_Q"])
+            )
+        )
 
         return {"P": p, "Q_given_P": q, "P_and_Q": r}, v
 
