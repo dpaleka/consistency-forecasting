@@ -565,16 +565,8 @@ class Checker(ABC):
         best_max = max(maxes, key=lambda x: x["arbitrage_max"])
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
-    def arbitrage_violation(
-        self,
-        answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
-        initial_guess: list[float] | str | None = None,
-        methods: tuple[str] = ("shgo", "differential_evolution"),
-    ) -> float:
-        return self.max_min_arbitrage(
-            answers, scoring=scoring, initial_guess=initial_guess, methods=methods
-        )[1]
+    def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
+        return self.max_min_arbitrage(answers, **kwargs)[1]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
