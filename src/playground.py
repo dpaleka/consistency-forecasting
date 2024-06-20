@@ -37,6 +37,8 @@ checkers = {
 for k,v in checkers.items():
     checker = v['checker']
     answers = v['answers']
+    if k != 'cond':
+        continue
     print('Checker:', k)
     time0 = time()
     result_shgo = checker.max_min_arbitrage(answers, methods = ('shgo',))

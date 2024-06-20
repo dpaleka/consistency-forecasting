@@ -1385,6 +1385,32 @@ class CondChecker(Checker):
             P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
         )
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+
+        a = np.sqrt(
+            (1 - answers["P"] * answers["Q_given_P"])
+            / (answers["P"] * (1 - answers["Q_given_P"]))
+        )
+        b = np.sqrt(
+            (1 - answers["Q_given_P"])
+            * (1 - answers["P_and_Q"])
+            / (answers["Q_given_P"] * answers["P_and_Q"])
+        )
+
+        p = (1 + b / a) / (1 + b * a)
+        q = 1 / (1 + b / a)
+        r = 1 / (1 + b * a)
+
+        v = -2 * np.log(np.sqrt(p * q * r) + np.sqrt((1 - p * q) * (1 - r)))
+
+        return {"P": p, "Q_given_P": q, "P_and_Q": r}, v
+
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
         denom = P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
