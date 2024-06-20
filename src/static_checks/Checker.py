@@ -1336,7 +1336,9 @@ class CondChecker(Checker):
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
-        denom = P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
+        denom = P * Q_given_P * (
+            Q_given_P * (1 - P) + P * (1 - Q_given_P)
+        ) + P_and_Q * (1 - P_and_Q)
         denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P - P_and_Q) / denom
         return v
@@ -1634,9 +1636,18 @@ class CondCondChecker(Checker):
             answers["R_given_P_and_Q"],
             answers["P_and_Q_and_R"],
         )
-        denom = P * Q_given_P * R_given_P_and_Q * (
-            3 - (P + Q_given_P + R_given_P_and_Q)
-        ) + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        denom = (
+            P
+            * Q_given_P
+            * R_given_P_and_Q
+            * (
+                P * Q_given_P
+                + Q_given_P * R_given_P_and_Q
+                + P * Q_given_P * R_given_P_and_Q
+            )
+            - 3 * (P * Q_given_P * R_given_P_and_Q) ** 2
+            + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        )
         denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P * R_given_P_and_Q - P_and_Q_and_R) / denom
         return v
@@ -1990,6 +2001,7 @@ checker_classes = [
 
 
 def choose_checkers(relevant_checks: list[str], tuple_dir: Path) -> dict[str, Checker]:
+    print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
 
