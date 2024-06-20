@@ -37,7 +37,7 @@ checkers = {
 for k,v in checkers.items():
     checker = v['checker']
     answers = v['answers']
-    if k != 'cond':
+    if k != 'cons':
         continue
     print('Checker:', k)
     time0 = time()
