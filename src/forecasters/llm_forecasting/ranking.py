@@ -1,5 +1,7 @@
 # Standard library imports
+import time
 import asyncio
+import concurrent.futures
 from datetime import datetime
 import logging
 
@@ -342,6 +344,19 @@ def get_question_article_embeddings(articles, question, background):
         "a_embeddings": a_embeddings,
     }
 
+async def async_get_articles(search_queries_gnews, search_queries_nc, date_range, num_articles, length_threshold):
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        return await loop.run_in_executor(
+            pool,
+            information_retrieval.get_articles_from_all_sources,
+            search_queries_gnews,
+            search_queries_nc,
+            date_range,
+            num_articles,
+            length_threshold
+        )
+
 
 async def retrieve_summarize_and_rank_articles(
     question,
@@ -402,13 +417,7 @@ async def retrieve_summarize_and_rank_articles(
     logger.info(f"Search queries for GNews: {search_queries_list_gnews}")
     # Step 2: Retrieve articles using the search query terms
     articles = []
-    articles = information_retrieval.get_articles_from_all_sources(
-        search_queries_list_gnews,
-        search_queries_list_nc,
-        date_range,
-        num_articles=config["NUM_ARTICLES_PER_QUERY"],
-        length_threshold=200,
-    )
+    articles = await async_get_articles(search_queries_list_gnews, search_queries_list_nc, date_range, config["NUM_ARTICLES_PER_QUERY"], 200)
     articles = information_retrieval.deduplicate_articles(articles)
     articles_unfiltered = articles.copy()
     # Step 2.5 (optional): filter articles via quick embedding model

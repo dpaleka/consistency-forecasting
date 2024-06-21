@@ -1,3 +1,4 @@
+import time
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion
 from typing import Optional
@@ -147,7 +148,6 @@ class AdvancedForecaster(Forecaster):
             subtract_days_from_date(today_date, retrieval_interval_length),
             today_date,
         )
-
         (
             ranked_articles,
             all_articles,
