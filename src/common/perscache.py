@@ -58,6 +58,10 @@ from .datatypes import (
     BodyAndDate,
     ResolutionDate,
     RelevanceResult,
+    SyntheticRelQuestion,
+    SyntheticTagQuestion,
+    QuestionGenerationResponse,
+    QuestionGenerationResponse3,
 )
 
 perscache_supported_models = {
@@ -72,6 +76,10 @@ perscache_supported_models = {
     "BodyAndDate": BodyAndDate,
     "ResolutionDate": ResolutionDate,
     "RelevanceResult": RelevanceResult,
+    "SyntheticRelQuestion": SyntheticRelQuestion,
+    "SyntheticTagQuestion": SyntheticTagQuestion,
+    "QuestionGenerationResponse": QuestionGenerationResponse,
+    "QuestionGenerationResponse3": QuestionGenerationResponse3,
 }
 
 # Note: we cannot cache dynamically created BaseModels as in MiniInstantiator.py.

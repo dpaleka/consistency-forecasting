@@ -187,7 +187,6 @@ class ResolutionDate(BaseModel):
     resolution_date: datetime
 
 
-### end Pydantic models ###
 class SyntheticTagQuestion(BaseModel):
     title: str
     category: str
@@ -202,6 +201,18 @@ class SyntheticRelQuestion(BaseModel):
     feedback: Optional[str] = None
     fixed: Optional[bool] = False
 
+
+class QuestionGenerationResponse(BaseModel):
+    questions: list[SyntheticRelQuestion]
+
+
+class QuestionGenerationResponse3(BaseModel):
+    question_1: SyntheticTagQuestion
+    question_2: SyntheticTagQuestion
+    question_3: SyntheticTagQuestion
+
+
+### end Pydantic models ###
 
 ### Other useful classes
 

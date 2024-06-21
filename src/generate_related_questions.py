@@ -3,11 +3,10 @@ import asyncio
 import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
-from common.datatypes import SyntheticRelQuestion
+from common.datatypes import QuestionGenerationResponse
 from question_generators.utils import deduplicate
 import json
 from common.llm_utils import answer
-from pydantic import BaseModel
 
 
 source_questions = [
@@ -27,24 +26,46 @@ Your task is to generate {num_questions} new related questions that are logicall
 Each new question should be suitable for probabilistic evaluation and should logically combine with the source question in a meaningful way. 
 
 Guidelines:
-- The new questions should explore related scenarios or consequences of the source question.
+- The new questions should explore related scenarios, alternate outcomes, consequences and prerequisites of the source question.
 - Consider alternate outcomes, timelines, or deeper implications that are still connected to the theme of the source question.
 - Each question should be binary and can be answered with a probability between 0 and 1. 
 
+The source question will optionally include a body (detailed resolution criteria). If the source question has a body, use it to inform the generation of related questions.
+You still need to generate only single sentences, not detailed resolution criteria.
 
-Examples:
+Example 1:
+---
 Source question: Will Europa be the first place humanity will discover extraterrestrial life, if it is discovered before 2045? 
-Related question: Will we find life on Mars by 2050?
-Related question: Will a sample-return mission from Europa confirm the presence of life by 2050?
-Related question: Will life be discovered on Enceladus before 2045?
+Source question body: This question will resolve as Yes if humanity discovers convincing evidence of life on Europa before January 1, 2045 and does so before detecting extra terrestrial life anywhere else in the universe. If extraterrestrial life is found convincingly elsewhere prior to on Europa, this question will resolve as No. If no extraterrestrial life is found before 2045, this question will be Annulled.
+Note: extraterrestrial life must be (a) living currently and (b) highly unlikely to be a result of contamination by Earth spacecraft. This leaves open the possibility of life transported from Earth via other non-human-engineered means.
 
+=> Related questions:
+- Will we find life on Mars by 2050?
+- Will a sample-return mission from Europa confirm the presence of life by 2050?
+- Will life be discovered on Enceladus before 2045?
+---
+
+
+Example 2 (without body):
+---
 Source question: Will North Korea engage in a significant diplomatic negotiation with a Western country by 2025?
-Related question: Will North Korea significantly reform its legal system by 2030?
-Related question: Will North Korea join an international climate change agreement by 2030?
-Related question: Will North Korea open its borders for international tourism by 2030?
-----
+
+=> Related questions:
+- Will North Korea significantly reform its legal system by 2030?
+- Will North Korea join an international climate change agreement by 2030?
+- Will North Korea open its borders for international tourism by 2030?
+---
+
+Now generate {num_questions} related questions for the source question:
 
 Source question: {source_question}
+{body_prompt}
+
+=> Related questions:
+"""
+
+body_prompt = """
+Source question body: {source_body}
 """
 
 
@@ -52,10 +73,6 @@ Source question: {source_question}
 #     question_1: SyntheticTagQuestion
 #     question_2: SyntheticTagQuestion
 #     question_3: SyntheticTagQuestion
-
-
-class QuestionGenerationResponse(BaseModel):
-    questions: list[SyntheticRelQuestion]
 
 
 def load_questions_from_jsonl(file_path):
@@ -100,10 +117,10 @@ async def generate_questions_from_question(
     source_question, model, num_questions, source_body=None
 ):
     question_prompt = prompt.format(
-        source_question=source_question, num_questions=num_questions
+        source_question=source_question,
+        num_questions=num_questions,
+        body_prompt=body_prompt.format(source_body=source_body) if source_body else "",
     )
-    if source_body:
-        question_prompt += f"Source body: {source_body}\n"
 
     generated_questions = await answer(
         prompt=question_prompt,
