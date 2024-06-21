@@ -3,12 +3,11 @@ import asyncio
 import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
-from common.datatypes import SyntheticTagQuestion
+from common.datatypes import QuestionGenerationResponse3
 from question_generators.utils import deduplicate
 import json
 from common.llm_utils import answer
 import random
-from pydantic import BaseModel
 
 
 all_categories = [
@@ -248,12 +247,6 @@ Tags: {tags}
 """
 
 
-class QuestionGenerationResponse(BaseModel):
-    question_1: SyntheticTagQuestion
-    question_2: SyntheticTagQuestion
-    question_3: SyntheticTagQuestion
-
-
 def load_questions_from_jsonl(file_path):
     if not os.path.exists(file_path):
         return {}
@@ -283,7 +276,9 @@ def get_example_question(initial_questions, questions):
         return random.choice(questions)
 
 
-async def generate_questions_for_category(initial_questions, questions_dict, model, categories = None):
+async def generate_questions_for_category(
+    initial_questions, questions_dict, model, categories=None
+):
     if categories is None:
         categories = all_categories
     category = random.choice(categories)
@@ -291,7 +286,11 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
 
     example_1, example_2 = random.sample(initial_questions, 2)
 
-    if category in questions_dict and len(questions_dict[category]) >= 2 and len(categories) > 1:
+    if (
+        category in questions_dict
+        and len(questions_dict[category]) >= 2
+        and len(categories) > 1
+    ):
         example_5, example_6 = random.sample(questions_dict[category], 2)
         other_categories = [cat for cat in questions_dict if cat != category]
         cat1, cat2 = random.sample(other_categories, 2)
@@ -326,7 +325,7 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
     generated_questions = await answer(
         prompt=question_prompt,
         preface=None,
-        response_model=QuestionGenerationResponse,
+        response_model=QuestionGenerationResponse3,
         model=model,
     )
 
@@ -340,7 +339,7 @@ async def generate_questions_for_category(initial_questions, questions_dict, mod
     ]
 
 
-async def generate_questions(file_path, model, n=3, categories = None):
+async def generate_questions(file_path, model, n=3, categories=None):
     questions = load_questions_from_jsonl(file_path)
 
     print(f"len of questions: {len(questions)}")
@@ -377,5 +376,10 @@ if __name__ == "__main__":
     parser.add_argument("--categories", "-c", type=str, nargs="+", default=None)
     args = parser.parse_args()
     asyncio.run(
-        generate_questions(file_path=args.file_path, model=args.model, n=args.n, categories=args.categories)
+        generate_questions(
+            file_path=args.file_path,
+            model=args.model,
+            n=args.n,
+            categories=args.categories,
+        )
     )
