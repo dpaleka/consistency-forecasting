@@ -80,23 +80,31 @@ def load_questions_from_jsonl(file_path):
     return questions_dict
 
 
-def get_titles_from_fq(file_path):
+def get_titles_from_fq(file_path, use_body=False):
     titles = []
     try:
         with open(file_path, "r", encoding="utf-8") as file:
             for line in file:
                 data = json.loads(line)
                 if "title" in data:
-                    titles.append(data["title"])
+                    if use_body:
+                        titles.append({"title": data["title"], "body": data["body"]})
+                    else:
+                        titles.append({"title": data["title"]})
     except Exception as e:
         print(f"An error occurred: {e}")
     return titles
 
 
-async def generate_questions_from_question(source_question, model, num_questions):
+async def generate_questions_from_question(
+    source_question, model, num_questions, source_body=None
+):
     question_prompt = prompt.format(
         source_question=source_question, num_questions=num_questions
     )
+    if source_body:
+        question_prompt += f"Source body: {source_body}\n"
+
     generated_questions = await answer(
         prompt=question_prompt,
         preface=None,
@@ -140,9 +148,9 @@ async def generate_questions_from_question(source_question, model, num_questions
 
 
 async def generate_questions(
-    input_file, output_file, model, max_questions, questions_per_source
+    input_file, output_file, model, max_questions, questions_per_source, use_body
 ):
-    questions = get_titles_from_fq(input_file)
+    questions = get_titles_from_fq(input_file, use_body)
 
     print(f"len of questions: {len(questions)}")
 
@@ -152,7 +160,12 @@ async def generate_questions(
     questions = questions[:max_questions]
 
     tasks = [
-        generate_questions_from_question(question, model, questions_per_source)
+        generate_questions_from_question(
+            question["title"],
+            source_body=question["body"] if use_body else None,
+            model=model,
+            num_questions=questions_per_source,
+        )
         for question in questions
     ]
     results = await asyncio.gather(*tasks)
@@ -187,6 +200,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
     parser.add_argument("--n_max_questions", "-n", type=int, default=50)
     parser.add_argument("--questions_per_source", "-q", type=int, default=5)
+    parser.add_argument("--use_body", action="store_true")
     args = parser.parse_args()
     asyncio.run(
         generate_questions(
@@ -195,5 +209,6 @@ if __name__ == "__main__":
             model=args.model,
             max_questions=args.n_max_questions,
             questions_per_source=args.questions_per_source,
+            use_body=args.use_body,
         )
     )
