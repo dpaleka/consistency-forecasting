@@ -4,7 +4,7 @@
 # %%
 import os
 import sys
-from typing import Coroutine
+from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
@@ -48,6 +48,9 @@ env_vars = dotenv_values(env_path)
 KEYS = [k for k in env_vars.keys() if "KEY" in k or "TOKEN" in k]
 override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
+
+max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
+global_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
@@ -641,8 +644,8 @@ def prepare_messages_alt(
 
 async def answer(
     prompt: str,
-    preface: str | None = None,
-    examples: list[Example] | None = None,
+    preface: Optional[str] = None,
+    examples: Optional[List[Example]] = None,
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
@@ -656,7 +659,9 @@ async def answer(
         "response_model": PlainText,
     }
     options = default_options | kwargs  # override defaults with kwargs
-    return await query_api_chat(messages=messages, **options)
+    
+    async with global_semaphore:
+        return await query_api_chat(messages=messages, **options)
 
 
 def answer_sync(
@@ -735,13 +740,11 @@ async def parallelized_call(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
     )
 
-    sem = asyncio.Semaphore(max_concurrent_queries)
-
     async def call_func(sem, func, datapoint):
         async with sem:
             return await func(datapoint)
 
-    tasks = [call_func(sem, func, d) for d in data]
+    tasks = [call_func(global_semaphore, func, d) for d in data]
     return await asyncio.gather(*tasks)
 
 
