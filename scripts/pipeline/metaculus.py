@@ -2,6 +2,7 @@ import requests
 import json
 from bs4 import BeautifulSoup
 import argparse
+import datetime as dt
 
 
 def fetch_resolution_criteria(question_url):
@@ -70,6 +71,27 @@ def fetch_live_questions_with_dates(
             # Filter out non-binary questions
             if question_type != "binary":
                 continue
+
+            # only include resolution times either in range or expires past 30 days and within 10 years
+            resolution_date = question.get("resolve_time")
+            if resolution_date:
+                # Convert resolution_date to datetime object
+                resolution_date = dt.datetime.strptime(
+                    resolution_date, "%Y-%m-%dT%H:%M:%SZ"
+                )  # Adjust the format based on actual date format
+            else:
+                continue
+                # Check if resolution_date is between 30 days and 10 years from now
+
+            if (not start_date) and (not end_date):
+                now = dt.datetime.now()
+                if (
+                    not (now + dt.timedelta(days=30))
+                    <= resolution_date
+                    <= (now + dt.timedelta(days=365 * 10))
+                ):
+                    continue
+
             question_info = {
                 "id": question.get("id"),
                 "title": question.get("title"),
@@ -85,7 +107,9 @@ def fetch_live_questions_with_dates(
                 "metadata": {
                     "topics": question.get(
                         "tags", []
-                    )  # Assuming 'tags' can be used as topics
+                    ),  # Assuming 'tags' can be used as topics
+                    "api_url": f"https://www.metaculus.com/api2/questions/{question.get('id')}",
+                    "market_prob": None,
                 },
                 "resolution": question.get("resolution"),
             }

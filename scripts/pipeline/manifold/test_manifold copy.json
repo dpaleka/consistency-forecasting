@@ -1,0 +1,41 @@
+[
+    {
+        "id": "iwO42BdEPLN3c9zXrKU7",
+        "title": "Will there be a negative US CPI reading this year?",
+        "body": "N/A",
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T22:56:45Z",
+        "url": "https://manifold.markets/w0lph/will-there-be-a-negative-us-cpi-rea",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": "xAfZ6xjNOXbHlEth53Dh",
+        "title": "Will AAPL close higher at the end of the month of May than its start of month opening price?",
+        "body": "N/A",
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T08:58:06Z",
+        "url": "https://manifold.markets/riskoptimization/will-aapl-close-higher-at-the-end-o",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": true
+    },
+    {
+        "id": "s4Sqd19CRHOMk7QyaSc7",
+        "title": "Will the NIKKEI 225 close on May 31st higher than its previous day close?",
+        "body": "N/A",
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T07:47:56Z",
+        "url": "https://manifold.markets/riskoptimization/will-the-nikkei-225-close-on-may-31",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": true
+    }
+]

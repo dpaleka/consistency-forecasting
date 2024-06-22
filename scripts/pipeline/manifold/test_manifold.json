@@ -1,0 +1,82 @@
+[
+    {
+        "id": "iwO42BdEPLN3c9zXrKU7",
+        "title": "Will there be a negative US CPI reading this year?",
+        "body": {
+            "resolution_criteria": "nini",
+            "background_info": "Manifold is a social prediction game. Bet on news, politics, tech, & AI with play money. Or create your own prediction market."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T22:56:45Z",
+        "url": "https://manifold.markets/w0lph/will-there-be-a-negative-us-cpi-rea",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": "xAfZ6xjNOXbHlEth53Dh",
+        "title": "Will AAPL close higher at the end of the month of May than its start of month opening price?",
+        "body": {
+            "resolution_criteria": "nini",
+            "background_info": "Resolved YES. "
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T08:58:06Z",
+        "url": "https://manifold.markets/riskoptimization/will-aapl-close-higher-at-the-end-o",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": true
+    },
+    {
+        "id": "s4Sqd19CRHOMk7QyaSc7",
+        "title": "Will the NIKKEI 225 close on May 31st higher than its previous day close?",
+        "body": {
+            "resolution_criteria": "nini",
+            "background_info": "Resolved YES. "
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-05-31T07:47:56Z",
+        "url": "https://manifold.markets/riskoptimization/will-the-nikkei-225-close-on-may-31",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": true
+    },
+    {
+        "id": "42pfwtzd5e",
+        "title": "Will there be a decision issued in the NJ vs Norcross lawsuit by the end of 2024?",
+        "body": {
+            "resolution_criteria": "nini",
+            "background_info": "50% chance. Resolves NO if dismissed, dropped, or still in process.\n\nResolves YES if there is a settlement or judgement for either side.\n\nhttps://www.politico.com/news/2024/06/17/george-norcross-indictment-new-jersey-corruption-00163700\n\n[image]"
+        },
+        "question_type": "binary",
+        "resolution_date": "2025-01-01T04:59:00Z",
+        "url": "https://manifold.markets/strutheo/will-there-be-a-decision-issued-in-3k0p4crwxz",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    },
+    {
+        "id": "02nt5200z7",
+        "title": "Will I be laid off before the start of 2025?",
+        "body": {
+            "resolution_criteria": "nini",
+            "background_info": "26% chance. I'm a software engineer at a no-name mid-size startup. I've been working at this job for ~18 months now but have been mailing it in for the last 6 months, mostly because I'm somewhat burnt out, and don't particularly care for the product or my work. \n\nThat was fine when the company was doing well, but revenues are down and management is demanding more of our small dev team. Try as I might though, I just can't bring myself to summon any motivation to do my best work here daily. Since interviews are hard to come by, and my nest egg is rather thin, I am sticking it out and going to attempt to do the minimum amount of work possible to not get fired at least until the end of the year.\n\nI'm scared that this continued half-ass won't work though, because management definitely know it's a buyer's market and are being more assertive and management-y and demanding. A few low-performing teammates have been let go already. Will I avoid this fate and manage to do enough to stay at the job until at least 1st Jan 2025?\n\npoints in favor of NO:\n\nmy team (core product team) is very small (5 devs) and codebase is legacy so hiring and onboarding a new developer is very costly. especially for the upcoming cycle which is peak business cycle\n\nbusiness has had unusually high turnover to start the year and company mood is kinda low so i doubt management would want to exacerbate that\n\ni still have not/never received any direct concerns about my work, so it's all in my head at the moment\n\npoints in favor of YES:\n\nbeen mailing it for a while and its obvious to anyone who cares to see, so i might be a bit on thin ice\n\neasy to get new hires\n\nno PIP policy, just straight canning\n\nI'll resolve this NO if I'm still formally employed at this job at the start of the new year, and YES if i'm terminated before then. N/A for any ambiguous circumstances, like i resign etc\n\nmy incentives are obviously strongly to keep the job, but I will buy and sell yes/no shares randomly"
+        },
+        "question_type": "binary",
+        "resolution_date": "2025-01-01T20:59:00Z",
+        "url": "https://manifold.markets/dlin007/will-i-be-laid-off-before-the-start",
+        "data_source": "manifold",
+        "metadata": {
+            "topics": []
+        },
+        "resolution": null
+    }
+]
