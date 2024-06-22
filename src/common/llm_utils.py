@@ -3,6 +3,7 @@
 
 # %%
 import os
+import sys
 from typing import Coroutine
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
@@ -294,7 +295,6 @@ def is_model_name_valid(model: str) -> bool:
         return False
 
 
-
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     provider = get_provider(model)
     if provider == "togetherai" and "nitro" not in model:
@@ -302,7 +302,9 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
             "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
         )
 
-    use_openrouter = os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
+    use_openrouter = (
+        os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
+    )
     if use_openrouter:
         print(
             "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
@@ -708,6 +710,7 @@ async def parallelized_call(
     func: Coroutine,
     data: list[str],
     max_concurrent_queries: int = 100,
+    concurrent_queries_cap: int = sys.maxsize,
 ) -> list[any]:
     """
     Run async func in parallel on the given data.
@@ -725,6 +728,8 @@ async def parallelized_call(
     max_concurrent_queries = int(
         os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)
     )
+
+    max_concurrent_queries = min(max_concurrent_queries, concurrent_queries_cap)
 
     print(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"

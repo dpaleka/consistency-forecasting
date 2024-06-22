@@ -76,6 +76,13 @@ def scrape_manifold_markets(
                 "resolution": market.get("isResolved", None),
             }
 
+            market_info["metadata"][
+                "api_url"
+            ] = "https://api.manifold.markets/v0/slug/{}".format(
+                market_info["url"].spilt("/")[-1]
+            )
+            market_info["metadata"]["market_prob"] = None
+
             if not market_info["resolution"]:
                 market_info["resolution"] = None
 
