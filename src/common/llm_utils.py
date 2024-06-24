@@ -422,7 +422,7 @@ async def query_api_chat(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -460,7 +460,7 @@ async def query_api_chat_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -506,7 +506,7 @@ def query_api_chat_sync(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -545,7 +545,7 @@ def query_api_chat_sync_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -671,7 +671,7 @@ def answer_sync(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
         "temperature": 0.0,
         "response_model": PlainText,
     } | kwargs

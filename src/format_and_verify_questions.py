@@ -279,7 +279,7 @@ if __name__ == "__main__":
         "--model",
         "-M",
         type=str,
-        default="gpt-4-0125-preview",
+        default="gpt-4o-2024-05-13",
         help="Model to use",
     )
     parser.add_argument(

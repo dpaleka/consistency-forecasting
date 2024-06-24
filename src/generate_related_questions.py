@@ -214,7 +214,7 @@ if __name__ == "__main__":
         type=str,
         default=get_data_path() / "other" / "from_related.jsonl",
     )
-    parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
+    parser.add_argument("--model", "-m", type=str, default="gpt-4o-2024-05-13")
     parser.add_argument("--n_max_questions", "-n", type=int, default=50)
     parser.add_argument("--questions_per_source", "-q", type=int, default=5)
     parser.add_argument("--use_body", action="store_true")
