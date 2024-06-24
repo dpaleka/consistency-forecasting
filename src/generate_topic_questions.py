@@ -371,7 +371,7 @@ if __name__ == "__main__":
         type=str,
         default=get_data_path() / "other" / "high-quality-questions-all-domains.jsonl",
     )
-    parser.add_argument("--model", "-m", type=str, default="gpt-4-0125-preview")
+    parser.add_argument("--model", "-m", type=str, default="gpt-4o-2024-05-13")
     parser.add_argument("--n", "-n", type=int, default=3)
     parser.add_argument("--categories", "-c", type=str, nargs="+", default=None)
     args = parser.parse_args()
