@@ -79,7 +79,7 @@ def scrape_manifold_markets(
             market_info["metadata"][
                 "api_url"
             ] = "https://api.manifold.markets/v0/slug/{}".format(
-                market_info["url"].spilt("/")[-1]
+                market_info["url"].split("/")[-1]
             )
             market_info["metadata"]["market_prob"] = None
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     parser.add_argument("-start", type=str, help="Start date in yyyymmdd format.")
     parser.add_argument("-end", type=str, help="End date in yyyymmdd format.")
     parser.add_argument(
-        "-pages", type=str, help="Max pages of 1000 entries to go through.", default=5
+        "-pages", type=str, help="Max pages of 1000 entries to go through.", default=10
     )
     parser.add_argument(
         "-num", type=int, help="Number of questions to fetch.", default=500
@@ -122,12 +122,13 @@ if __name__ == "__main__":
         data = scrape_manifold_markets(
             api_url, args.start, args.end, args.pages, args.num
         )
+
         print("total entries:", len(data))
         # Convert the data to JSON and print
 
         if args.start or args.end:
             with open(
-                "manifold{}_{}.json".format(args.start, args.end), "w"
+                "manifold_{}_{}.json".format(str(args.start), str(args.end)), "w"
             ) as json_file:
                 json.dump(data, json_file, indent=4)
 
