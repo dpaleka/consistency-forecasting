@@ -142,7 +142,9 @@ if __name__ == "__main__":
     )
     parser.add_argument("-start", type=str, help="Start date in yyyymmdd format.")
     parser.add_argument("-end", type=str, help="End date in yyyymmdd format.")
-    parser.add_argument("-num", type=int, help="Number of questions to fetch.")
+    parser.add_argument(
+        "-num", type=int, default=500, help="Number of questions to fetch."
+    )
     args = parser.parse_args()
 
     api_url = "https://www.metaculus.com/api2"

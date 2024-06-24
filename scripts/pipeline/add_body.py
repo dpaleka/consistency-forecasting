@@ -62,7 +62,6 @@ def update_questions_with_details(file_path, source):
     if source == "metaculus":
         fetch_question_details = fetch_question_details_metaculus
         use_async = 1
-        click_scraping = True
 
     elif source == "manifold":
         fetch_question_details = fetch_question_details_manifold
