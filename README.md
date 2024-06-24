@@ -101,10 +101,10 @@ It writes into `src/data/feedback/`.
 - `scripts/pipeline/{DATASOURCE}/scrape_questions.sh` runs pipeline to scrape the given DATASOURCE for questions and stores them in `{DATASOURCE}_cleaned_formatted.jsonl`.  By defalt the questions scraped will resolve in more than 30 days and less than 10 years.  To change this, adjust the arg params given to the {DATASOURCE}.py file.  For example [`scripts/pipeline/metaculus/scrape_questions.sh`](scripts/pipeline/metaculus/scrape_questions.sh) will retrieve data from metacluls.
 
 - [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions from topics.
-- 
+  
 - [`src/generate_related_questions.py`](src/generate_related_questions.py) Generates "raw" synthetic questions from source questions.
 
-- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) questions, optionally fills the rest of the fields for a ForecastingQuestion, and verifies basic sanity checks using a LLM call. If you want it to fill in the resolution criteria, use the `--fill_in_body` flag. *Read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
+- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
 
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions. Does not write anything.
 
