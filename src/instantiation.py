@@ -37,6 +37,7 @@ async def instantiate(
     n_write: int = -1,
     model: str = MODEL,
     model_relevance: str = MODEL_RELEVANCE,
+    seed: int = 42,
     **kwargs,
 ):
     """
@@ -61,6 +62,8 @@ async def instantiate(
             print(e)
             continue
     print(f"Loaded {len(bqs)} questions.")
+
+    random.seed(seed)
 
     possible_tuples = {}  # {i: list of i-tuples}
     i_set = {checker.num_base_questions for checker in checker_list.values()}
@@ -130,6 +133,11 @@ async def instantiate(
     default=TUPLES_PATH,
     help="Directory to read tuples from.",
 )
+@click.option(
+    "--seed",
+    default=42,
+    help="Seed for reproducibility. Controls random sampling, not necessarily any randomness in external model calls.",
+)
 def main(
     data_path,
     n_relevance,
@@ -138,6 +146,7 @@ def main(
     model_relevance,
     relevant_checks,
     tuple_dir,
+    seed,
 ):
     checkers = choose_checkers(relevant_checks, tuple_dir)
     asyncio.run(
@@ -148,6 +157,7 @@ def main(
             n_write=n_write,
             model=model_main,
             model_relevance=model_relevance,
+            seed=seed,
         )
     )
 
