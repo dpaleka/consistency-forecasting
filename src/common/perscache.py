@@ -46,44 +46,24 @@ from beartype.typing import Any, Callable, Iterable, Iterator, Optional, Type, U
 from icontract import require
 from pydantic import BaseModel
 
-from .datatypes import (
-    ForecastingQuestion,
-    ForecastingQuestion_stripped,
-    ForecastingQuestions,
-    PlainText,
-    Prob,
-    Prob_cot,
-    ValidationResult,
-    VerificationResult,
-    BodyAndDate,
-    ResolutionDate,
-    RelevanceResult,
-    SyntheticRelQuestion,
-    SyntheticTagQuestion,
-    QuestionGenerationResponse,
-    QuestionGenerationResponse3,
-)
+# Datatype section
+# The cached types are registered in the files that define them
+perscache_supported_models = {}
 
-perscache_supported_models = {
-    "PlainText": PlainText,
-    "Prob": Prob,
-    "Prob_cot": Prob_cot,
-    "ForecastingQuestion_stripped": ForecastingQuestion_stripped,
-    "ForecastingQuestion": ForecastingQuestion,
-    "ForecastingQuestions": ForecastingQuestions,
-    "ValidationResult": ValidationResult,
-    "VerificationResult": VerificationResult,
-    "BodyAndDate": BodyAndDate,
-    "ResolutionDate": ResolutionDate,
-    "RelevanceResult": RelevanceResult,
-    "SyntheticRelQuestion": SyntheticRelQuestion,
-    "SyntheticTagQuestion": SyntheticTagQuestion,
-    "QuestionGenerationResponse": QuestionGenerationResponse,
-    "QuestionGenerationResponse3": QuestionGenerationResponse3,
-}
 
-# Note: we cannot cache dynamically created BaseModels as in MiniInstantiator.py.
-# Use NO_CACHE if you're instantiating tuples directly using instructor.
+def register_model_for_cache(model_class: Type, model_name: Optional[str] = None):
+    if model_name is None:
+        model_name = model_class.__qualname__
+    perscache_supported_models[model_name] = model_class
+
+
+def register_models_for_cache(
+    model_classes: Iterable[Type], model_names: Optional[Iterable[str]] = None
+):
+    if model_names is None:
+        model_names = [None] * len(model_classes)
+    for model_class, model_name in zip(model_classes, model_names):
+        register_model_for_cache(model_class, model_name)
 
 
 # Logger stubs
@@ -100,7 +80,7 @@ class Serializer(ABC):
     extension: str = None
 
     def __repr__(self):
-        return f"<{self.__class__.__name__}(extension='{self.extension}')>"
+        return f"<{self.__class__.__qualname__}(extension='{self.extension}')>"
 
     @abstractmethod
     def dumps(self, data: Any) -> bytes:
@@ -154,9 +134,9 @@ class ResponseModelNotRegisteredError(NotImplementedError):
     def __init__(self, model_name):
         self.model_name = model_name
         super().__init__(
-            f"Response model not registered in {__file__}: {model_name}.\n"
-            "Note that caching dynamically created BaseModels, as in MiniInstantiator.py, is currently not supported.\n"
-            "Set NO_CACHE=True to use instructor LLM calls for dynamically created BaseModels."
+            f"Response model not registered: {model_name}.\n"
+            "Please register the model with register_model_for_cache.\n"
+            "Set NO_CACHE=True to use instructor LLM calls for dynamically created BaseModels that cannot be registered."
         )
         raise self
 
@@ -169,7 +149,7 @@ def pydantic_response_dumps(data: Any) -> bytes:
     ):
         # Serialize the 'value' field which is a Pydantic model
         model_data = {
-            "__class__": data["value"].__class__.__name__,
+            "__class__": data["value"].__class__.__qualname__,
             "data": data["value"].model_dump(mode="json"),
         }
         # Replace the original 'value' with its serialized form
@@ -182,9 +162,12 @@ def pydantic_response_dumps(data: Any) -> bytes:
     ):
         # Serialize the 'response_model' which is a class type
         # Assumption: it ends with something in known_models
-        if data["kwargs"]["response_model"].__name__ in perscache_supported_models:
-            data["kwargs"]["response_model"] = data["kwargs"]["response_model"].__name__
+        if data["kwargs"]["response_model"].__qualname__ in perscache_supported_models:
+            data["kwargs"]["response_model"] = data["kwargs"][
+                "response_model"
+            ].__qualname__
         else:
+            print("Qualname:", data["kwargs"]["response_model"].__qualname__)
             raise ResponseModelNotRegisteredError(data["kwargs"]["response_model"])
 
     elif (
@@ -196,13 +179,16 @@ def pydantic_response_dumps(data: Any) -> bytes:
         # Serialize the 'response_model' which is a class type
         # Assumption: it ends with something in known_models
         if (
-            data["bound_args"]["kwargs"]["response_model"].__name__
+            data["bound_args"]["kwargs"]["response_model"].__qualname__
             in perscache_supported_models
         ):
             data["bound_args"]["kwargs"]["response_model"] = data["bound_args"][
                 "kwargs"
-            ]["response_model"].__name__
+            ]["response_model"].__qualname__
         else:
+            print(
+                "Qualname:", data["bound_args"]["kwargs"]["response_model"].__qualname__
+            )
             raise ResponseModelNotRegisteredError(
                 data["bound_args"]["kwargs"]["response_model"]
             )
@@ -347,7 +333,7 @@ class FileStorage(Storage):
         self.max_size = max_size
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__}(location={self.location}, max_size={self.max_size})>"
+        return f"<{self.__class__.__qualname__}(location={self.location}, max_size={self.max_size})>"
 
     def read(self, path: Union[str, Path], deadline: dt.datetime) -> bytes:
         final_path = self.location / path
@@ -731,10 +717,10 @@ class Cache:
         arg_dict = inspect.signature(fn).bind(*args, **kwargs).arguments
         if ignore is not None:
             arg_dict = {k: v for k, v in arg_dict.items() if k not in ignore}
-        return hash_it(inspect.getsource(fn), type(serializer).__name__, arg_dict)
+        return hash_it(inspect.getsource(fn), type(serializer).__qualname__, arg_dict)
 
     def _get_filename(self, fn: Callable, key: str, serializer: Serializer) -> str:
-        return f"{fn.__name__}-{key}.{serializer.extension}"
+        return f"{fn.__qualname__}-{key}.{serializer.extension}"
 
 
 class _CachedFunction:
@@ -765,7 +751,7 @@ class _CachedFunction:
         return functools.update_wrapper(functools.partial(wrapper, fn), fn)
 
     def _non_async_wrapper(self, fn: Callable, *args, **kwargs):
-        debug("Getting cached result for function %s", fn.__name__)
+        debug("Getting cached result for function %s", fn.__qualname__)
         key = self.cache._get_hash(fn, args, kwargs, self.serializer, self.ignore)
         key = self.cache._get_filename(fn, key, self.serializer)
         try:
@@ -776,7 +762,7 @@ class _CachedFunction:
             )
             return self.value_wrapper.unwrap(wrapped_value, fn)
         except (FileNotFoundError, CacheExpired) as exception:
-            debug("Unable to get cached result for %s: %s", fn.__name__, exception)
+            debug("Unable to get cached result for %s: %s", fn.__qualname__, exception)
             value = fn(*args, **kwargs)
             if os.getenv("NO_WRITE_CACHE"):
                 return value
@@ -785,7 +771,7 @@ class _CachedFunction:
             return value
 
     async def _async_wrapper(self, fn: Callable, *args, **kwargs):
-        debug("Getting cached result for function %s", fn.__name__)
+        debug("Getting cached result for function %s", fn.__qualname__)
         key = self.cache._get_hash(fn, args, kwargs, self.serializer, self.ignore)
         key = self.cache._get_filename(fn, key, self.serializer)
         try:
@@ -796,7 +782,7 @@ class _CachedFunction:
             )
             return self.value_wrapper.unwrap(wrapped_value, fn)
         except (FileNotFoundError, CacheExpired) as exception:
-            debug("Unable to get cached result for %s: %s", fn.__name__, exception)
+            debug("Unable to get cached result for %s: %s", fn.__qualname__, exception)
             value = await fn(*args, **kwargs)
             if os.getenv("NO_WRITE_CACHE"):
                 return value
