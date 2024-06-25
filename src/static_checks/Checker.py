@@ -13,6 +13,7 @@ from scipy.optimize import (
     dual_annealing,
     shgo,
     brute,
+    root,
 )
 from pathlib import Path
 from itertools import product
@@ -407,15 +408,9 @@ class Checker(ABC):
                 score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
         return score
 
-    def min_arbitrage(
-        self,
-        answers: dict[str, Prob],
-        arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
-    ) -> float:
-        """Minimum arbitrage earned regardless of outcome, given forcaster answers
-        and arbitrageur_answers."""
-        x = answers.keys()
+    @property
+    def Omega(self):
+        x = self.TupleFormat.model_fields
         v = [True, False, None]
         outcomes = product(v, repeat=len(x))
 
@@ -425,6 +420,26 @@ class Checker(ABC):
             if self.check_exact(outcome_dict):
                 Omega.append(outcome_dict)
 
+        return Omega
+
+    def min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        """Minimum arbitrage earned regardless of outcome, given forcaster answers
+        and arbitrageur_answers."""
+        # x = answers.keys()
+        # v = [True, False, None]
+        # outcomes = product(v, repeat=len(x))
+
+        # Omega = []
+        # for outcome in outcomes:
+        #     outcome_dict = dict(zip(x, outcome))
+        #     if self.check_exact(outcome_dict):
+        #         Omega.append(outcome_dict)
+
         return np.amin(
             [
                 self.arbitrage(
@@ -433,7 +448,7 @@ class Checker(ABC):
                     arbitrageur_answers=arbitrageur_answers,
                     scoring=scoring,
                 )
-                for outcom in Omega
+                for outcom in self.Omega
             ]
         )
 
@@ -442,7 +457,7 @@ class Checker(ABC):
         answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
         initial_guess: list[float] | str | None = None,
-        method="shgo",
+        methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -451,11 +466,16 @@ class Checker(ABC):
             answers (dict[str, Prob]): Forecaster answers.
             scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
-            method (str, optional): Optimization method. Options:
+            methods (tuple[str], optional): Optimization method. Options:
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
-                differential_evolution, shgo, dual_annealing -- working
+                shgo, differential_evolution, dual_annealing -- working. shgo takes negligible time but is unreliable
+                    for small violations; differential_evolution takes much longer but is more reliable. dual_annealing
+                    takes 2x the time as differential_evolution and doesn't seem to hold any advantage over it.
+                root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
+                    arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
+                    arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
             Defaults to "shgo".
 
         """
@@ -483,48 +503,104 @@ class Checker(ABC):
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
-        if method == "differential_evolution":
-            result = differential_evolution(
-                fun_to_minimize,
-                bounds=bounds,
-                disp=False,
-            )
-        elif method == "brute":
-            result = brute(
-                fun_to_minimize,
-                ranges=bounds,
-                disp=False,
-            )
-        elif method == "shgo":
-            result = shgo(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "dual_annealing":
-            result = dual_annealing(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "basinhopping":
-            result = basinhopping(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                minimizer_kwargs={"bounds": bounds},
-            )
-        else:
-            result = minimize(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                bounds=bounds,
-                # options={"disp": True},
-                method=method,
-                # tol=1e-6,
+        maxes = []
+
+        for method in methods:
+            if method == "root":
+
+                def funs_to_equate(arbitrageur_answers_list):
+                    return [
+                        self.arbitrage(
+                            outcome,
+                            answers,
+                            dict(zip(x, arbitrageur_answers_list)),
+                            scoring,
+                        )
+                        for outcome in self.Omega
+                    ]
+
+                def funs_to_zero(arbitrageur_answers_list):
+                    return (
+                        np.array(funs_to_equate(arbitrageur_answers_list))
+                        - funs_to_equate(arbitrageur_answers_list)[0]
+                    )
+
+                solutions = root(
+                    funs_to_zero,
+                    arbitrageur_answers_list_initial,
+                    method="lm",
+                )
+                if solutions.success:
+                    arbitrage_argmax = dict(zip(x, solutions.x))
+                    arbitrage_max = self.arbitrage(
+                        self.Omega[0], answers, arbitrage_argmax, scoring
+                    )
+                    maxes.append(
+                        {
+                            "arbitrage_argmax": arbitrage_argmax,
+                            "arbitrage_max": arbitrage_max,
+                        }
+                    )
+                    # arbitrage_argmaxes = [dict(zip(x, sol)) for sol in solutions.x]
+                    # results = {arbitr_argmax:
+                    #     self.arbitrage(self.Omega[0], answers, arbitr_argmax, scoring)
+                    #     for arbitr_argmax in arbitrage_argmaxes
+                    # }
+                    # arbitrage_argmax = max(results, key=results.get)
+                    # arbitrage_max = results[arbitrage_argmax]
+                    # return arbitrage_argmax, arbitrage_max
+                else:
+                    print(f"Root optimization failed: {solutions.message}")
+            elif method == "differential_evolution":
+                result = differential_evolution(
+                    fun_to_minimize,
+                    bounds=bounds,
+                    disp=False,
+                )
+            elif method == "brute":
+                result = brute(
+                    fun_to_minimize,
+                    ranges=bounds,
+                    disp=False,
+                )
+            elif method == "shgo":
+                result = shgo(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "dual_annealing":
+                result = dual_annealing(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "basinhopping":
+                result = basinhopping(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    minimizer_kwargs={"bounds": bounds},
+                )
+            else:
+                result = minimize(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    bounds=bounds,
+                    # options={"disp": True},
+                    method=method,
+                    # tol=1e-6,
+                )
+
+            arbitrage_argmax = dict(zip(x, result.x))
+            arbitrage_max = -result.fun
+
+            maxes.append(
+                {"arbitrage_argmax": arbitrage_argmax, "arbitrage_max": arbitrage_max}
             )
 
-        arbitrage_argmax = dict(zip(x, result.x))
-        arbitrage_max = -result.fun
+        best_max = max(maxes, key=lambda x: x["arbitrage_max"])
+        return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
-        return arbitrage_argmax, arbitrage_max
+    def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
+        return self.max_min_arbitrage(answers, **kwargs)[1]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
@@ -534,7 +610,7 @@ class Checker(ABC):
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         if metric == "default":
-            v = self.max_min_arbitrage(answers)[1]
+            v = self.arbitrage_violation(answers)
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
@@ -781,6 +857,19 @@ class NegChecker(Checker):
         P = await Trivial().instantiate(base_sentences, **kwargs)
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         return [self.TupleFormat(P=P.P, not_P=not_P.not_P)]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * (1 - answers["not_P"]))
+        B = np.sqrt((1 - answers["P"]) * answers["not_P"])
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "not_P": 1 - p}, v
 
     def frequentist_violation(
         self,
@@ -1334,6 +1423,37 @@ class CondChecker(Checker):
             )
         ]
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+
+        a = np.sqrt(
+            (1 - answers["P"] * answers["Q_given_P"])
+            / (answers["P"] * (1 - answers["Q_given_P"]))
+        )
+        b = np.sqrt(
+            (1 - answers["Q_given_P"])
+            * (1 - answers["P_and_Q"])
+            / (answers["Q_given_P"] * answers["P_and_Q"])
+        )
+
+        p = (1 + b / a) / (1 + b * a)
+        q = 1 / (1 + b / a)
+        r = 1 / (1 + b * a)
+
+        v = -2 * np.log(
+            np.sqrt(answers["P"] * answers["Q_given_P"] * answers["P_and_Q"])
+            + np.sqrt(
+                (1 - answers["P"] * answers["Q_given_P"]) * (1 - answers["P_and_Q"])
+            )
+        )
+
+        return {"P": p, "Q_given_P": q, "P_and_Q": r}, v
+
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
         denom = P * Q_given_P * (
@@ -1439,6 +1559,22 @@ class ConsequenceChecker(Checker):
         cons_P_list = await Consequence().instantiate(base_sentences, **kwargs)
         return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P) for cons_P in cons_P_list]
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        if answers["P"] <= answers["cons_P"]:
+            return answers, 0.0
+        else:
+            # _answers = {"P": answers["P"], "para_P": answers["cons_P"]}
+            answers["para_P"] = answers.pop("cons_P")
+            p, v = ParaphraseChecker().max_min_arbitrage(answers, **kwargs)
+            p["cons_P"] = p.pop("para_P")
+            return p, v
+
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
 
@@ -1515,6 +1651,19 @@ class ParaphraseChecker(Checker):
         P = await Trivial().instantiate(base_sentences, **kwargs)
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
         return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * answers["para_P"])
+        B = np.sqrt((1 - answers["P"]) * (1 - answers["para_P"]))
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "para_P": p}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, para_P = answers["P"], answers["para_P"]
