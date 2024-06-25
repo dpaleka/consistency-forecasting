@@ -158,9 +158,9 @@ if __name__ == "__main__":
         print("total entries:", len(data))
 
         if args.start or args.end:
-            with open(
-                "metaculus_{}_{}.json".format(args.start, args.end), "w"
-            ) as json_file:
+            s = "" if args.start is None else args.start
+            e = "" if args.end is None else args.end
+            with open("metaculus_{}_{}.json".format(s, e), "w") as json_file:
                 json.dump(data, json_file, indent=4)
         else:
             with open("metaculus.json", "w") as json_file:

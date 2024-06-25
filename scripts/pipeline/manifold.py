@@ -127,9 +127,9 @@ if __name__ == "__main__":
         # Convert the data to JSON and print
 
         if args.start or args.end:
-            with open(
-                "manifold_{}_{}.json".format(str(args.start), str(args.end)), "w"
-            ) as json_file:
+            s = "" if args.start is None else args.start
+            e = "" if args.end is None else args.end
+            with open("manifold_{}_{}.json".format(s, e), "w") as json_file:
                 json.dump(data, json_file, indent=4)
 
         else:
