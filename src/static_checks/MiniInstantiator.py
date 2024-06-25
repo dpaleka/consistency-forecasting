@@ -14,11 +14,12 @@ from common.llm_utils import (
     answer_sync,
     Example,
     prepare_messages_alt,
-)  # noqa
+)
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
-)  # noqa
+)
+from common.perscache import register_models_for_cache
 from question_generators import question_formatter
 
 load_dotenv()
@@ -1279,3 +1280,16 @@ class Consequence(MiniInstantiator):
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
+
+
+register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
+
+for instantiator in [Trivial, Neg, And, Or, Paraphrase, Conditional, Consequence]:
+    register_models_for_cache(
+        [
+            instantiator.BaseSentenceFormat,
+            instantiator.BaseSentenceFormat_stripped,
+            instantiator.OutputFormat,
+            instantiator.OutputFormat_stripped,
+        ]
+    )
