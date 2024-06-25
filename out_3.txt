@@ -1,0 +1,301 @@
+LOCAL_CACHE: /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting/cache
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+Loading AdvancedForecaster...
+Initialized forecaster with settings:
+-9- Processing question 0
+-9- To retrieval dates, idx=0, t= 0.0006740093231201172
+-8- about to get search queries, t= 5.984306335449219e-05, idx=0
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-4-1106-preview', temperature=0.0) on 4 datapoints with 30 concurrent queries
+-9- Processing question 1
+-9- To retrieval dates, idx=1, t= 2.5033950805664062e-05
+-8- about to get search queries, t= 2.3603439331054688e-05, idx=1
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-4-1106-preview', temperature=0.0) on 4 datapoints with 30 concurrent queries
+-9- Processing question 2
+-9- To retrieval dates, idx=2, t= 1.2874603271484375e-05
+-8- about to get search queries, t= 1.7881393432617188e-05, idx=2
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-4-1106-preview', temperature=0.0) on 4 datapoints with 30 concurrent queries
+-77- Concurrent calls: 1
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 265
+-77- Concurrent calls: 2
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 219
+-77- Concurrent calls: 3
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 265
+-77- Concurrent calls: 4
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 219
+-77- Concurrent calls: 5
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 265
+-77- Concurrent calls: 6
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 219
+-77- Concurrent calls: 7
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 265
+-77- Concurrent calls: 8
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 219
+-77- Concurrent calls: 9
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 263
+-77- Concurrent calls: 10
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 217
+-77- Concurrent calls: 11
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 263
+-77- Concurrent calls: 12
+{'model': 'gpt-4-1106-preview', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 217
+-7- Concurrent calls: 11
+-7- Concurrent calls: 10
+-7- Concurrent calls: 9
+-7- Concurrent calls: 8
+-7- Concurrent calls: 7
+-7- Concurrent calls: 6
+-7- Concurrent calls: 5
+-7- Concurrent calls: 4
+-8- out of search queries, t= 5.198297739028931, idx = 1
+An error occurred while fetching the article: Article `download()` failed with Website protected with Cloudflare, url: None on URL https://news.google.com/rss/articles/CBMiM2h0dHBzOi8vd3d3LnRlY2hvcGVkaWEuY29tL3RvcC1jcnlwdG8tbWFya2V0LXRyZW5kc9IBAA?oc=5&hl=en-US&gl=US&ceid=US:en
+-8- out of get articles, t= 48.93019771575928, idx = 1
+-8- out of deduplicate articles, t= 48.930237770080566, idx = 1
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 770
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 777
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 771
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 775
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 777
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 772
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 779
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 774
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 778
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 774
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 773
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 770
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 780
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 766
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 783
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 767
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 774
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 774
+-7- Concurrent calls: 3
+-7- Concurrent calls: 2
+-7- Concurrent calls: 1
+-7- Concurrent calls: 0
+-8- out of search queries, t= 48.95996594429016, idx = 0
+An error occurred while fetching the article: Article `download()` failed with Website protected with Cloudflare, url: None on URL https://news.google.com/rss/articles/CBMiM2h0dHBzOi8vd3d3LnRlY2hvcGVkaWEuY29tL3RvcC1jcnlwdG8tbWFya2V0LXRyZW5kc9IBAA?oc=5&hl=en-US&gl=US&ceid=US:en
+An error occurred while fetching the article: Article `download()` failed with Website protected with Cloudflare, url: None on URL https://news.google.com/rss/articles/CBMiPGh0dHBzOi8vd3d3LnRlY2hvcGVkaWEuY29tL2NyeXB0b2N1cnJlbmN5L2Jlc3QtY3J5cHRvLXRvLWJ1edIBAA?oc=5&hl=en-US&gl=US&ceid=US:en
+-8- out of get articles, t= 92.76189494132996, idx = 0
+-8- out of deduplicate articles, t= 92.76192116737366, idx = 0
+-8- out of search queries, t= 92.76195406913757, idx = 2
+An error occurred while fetching the article: Article is binary data: https://news.google.com/rss/articles/CBMimwFodHRwczovL3RlY2hwb2ludC5hZnJpY2EvMjAyNC8wNi8xNC8yMDI0LWNyeXB0by1tYXJrZXQtZm9yZWNhc3QtYmxvY2tkYWctcHJlc2FsZS1zb2Fycy0xMTIwLXdpbGwtYXRvbS1oaXQtMTItd2l0aC1ldGhlcmV1bS1jbGFzc2ljLXNob3dpbmctcG9zaXRpdmUtdHJlbmRzL9IBAA?oc=5&hl=en-US&gl=US&ceid=US:en
+An error occurred while fetching the article: Article `download()` failed with Website protected with Cloudflare, url: None on URL https://news.google.com/rss/articles/CBMiM2h0dHBzOi8vd3d3LnRlY2hvcGVkaWEuY29tL3RvcC1jcnlwdG8tbWFya2V0LXRyZW5kc9IBAA?oc=5&hl=en-US&gl=US&ceid=US:en
+-8- out of get articles, t= 145.62801313400269, idx = 2
+-8- out of deduplicate articles, t= 145.62803983688354, idx = 2
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 772
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 767
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 679
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 775
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 767
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 771
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 775
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 785
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 780
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 774
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 775
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 764
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 782
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 766
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 768
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 766
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 770
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 781
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 777
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 778
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 787
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 763
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 766
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 762
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 766
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 769
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 773
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 793
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 772
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 788
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 763
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 781
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 773
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 772
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 770
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.0, 'max_tokens': 4000} Approx num tokens: 768
+-8- about to extract urls, t= 148.39670991897583, idx = 0
+-8- about to summarize articles, t= 148.39672303199768, idx = 0
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo-1106', temperature=0.2) on 6 datapoints with 10 concurrent queries
+-77- Concurrent calls: 1
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 10639
+-77- Concurrent calls: 2
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 3368
+-77- Concurrent calls: 3
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1187
+-77- Concurrent calls: 4
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1343
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 8966
+-77- Concurrent calls: 6
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 4988
+-8- about to extract urls, t= 148.68630409240723, idx = 2
+-8- about to summarize articles, t= 148.6863088607788, idx = 2
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo-1106', temperature=0.2) on 10 datapoints with 10 concurrent queries
+-77- Concurrent calls: 7
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 2321
+-77- Concurrent calls: 8
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 4080
+-77- Concurrent calls: 9
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 8486
+-77- Concurrent calls: 10
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 666
+-77- Concurrent calls: 11
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1048
+-77- Concurrent calls: 12
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1955
+-77- Concurrent calls: 13
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 3367
+-77- Concurrent calls: 14
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1485
+-77- Concurrent calls: 15
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1219
+-77- Concurrent calls: 16
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 5198
+-8- about to extract urls, t= 149.07632875442505, idx = 1
+-8- about to summarize articles, t= 149.07634782791138, idx = 1
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo-1106', temperature=0.2) on 12 datapoints with 10 concurrent queries
+-77- Concurrent calls: 17
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 2009
+-77- Concurrent calls: 18
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1091
+-77- Concurrent calls: 19
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1589
+-77- Concurrent calls: 20
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 8487
+-77- Concurrent calls: 21
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1644
+-77- Concurrent calls: 22
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 2079
+-77- Concurrent calls: 23
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 3368
+-77- Concurrent calls: 24
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1566
+-77- Concurrent calls: 25
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1672
+-77- Concurrent calls: 26
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 2530
+-77- Concurrent calls: 27
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 4988
+-77- Concurrent calls: 28
+{'model': 'gpt-3.5-turbo-1106', 'temperature': 0.2, 'max_tokens': 4000} Approx num tokens: 1240
+-7- Concurrent calls: 27
+-7- Concurrent calls: 26
+-7- Concurrent calls: 25
+-7- Concurrent calls: 24
+-7- Concurrent calls: 23
+-7- Concurrent calls: 22
+-7- Concurrent calls: 21
+-7- Concurrent calls: 20
+-7- Concurrent calls: 19
+-7- Concurrent calls: 18
+-7- Concurrent calls: 17
+-7- Concurrent calls: 16
+-7- Concurrent calls: 15
+-7- Concurrent calls: 14
+-7- Concurrent calls: 13
+-7- Concurrent calls: 12
+-7- Concurrent calls: 11
+-7- Concurrent calls: 10
+-7- Concurrent calls: 9
+-7- Concurrent calls: 8
+-7- Concurrent calls: 7
+-7- Concurrent calls: 6
+-7- Concurrent calls: 5
+-7- Concurrent calls: 4
+-7- Concurrent calls: 3
+-7- Concurrent calls: 2
+-8- out of summarize articles, t= 152.21463799476624, idx = 2
+-9- Out of retrieval dates, idx=2, t= 152.21468305587769
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 3
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 3927
+-77- Concurrent calls: 4
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 3740
+-7- Concurrent calls: 3
+-8- out of summarize articles, t= 152.87512302398682, idx = 0
+-9- Out of retrieval dates, idx=0, t= 152.8758509159088
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 4
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 2416
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 2229
+-7- Concurrent calls: 4
+-8- out of summarize articles, t= 153.52811574935913, idx = 1
+-9- Out of retrieval dates, idx=1, t= 153.5281641483307
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4387
+-77- Concurrent calls: 6
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4200
+-7- Concurrent calls: 5
+-7- Concurrent calls: 4
+-7- Concurrent calls: 3
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 4
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4048
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4060
+-7- Concurrent calls: 4
+-7- Concurrent calls: 3
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 4
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 2537
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 2549
+-7- Concurrent calls: 4
+Running functools.partial(<function get_async_response at 0x1694f4400>, model_name='gpt-3.5-turbo', temperature=1.0) on 2 datapoints with 10 concurrent queries
+-77- Concurrent calls: 5
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4508
+-77- Concurrent calls: 6
+{'model': 'gpt-3.5-turbo', 'temperature': 1.0, 'max_tokens': 4000} Approx num tokens: 4520
+-7- Concurrent calls: 5
+-7- Concurrent calls: 4
+-7- Concurrent calls: 3
+-7- Concurrent calls: 2
+{'model': 'gpt-4', 'max_tokens': 2000, 'temperature': 0.2} Approx num tokens: 6557
+-9- Out of ensemble, idx=1, t= 181.13097286224365
+-7- Concurrent calls: 1
+{'model': 'gpt-4', 'max_tokens': 2000, 'temperature': 0.2} Approx num tokens: 4701
+-9- Out of ensemble, idx=0, t= 202.1276090145111
+-7- Concurrent calls: 0
+{'model': 'gpt-4', 'max_tokens': 2000, 'temperature': 0.2} Approx num tokens: 6147
+-9- Out of ensemble, idx=2, t= 220.94788599014282
+Question: Will the price of Bitcoin exceed $50000 by the end of 2024?
+Prediction: 0.75
+Execution time: 202.16 seconds
+--------------------------------------------------
+Question: Will the price of Ethereum exceed $5000 by the end of 2024?
+Prediction: 0.55
+Execution time: 181.17 seconds
+--------------------------------------------------
+Question: Will the price of Cardano exceed $5 by the end of 2024?
+Prediction: 0.35
+Execution time: 220.98 seconds
+--------------------------------------------------
+Average execution time: 201.43 seconds, Total time: 220.98 seconds

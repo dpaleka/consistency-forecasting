@@ -1,5 +1,7 @@
 # Standard library imports
+import time
 import asyncio
+import concurrent.futures
 from datetime import datetime
 import logging
 
@@ -342,6 +344,19 @@ def get_question_article_embeddings(articles, question, background):
         "a_embeddings": a_embeddings,
     }
 
+async def async_get_articles(search_queries_gnews, search_queries_nc, date_range, num_articles, length_threshold):
+    loop = asyncio.get_running_loop()
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        return await loop.run_in_executor(
+            pool,
+            information_retrieval.get_articles_from_all_sources,
+            search_queries_gnews,
+            search_queries_nc,
+            date_range,
+            num_articles,
+            length_threshold
+        )
+
 
 async def retrieve_summarize_and_rank_articles(
     question,
@@ -351,6 +366,7 @@ async def retrieve_summarize_and_rank_articles(
     urls=None,
     return_intermediates=False,
     config=DEFAULT_RETRIEVAL_CONFIG,
+    idx = 0,
 ):
     """
     Retrieve, summarize and rank articles given a *single* question and its background information.
@@ -371,12 +387,14 @@ async def retrieve_summarize_and_rank_articles(
     Returns:
         list: List of sorted and filtered articles relevant to the question.
     """
+    t0 = time.time()
     # Step 1: Extract search query terms, including the question itself
     logger.info(
         "Finding {} search query keywords via LLM...".format(
             config["NUM_SEARCH_QUERY_KEYWORDS"]
         )
     )
+    print(f"-8- about to get search queries, t= {time.time()-t0}, idx={idx}")
     (
         search_queries_list_nc,
         search_queries_list_gnews,
@@ -393,6 +411,7 @@ async def retrieve_summarize_and_rank_articles(
         resolution_criteria=resolution_criteria,
         model_name=config["SEARCH_QUERY_MODEL_NAME"],
     )
+    print(f"-8- out of search queries, t= {time.time()-t0}, idx = {idx}")
     # Flatten and deduplicate the search queries
     search_queries_list_nc = utils.flatten_list(search_queries_list_nc)
     search_queries_list_gnews = utils.flatten_list(search_queries_list_gnews)
@@ -402,15 +421,11 @@ async def retrieve_summarize_and_rank_articles(
     logger.info(f"Search queries for GNews: {search_queries_list_gnews}")
     # Step 2: Retrieve articles using the search query terms
     articles = []
-    articles = information_retrieval.get_articles_from_all_sources(
-        search_queries_list_gnews,
-        search_queries_list_nc,
-        date_range,
-        num_articles=config["NUM_ARTICLES_PER_QUERY"],
-        length_threshold=200,
-    )
+    articles = await async_get_articles(search_queries_list_gnews, search_queries_list_nc, date_range, config["NUM_ARTICLES_PER_QUERY"], 200)
+    print(f"-8- out of get articles, t= {time.time()-t0}, idx = {idx}")
     articles = information_retrieval.deduplicate_articles(articles)
     articles_unfiltered = articles.copy()
+    print(f"-8- out of deduplicate articles, t= {time.time()-t0}, idx = {idx}")
     # Step 2.5 (optional): filter articles via quick embedding model
     if config.get("PRE_FILTER_WITH_EMBEDDING") and len(articles) >= 100:
         logger.info(f"Filtering {len(articles)} articles with embedding model.")
@@ -458,6 +473,7 @@ async def retrieve_summarize_and_rank_articles(
     )
     logger.info("Finished ranking the articles!")
     # Step 3.5 (optional): Extract webpages linked in the additional URLs
+    print(f"-8- about to extract urls, t= {time.time()-t0}, idx = {idx}")
     if config.get("EXTRACT_BACKGROUND_URLS") and urls and len(urls) > 0:
         articles_from_urls = []
         urls = list(set(urls))  # remove duplicates
@@ -478,6 +494,7 @@ async def retrieve_summarize_and_rank_articles(
             ranked_articles = articles_from_urls + ranked_articles
     # Step 4: Summarize articles. The method updates the articles object in
     # place, by adding a "summary" field to each article.
+    print(f"-8- about to summarize articles, t= {time.time()-t0}, idx = {idx}")
     prompt = config["SUMMARIZATION_PROMPT_TEMPLATE"][0].format(
         question=question,
         background=background_info,
@@ -499,6 +516,7 @@ async def retrieve_summarize_and_rank_articles(
         model_name=config["SUMMARIZATION_MODEL_NAME"],
     )
     logger.info(f"Finished summarizing the {len(ranked_articles)} articles!")
+    print(f"-8- out of summarize articles, t= {time.time()-t0}, idx = {idx}")
     # Return the ranked articles, along with the articles and keywords (if
     # return_intermediates is True)
     if return_intermediates:

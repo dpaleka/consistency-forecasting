@@ -50,7 +50,37 @@ override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
-global_semaphore = asyncio.Semaphore(max_concurrent_queries)
+
+class TrackedSemaphore:
+    def __init__(self, value):
+        self._semaphore = asyncio.Semaphore(value)
+        self._value = value
+        self._current = value
+
+    async def acquire(self):
+        await self._semaphore.acquire()
+        self._current -= 1
+        print(f"-77- Concurrent calls: {self._value - self._current}")
+
+    def release(self):
+        self._semaphore.release()
+        self._current += 1
+        print(f"-7- Concurrent calls: {self._value - self._current}")
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.release()
+
+    async def __aenter__(self):
+        await self.acquire()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        self.release()
+global_semaphore = TrackedSemaphore(max_concurrent_queries)
+#global_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),

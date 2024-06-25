@@ -1,3 +1,4 @@
+import time
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion
 from typing import Optional
@@ -19,7 +20,8 @@ from common.datatypes import DictLikeDataclass
 
 
 REASONING_CONFIG = {
-    "BASE_REASONING_MODEL_NAMES": ["gpt-4-1106-preview", "gpt-4-1106-preview"],
+    #"BASE_REASONING_MODEL_NAMES": ["gpt-4-1106-preview", "gpt-4-1106-preview"],
+    "BASE_REASONING_MODEL_NAMES": ["gpt-3.5-turbo", "gpt-3.5-turbo"],
     "BASE_REASONING_TEMPERATURE": 1.0,
     "BASE_REASONING_PROMPT_TEMPLATES": [
         [
@@ -120,8 +122,11 @@ class AdvancedForecaster(Forecaster):
         sentence: ForecastingQuestion,
         today_date: Optional[str] = None,
         retrieval_interval_length: int = 30,
+        idx = 0, 
         **kwargs,
     ) -> float:
+        t0 = time.time()
+        print(f"-9- Processing question {idx}")
         question = sentence.title
         background_info = (
             sentence.metadata["background_info"]
@@ -147,7 +152,7 @@ class AdvancedForecaster(Forecaster):
             subtract_days_from_date(today_date, retrieval_interval_length),
             today_date,
         )
-
+        print(f"-9- To retrieval dates, idx={idx}, t= {time.time()-t0}")
         (
             ranked_articles,
             all_articles,
@@ -161,7 +166,9 @@ class AdvancedForecaster(Forecaster):
             urls=[],
             config=self.retrieval_config,
             return_intermediates=True,
+            idx=idx,
         )
+        print(f"-9- Out of retrieval dates, idx={idx}, t= {time.time()-t0}")
 
         all_summaries = summarize.concat_summaries(
             ranked_articles[: self.retrieval_config["NUM_SUMMARIES_THRESHOLD"]]
@@ -186,6 +193,7 @@ class AdvancedForecaster(Forecaster):
             meta_prompt_template=self.reasoning_config["AGGREGATION_PROMPT_TEMPLATE"],
             meta_temperature=self.reasoning_config["AGGREGATION_TEMPERATURE"],
         )
+        print(f"-9- Out of ensemble, idx={idx}, t= {time.time()-t0}")
 
         return ensemble_dict["meta_prediction"]
 
