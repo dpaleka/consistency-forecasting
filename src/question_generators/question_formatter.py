@@ -142,8 +142,8 @@ Question: {title}
 """
 
 verify_forecasting_question_prompt = """\
-I want you to help me validate if a forecasting question (as on sites like Metaculus / PredictIt) is well defined. 
-The question will ask about an event in the future.
+I want you to help me validate if a forecasting question (as on sites like Metaculus / Manifold) is well defined. 
+The question will ask about an event in the future or past.
 The fields are:
 - title: The title of the question.
 - body: The resolution criteria of the question.
@@ -151,7 +151,6 @@ The fields are:
 
 I want you to validate according to the following criteria:
 - The resolution date should be consistent with the question. 
-- The resolution date should be in the future. The current date is {current_date}.
 - The resolution criteria should not be excessively vague or ambiguous, and should be consistent with the question.
 
 The format of your response should be:
@@ -165,8 +164,8 @@ resolution_date: 2020-01-01 00:00:00
 
 ->
 
-reasoning: The resolution date is in the past.
-valid: False
+reasoning: The resolution criteria are clear and consistent with the title.
+valid: True
 
 
 Example 2:
