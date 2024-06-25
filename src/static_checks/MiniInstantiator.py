@@ -7,7 +7,7 @@ from dateutil.tz import UTC
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Type, Any, Optional, Self, List, List  # noqa
-from pydantic import BaseModel, create_model, field_validator
+from pydantic import BaseModel, field_validator
 from common.utils import write_jsonl_async_from_str  # noqa
 from common.llm_utils import (
     answer,
@@ -39,13 +39,14 @@ class MiniInstantiator(ABC):
 
     @property
     def BaseSentenceFormat_stripped(self) -> Type[BaseModel]:
-        return create_model(
-            "BaseSentenceFormat_stripped",
-            **{
-                k: (ForecastingQuestion_stripped, ...)
-                for k in self.BaseSentenceFormat.model_fields
-            },
-        )
+        # return create_model(
+        #     "BaseSentenceFormat_stripped",
+        #     **{
+        #         k: (ForecastingQuestion_stripped, ...)
+        #         for k in self.BaseSentenceFormat.model_fields
+        #     },
+        # )
+        pass
 
     @property
     @abstractmethod
@@ -54,13 +55,14 @@ class MiniInstantiator(ABC):
 
     @property
     def OutputFormat_stripped(self) -> Type[BaseModel]:
-        return create_model(
-            "OutputFormat_stripped",
-            **{
-                k: (ForecastingQuestion_stripped, ...)
-                for k in self.OutputFormat.model_fields
-            },
-        )
+        # return create_model(
+        #     "OutputFormat_stripped",
+        #     **{
+        #         k: (ForecastingQuestion_stripped, ...)
+        #         for k in self.OutputFormat.model_fields
+        #     },
+        # )
+        pass
 
     def title_body_sync_(
         self,
@@ -211,8 +213,14 @@ class Trivial(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
 
     def title_body_sync_(
         self, base_sentences: "Self.BaseSentenceFormat", **kwargs
@@ -238,8 +246,14 @@ class Neg(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         not_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        not_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -394,8 +408,15 @@ class And(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P_and_Q: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P_and_Q: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -594,8 +615,15 @@ class Or(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P_or_Q: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P_or_Q: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -733,8 +761,14 @@ class Paraphrase(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         para_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        para_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -796,8 +830,15 @@ class Conditional(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         Q_given_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        Q_given_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -905,6 +946,9 @@ class Consequence(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class ConsequenceType(str, Enum):
         quantity = "quantity"
         time = "time"
@@ -921,6 +965,9 @@ class Consequence(MiniInstantiator):
 
     class OutputFormat(BaseModel):
         cons_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        cons_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.consequence_type_prompt = (
