@@ -652,7 +652,7 @@ async def answer(
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
         "model": "gpt-4o",
-        "temperature": 0.0,
+        "temperature": 0.5,
         "response_model": PlainText,
     }
     options = default_options | kwargs  # override defaults with kwargs
@@ -672,7 +672,7 @@ def answer_sync(
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
         "model": "gpt-4o-2024-05-13",
-        "temperature": 0.0,
+        "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
     return query_api_chat_sync(messages=messages, **options)
