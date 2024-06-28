@@ -159,7 +159,7 @@ register_model_for_cache(ForecastingQuestion)
 
 
 class ForecastingQuestion_with_subsidy(ForecastingQuestion):
-    fq: ForecastingQuestion
+    fq: ForecastingQuestion_stripped
     market_subsidy: float
 
     @field_validator("market_subsidy")
@@ -169,11 +169,15 @@ class ForecastingQuestion_with_subsidy(ForecastingQuestion):
         return v
 
 
-class BiddingQuestion(BaseModel):
+class InformationPiece(BaseModel):
     title: str
     body: str
     question_type: str
-    meaning_of_life: list[ForecastingQuestion_with_subsidy]
+
+
+class BiddingQuestion(BaseModel):
+    offered_information: list[InformationPiece]
+    goal_questions: list[ForecastingQuestion_with_subsidy]
 
     def expected_answer_type(self, mode="default") -> type:
         return exp_bid_types[mode][self.question_type]

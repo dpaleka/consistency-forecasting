@@ -4,26 +4,30 @@ from common.llm_utils import answer, answer_sync, Example
 
 
 class BasicForecaster(Forecaster):
-    def __init__(self, preface: str = None, examples: list = None):
-        self.preface = preface or (
-            "You are an informed and well-calibrated forecaster. I need you to give me "
-            "your best probability estimate for the following sentence or question resolving YES. "
-            "Your answer should be a float between 0 and 1, with nothing else in your response."
-        )
+    preface_default = (
+        "You are an informed and well-calibrated forecaster. I need you to give me "
+        "your best probability estimate for the following sentence or question resolving YES. "
+        "Your answer should be a float between 0 and 1, with nothing else in your response."
+    )
 
-        self.examples = examples or [
-            Example(
-                user=ForecastingQuestion_stripped(
-                    title="Will Manhattan have a skyscraper a mile tall by 2030?",
-                    body=(
-                        "Resolves YES if at any point before 2030, there is at least "
-                        "one building in the NYC Borough of Manhattan (based on current "
-                        "geographic boundaries) that is at least a mile tall."
-                    ),
+    examples_default = [
+        Example(
+            user=ForecastingQuestion_stripped(
+                title="Will Manhattan have a skyscraper a mile tall by 2030?",
+                body=(
+                    "Resolves YES if at any point before 2030, there is at least "
+                    "one building in the NYC Borough of Manhattan (based on current "
+                    "geographic boundaries) that is at least a mile tall."
                 ),
-                assistant="0.03",
-            )
-        ]
+            ),
+            assistant="0.03",
+        )
+    ]
+
+    def __init__(self, preface: str = None, examples: list = None):
+        self.preface = preface or self.preface_default
+
+        self.examples = examples or self.examples_default
 
     def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
         # Log the request details being sent to the OpenAI API
