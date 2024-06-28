@@ -24,6 +24,17 @@ class Prob(BaseModel):
         return v
 
 
+class Bid(BaseModel):
+    bid: float
+
+    @field_validator("bid")
+    @classmethod
+    def validate_bid(cls, v):
+        if not (0.0 <= v):
+            raise ValueError("Bid must be non-negative.")
+        return v
+
+
 register_model_for_cache(Prob)
 
 
@@ -33,6 +44,11 @@ class Prob_cot(Prob):
 
 
 register_model_for_cache(Prob_cot)
+
+
+class Bid_cot(Bid):
+    chain_of_thought: str
+    bid: float  # redefine to maintain order
 
 
 # this is what we pass to llms for instantiation and forecasting
@@ -135,6 +151,24 @@ class ForecastingQuestion(BaseModel):
 
 
 register_model_for_cache(ForecastingQuestion)
+
+
+class ForecastingQuestion_with_subsidy(ForecastingQuestion):
+    fq: ForecastingQuestion
+    market_subsidy: float
+
+    @field_validator("market_subsidy")
+    def validate_market_subsidy(cls, v):
+        if not (0.0 <= v):
+            raise ValueError("Market subsidy must be non-negative.")
+        return v
+
+
+class BiddingQuestion(BaseModel):
+    title: str
+    body: str
+    question_type: str
+    meaning_of_life: list[ForecastingQuestion_with_subsidy]
 
 
 class ForecastingQuestions(BaseModel):
