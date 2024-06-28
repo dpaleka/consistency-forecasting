@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel
 from typing import Any
 import functools
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, BiddingQuestion
 from common.utils import shallow_dict
 from common.llm_utils import parallelized_call
 
@@ -19,11 +19,13 @@ class Forecaster(ABC):
         return {k: v for k, v in zip(keys, results)}
 
     @abstractmethod
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> Any:
+    def call(self, sentence: ForecastingQuestion | BiddingQuestion, **kwargs) -> Any:
         pass
 
     @abstractmethod
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Any:
+    async def call_async(
+        self, sentence: ForecastingQuestion | BiddingQuestion, **kwargs
+    ) -> Any:
         pass
 
     @abstractmethod

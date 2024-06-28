@@ -99,6 +99,11 @@ exp_answer_types = {
     "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
 }
 
+exp_bid_types = {
+    "default": {"binary": Bid, "conditional_binary": Bid},
+    "cot": {"binary": Bid_cot, "conditional_binary": Bid_cot},
+}
+
 
 class ForecastingQuestion(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -169,6 +174,9 @@ class BiddingQuestion(BaseModel):
     body: str
     question_type: str
     meaning_of_life: list[ForecastingQuestion_with_subsidy]
+
+    def expected_answer_type(self, mode="default") -> type:
+        return exp_bid_types[mode][self.question_type]
 
 
 class ForecastingQuestions(BaseModel):
