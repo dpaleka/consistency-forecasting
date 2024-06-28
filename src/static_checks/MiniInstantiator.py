@@ -1014,7 +1014,11 @@ class Consequence(MiniInstantiator):
             "P: Will Germany win or draw against France in their next World Cup match?\n"
             "\n\n"
             "Your task now is to classify the following question into one or more of the categories: quantity, time, misc or none. "
-            "P: {P}"
+            "To help, we also provide precise resolution criteria (body) as well as the title.\n"
+            "P:\n"
+            "title: {title}\n"
+            "body: {body}\n\n"
+            "Recall that you need to classify P into one or more of the categories: quantity, time, misc or none."
         )
 
         self.quantity_instantiator_prompt = (
@@ -1173,7 +1177,7 @@ class Consequence(MiniInstantiator):
         **kwargs,
     ) -> "Self.OutputFormat":
         p = base_sentences["P"]
-        consequence_types = await self._classify_consequence(p.title)
+        consequence_types = await self._classify_consequence(p)
         instantiation_results = []
         if self.ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
@@ -1193,7 +1197,7 @@ class Consequence(MiniInstantiator):
         **kwargs,
     ) -> "Self.OutputFormat":
         p = base_sentences["P"]
-        consequence_types = self._classify_consequence_sync(p.title)
+        consequence_types = self._classify_consequence_sync(p)
         instantiation_results = []
         if self.ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
@@ -1206,13 +1210,23 @@ class Consequence(MiniInstantiator):
                 instantiation_results.append(self._instantiate_sync(p, "misc"))
         return instantiation_results
 
-    async def _classify_consequence(self, p: str) -> "Self.ClassifyOutput":
-        prompt = self.consequence_type_prompt.format(P=p)
+    async def _classify_consequence(
+        self, p: ForecastingQuestion
+    ) -> "Self.ClassifyOutput":
+        prompt = self.consequence_type_prompt.format(
+            title=p.title,
+            body=p.body,
+        )
         consequence_types = await answer(prompt, response_model=self.ClassifyOutput)
         return consequence_types
 
-    def _classify_consequence_sync(self, p: str) -> "Self.ClassifyOutput":
-        prompt = self.consequence_type_prompt.format(P=p)
+    def _classify_consequence_sync(
+        self, p: ForecastingQuestion
+    ) -> "Self.ClassifyOutput":
+        prompt = self.consequence_type_prompt.format(
+            title=p.title,
+            body=p.body,
+        )
         consequence_types = answer_sync(prompt, response_model=self.ClassifyOutput)
         return consequence_types
 
