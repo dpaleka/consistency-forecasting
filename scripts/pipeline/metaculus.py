@@ -54,6 +54,8 @@ def fetch_live_questions_with_dates(
             * page_size,  # or 'offset': (page-1) * page_size if the API uses offset
             "resolve_time__gt": start_date,
             "resolve_time__lt": end_date,
+            "close_time__gt": start_date,
+            "close_time__lt": end_date,
         }
         response = requests.get(f"{api_url}/questions", headers=headers, params=params)
 
@@ -73,17 +75,34 @@ def fetch_live_questions_with_dates(
                 continue
 
             # only include resolution times either in range or expires past 30 days and within 10 years
-            resolution_date = question.get("resolve_time")
-            if resolution_date:
+            resolution_date = None
+            """
+            if question.get('effected_close_time'):
                 # Convert resolution_date to datetime object
                 resolution_date = dt.datetime.strptime(
-                    resolution_date, "%Y-%m-%dT%H:%M:%SZ"
+                    question.get('effected_close_time'), "%Y-%m-%dT%H:%M:%SZ"
                 )  # Adjust the format based on actual date format
-            else:
-                continue
-                # Check if resolution_date is between 30 days and 10 years from now
+            elif (question.get('resolve_time') or question.get('close_time')):
+                r = question.get('resolve_time')
+                c = question.get('close_time')
+                min_value = lambda a, b: min(x for x in (a, b) if x is not None)
+                resolution_date = dt.datetime.strptime(
+                    min_value(r, c), "%Y-%m-%dT%H:%M:%SZ"
+                ) 
+            """
+            if question.get("resolve_time") or question.get("close_time"):
+                r = question.get("resolve_time")
+                c = question.get("close_time")
 
-            if (not start_date) and (not end_date):
+                def min_value(a, b):
+                    min(x for x in (a, b) if x is not None)
+
+                resolution_date = dt.datetime.strptime(
+                    min_value(r, c), "%Y-%m-%dT%H:%M:%SZ"
+                )
+
+                # Check if resolution_date is between 30 days and 10 years from now
+            if (not start_date) and (not end_date) and (resolution_date):
                 now = dt.datetime.now()
                 if (
                     not (now + dt.timedelta(days=30))
@@ -99,9 +118,9 @@ def fetch_live_questions_with_dates(
                     "description"
                 ),  # Assuming 'description' is the detailed text
                 "question_type": question_type,
-                "resolution_date": question.get(
-                    "resolve_time"
-                ),  # You might need to format this date
+                "resolution_date": resolution_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+                if resolution_date
+                else None,  # You might need to format this date
                 "url": f"https://www.metaculus.com/questions/{question.get('id')}",
                 "data_source": "metaculus",
                 "metadata": {
@@ -110,6 +129,9 @@ def fetch_live_questions_with_dates(
                     ),  # Assuming 'tags' can be used as topics
                     "api_url": f"https://www.metaculus.com/api2/questions/{question.get('id')}",
                     "market_prob": None,
+                    "resolve_time": question.get("resolve_time"),
+                    "close_time": question.get("close_time"),
+                    "effected_close_time": question.get("effected_close_time"),
                 },
                 "resolution": question.get("resolution"),
             }

@@ -8,6 +8,8 @@ def filter_jsonl_files(directory):
     for filename in os.listdir(directory):
         parts = filename.split("_")
         date_parts = [part for part in parts if re.match(r"^\d{8}$", part)]
+        if "__" in filename:
+            continue
 
         if len(date_parts) == 2:
             start_date, end_date = date_parts

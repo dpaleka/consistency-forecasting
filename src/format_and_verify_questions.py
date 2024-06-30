@@ -112,6 +112,7 @@ async def process_synthetic_questions_from_file(
     max_questions: Optional[int] = None,
     model: str = "gpt-4o-2024-05-13",
     fill_in_body: bool = False,
+    concurrent_queries=15,
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
 
@@ -136,7 +137,9 @@ async def process_synthetic_questions_from_file(
         validate_and_format_synthetic_question, model=model, fill_in_body=fill_in_body
     )
     forecasting_questions = await parallelized_call(
-        func=func, data=questions[:max_questions], max_concurrent_queries=50
+        func=func,
+        data=questions[:max_questions],
+        max_concurrent_queries=concurrent_queries,
     )
 
     count_none = forecasting_questions.count(None)
@@ -149,6 +152,7 @@ async def process_questions_from_file(
     max_questions: Optional[int],
     model: str = "gpt-4o-2024-05-13",
     fill_in_body: bool = False,
+    concurrent_queries: int = 15,
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
 
@@ -157,7 +161,9 @@ async def process_questions_from_file(
         validate_and_format_question, model=model, fill_in_body=fill_in_body
     )
     forecasting_questions = await parallelized_call(
-        func=func, data=questions[:max_questions], max_concurrent_queries=50
+        func=func,
+        data=questions[:max_questions],
+        max_concurrent_queries=concurrent_queries,
     )
 
     count_none = forecasting_questions.count(None)
@@ -187,6 +193,7 @@ async def main(
     synthetic: bool,
     fill_in_body: bool,
     overwrite: bool = False,
+    concurrent_queries: int = 15,
 ):
     output_path = Path(f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}")
     if overwrite:
@@ -210,6 +217,7 @@ async def main(
             max_questions=max_questions,
             model=model,
             fill_in_body=fill_in_body,
+            concurrent_queries=concurrent_queries,
         )
 
     else:
@@ -218,6 +226,7 @@ async def main(
             max_questions=max_questions,
             model=model,
             fill_in_body=fill_in_body,
+            concurrent_queries=concurrent_queries,
         )
 
     print(f"Number of invalid questions found: {none_count}")
@@ -296,6 +305,13 @@ if __name__ == "__main__":
         default=False,
         help="If a real question does not have a question body, fill it in with an LLM call",
     )
+    parser.add_argument(
+        "--concurrent_queries",
+        "-c",
+        type=int,
+        default=15,
+        help="Max number of concurrent queries permitted to run",
+    )
 
     args = parser.parse_args()
 
@@ -309,5 +325,6 @@ if __name__ == "__main__":
             args.synthetic,
             args.fill_in_body,
             args.overwrite,
+            args.concurrent_queries,
         )
     )
