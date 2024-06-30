@@ -77,15 +77,11 @@ def update_questions_with_details(file_path, source):
     if use_async:
         if click_scraping:
             questions = asyncio.run(
-                parallelized_call(
-                    fetch_question_details, questions, max_concurrent_queries=2
-                )
+                parallelized_call(fetch_question_details, questions, 2)
             )
         else:
             questions = asyncio.run(
-                parallelized_call(
-                    fetch_question_details, questions, max_concurrent_queries=10
-                )
+                parallelized_call(fetch_question_details, questions, 10)
             )
 
     else:

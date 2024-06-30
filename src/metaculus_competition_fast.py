@@ -31,12 +31,16 @@ from forecasters.basic_forecaster import BasicForecaster
 
 
 import asyncio
+import aiofiles
 
 import datetime
 import os
 import requests
 import re
 import aiohttp
+
+from common.llm_utils import parallelized_call
+
 
 # Load .env file if it exists
 dotenv_path = os.path.dirname(os.path.abspath(os.getcwd()))
@@ -66,6 +70,7 @@ LOG_FILE_PATH = "metaculus_submissions.log"  # log file
 ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
+SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.
 
 
 ## paramaterize forecasters
@@ -295,7 +300,75 @@ async def gen_comments(q):
     return cleaned_text, meta_prediction
 
 
-def submission_log(log_file_path, message):
+async def parallel_post(q):
+    if q["active_state"].upper() != "OPEN":
+        return None
+
+    id = int(q["id"])
+    title = q["title"]
+    url = q["url"]
+
+    q = await metaculus_to_jsonl(q)
+    q = ForecastingQuestion(**q)
+
+    adv_prob = [q] * SAMPLES
+    adv_prob = await parallelized_call(ADVANCED_FORECASTER.call_async, adv_prob, 2)
+    adv_prob = sum(float(x) for x in adv_prob) / len(adv_prob)
+    basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
+
+    adv_prob = min(max(100 * float(adv_prob), 1), 100)
+    basic_prob = min(max(100 * float(basic_prob), 1), 100)
+
+    comments, meta_prob = "Comment Generation Error", 1
+
+    if not NO_COMMENT:
+        try:
+            comments, meta_prob = await gen_comments(q)
+        except Exception as e:
+            msg = "id: {}, comment_generation_error: {}".format(id, e)
+            print(msg, "\n********************\n")
+            await submission_log(ERROR_LOG_FILE_PATH, msg)
+
+    prediction_dict = {"adv": adv_prob, "basic": basic_prob, "meta": meta_prob}
+    res = {
+        "id": id,
+        "title": title,
+        "url": url,
+        "predictions": prediction_dict,
+        "comments": comments,
+    }
+
+    ##submissions
+    if SUBMIT_PREDICTION:
+        try:
+            post_question_prediction(id, res["predictions"][SUBMIT_CHOICE.lower()])
+            post_question_comment(id, res["comments"])
+
+            ##logging
+            message = "id: {}, url: {}, title: {}, samples: {}, adv_prediction: {}%, basic_prediction: {}%, meta_prediction: {}%, submission: {}%,\ncomments:\n{}\n".format(
+                id,
+                res["url"],
+                res["title"],
+                SAMPLES,
+                res["predictions"]["adv"],
+                res["predictions"]["basic"],
+                res["predictions"]["meta"],
+                res["predictions"][SUBMIT_CHOICE.lower()],
+                res["comments"],
+            )
+            print(message, "\n********************\n")
+            await submission_log(LOG_FILE_PATH, message)
+
+        except Exception as e:
+            msg = "id: {}, post_error_msg: {}".format(id, e)
+            print(msg, "\n********************\n")
+
+            await submission_log(ERROR_LOG_FILE_PATH, msg)
+
+    return res
+
+
+async def submission_log(log_file_path, message):
     # Check if the log file exists
     if not os.path.exists(log_file_path):
         # If the file doesn't exist, create it
@@ -304,9 +377,9 @@ def submission_log(log_file_path, message):
     ##Write
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     # Open the log file in append mode
-    with open(log_file_path, "a") as log_file:
+    async with aiofiles.open(log_file_path, "a+") as log_file:
         # Write the log entry with timestamp
-        log_file.write(f"{timestamp} - {message}\n")
+        await log_file.write(f"{timestamp} - {message}\n")
 
 
 async def main():
@@ -324,75 +397,10 @@ async def main():
             ]
             questions_list.append(new_qs)
 
-    res_dict = {}
+    questions_list = await parallelized_call(parallel_post, questions_list, 4)
 
-    for q in questions_list:
-        id = int(q["id"])
-        title = q["title"]
-        url = q["url"]
-
-        ##make sure it's actually valid post place
-        try:
-            post_question_prediction(id, 1.0)
-        except Exception as e:
-            msg = "id: {}, post_error_msg: {}".format(id, e)
-            print(msg)
-            ## error logs ERROR_LOG_FILE_PATH
-            submission_log(ERROR_LOG_FILE_PATH, msg)
-            ## no need to waste time generating info
-            continue
-
-        q = await metaculus_to_jsonl(q)
-        q = ForecastingQuestion(**q)
-
-        adv_prob = await ADVANCED_FORECASTER.call_async(sentence=q)
-        basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
-
-        adv_prob = min(max(100 * float(adv_prob), 1), 100)
-        basic_prob = min(max(100 * float(basic_prob), 1), 100)
-
-        comments, meta_prob = "Test", 1
-        if not NO_COMMENT:
-            comments, meta_prob = await gen_comments(q)
-
-        prediction_dict = {"adv": adv_prob, "basic": basic_prob, "meta": meta_prob}
-        res_dict[id] = {
-            "title": title,
-            "predictions": prediction_dict,
-            "comments": comments,
-            "url": url,
-        }
-
-    for id, data in res_dict.items():
-        if SUBMIT_PREDICTION:
-            ##submission
-
-            try:
-                post_question_prediction(id, data["predictions"][SUBMIT_CHOICE.lower()])
-                post_question_comment(id, data["comments"])
-
-                ##logging
-                message = "id: {}, url: {}, title: {}, adv_prediction: {}%, basic_prediction: {}%, meta_prediction: {}%, submission: {}%,\ncomments:\n{}\n".format(
-                    id,
-                    data["url"],
-                    data["title"],
-                    data["predictions"]["adv"],
-                    data["predictions"]["basic"],
-                    data["predictions"]["meta"],
-                    data["predictions"][SUBMIT_CHOICE.lower()],
-                    data["comments"],
-                )
-                print(message)
-                print("********************")
-                print("")
-                submission_log(LOG_FILE_PATH, message)
-
-            except Exception as e:
-                msg = "id: {}, post_error_msg: {}".format(id, e)
-                print(msg)
-                print("********************")
-                print("")
-                submission_log(ERROR_LOG_FILE_PATH, msg)
+    ##Done
+    print(questions_list)
 
 
 if __name__ == "__main__":
