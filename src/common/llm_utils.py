@@ -3,7 +3,6 @@
 
 # %%
 import os
-import sys
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
@@ -660,7 +659,7 @@ async def answer(
         "response_model": PlainText,
     }
     options = default_options | kwargs  # override defaults with kwargs
-    
+
     async with global_semaphore:
         return await query_api_chat(messages=messages, **options)
 
@@ -716,7 +715,6 @@ async def parallelized_call(
     func: Coroutine,
     data: list[str],
     max_concurrent_queries: int = 100,
-    concurrent_queries_cap: int = sys.maxsize,
 ) -> list[any]:
     """
     Run async func in parallel on the given data.
@@ -731,11 +729,10 @@ async def parallelized_call(
         print(f"Running {func} on {len(data)} datapoints sequentially")
         return [await func(d) for d in data]
 
-    max_concurrent_queries = int(
-        os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)
+    max_concurrent_queries = min(
+        max_concurrent_queries,
+        int(os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)),
     )
-
-    max_concurrent_queries = min(max_concurrent_queries, concurrent_queries_cap)
 
     print(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"

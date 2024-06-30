@@ -65,7 +65,7 @@ def update_questions_with_details(file_path, source):
 
     elif source == "manifold":
         fetch_question_details = fetch_question_details_manifold
-        use_async = True
+        use_async = 1
 
     elif source == "predictit":
         fetch_question_details = fetch_question_details_predictit
@@ -78,12 +78,14 @@ def update_questions_with_details(file_path, source):
         if click_scraping:
             questions = asyncio.run(
                 parallelized_call(
-                    fetch_question_details, questions, concurrent_queries_cap=2
+                    fetch_question_details, questions, max_concurrent_queries=2
                 )
             )
         else:
             questions = asyncio.run(
-                parallelized_call(fetch_question_details, questions)
+                parallelized_call(
+                    fetch_question_details, questions, max_concurrent_queries=10
+                )
             )
 
     else:
