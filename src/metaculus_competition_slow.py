@@ -64,9 +64,9 @@ SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
 LOG_FILE_PATH = "metaculus_submissions.log"  # log file
 ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
-SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv
+SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
-SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.
+SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
 
 
 ## paramaterize forecasters
@@ -292,7 +292,7 @@ async def gen_comments(q):
     )
 
     meta_prediction = ensemble_dict["meta_prediction"]
-    meta_prediction = 100 * float(meta_prediction)
+    meta_prediction = round(100 * float(meta_prediction), 2)
     return cleaned_text, meta_prediction
 
 
@@ -348,10 +348,10 @@ async def main():
 
         basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
 
-        adv_prob = min(max(100 * float(adv_prob), 1), 100)
-        basic_prob = min(max(100 * float(basic_prob), 1), 100)
+        adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
+        basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
 
-        comments, meta_prob = "Test", 1
+        comments, meta_prob = "Test", 1.00
         if not NO_COMMENT:
             comments, meta_prob = await gen_comments(q)
 

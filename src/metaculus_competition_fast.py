@@ -68,10 +68,15 @@ SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
 LOG_FILE_PATH = "metaculus_submissions.log"  # log file
 ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
-SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv
+SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.
 
+##Coroutine parameters.  Note that these are multiplicative. So the "total threads" will be QUESTION_THREADS * SAMPLING_THREADS * {threads for running the forecasters which I think is already maxed}
+QUESTION_THREADS = 4  # How many concurrency operations to run for questions.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
+SAMPLING_THREADS = (
+    2  # How many concurrency operations to run to sample advanced forecaster
+)
 
 ## paramaterize forecasters
 ADVANCED_FORECASTER = AdvancedForecaster(
@@ -296,7 +301,7 @@ async def gen_comments(q):
     )
 
     meta_prediction = ensemble_dict["meta_prediction"]
-    meta_prediction = 100 * float(meta_prediction)
+    meta_prediction = round(100 * float(meta_prediction), 2)
     return cleaned_text, meta_prediction
 
 
@@ -312,14 +317,16 @@ async def parallel_post(q):
     q = ForecastingQuestion(**q)
 
     adv_prob = [q] * SAMPLES
-    adv_prob = await parallelized_call(ADVANCED_FORECASTER.call_async, adv_prob, 2)
+    adv_prob = await parallelized_call(
+        ADVANCED_FORECASTER.call_async, adv_prob, SAMPLING_THREADS
+    )
     adv_prob = sum(float(x) for x in adv_prob) / len(adv_prob)
     basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
 
-    adv_prob = min(max(100 * float(adv_prob), 1), 100)
-    basic_prob = min(max(100 * float(basic_prob), 1), 100)
+    adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
+    basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
 
-    comments, meta_prob = "Comment Generation Error", 1
+    comments, meta_prob = "Comment Generation Error", 1.00
 
     if not NO_COMMENT:
         try:
@@ -397,10 +404,15 @@ async def main():
             ]
             questions_list.append(new_qs)
 
-    questions_list = await parallelized_call(parallel_post, questions_list, 4)
+    questions_list = await parallelized_call(
+        parallel_post, questions_list, QUESTION_THREADS
+    )
 
     ##Done
-    print(questions_list)
+    for q in questions_list:
+        if q is None:
+            continue
+        print(q)
 
 
 if __name__ == "__main__":
