@@ -88,8 +88,10 @@ ADVANCED_FORECASTER = AdvancedForecaster(
     RANKING_MODEL_NAME="gpt-4o",
     AGGREGATION_MODEL_NAME="gpt-4o",
 )
+print(f"ADVANCED_FORECASTER:\n{ADVANCED_FORECASTER.dump_config()}\n")
 
 BASIC_FORECASTER = BasicForecaster()
+print(f"BASIC_FORECASTER:\n{BASIC_FORECASTER.dump_config()}\n")
 
 
 ##Param comments
@@ -316,12 +318,15 @@ async def parallel_post(q):
     q = await metaculus_to_jsonl(q)
     q = ForecastingQuestion(**q)
 
-    adv_prob = [q] * SAMPLES
-    adv_prob = await parallelized_call(
-        ADVANCED_FORECASTER.call_async, adv_prob, SAMPLING_THREADS
+    qs = [q] * SAMPLES
+    adv_probs = await parallelized_call(
+        ADVANCED_FORECASTER.call_async, qs, SAMPLING_THREADS
     )
-    adv_prob = sum(float(x) for x in adv_prob) / len(adv_prob)
-    basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
+    adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
+    basic_probs = await parallelized_call(
+        BASIC_FORECASTER.call_async, qs, SAMPLING_THREADS
+    )
+    basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
 
     adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
     basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)

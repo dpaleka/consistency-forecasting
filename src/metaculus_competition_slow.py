@@ -79,6 +79,7 @@ ADVANCED_FORECASTER = AdvancedForecaster(
     RANKING_MODEL_NAME="gpt-4o",
     AGGREGATION_MODEL_NAME="gpt-4o",
 )
+print(f"ADVANCED_FORECASTER:\n{ADVANCED_FORECASTER.dump_config()}\n")
 
 BASIC_FORECASTER = BasicForecaster()
 
@@ -339,14 +340,19 @@ async def main():
         q = await metaculus_to_jsonl(q)
         q = ForecastingQuestion(**q)
 
-        adv_prob_sum = 0.0
+        adv_probs = []
         for i in range(SAMPLES):
             adv_prob = await ADVANCED_FORECASTER.call_async(sentence=q)
-            adv_prob_sum += float(adv_prob)
+            adv_probs.append(float(adv_prob))
 
-        adv_prob = adv_prob_sum / SAMPLES
+        # Median of the samples
+        adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
 
-        basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
+        basic_probs = []
+        for i in range(SAMPLES):
+            basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
+            basic_probs.append(float(basic_prob))
+        basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
 
         adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
         basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
