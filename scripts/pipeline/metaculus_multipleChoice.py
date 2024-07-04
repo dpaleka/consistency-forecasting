@@ -56,6 +56,7 @@ def fetch_live_questions_with_dates(
             "resolve_time__lt": end_date,
             "close_time__gt": start_date,
             "close_time__lt": end_date,
+            "forecast_type": "multiple_choice",
         }
         response = requests.get(f"{api_url}/questions", headers=headers, params=params)
 
@@ -68,12 +69,13 @@ def fetch_live_questions_with_dates(
             break
 
         for question in questions_data.get("results", []):
-            question_type = question.get("possibilities", {}).get("type")
+            question_type = question.get("type")
             if not question_type:
-                question_type = question.get("type")
+                question_type = question.get("possibilities", {}).get("type")
 
-            # Filter out non-binary questions
-            if question_type != "binary":
+            # Filter out non-multiple choice questions
+
+            if question_type != "multiple_choice":
                 continue
 
             # only include resolution times either in range or expires past 30 days and within 10 years
@@ -141,6 +143,7 @@ def fetch_live_questions_with_dates(
                 "resolution": question.get("resolution"),
             }
 
+            question_info["metadata"]["choices"] = question.get("options")
             if (question_info["id"] not in seen_ids) and (
                 (question_info["resolution"] is None)
                 or (round(float(question_info["resolution"])) != -2)
@@ -187,10 +190,10 @@ if __name__ == "__main__":
         if args.start or args.end:
             s = "" if args.start is None else args.start
             e = "" if args.end is None else args.end
-            with open("metaculus_{}_{}.json".format(s, e), "w") as json_file:
+            with open("metaculus_MC_{}_{}.json".format(s, e), "w") as json_file:
                 json.dump(data, json_file, indent=4)
         else:
-            with open("metaculus.json", "w") as json_file:
+            with open("metaculus_MC.json", "w") as json_file:
                 json.dump(data, json_file, indent=4)
 
     except Exception as e:

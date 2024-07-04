@@ -13,7 +13,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/6369",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-05-03T23:36:00Z",
+            "close_time": "2024-05-02T21:00:00Z",
+            "effected_close_time": "2024-05-02T21:00:00Z"
         },
         "resolution": 0.0
     },
@@ -31,7 +34,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/14501",
-            "market_prob": 0.005
+            "market_prob": 0.005,
+            "resolve_time": "2024-04-22T03:51:00Z",
+            "close_time": "2024-03-31T22:09:00Z",
+            "effected_close_time": "2024-03-31T22:09:00Z"
         },
         "resolution": 0.0
     },
@@ -49,7 +55,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/14657",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-05-20T02:42:00Z",
+            "close_time": "2024-04-01T05:01:00Z",
+            "effected_close_time": "2024-04-01T05:01:00Z"
         },
         "resolution": 1.0
     },
@@ -67,7 +76,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/15532",
-            "market_prob": 0.005
+            "market_prob": 0.005,
+            "resolve_time": "2024-03-15T23:35:00Z",
+            "close_time": "2024-03-15T18:00:00Z",
+            "effected_close_time": "2024-03-15T18:00:00Z"
         },
         "resolution": 0.0
     },
@@ -85,7 +97,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/17593",
-            "market_prob": 0.13
+            "market_prob": 0.13,
+            "resolve_time": "2024-04-20T04:06:00Z",
+            "close_time": "2024-04-15T16:00:00Z",
+            "effected_close_time": "2024-04-15T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -103,7 +118,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/18695",
-            "market_prob": 0.999
+            "market_prob": 0.999,
+            "resolve_time": "2024-05-20T01:30:00Z",
+            "close_time": "2024-05-19T17:59:00Z",
+            "effected_close_time": "2024-05-19T17:59:00Z"
         },
         "resolution": 1.0
     },
@@ -121,7 +139,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19254",
-            "market_prob": 0.5
+            "market_prob": 0.5,
+            "resolve_time": "2024-04-08T11:00:00Z",
+            "close_time": "2024-03-31T23:00:00Z",
+            "effected_close_time": null
         },
         "resolution": null
     },
@@ -139,7 +160,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19495",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -157,7 +181,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19496",
-            "market_prob": 0.994
+            "market_prob": 0.994,
+            "resolve_time": "2024-04-04T20:34:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -175,7 +202,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19497",
-            "market_prob": 0.991
+            "market_prob": 0.991,
+            "resolve_time": "2024-04-04T20:34:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -193,7 +223,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19498",
-            "market_prob": 0.992
+            "market_prob": 0.992,
+            "resolve_time": "2024-04-04T20:34:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -211,7 +244,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19499",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-04T20:34:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -229,7 +265,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19500",
-            "market_prob": 0.993
+            "market_prob": 0.993,
+            "resolve_time": "2024-04-04T20:34:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -247,7 +286,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19501",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -265,7 +307,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19502",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-04T20:35:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -283,7 +328,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19503",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -301,7 +349,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19504",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-04T20:35:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -319,7 +370,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19505",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -337,7 +391,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19506",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -355,7 +412,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19507",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -373,7 +433,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19508",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:37:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -391,7 +454,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19509",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:37:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -409,7 +475,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19510",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:37:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -427,7 +496,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19511",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:37:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -445,7 +517,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19512",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:37:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -463,7 +538,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19513",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:36:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -481,7 +559,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19514",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -499,7 +580,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19515",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -517,7 +601,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19516",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -535,7 +622,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19517",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -553,7 +643,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19741",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-02T18:28:00Z",
+            "close_time": "2024-04-03T22:00:00Z",
+            "effected_close_time": "2024-04-02T18:28:00Z"
         },
         "resolution": 1.0
     },
@@ -571,7 +664,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19768",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-04T20:35:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 1.0
     },
@@ -589,7 +685,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19769",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -607,7 +706,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19770",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:33:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -625,7 +727,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19771",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:32:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -643,7 +748,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19772",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:32:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -661,7 +769,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19773",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:32:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -679,7 +790,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19846",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-30T20:14:00Z",
+            "close_time": "2024-04-30T10:00:00Z",
+            "effected_close_time": "2024-04-30T10:00:00Z"
         },
         "resolution": 1.0
     },
@@ -697,7 +811,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20399",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:32:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -715,7 +832,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20400",
-            "market_prob": 0.001
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-04T20:32:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -733,7 +853,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20547",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-22T22:00:00Z",
+            "close_time": "2024-05-22T05:59:00Z",
+            "effected_close_time": "2024-03-22T22:00:00Z"
         },
         "resolution": 1.0
     },
@@ -751,7 +874,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20791",
-            "market_prob": 0.02
+            "market_prob": 0.02,
+            "resolve_time": "2024-03-08T03:15:00Z",
+            "close_time": "2024-04-14T22:00:00Z",
+            "effected_close_time": "2024-03-08T03:15:00Z"
         },
         "resolution": 0.0
     },
@@ -769,7 +895,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20921",
-            "market_prob": 0.1
+            "market_prob": 0.1,
+            "resolve_time": "2024-03-11T17:06:00Z",
+            "close_time": "2024-03-10T10:00:00Z",
+            "effected_close_time": "2024-03-10T10:00:00Z"
         },
         "resolution": 0.0
     },
@@ -787,7 +916,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20922",
-            "market_prob": 0.1
+            "market_prob": 0.1,
+            "resolve_time": "2024-03-11T17:06:00Z",
+            "close_time": "2024-03-10T10:00:00Z",
+            "effected_close_time": "2024-03-10T10:00:00Z"
         },
         "resolution": 0.0
     },
@@ -805,7 +937,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20923",
-            "market_prob": 0.4
+            "market_prob": 0.4,
+            "resolve_time": "2024-03-11T17:06:00Z",
+            "close_time": "2024-03-10T10:00:00Z",
+            "effected_close_time": "2024-03-10T10:00:00Z"
         },
         "resolution": 1.0
     },
@@ -823,7 +958,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20924",
-            "market_prob": 0.18
+            "market_prob": 0.18,
+            "resolve_time": "2024-03-11T17:06:00Z",
+            "close_time": "2024-03-10T10:00:00Z",
+            "effected_close_time": "2024-03-10T10:00:00Z"
         },
         "resolution": 0.0
     },
@@ -841,7 +979,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21000",
-            "market_prob": 0.5
+            "market_prob": 0.5,
+            "resolve_time": "2024-04-18T15:17:00Z",
+            "close_time": "2024-04-01T23:30:00Z",
+            "effected_close_time": "2024-04-01T23:30:00Z"
         },
         "resolution": 0.0
     },
@@ -859,7 +1000,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21120",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-01T06:00:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-31T22:00:00Z"
         },
         "resolution": 0.0
     },
@@ -877,7 +1021,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21182",
-            "market_prob": 0.67
+            "market_prob": 0.67,
+            "resolve_time": "2024-03-08T12:00:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-08T12:00:00Z"
         },
         "resolution": 1.0
     },
@@ -895,7 +1042,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21183",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-01T16:13:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-31T22:00:00Z"
         },
         "resolution": 0.0
     },
@@ -907,13 +1057,16 @@
             "background_info": ""
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-08T12:00:00Z",
+        "resolution_date": "2024-03-31T22:00:00Z",
         "url": "https://www.metaculus.com/questions/21207",
         "data_source": "metaculus",
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21207",
-            "market_prob": 0.65
+            "market_prob": 0.65,
+            "resolve_time": "2024-04-01T16:13:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-08T12:00:00Z"
         },
         "resolution": 1.0
     },
@@ -931,7 +1084,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21256",
-            "market_prob": 0.45
+            "market_prob": 0.45,
+            "resolve_time": "2024-05-18T23:40:00Z",
+            "close_time": "2024-05-17T04:00:00Z",
+            "effected_close_time": "2024-05-17T04:00:00Z"
         },
         "resolution": 0.0
     },
@@ -949,7 +1105,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21285",
-            "market_prob": 0.06
+            "market_prob": 0.06,
+            "resolve_time": "2024-03-11T17:52:00Z",
+            "close_time": "2024-03-07T00:00:00Z",
+            "effected_close_time": "2024-03-07T00:00:00Z"
         },
         "resolution": 0.0
     },
@@ -967,7 +1126,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21394",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-15T20:14:00Z",
+            "close_time": "2024-03-14T22:58:00Z",
+            "effected_close_time": "2024-03-14T22:58:00Z"
         },
         "resolution": 0.0
     },
@@ -985,7 +1147,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21405",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-03-11T14:00:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-11T14:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1003,7 +1168,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21438",
-            "market_prob": 0.04
+            "market_prob": 0.04,
+            "resolve_time": "2024-03-13T02:35:00Z",
+            "close_time": "2024-03-11T11:00:00Z",
+            "effected_close_time": "2024-03-11T11:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1021,7 +1189,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21439",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-04T14:26:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-31T22:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1039,7 +1210,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21487",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-06T15:03:00Z",
+            "close_time": "2024-03-14T22:00:00Z",
+            "effected_close_time": "2024-03-06T15:03:00Z"
         },
         "resolution": 1.0
     },
@@ -1057,7 +1231,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21488",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-29T20:30:00Z",
+            "close_time": "2024-03-28T22:00:00Z",
+            "effected_close_time": "2024-03-28T22:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1075,7 +1252,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21493",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-03-11T16:13:00Z",
+            "close_time": "2024-03-10T11:00:00Z",
+            "effected_close_time": "2024-03-10T11:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1093,7 +1273,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21546",
-            "market_prob": 0.3
+            "market_prob": 0.3,
+            "resolve_time": "2024-03-02T16:11:00Z",
+            "close_time": "2024-03-29T12:00:00Z",
+            "effected_close_time": "2024-03-02T16:11:00Z"
         },
         "resolution": 0.0
     },
@@ -1111,7 +1294,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21608",
-            "market_prob": 0.6
+            "market_prob": 0.6,
+            "resolve_time": "2024-03-11T17:07:00Z",
+            "close_time": "2024-03-09T00:59:00Z",
+            "effected_close_time": "2024-03-09T00:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1129,7 +1315,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21609",
-            "market_prob": 0.6
+            "market_prob": 0.6,
+            "resolve_time": "2024-03-11T17:07:00Z",
+            "close_time": "2024-03-09T00:59:00Z",
+            "effected_close_time": "2024-03-09T00:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1147,7 +1336,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21789",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-14T03:21:00Z",
+            "close_time": "2024-03-12T22:00:00Z",
+            "effected_close_time": "2024-03-12T22:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1165,7 +1357,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21792",
-            "market_prob": 0.1
+            "market_prob": 0.1,
+            "resolve_time": "2024-03-23T00:10:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-23T00:10:00Z"
         },
         "resolution": 1.0
     },
@@ -1183,7 +1378,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21864",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-01T06:00:00Z",
+            "close_time": "2024-03-31T22:00:00Z",
+            "effected_close_time": "2024-03-31T22:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1201,7 +1399,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21972",
-            "market_prob": 0.1
+            "market_prob": 0.1,
+            "resolve_time": "2024-04-03T21:00:00Z",
+            "close_time": "2024-04-03T13:00:00Z",
+            "effected_close_time": "2024-04-03T13:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1219,7 +1420,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22050",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-04T19:44:00Z",
+            "close_time": "2024-04-03T22:00:00Z",
+            "effected_close_time": "2024-04-03T22:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1237,7 +1441,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22148",
-            "market_prob": 0.98
+            "market_prob": 0.98,
+            "resolve_time": "2024-04-07T21:28:00Z",
+            "close_time": "2024-04-07T18:00:00Z",
+            "effected_close_time": "2024-04-07T18:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1255,7 +1462,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22149",
-            "market_prob": 0.58
+            "market_prob": 0.58,
+            "resolve_time": "2024-04-07T06:30:00Z",
+            "close_time": "2024-04-13T20:00:00Z",
+            "effected_close_time": "2024-04-07T06:30:00Z"
         },
         "resolution": 1.0
     },
@@ -1273,7 +1483,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22161",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-01T17:53:00Z",
+            "close_time": "2024-05-01T06:59:00Z",
+            "effected_close_time": "2024-05-01T06:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1291,7 +1504,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22298",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-05-13T18:00:00Z",
+            "close_time": "2024-05-31T22:00:31.900000Z",
+            "effected_close_time": "2024-05-13T18:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1309,7 +1525,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22299",
-            "market_prob": 0.62
+            "market_prob": 0.62,
+            "resolve_time": "2024-05-06T14:50:00Z",
+            "close_time": "2024-04-26T22:00:00Z",
+            "effected_close_time": "2024-04-26T22:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1327,7 +1546,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22314",
-            "market_prob": 0.3
+            "market_prob": 0.3,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1345,7 +1567,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22315",
-            "market_prob": 0.85
+            "market_prob": 0.85,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1363,7 +1588,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22316",
-            "market_prob": 0.15
+            "market_prob": 0.15,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1381,7 +1609,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22317",
-            "market_prob": 0.83
+            "market_prob": 0.83,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1399,7 +1630,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22318",
-            "market_prob": 0.52
+            "market_prob": 0.52,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1417,7 +1651,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22319",
-            "market_prob": 0.95
+            "market_prob": 0.95,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1435,7 +1672,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22320",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1453,7 +1693,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22321",
-            "market_prob": 0.634
+            "market_prob": 0.634,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1471,7 +1714,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22322",
-            "market_prob": 0.05
+            "market_prob": 0.05,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1489,7 +1735,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22323",
-            "market_prob": 0.283
+            "market_prob": 0.283,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1507,7 +1756,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22324",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1525,7 +1777,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22325",
-            "market_prob": 0.95
+            "market_prob": 0.95,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1543,7 +1798,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22326",
-            "market_prob": 0.6
+            "market_prob": 0.6,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1561,7 +1819,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22327",
-            "market_prob": 0.9
+            "market_prob": 0.9,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1579,7 +1840,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22328",
-            "market_prob": 0.04
+            "market_prob": 0.04,
+            "resolve_time": "2024-05-07T23:30:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1597,7 +1861,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22329",
-            "market_prob": 0.84
+            "market_prob": 0.84,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1615,7 +1882,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22330",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1633,7 +1903,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22331",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1651,7 +1924,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22332",
-            "market_prob": 0.95
+            "market_prob": 0.95,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1669,7 +1945,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22333",
-            "market_prob": 0.76
+            "market_prob": 0.76,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1687,7 +1966,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22334",
-            "market_prob": 0.038
+            "market_prob": 0.038,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1705,7 +1987,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22335",
-            "market_prob": 0.05
+            "market_prob": 0.05,
+            "resolve_time": "2024-05-07T23:30:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1723,7 +2008,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22336",
-            "market_prob": 0.98
+            "market_prob": 0.98,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1741,7 +2029,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22337",
-            "market_prob": 0.9
+            "market_prob": 0.9,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1759,7 +2050,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22338",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-05-07T23:30:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1777,7 +2071,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22339",
-            "market_prob": 0.108
+            "market_prob": 0.108,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1795,7 +2092,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22340",
-            "market_prob": 0.16
+            "market_prob": 0.16,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1813,7 +2113,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22341",
-            "market_prob": 0.47
+            "market_prob": 0.47,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1831,7 +2134,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22342",
-            "market_prob": 0.8
+            "market_prob": 0.8,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1849,7 +2155,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22343",
-            "market_prob": 0.99
+            "market_prob": 0.99,
+            "resolve_time": "2024-05-09T21:19:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1867,7 +2176,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22344",
-            "market_prob": 0.975
+            "market_prob": 0.975,
+            "resolve_time": "2024-05-07T22:00:00Z",
+            "close_time": "2024-05-05T16:00:00Z",
+            "effected_close_time": "2024-05-05T16:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1885,7 +2197,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22403",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-01T18:00:00Z",
+            "close_time": "2024-05-01T07:00:00Z",
+            "effected_close_time": "2024-05-01T07:00:00Z"
         },
         "resolution": 0.0
     },
@@ -1903,7 +2218,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22421",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-01T18:00:00Z",
+            "close_time": "2024-05-01T06:59:00Z",
+            "effected_close_time": "2024-05-01T06:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1921,7 +2239,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22424",
-            "market_prob": 0.01
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-01T18:00:00Z",
+            "close_time": "2024-05-01T06:59:00Z",
+            "effected_close_time": "2024-05-01T06:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1939,7 +2260,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22547",
-            "market_prob": 0.5
+            "market_prob": 0.5,
+            "resolve_time": "2024-05-09T06:00:00Z",
+            "close_time": "2024-05-31T21:59:00Z",
+            "effected_close_time": "2024-05-09T06:00:00Z"
         },
         "resolution": 1.0
     },
@@ -1957,7 +2281,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22628",
-            "market_prob": 0.18
+            "market_prob": 0.18,
+            "resolve_time": "2024-04-27T06:00:00Z",
+            "close_time": "2024-04-26T17:05:00Z",
+            "effected_close_time": "2024-04-26T17:05:00Z"
         },
         "resolution": 0.0
     },
@@ -1975,7 +2302,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/22633",
-            "market_prob": 0.13
+            "market_prob": 0.13,
+            "resolve_time": "2024-04-30T06:00:00Z",
+            "close_time": "2024-04-28T21:59:00Z",
+            "effected_close_time": "2024-04-28T21:59:00Z"
         },
         "resolution": 0.0
     },
@@ -1993,7 +2323,10 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/23038",
-            "market_prob": 0.02
+            "market_prob": 0.02,
+            "resolve_time": "2024-05-10T01:27:00Z",
+            "close_time": "2024-05-07T22:00:00Z",
+            "effected_close_time": "2024-05-07T22:00:00Z"
         },
         "resolution": 0.0
     }
