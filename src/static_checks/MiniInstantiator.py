@@ -139,7 +139,6 @@ class MiniInstantiator(ABC):
     def data_source(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
         return "synthetic_inst"
 
-    @abstractmethod
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         """Basically just the MiniInstantiator's logic. E.g. return {'not_P': not resolutions['P']}"""
         pass
