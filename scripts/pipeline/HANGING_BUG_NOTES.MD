@@ -1,7 +1,7 @@
-I have generated the test files:
+I have generated the test files in scripts/pipeline/metaculus:
 
-
-
+metaculus_20240701_20241001.jsonl
+metaculus_20240301_20240601.jsonl
 
 
 The command that I am running and failing is:
@@ -314,7 +314,7 @@ No date, getting date from the title with an LLM call
 ```
 
 
-However, if you limit the number of questions to 19, it works and generates: metaculus_20240301_20240601.jsonl
+However, if you limit the number of questions to 19, it works and generates: metaculus_cleaned_formatted_20240301_20240601.jsonl in the pipeline folder (one level up)
 `
 python3 ../../../src/format_and_verify_questions.py -f metaculus_20240701_20241001.jsonl -d real -o metaculus_cleaned_formatted_20240701_20241001.jsonl --max_questions 19 --overwrite -M gpt-3.5-turbo -c 1
 `
