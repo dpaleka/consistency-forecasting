@@ -38,6 +38,12 @@ import requests
 import re
 import aiohttp
 
+
+from read_logs import extract_element, submission_log_only_stats
+
+global VISITED_IDS
+VISITED_IDS = set()
+
 # Load .env file if it exists
 dotenv_path = os.path.dirname(os.path.abspath(os.getcwd()))
 dotenv_path = os.path.join(dotenv_path, ".env")
@@ -67,6 +73,9 @@ ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
+IGNORE_VISITED = (
+    True,
+)  # If true, will note update / predict a market already submitted to.
 
 
 ## paramaterize forecasters
@@ -312,6 +321,15 @@ def submission_log(log_file_path, message):
 
 
 async def main():
+    ######### ignore visited
+    lines = submission_log_only_stats(LOG_FILE_PATH)
+
+    for l in lines:
+        id = extract_element(l, "id")
+        VISITED_IDS.add(l)
+
+    #######################
+
     if TOTAL_QUESTIONS <= 100:
         questions_list = list_questions(
             tournament_id=TOURNAMENT_ID, offset=0, count=TOTAL_QUESTIONS
@@ -333,6 +351,9 @@ async def main():
         title = q["title"]
         url = q["url"]
 
+        if IGNORE_VISITED and (str(id) in VISITED_IDS):
+            continue
+
         ##make sure it's actually valid post place
         if q["active_state"].upper() != "OPEN":
             continue
@@ -340,26 +361,43 @@ async def main():
         q = await metaculus_to_jsonl(q)
         q = ForecastingQuestion(**q)
 
-        adv_probs = []
-        for i in range(SAMPLES):
-            adv_prob = await ADVANCED_FORECASTER.call_async(sentence=q)
-            adv_probs.append(float(adv_prob))
+        adv_prob = 1.00
+        basic_prob = 1.00
 
-        # Median of the samples
-        adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
+        try:
+            adv_probs = []
+            for i in range(SAMPLES):
+                adv_prob = await ADVANCED_FORECASTER.call_async(sentence=q)
+                adv_probs.append(float(adv_prob))
 
-        basic_probs = []
-        for i in range(SAMPLES):
-            basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
-            basic_probs.append(float(basic_prob))
-        basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
+            # Median of the samples
+            adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
 
-        adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
-        basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
+            basic_probs = []
+            for i in range(SAMPLES):
+                basic_prob = await BASIC_FORECASTER.call_async(sentence=q)
+                basic_probs.append(float(basic_prob))
+            basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
 
-        comments, meta_prob = "Test", 1.00
+            adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
+            basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
+
+        except Exception as e:
+            msg = "id: {}, forecaster_error_msg: {}".format(id, e)
+            print(msg)
+            print("********************")
+            print("")
+            submission_log(ERROR_LOG_FILE_PATH, msg)
+
+        comments, meta_prob = "Comment Generation Error", 1.00
+
         if not NO_COMMENT:
-            comments, meta_prob = await gen_comments(q)
+            try:
+                comments, meta_prob = await gen_comments(q)
+            except Exception as e:
+                msg = "id: {}, comment_generation_error: {}".format(id, e)
+                print(msg, "\n********************\n")
+                await submission_log(ERROR_LOG_FILE_PATH, msg)
 
         prediction_dict = {"adv": adv_prob, "basic": basic_prob, "meta": meta_prob}
         res_dict[id] = {

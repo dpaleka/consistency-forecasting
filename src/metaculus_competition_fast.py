@@ -41,6 +41,11 @@ import aiohttp
 
 from common.llm_utils import parallelized_call
 
+from read_logs import extract_element, submission_log_only_stats
+
+global VISITED_IDS
+VISITED_IDS = set()
+
 
 # Load .env file if it exists
 dotenv_path = os.path.dirname(os.path.abspath(os.getcwd()))
@@ -71,6 +76,10 @@ ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.
+IGNORE_VISITED = (
+    True,
+)  # If true, will note update / predict a market already submitted to.
+
 
 ##Coroutine parameters.  Note that these are multiplicative. So the "total threads" will be QUESTION_THREADS * SAMPLING_THREADS * {threads for running the forecasters which I think is already maxed}
 QUESTION_THREADS = 4  # How many concurrency operations to run for questions.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
@@ -315,21 +324,36 @@ async def parallel_post(q):
     title = q["title"]
     url = q["url"]
 
+    if IGNORE_VISITED and (str(id) in VISITED_IDS):
+        return None
+
     q = await metaculus_to_jsonl(q)
     q = ForecastingQuestion(**q)
 
     qs = [q] * SAMPLES
-    adv_probs = await parallelized_call(
-        ADVANCED_FORECASTER.call_async, qs, SAMPLING_THREADS
-    )
-    adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
-    basic_probs = await parallelized_call(
-        BASIC_FORECASTER.call_async, qs, SAMPLING_THREADS
-    )
-    basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
 
-    adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
-    basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
+    adv_prob = 1.00
+    basic_prob = 1.00
+
+    try:
+        adv_probs = await parallelized_call(
+            ADVANCED_FORECASTER.call_async, qs, SAMPLING_THREADS
+        )
+        adv_prob = sorted(adv_probs)[len(adv_probs) // 2]
+        basic_probs = await parallelized_call(
+            BASIC_FORECASTER.call_async, qs, SAMPLING_THREADS
+        )
+        basic_prob = sorted(basic_probs)[len(basic_probs) // 2]
+
+        adv_prob = round(min(max(100 * float(adv_prob), 1), 100), 2)
+        basic_prob = round(min(max(100 * float(basic_prob), 1), 100), 2)
+
+    except Exception as e:
+        msg = "id: {}, forecaster_error_msg: {}".format(id, e)
+        print(msg)
+        print("********************")
+        print("")
+        submission_log(ERROR_LOG_FILE_PATH, msg)
 
     comments, meta_prob = "Comment Generation Error", 1.00
 
@@ -395,6 +419,15 @@ async def submission_log(log_file_path, message):
 
 
 async def main():
+    ######### ignore visited
+    lines = submission_log_only_stats(LOG_FILE_PATH)
+
+    for l in lines:
+        id = extract_element(l, "id")
+        VISITED_IDS.add(l)
+
+    #######################
+
     if TOTAL_QUESTIONS <= 100:
         questions_list = list_questions(
             tournament_id=TOURNAMENT_ID, offset=0, count=TOTAL_QUESTIONS

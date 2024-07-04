@@ -55,7 +55,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/5712",
-            "market_prob": 0.8,
+            "market_prob": 0.48,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -244,7 +244,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11704",
-            "market_prob": 0.08,
+            "market_prob": 0.4,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -286,7 +286,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11706",
-            "market_prob": 0.06,
+            "market_prob": 0.05,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -307,7 +307,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11707",
-            "market_prob": 0.001,
+            "market_prob": 0.005,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -328,7 +328,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11708",
-            "market_prob": 0.001,
+            "market_prob": 0.005,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -475,7 +475,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/13539",
-            "market_prob": 0.01,
+            "market_prob": 0.04,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -496,7 +496,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/15255",
-            "market_prob": 0.005,
+            "market_prob": 0.001,
             "resolve_time": "2024-08-31T15:44:00Z",
             "close_time": "2024-08-01T04:00:00Z",
             "effected_close_time": null
@@ -559,7 +559,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/15796",
-            "market_prob": 0.65,
+            "market_prob": 0.662,
             "resolve_time": "2024-08-03T19:00:00Z",
             "close_time": "2024-07-26T19:00:00Z",
             "effected_close_time": null
@@ -853,7 +853,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/19629",
-            "market_prob": 0.95,
+            "market_prob": 0.98,
             "resolve_time": "2024-08-31T06:00:00Z",
             "close_time": "2024-07-14T17:00:00Z",
             "effected_close_time": null
@@ -1084,7 +1084,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21354",
-            "market_prob": 0.31,
+            "market_prob": 0.311,
             "resolve_time": "2024-08-11T22:00:00Z",
             "close_time": "2024-08-11T21:59:00Z",
             "effected_close_time": null
@@ -1126,7 +1126,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/24034",
-            "market_prob": 0.13,
+            "market_prob": 0.15,
             "resolve_time": "2024-08-01T16:00:00Z",
             "close_time": "2024-07-31T22:00:00Z",
             "effected_close_time": null
@@ -1168,7 +1168,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/24622",
-            "market_prob": 0.25,
+            "market_prob": 0.252,
             "resolve_time": "2024-07-05T11:00:00Z",
             "close_time": "2024-07-04T11:00:00Z",
             "effected_close_time": null
@@ -1189,7 +1189,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25520",
-            "market_prob": 0.9,
+            "market_prob": 0.95,
             "resolve_time": "2024-07-05T11:00:00Z",
             "close_time": "2024-07-04T11:00:00Z",
             "effected_close_time": null
@@ -1210,7 +1210,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25705",
-            "market_prob": null,
+            "market_prob": 0.5,
             "resolve_time": "2024-09-30T00:00:00Z",
             "close_time": "2024-07-02T00:00:00Z",
             "effected_close_time": null
@@ -1231,7 +1231,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25706",
-            "market_prob": null,
+            "market_prob": 0.56,
             "resolve_time": "2024-09-30T00:00:00Z",
             "close_time": "2024-07-03T00:00:00Z",
             "effected_close_time": null
@@ -1252,7 +1252,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25707",
-            "market_prob": null,
+            "market_prob": 0.12,
             "resolve_time": "2024-07-29T00:00:00Z",
             "close_time": "2024-07-04T00:00:00Z",
             "effected_close_time": null
@@ -1357,7 +1357,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25753",
-            "market_prob": 0.29,
+            "market_prob": 0.4,
             "resolve_time": "2024-07-07T22:00:00Z",
             "close_time": "2024-07-04T23:00:00Z",
             "effected_close_time": null
@@ -1366,10 +1366,10 @@
     },
     {
         "id": 25755,
-        "title": "Will Joe Biden announce before July 15 2024 that he will not accept the Democratic Party's nomination for President?",
+        "title": "Will Joe Biden announce before July 15, 2024 that he will not accept the Democratic Party's nomination for President?",
         "body": {
             "resolution_criteria": "This question will resolve as **Yes** if prior to 00:00 Eastern on July 15, 2024, Joe Biden or his campaign makes a definitive, public, official announcement to the effect that Joe Biden will not seek and will not accept the nomination of his party for another term as President of the United States in the 2024 cycle.\n\nTo qualify for a **Yes** resolution, the statement must be unambiguous and conclusive: it should leave no room for the possibility that Biden would accept the Democratic Party's nomination for President of the United States in the 2024 election cycle.\n\nIf such a definitive statement is not made prior to 00:00 Eastern on July 15, 2024, this question will resolve as **No**.",
-            "background_info": "As of June 29 2024, [Joe Biden](https://en.wikipedia.org/wiki/Joe_Biden?useskin=vector), the 46th and current president of the United States, is the presumptive nominee of the Democratic Party for the [2024 presidential election](https://en.wikipedia.org/wiki/2024_United_States_presidential_election?useskin=vector), in which he faces a rematch against former president and current Republican presumptive nominee Donald Trump.\n\nOn June 27 2024, [the first presidential debate of the 2024 cycle](https://en.wikipedia.org/wiki/2024_United_States_presidential_debates?useskin=vector#June_27_presidential_debate_(Atlanta)) was held in Atlanta. Biden and Trump were the only candidates to qualify for the debate, and both participated. \n\nBiden's performance was widely panned by the media; variously termed an ['unmitigated disaster'](https://news.sky.com/story/in-command-trump-and-stumbling-biden-face-off-in-first-presidential-debate-13160193), a ['catastrophe'](https://www.thedailybeast.com/why-bidens-debate-catastrophe-was-months-in-the-making), and ['disqualifying'](https://www.newshub.co.nz/home/world/2024/06/us-election-debate-democrats-scramble-to-contain-fallout-after-biden-s-disqualifying-performance-against-trump.html), and it led to calls, including from the Editorial Boards of the [New York Times](https://www.nytimes.com/2024/06/28/opinion/biden-election-debate-trump.html) and the [Atlanta Journal-Constitution](https://www.newsweek.com/ajc-georgia-largest-newspaper-joe-biden-exit-race-immediately-1919206), for Biden to abandon his bid for a second term. \n\nIn [the betting market](https://electionbettingodds.com/) and on Metaculus, [Biden's perceived chances of winning re-election](https://www.metaculus.com/questions/11245/winner-of-2024-us-presidential-election/), and of [remaining the Democratic Party's nominee](https://www.metaculus.com/questions/11379/2024-democrat-nominee-for-us-prez/), tumbled in the aftermath of the debate. \n\nAs of June 29 2024, [the Biden campaign's position](https://www.thedailybeast.com/biden-campaign-emphatic-he-will-not-drop-out-after-debate-disaster) is that Biden will not drop out of the race, and major Democratic Party figures including former president [Barack Obama](https://x.com/BarackObama/status/1806758633230709017) and current vice president [Kamala Harris have defended the president](https://www.newsweek.com/kamala-harris-defends-joe-biden-debate-1918553) on the basis that one poor showing in a debate does not negate the overall success of his first term.\n\nOn June 28, Biden acknowledged his poor performance in the debate, but [defended his re-election bid](https://www.telegraph.co.uk/us/politics/2024/06/28/democrats-urge-joe-biden-drop-out-election/):\n\n>On Friday afternoon, Mr Biden insisted in a defiant speech in North Carolina he could still win the election but told supporters: “I know I’m not a young man…I don’t debate as well as I used to.\n\n>“I give you my word as a Biden [that] I would not be running again if I didn’t believe with all my heart and soul I can do this job. Quite frankly, the stakes are too high.”"
+            "background_info": "As of June 29, 2024, [Joe Biden](https://en.wikipedia.org/wiki/Joe_Biden?useskin=vector), the 46th and current president of the United States, is the presumptive nominee of the Democratic Party for the [2024 presidential election](https://en.wikipedia.org/wiki/2024_United_States_presidential_election?useskin=vector), in which he faces a rematch against former president and current Republican presumptive nominee Donald Trump.\n\nOn June 27 2024, [the first presidential debate of the 2024 cycle](https://en.wikipedia.org/wiki/2024_United_States_presidential_debates?useskin=vector#June_27_presidential_debate_(Atlanta)) was held in Atlanta. Biden and Trump were the only candidates to qualify for the debate, and both participated. \n\nBiden's performance was widely panned by the media; variously termed an ['unmitigated disaster'](https://news.sky.com/story/in-command-trump-and-stumbling-biden-face-off-in-first-presidential-debate-13160193), a ['catastrophe'](https://www.thedailybeast.com/why-bidens-debate-catastrophe-was-months-in-the-making), and ['disqualifying'](https://www.newshub.co.nz/home/world/2024/06/us-election-debate-democrats-scramble-to-contain-fallout-after-biden-s-disqualifying-performance-against-trump.html), and it led to calls, including from the Editorial Boards of the [New York Times](https://www.nytimes.com/2024/06/28/opinion/biden-election-debate-trump.html) and the [Atlanta Journal-Constitution](https://www.newsweek.com/ajc-georgia-largest-newspaper-joe-biden-exit-race-immediately-1919206), for Biden to abandon his bid for a second term. \n\nIn [the betting market](https://electionbettingodds.com/) and on Metaculus, [Biden's perceived chances of winning re-election](https://www.metaculus.com/questions/11245/winner-of-2024-us-presidential-election/), and of [remaining the Democratic Party's nominee](https://www.metaculus.com/questions/11379/2024-democrat-nominee-for-us-prez/), tumbled in the aftermath of the debate. \n\nAs of June 29 2024, [the Biden campaign's position](https://www.thedailybeast.com/biden-campaign-emphatic-he-will-not-drop-out-after-debate-disaster) is that Biden will not drop out of the race, and major Democratic Party figures including former president [Barack Obama](https://x.com/BarackObama/status/1806758633230709017) and current vice president [Kamala Harris have defended the president](https://www.newsweek.com/kamala-harris-defends-joe-biden-debate-1918553) on the basis that one poor showing in a debate does not negate the overall success of his first term.\n\nOn June 28, Biden acknowledged his poor performance in the debate, but [defended his re-election bid](https://www.telegraph.co.uk/us/politics/2024/06/28/democrats-urge-joe-biden-drop-out-election/):\n\n>On Friday afternoon, Mr Biden insisted in a defiant speech in North Carolina he could still win the election but told supporters: “I know I’m not a young man…I don’t debate as well as I used to.\n\n>“I give you my word as a Biden [that] I would not be running again if I didn’t believe with all my heart and soul I can do this job. Quite frankly, the stakes are too high.”"
         },
         "question_type": "binary",
         "resolution_date": "2024-07-13T23:00:00Z",
@@ -1378,9 +1378,30 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25755",
-            "market_prob": null,
+            "market_prob": 0.35,
             "resolve_time": "2024-07-15T23:00:00Z",
             "close_time": "2024-07-13T23:00:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 25769,
+        "title": "Will US offer India a nuclear submarine before Sept 30, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as Yes if the United States makes a public formal agreement with India to build, design, lease, or sell a nuclear-powered submarine for the Indian Navy at any time between January 1, 2022 and Sept 30, 2024",
+            "background_info": "60% of India’s military hardware inventory (as of March 2022) is [from Russia](https://www.defensenews.com/global/asia-pacific/2022/03/02/india-braces-for-sanctions-on-russia-to-delay-weapons-programs-deliveries/) and the former Soviet Union.  Many of India's conventional and nuclear-powered submarines have been supplied by [Russia/USSR](https://en.wikipedia.org/wiki/List_of_submarines_of_the_Indian_Navy).  The only nuclear submarine in India's Navy as of June 2022 is the Indian-built [INS Arihant](https://en.wikipedia.org/wiki/INS_Arihant).\n\nIn [September 2021](https://www.indiatoday.in/india-today-insight/story/why-the-us-won-t-give-india-nuclear-submarines-1854818-2021-09-20), the US, UK, and Australia made an agreement to design and build 8 nuclear submarines for Australia's navy.  Former Indian naval chief Arun Prakash [commented](https://archive.ph/WR4oJ#selection-1101.1-1109.101), \"For years, the US has been telling India that American laws make it impossible to share nuclear-propulsion tech with anyone, including allies.\"  Srinath Raghavan, professor of international relations at Ashoka University [said](https://archive.ph/WR4oJ#selection-2383.1-2383.215) \"It’s normal realpolitik, [...] The US gave short shrift to an ally like France in the process, [so] it would be silly of India to see this as a snub.\""
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-07-08T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/25769",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/25769",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T00:00:00Z",
+            "close_time": "2024-07-08T00:00:00Z",
             "effected_close_time": null
         },
         "resolution": null

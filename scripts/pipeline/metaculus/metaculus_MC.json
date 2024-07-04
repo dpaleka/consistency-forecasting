@@ -1,0 +1,1898 @@
+[
+    {
+        "id": 20362,
+        "title": "What will be the total awarded grand-prize sum for XPRIZE Healthspan?",
+        "body": {
+            "resolution_criteria": "Awarded sums are [decided](https://www.xprize.org/prizes/healthspan/guidelines) by the XPRIZE Judging Panel  in year 2030 as follows:\n\n>Competing teams will develop and test therapeutics that restore muscle, cognition, and immune function by a minimum of 10 years with a goal of 20 years and extend healthy life.\n\n>Awarding is indexed to improvements in function relative to age-related declines expected over 10-years ($61M), 15-years ($71M), or 20-years ($81M).\n\n$0 is awarded if no team meats the threshold.",
+            "background_info": "[XPRIZE Healthspan](https://www.xprize.org/prizes/healthspan) is a 7-year, $101 million global competition to revolutionize the way we approach human aging.  XPRIZE Healthspan will award $101 million in prize funding to the team who successfully develops a proactive, accessible therapeutic that restores muscle, cognition, and immune function by a minimum of 10 years, with a goal of 20 years, in persons aged 65-80 years, in one year or less. \n\nMaximum sum awarded for the grand prize is $81M. \n\nPossible award outcomes are: $0, $61 Million, $71 Million, or  $81 Million  purse, excluding some unseen event or change in rules. \n\nXPRICE Healthspan guidelines:\nhttp://xprize.org/prizes/healthspan/guidelines\n\n> **GRAND-PRIZE AWARDS:**\n\n>**10 Year Functional Improvement:** Any team who conclusively demonstrates, to the satisfaction of\nthe Judging Panel, a functional improvement of at least 10 years in all three systems (muscle,\ncognition, and immune), compared with controls, through a therapeutic treatment lasting 1 year (or\nless) is eligible to win **$61 Million** of the purse. This purse is paid out only if no team achieves the\naward at the 15 year or 20 year functional restoration level.\n\n>**15 Year Functional Improvement:** Any team who conclusively demonstrates, to the satisfaction of\nthe Judging Panel, a functional improvement of at least 15 years in all three systems (muscle,\ncognition, and immune), compared with controls, through a therapeutic treatment lasting 1 year (or\nless) is eligible to win **$71 Million of the purse.** This purse is paid out only if no team achieves the\naward at the 20 year functional restoration level.\n\n>**20 Year Functional Improvement:** Any team who conclusively demonstrates, to the satisfaction of\nthe Judging Panel, a functional improvement of at least 20 years in all three systems (muscle,\ncognition, and immune), compared with controls, through a therapeutic treatment lasting 1 year (or\nless) is eligible to win **$81 Million of the purse**"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2029-12-31T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/20362",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20362",
+            "market_prob": null,
+            "resolve_time": "2031-03-01T12:00:00Z",
+            "close_time": "2029-12-31T12:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 674,
+                    "label": "$0"
+                },
+                {
+                    "id": 675,
+                    "label": "$61 million – 10 Year Functional Improvement"
+                },
+                {
+                    "id": 676,
+                    "label": "$71 million – 15 Year Functional Improvement"
+                },
+                {
+                    "id": 677,
+                    "label": "$81 million –  20 Year Functional Improvement"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 20719,
+        "title": "Which country will lead the medal table at the Paris 2024 Summer Olympics?",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the country that wins the most gold medals at the [2024 Paris Olympics](https://www.paris2024.org/en/).",
+            "background_info": "The Games of the XXXIII Olympiad begin on July 26th in Paris, France.\n\nThe United States leads the [all-time medal table](https://en.wikipedia.org/wiki/Summer_Olympic_Games#All-time_medal_table). The last time a nation other than the US won the most gold medals was the 2008 Beijing Olympics, when [China won 48 gold medals](https://olympics.com/en/olympic-games/beijing-2008/medals)."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-08-09T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/20719",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20719",
+            "market_prob": null,
+            "resolve_time": "2024-08-12T16:00:00Z",
+            "close_time": "2024-08-09T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 81,
+                    "label": "USA"
+                },
+                {
+                    "id": 82,
+                    "label": "China"
+                },
+                {
+                    "id": 83,
+                    "label": "France"
+                },
+                {
+                    "id": 84,
+                    "label": "Great Britain"
+                },
+                {
+                    "id": 85,
+                    "label": "Australia"
+                },
+                {
+                    "id": 86,
+                    "label": "ROC"
+                },
+                {
+                    "id": 87,
+                    "label": "Japan"
+                },
+                {
+                    "id": 88,
+                    "label": "Another nation"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 20772,
+        "title": "Which party will win the 2024 US presidential election?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the party whose candidate receives at least 270 electoral votes in the 2024 US presidential election when the results are [announced by congress](https://www.archives.gov/electoral-college/key-dates). If no candidate receives 270 electoral votes, it resolves as the party whose candidate is elected by the House of Representatives.",
+            "background_info": "The [2024 US presidential election](https://en.wikipedia.org/wiki/2024_United_States_presidential_election) is scheduled to take place on November 5, 2024. Parties will select their candidates in 2024. The current front runners for the Democratic Party and Republican party are [Joe Biden](https://www.metaculus.com/questions/11379/2024-democrat-nominee-for-us-prez/) and [Donald Trump](https://www.metaculus.com/questions/11370/2024-republican-nominee-for-us-prez/), respectively.\n\nSince the year 2000, only the Libertarian party and the Green party [have received more than 1% of the popular vote](https://en.wikipedia.org/wiki/List_of_third-party_and_independent_performances_in_United_States_presidential_elections#Other_third_party_presidential_candidates_(1788%E2%80%93present)) in a US presidential election. The last third party candidate to receive electoral votes was George Wallace of the American Independent party [in 1968](https://en.wikipedia.org/wiki/1968_United_States_presidential_election), receiving 46 electoral votes."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-07T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/20772",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20772",
+            "market_prob": null,
+            "resolve_time": "2025-01-06T14:00:00Z",
+            "close_time": "2024-11-07T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 89,
+                    "label": "Democratic"
+                },
+                {
+                    "id": 90,
+                    "label": "Republican"
+                },
+                {
+                    "id": 91,
+                    "label": "Libertarian"
+                },
+                {
+                    "id": 93,
+                    "label": "Green"
+                },
+                {
+                    "id": 94,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 20850,
+        "title": "What will be the outcome of the New York Times' copyright lawsuit against OpenAI and Microsoft?",
+        "body": {
+            "resolution_criteria": "The question resolves to one of the following options.\n\n- **NYT Wins ≥$50 million** will be the resolution if the New York Times wins a court-ordered ruling for at least $50 million, including statutory damages, compensatory damages, restitution, and disgorgement. The full ruling need not be in the NYT's favor, as long as the combined monetary award meets the threshold. The total will not include litigation costs, expenses, and attorneys’ fees.\n- **NYT Wins < $50 million** will be the resolution if the New York Times wins any ruling in its favor for a total dollar amount less than $50 million. The full ruling need not be in the NYT's favor, as long as there is some award of statutory damages, compensatory damages, restitution, or disgorgement. The total will not include litigation costs, expenses, and attorneys’ fees.\n- **OpenAI & Microsoft Win** if the court rules against the NYT on all counts (excluding attorney's fees), if the lawsuit is dropped, or if it is dismissed on the merits.\n- **The case is settled** will be the resolution if the case is settled outside of court.\n- The question resolves **Ambiguously** if the case is dismissed for jurisdictional or procedural reasons, or if it is consolidated into another case or class action.\n- The question resolves as **Other** in all other situations, including those in which the court awards no monetary damages to the NYT but orders OpenAI & Microsoft to destroy GPT and other LLM models, and/or enjoins OpenAI & Microsoft from certain types of conduct.",
+            "background_info": "On December 27th, the New York Times sued OpenAI and Microsoft over the [use of copyrighted work by AI systems](https://www.nytimes.com/2023/12/27/business/media/new-york-times-open-ai-microsoft-lawsuit.html). The [compliant](https://nytco-assets.nytimes.com/2023/12/NYT_Complaint_Dec2023.pdf) alleges that:\n\n> The law does not permit the kind of systematic and competitive infringement that Defendants have committed. This action seeks to hold them responsible for the billions of dollars in statutory and actual damages that they owe for the unlawful copying and use of The Times’s uniquely valuable works."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-12-31T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/20850",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20850",
+            "market_prob": null,
+            "resolve_time": "2026-01-01T19:00:00Z",
+            "close_time": "2025-12-31T19:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 110,
+                    "label": "NYT Wins ≥$50 Million"
+                },
+                {
+                    "id": 111,
+                    "label": "NYT Wins <$50 Million"
+                },
+                {
+                    "id": 112,
+                    "label": "OpenAI & Microsoft Win"
+                },
+                {
+                    "id": 113,
+                    "label": "The case is settled"
+                },
+                {
+                    "id": 114,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 20851,
+        "title": "Which party will win Higgins in the next Australian Federal Election?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the party that the Australian Electoral Commission (AEC) declares the winner of the Higgins seat in the next Australian federal election to be held.",
+            "background_info": "The next Australian Federal Election is expected between [August 2024 and May 2025](https://www.aph.gov.au/About_Parliament/Parliamentary_departments/Parliamentary_Library/pubs/rp/rp2223/Quick_Guides/WhenIsTheNextElection2022). A typical election is for every seat in the lower house — the House of Representatives — and half the seats in the upper house — the Senate. This question concerns the seat of Higgins, a lower house seat in Victoria.\n\nHiggins is the 5th most marginal seat currently held by Labor, [with a margin of 2.1%](https://en.wikipedia.org/wiki/Post-election_pendulum_for_the_2022_Australian_federal_election). The incumbent, Michelle Ananda-Rajah was elected in 2022 over the incumbent, Katie Allen. [The seat was previously held by the Liberal party since 1972](https://www.abc.net.au/news/elections/federal/2022/guide/higg). The Greens are also competitive and could potentially win it from Labor if they out-polled Labor on first preference votes."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-05-02T02:00:00Z",
+        "url": "https://www.metaculus.com/questions/20851",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20851",
+            "market_prob": null,
+            "resolve_time": "2025-05-31T02:00:00Z",
+            "close_time": "2025-05-02T02:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 381,
+                    "label": "Liberal Party"
+                },
+                {
+                    "id": 382,
+                    "label": "Labor Party"
+                },
+                {
+                    "id": 383,
+                    "label": "Greens"
+                },
+                {
+                    "id": 384,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 21017,
+        "title": "Who will be the next Pope?",
+        "body": {
+            "resolution_criteria": "The question will resolve for the man elected pope at the next papal conclave.\n\nA man is elected pope when his name is announced during the 'habemus papam' ceremony at St Peter's Basilica.",
+            "background_info": "At 87, [Pope Francis](https://en.wikipedia.org/wiki/Pope_Francis) is one of the oldest popes in the Catholic Church's 2000-year history.\n\nSpeculation is mounting on who is *papabile* or 'popeable'. \n\nTraditionally, the pope is 'pope for life' and serves until death. However, Pope Francis' immediate predecessor, Pope Benedict XVI, resigned from the papacy in 2013 and lived quietly in the Vatican for another 9 years under the title 'Pope Emeritus'  while Francis was pope. \n\nPope Francis has said that popes are for life and resignations [should not become \"a fashion\"](https://www.reuters.com/world/europe/popes-are-life-resignations-should-not-become-fashion-francis-says-2023-02-16/).\n\nHowever, Pope Francis has [already signed his resignation letter](https://www.reuters.com/world/pope-2013-signed-resignation-letter-case-bad-health-2022-12-17/), though the letter will only be used if severe health problems made it impossible for him to carry out his duties."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2029-01-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/21017",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21017",
+            "market_prob": null,
+            "resolve_time": "2029-01-02T19:00:00Z",
+            "close_time": "2029-01-01T19:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 156,
+                    "label": "Matteo Zuppi"
+                },
+                {
+                    "id": 157,
+                    "label": "Peter Turkson"
+                },
+                {
+                    "id": 158,
+                    "label": "Luis Antonio Tagle"
+                },
+                {
+                    "id": 159,
+                    "label": "Christoph Schönborn"
+                },
+                {
+                    "id": 160,
+                    "label": "Robert Sarah"
+                },
+                {
+                    "id": 161,
+                    "label": "Malcolm Ranjith"
+                },
+                {
+                    "id": 162,
+                    "label": "Mauro Piacenza"
+                },
+                {
+                    "id": 163,
+                    "label": "Pietro Parolin"
+                },
+                {
+                    "id": 164,
+                    "label": "Marc Ouellet"
+                },
+                {
+                    "id": 165,
+                    "label": "Sean Patrick O'Malley"
+                },
+                {
+                    "id": 166,
+                    "label": "Gerhard Ludwig Müller"
+                },
+                {
+                    "id": 167,
+                    "label": "Péter Erdő"
+                },
+                {
+                    "id": 168,
+                    "label": "Willem Eijk"
+                },
+                {
+                    "id": 169,
+                    "label": "Raymond Leo Burke"
+                },
+                {
+                    "id": 170,
+                    "label": "Angelo Bagnasco"
+                },
+                {
+                    "id": 171,
+                    "label": "Fernando Filoni"
+                },
+                {
+                    "id": 172,
+                    "label": "Lazarus You Heung-sik"
+                },
+                {
+                    "id": 173,
+                    "label": "Luis Ladaria Ferrer"
+                },
+                {
+                    "id": 174,
+                    "label": "Gerald Lacroix"
+                },
+                {
+                    "id": 175,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 21465,
+        "title": "One year after a bilateral ceasefire or peace agreement is reached in the Russo-Ukrainian conflict, which side will the Wikipedia article for it say was the victor?",
+        "body": {
+            "resolution_criteria": "This question will resolve exactly one year after the date which [this question](https://www.metaculus.com/questions/18546/end-of-ukraine-conflict/) resolves as. If that question resolves as \"Not ≤ January 1, 2030\", this question will immediately be **Annulled**. On that date, Metaculus moderators will view [this Wikipedia article](https://en.wikipedia.org/wiki/Russo-Ukrainian_War) and resolve this question based on what the field currently labeled \"Status\" (found between \"Location\" and \"Territorial Changes\" on the right-hand side near the top of the page; currently says *Ongoing*) states. If this field unambiguously describes the conflict as a \"Russian victory\" on that date, this question resolves as **Russia**. Conversely, the field unambiguously stating \"Ukrainian victory\" would resolve the question as **Ukraine**. Anything other than this (such as \"Stalemate\", a description of the peace agreement, or link to a results/aftermath section) will resolve this question as **Neither**. Only this top-level field in the article overview section will be used to resolve this question. Other mentions of the conflict's aftermath and impact will not be considered.",
+            "background_info": "Wikipedia articles about [wars](https://en.wikipedia.org/wiki/Lists_of_wars) usually include a \"Result\" field in the overview section (typically a box found to the right of the text at the top of the page) which states the generally-accepted victor of that war and/or any agreements which were signed to end the conflict. In the context of the Russo-Ukrainian conflict, such a description would imply that one side or the other is broadly considered to have \"won\" the war (at least among Western audiences). Alternatively, a stalemate or negotiated settlement would imply that neither side gained all the concessions from the other that they hoped for."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2031-01-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/21465",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21465",
+            "market_prob": null,
+            "resolve_time": "2031-01-01T19:00:00Z",
+            "close_time": "2031-01-01T19:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 236,
+                    "label": "Russia"
+                },
+                {
+                    "id": 237,
+                    "label": "Ukraine"
+                },
+                {
+                    "id": 238,
+                    "label": "Neither"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 21495,
+        "title": "Who will be elected to be President of Romania in 2024?",
+        "body": {
+            "resolution_criteria": "The question will resolve based on the official website of the [President of Romania](https://www.presidency.ro/en) or reports by [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "[Presidential elections will be held in Romania in either mid- or late November 2024](https://en.wikipedia.org/wiki/2024_Romanian_presidential_election), with an eventual second round to be held in late November or early December 2024 as well (depending on the final results of the first round). They will be the ninth presidential elections held in post-1989 Romania. As the Romanian Constitution allows a maximum of two presidential terms (consecutive or not), incumbent President of Romania Klaus Iohannis, first elected in 2014 and then re-elected in 2019, is not eligible for re-election. His second (and last) term will normally end in December 2024."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-09-29T11:00:00Z",
+        "url": "https://www.metaculus.com/questions/21495",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21495",
+            "market_prob": null,
+            "resolve_time": "2024-10-07T11:00:00Z",
+            "close_time": "2024-09-29T11:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 239,
+                    "label": "Mircea Geoană"
+                },
+                {
+                    "id": 240,
+                    "label": "Marcel Ciolacu"
+                },
+                {
+                    "id": 241,
+                    "label": "George Simion"
+                },
+                {
+                    "id": 242,
+                    "label": "Dan Barna"
+                },
+                {
+                    "id": 243,
+                    "label": "Cătălin Drulă"
+                },
+                {
+                    "id": 244,
+                    "label": "Dacian Cioloș"
+                },
+                {
+                    "id": 245,
+                    "label": "Nicolae Ciucă"
+                },
+                {
+                    "id": 246,
+                    "label": "Diana Iovanovici Șoșoacă"
+                },
+                {
+                    "id": 247,
+                    "label": "Hunor Kelemen"
+                },
+                {
+                    "id": 248,
+                    "label": "Laura Codruța Kövesi"
+                },
+                {
+                    "id": 249,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 21799,
+        "title": "Who will be elected President of France in 2027?",
+        "body": {
+            "resolution_criteria": "The question will resolve based on the official website of the [President of France](https://www.elysee.fr/) or reports by [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "[Presidential elections](https://en.wikipedia.org/wiki/2027_French_presidential_election) are scheduled to be held in France on 11 April 2027, with a second round on 25 April if required. The elections may be held earlier under exceptional circumstances, such as the resignation or death of the incumbent president Emmanuel Macron. Macron is not eligible to run in the 2027 elections, as he is limited to two consecutive terms in office."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2027-04-26T11:00:00Z",
+        "url": "https://www.metaculus.com/questions/21799",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21799",
+            "market_prob": null,
+            "resolve_time": "2027-04-26T11:00:00Z",
+            "close_time": "2027-04-26T11:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 297,
+                    "label": "Marine Le Pen"
+                },
+                {
+                    "id": 298,
+                    "label": "Jordan Bardella"
+                },
+                {
+                    "id": 299,
+                    "label": "Gabriel Attal"
+                },
+                {
+                    "id": 300,
+                    "label": "Édouard Philippe"
+                },
+                {
+                    "id": 301,
+                    "label": "Bruno Le Maire"
+                },
+                {
+                    "id": 302,
+                    "label": "François Ruffin"
+                },
+                {
+                    "id": 303,
+                    "label": "Jean-Luc Mélenchon"
+                },
+                {
+                    "id": 372,
+                    "label": "Gérald Darmanin"
+                },
+                {
+                    "id": 373,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 21925,
+        "title": "How many METR tasks will be completed before 2025?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the state-of-the-art number of METR ARA tasks (/12) fully completed (excluding partial completion) by an AI system, including any post-training enhancements but excluding any human assistance. This will be based on credible publicly available results prior to January 1st  2025. “Credible results” primarily includes, but is not limited to, reports or posts by METR themselves.",
+            "background_info": "See [METR Tasks](https://metr.org/blog/2023-08-01-new-report/). \n\nBest result on March 15th 2024 is by GPT-4 which completed 4/12 tasks. \n\nBe advised that this benchmark does not yet have an official leaderboard and is not widely reported by developers, however, we hope this may change soon and that METR will evaluate new models on these same tasks."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-31T22:59:00Z",
+        "url": "https://www.metaculus.com/questions/21925",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21925",
+            "market_prob": null,
+            "resolve_time": "2025-01-01T22:59:00Z",
+            "close_time": "2024-12-31T22:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 385,
+                    "label": "4"
+                },
+                {
+                    "id": 386,
+                    "label": "5"
+                },
+                {
+                    "id": 387,
+                    "label": "6"
+                },
+                {
+                    "id": 388,
+                    "label": "7"
+                },
+                {
+                    "id": 389,
+                    "label": "8"
+                },
+                {
+                    "id": 390,
+                    "label": "9"
+                },
+                {
+                    "id": 391,
+                    "label": "10"
+                },
+                {
+                    "id": 392,
+                    "label": "11"
+                },
+                {
+                    "id": 393,
+                    "label": "12"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22000,
+        "title": "Who will win the 2024 Senate election in Arizona?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the winner of the [class 1](https://en.wikipedia.org/wiki/List_of_United_States_senators_from_Arizona#:~:text=%5Bedit%5D-,Class%201,-Class%201%20U) 2024 Arizona Senate election, according to reports by credible sources, including early calls based on the results.",
+            "background_info": "There is a US Senate election for one of Arizona's two senate seats in 2024. On the 5th of March 2024, ex-incumbent [Kyrsten Sinema (I) announced that she would not seek reelection](https://www.nbcnews.com/politics/congress/independent-sen-kyrsten-sinema-will-not-run-re-election-arizona-rcna124499). In July 2024 both the Republican and Democratic parties will hold [primary elections to decide which 2 candidates will compete](https://ballotpedia.org/United_States_Senate_election_in_Arizona,_2024) in the election on November 5th 2024. More information (including developments) can be found on the [election Wikipedia page](https://en.wikipedia.org/wiki/2024_United_States_Senate_election_in_Arizona)."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-05T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/22000",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22000",
+            "market_prob": null,
+            "resolve_time": "2024-11-08T14:00:00Z",
+            "close_time": "2024-11-05T23:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 416,
+                    "label": "Kari Lake (R)"
+                },
+                {
+                    "id": 417,
+                    "label": "Other Republican Nominee"
+                },
+                {
+                    "id": 418,
+                    "label": "Ruben Gallego (D)"
+                },
+                {
+                    "id": 419,
+                    "label": "Other Democratic Nominee"
+                },
+                {
+                    "id": 420,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22048,
+        "title": "On January 1, 2025, which frontier AI lab will have a publicly available model with the highest score on the MMLU benchmark?",
+        "body": {
+            "resolution_criteria": "This question resolves as the AI company that has produced the large language model (LLM) scoring the highest (based on five-shot or few-shot performance) on the Massive Multitask Language Understanding (MMLU) benchmark as of January 1, 2025. \n\nThe primary resolution source for this question will be the Papers With Code [MMLU leaderboard](https://paperswithcode.com/sota/multi-task-language-understanding-on-mmlu). However, in the event of ambiguity or dispute, Metaculus admins may consider other [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "This question is part of the [Understanding AI Series with Timothy B Lee](https://www.metaculus.com/project/3055/) and was inspired by [this post](https://www.understandingai.org/p/claude-3-chatgpt-finally-has-a-serious).\n\nThe Massive Multitask Language Understanding (MMLU) benchmark is an evaluation suite developed by researchers to comprehensively assess the capabilities of large language models across a diverse set of language understanding tasks over 57 academic and professional domains. [Released in 2021](https://arxiv.org/pdf/2009.03300v3.pdf), the MMLU has become an important tool for AI developers and researchers to measure the general language understanding abilities of their models.\n\nWhile large language models have demonstrated impressive performance on many of these tasks individually, the MMLU provides insights into how well they can transfer knowledge across very different domains, a key hurdle towards achieving broad artificial general intelligence.\n\nAs of late March, 2024, Anthropic's Claude 3 Opus model ranks highest (among models scored based on 5-shot or few-shot performance)  on the Papers With Code [MMLU leaderboard](https://paperswithcode.com/sota/multi-task-language-understanding-on-mmlu), [recently beating out GPT-4](https://www.understandingai.org/p/claude-3-chatgpt-finally-has-a-serious), which previously held the highest rank."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-01-01T07:59:00Z",
+        "url": "https://www.metaculus.com/questions/22048",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22048",
+            "market_prob": null,
+            "resolve_time": "2025-01-02T07:59:00Z",
+            "close_time": "2025-01-01T07:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 437,
+                    "label": "OpenAI"
+                },
+                {
+                    "id": 438,
+                    "label": "Anthropic"
+                },
+                {
+                    "id": 439,
+                    "label": "Google DeepMind"
+                },
+                {
+                    "id": 440,
+                    "label": "Meta"
+                },
+                {
+                    "id": 441,
+                    "label": "Mistral"
+                },
+                {
+                    "id": 442,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22055,
+        "title": "Who will be the CDU/CSU candidate for chancellor in the next German federal election?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** for the person chosen as candidate for chancellor for the  Christian Democratic Union/Christian Social Union alliance in the next parliamentary election and **No** for all other people.\nThe chosen candidate for chancellor will be verified by [credible sources](https://www.metaculus.com/help/faq/#definitions).\n\nAs choosing the candidate for chancellor isn't a fixed process with a clear decision date, this question will likely be resolved months before the Resolve date, as soon as the actual candidate has been determined.",
+            "background_info": "The next German federal election will be held [on or before 26 October 2025](https://en.wikipedia.org/wiki/Next_German_federal_election). Historically, the alliance of the sister parties CDU and CSU as well as the SPD have each [nominated a candidate for chancellor for each election](https://de.wikipedia.org/wiki/Kanzlerkandidat#Kanzlerkandidaten_seit_1949) (since 1961 under the name candidate for chancellor).\n\n[Friedrich Merz](https://en.wikipedia.org/wiki/Friedrich_Merz) is the current leader of the CDU. The CDU runs in all states except Bavaria. The sister party CSU runs only in Bavaria.\n\n[Markus Söder](https://en.wikipedia.org/wiki/Markus_S%C3%B6der) is the current leader of the CSU. The CSU is the sister party of the CDU which only runs in Bavaria.\n\n[Hendrik Wüst](https://en.wikipedia.org/wiki/Hendrik_W%C3%BCst) is the current leader of the state government of North Rhine-Westphalia.\n\n[Daniel Günther](https://en.wikipedia.org/wiki/Daniel_G%C3%BCnther) is the current leader of the state government of Schleswig-Holstein.\n\nThese four people are frequently seen as most likely to be nominated as candidates for chancellor for the CDU/CSU alliance, e.g. by [German media](https://www.zdf.de/nachrichten/politik/deutschland/politbarometer2go-kanzlerkandidaten-union-soeder-merz-wuest-guenther-100.html)."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-10-26T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/22055",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22055",
+            "market_prob": null,
+            "resolve_time": "2025-10-26T19:00:00Z",
+            "close_time": "2025-10-26T17:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 443,
+                    "label": "Friedrich Merz"
+                },
+                {
+                    "id": 444,
+                    "label": "Markus Söder"
+                },
+                {
+                    "id": 445,
+                    "label": "Hendrik Wüst"
+                },
+                {
+                    "id": 446,
+                    "label": "Daniel Günther"
+                },
+                {
+                    "id": 447,
+                    "label": "Someone else"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22124,
+        "title": "When will the New York Times publish an article that it claims or acknowledges is 100% written by AI?",
+        "body": {
+            "resolution_criteria": "This question resolves to the publication date within the multiple choice option when the New York Times says that it has published an article, whether online or in print, which it claims or acknowledges is 100% written by artificial intelligence. The article must be a minimum of 300 words in length.",
+            "background_info": "AI-generated text is rapidly improving in quality and sophistication. As the technology advances, AI-generated content may become more prevalent and gain significant popularity online. The New York Times publishing an article that it claims is generated by AI indicates not just the advancement of AI, but also are an interesting litmus test of public confidence in AI.\n\nIn July 2023 the NY Times [reported](https://www.nytimes.com/2023/07/19/business/google-artificial-intelligence-news-articles.html) that its executives were among other newspaper industry executives meeting with Google about a possible product using AI to help produce news stories."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2030-01-01T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/22124",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22124",
+            "market_prob": null,
+            "resolve_time": "2030-01-01T05:01:00Z",
+            "close_time": "2030-01-01T00:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 491,
+                    "label": "In 2024"
+                },
+                {
+                    "id": 492,
+                    "label": "In 2025"
+                },
+                {
+                    "id": 493,
+                    "label": "In 2026-2027"
+                },
+                {
+                    "id": 494,
+                    "label": "In 2028-2029"
+                },
+                {
+                    "id": 495,
+                    "label": "2030 or later"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22303,
+        "title": "How many additional highly pathogenic avian influenza H5N1 infections will be reported in humans in the United States in 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve according to the number of additional highly pathogenic avian influenza H5N1 infections that are reported in humans in the United States in 2024 after April 12, 2024. Resolution will be determined according to publicly available reports published by the US Centers for Disease Control and Prevention (CDC) before January 1, 2025.",
+            "background_info": "On April 1, 2024, the US Centers for Disease Control and Prevention (CDC) [reported](https://www.cdc.gov/media/releases/2024/p0401-avian-flu.html) that an individual in Texas had been infected with [highly pathogenic avian influenza (HPAI) type A subtype H5N1](https://en.wikipedia.org/wiki/Influenza_A_virus_subtype_H5N1). The individual had been infected after exposure to dairy cattle that were presumed to be infected. The infection marks the first reported case in humans the United States since an infection in Colorado in 2022.\n\n[CDC describes](https://www.cdc.gov/flu/avianflu/reported-human-infections.htm) H5N1 infections in humans as follows:\n\n>HPAI A(H5N1) virus infections have been reported in more than 890 people with approximately 50% case fatality proportion since 1997, including 20 cases and 7 deaths in Hong Kong during 1997-2003, and more than 870  cases reported in 22 countries since November 2003. Mild upper respiratory tract symptoms, lower respiratory tract disease, severe pneumonia with respiratory failure, encephalitis, and multi-organ failure have been reported. One case of asymptomatic infection was reported in Vietnam in 2011, and another asymptomatic case was reported in the United Kingdom that occurred in late 2021. The spectrum of illness caused by human infection with current H5N1 bird flu viruses is unknown. Since 2016, a small number of sporadic infections have been reported each year globally. Illness in humans from all bird flu virus infections has ranged in severity from no symptoms or mild illness to severe disease that resulted in death. [Total case counts reported](https://www.cdc.gov/flu/avianflu/chart-epi-curve-ah5n1.html) since 1997 are available.\n\nCDC maintains a [Current Situation Summary](https://www.cdc.gov/flu/avianflu/avian-flu-summary.htm) for H5N1 influenza, where as of April 11, 2024, detections in the US are listed as widespread for wild birds, sporadic for poultry flocks and mammals, and a total of two cases in humans in the US. It also describes person-to-person spread as \"None\" and a low current public health risk."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-31T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/22303",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22303",
+            "market_prob": null,
+            "resolve_time": "2025-01-01T14:00:00Z",
+            "close_time": "2024-12-31T23:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 496,
+                    "label": "0"
+                },
+                {
+                    "id": 497,
+                    "label": "1 to 5"
+                },
+                {
+                    "id": 498,
+                    "label": "6 to 20"
+                },
+                {
+                    "id": 499,
+                    "label": "21 to 100"
+                },
+                {
+                    "id": 500,
+                    "label": "More than 100"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22416,
+        "title": "When will monthly global land-surface temperatures fall below record highs?",
+        "body": {
+            "resolution_criteria": "This question resolves as the first month in which the global land-only surface temperature anomaly is not a record high for the specified month, as reported by the National Centers for Environmental Information's [Global Climate Report](https://www.ncei.noaa.gov/access/monitoring/monthly-report/global/202403).\n\nIf all of the months listed below set record high anomalies, this question will resolve as \"After September 2024.\"",
+            "background_info": "March 2024 was the [twelfth consecutive month](https://yaleclimateconnections.org/2024/04/earth-just-had-its-warmest-march-on-record/) to set a new global land surface temperature record.\n\nThese rising temperatures are linked to several climatic factors, including the [current phase of El Niño](https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml), which is expected to transition to neutral conditions by mid-2024."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-10-01T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/22416",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22416",
+            "market_prob": null,
+            "resolve_time": "2024-11-01T06:59:00Z",
+            "close_time": "2024-10-01T06:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 536,
+                    "label": "April 2024"
+                },
+                {
+                    "id": 537,
+                    "label": "May 2024"
+                },
+                {
+                    "id": 538,
+                    "label": "June 2024"
+                },
+                {
+                    "id": 539,
+                    "label": "July 2024"
+                },
+                {
+                    "id": 540,
+                    "label": "August 2024"
+                },
+                {
+                    "id": 541,
+                    "label": "September 2024"
+                },
+                {
+                    "id": 542,
+                    "label": "After September 2024"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22427,
+        "title": "Before 2030, how many new AI labs will be leading labs within 2 years of their founding?",
+        "body": {
+            "resolution_criteria": "This question resolves as the number of new AI labs that become leading labs within 2 years of their founding and before 2030.\n\nFor the purposes of this question:\n\n- A “new” AI lab is one that was founded after question launch.\n\n- A “leading” AI lab is a top 5 lab based on model ELO,* as measured by [Chatbot Arena’s](https://chat.lmsys.org/?leaderboard) ELO rating. As of April 15, 2024, for example, the leading AI labs by this metric are OpenAI, Anthropic, Google DeepMind, Cohere, and Mistral AI.\n\n- A lab’s founding date will be taken to be the “Founded” date quoted on its Wikipedia page. If a lab doesn’t have a Wikipedia page, or that page doesn’t quote a founded date, then Metaculus admins will turn to [other sources](https://www.metaculus.com/help/faq/#definitions).<br><br>\n\n*To be clear, we are considering the top five distinct labs that have the highest ranked models; we are not just considering the labs of the top five models, which could be less than five.",
+            "background_info": "Since the release of [ChatGPT](https://en.wikipedia.org/wiki/ChatGPT), an AI chatbot made by OpenAI and the [fastest-growing app in history](https://www.reuters.com/technology/chatgpt-sets-record-fastest-growing-user-base-analyst-note-2023-02-01/), new players have flocked to the AI scene—for example, Elon Musk’s [xAI](https://en.wikipedia.org/wiki/XAI_(company)) and French upstart [Mistral](https://en.wikipedia.org/wiki/Mistral_AI), [now a Microsoft partner](https://www.ft.com/content/cd6eb51a-3276-450f-87fd-97e8410db9eb). On top of this, AI labs have a history of splitting apart to form new labs. [Anthropic](https://en.wikipedia.org/wiki/Anthropic) was founded by OpenAI employees; [Udio](https://en.wikipedia.org/wiki/Udio) was founded by Google DeepMind employees. Demis Hassabis, Google DeepMind CEO, has even mused about leaving and raising billions of dollars to start a new lab, reportedly on account of frustrations with corporate politics ([Victor, 2024](https://www.theinformation.com/articles/googles-demis-hassabis-chafes-under-new-ai-push)).\n\nThis question asks about how many new, leading AI labs there are likely to be by the end of the decade. This is an interesting question for various groups of people. On the one hand, many are concerned that the big tech companies like Google, Meta, and Microsoft are the big players in AI, and that this might mean [even more centralization of power](https://www.cnbc.com/2023/11/22/ai-is-giving-big-tech-inordinate-power-tech-execs-say.html) absent new competition. On the other hand, people concerned about [AI safety](https://en.wikipedia.org/wiki/AI_safety#Existential_safety) are concerned that a greater number of labs will mean intensified [race dynamics](https://forum.effectivealtruism.org/topics/ai-race) and a greater chance that at least one leading lab cuts corners on safety, to catastrophic effect."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2030-01-01T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/22427",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22427",
+            "market_prob": null,
+            "resolve_time": "2030-01-01T12:00:00Z",
+            "close_time": "2030-01-01T00:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 823,
+                    "label": "0 or 1"
+                },
+                {
+                    "id": 824,
+                    "label": "2 or 3"
+                },
+                {
+                    "id": 825,
+                    "label": "4 or 5"
+                },
+                {
+                    "id": 826,
+                    "label": "6 or 7"
+                },
+                {
+                    "id": 827,
+                    "label": "8 or 9"
+                },
+                {
+                    "id": 828,
+                    "label": "10 or more"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22440,
+        "title": "Who will win the 2024 presidential election in Ghana?",
+        "body": {
+            "resolution_criteria": "This question will resolve for the winning candidate based on [credible](https://www.metaculus.com/help/faq/#definitions) international media reports of who is Ghana's next president. This question will resolve as **Another outcome** if any candidate wins other than the ones listed.\n\nThe first round of the 2024 Ghanaian general election is scheduled to be held on December 7, 2024. If for any reason the first round vote does not take place on that date, this question resolves as \"Another outcome\".\n\nIf the vote does take place on December 7, 2024, but if for any reason the outcome has not been determined before March 1, 2025, (which includes, but is not limited to, such scenarios as a long postponement of the 2nd round of the election, the vote count being delayed, or the final official winner having not yet been declared) then this question resolves as \"Another outcome\".",
+            "background_info": "General elections are [scheduled](https://en.wikipedia.org/wiki/2024_Ghanaian_general_election) in Ghana for December 7, 2024, to elect both the President and members of Parliament. The incumbent President, Nana Akufo-Addo, is term-limited and therefore cannot seek re-election. This election marks a pivotal moment for Ghana, as it transitions from two terms under Akufo-Addo's administration, which has been characterized by both economic challenges and significant infrastructural investments.\n\nThe leading parties expected to contest the presidency are the incumbent New Patriotic Party (NPP) and the main opposition, the National Democratic Congress (NDC). \n\nThe current Vice President Mahamudu Bawumia is the selected candidate for  the NPP and former president John Mahama for the NDC. \n\nKey issues likely to dominate the campaign include economic recovery post-COVID-19, anti-corruption measures, and further improvements in social services such as healthcare and education. The elections are viewed as a significant test of Ghana’s democratic resilience and its ability to maintain stable political transitions."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-06T23:59:00Z",
+        "url": "https://www.metaculus.com/questions/22440",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22440",
+            "market_prob": null,
+            "resolve_time": "2024-12-14T12:00:00Z",
+            "close_time": "2024-12-06T23:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 543,
+                    "label": "Mahamudu Bawumia"
+                },
+                {
+                    "id": 544,
+                    "label": "John Mahama"
+                },
+                {
+                    "id": 545,
+                    "label": "Alan John Kyerematen"
+                },
+                {
+                    "id": 546,
+                    "label": "Nana Kwame Bediako"
+                },
+                {
+                    "id": 572,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22441,
+        "title": "Who will win the 2024 Presidential Election in Algeria?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the winner of the 2024 presidential election in Algeria. Resolution will be determined based on [credible](https://www.metaculus.com/help/faq/#definitions) international media reports of who is Algeria's next president, whether elected in the first round or an eventual runoff.",
+            "background_info": "Presidential elections in Algeria are scheduled for September 7, 2024, a deviation from the expected timeline of December, mirroring the previous election cycle in 2019. The announcement by the office of incumbent President Abdelmadjid Tebboune on March 21st took many by surprise and has stirred political discourse within the country. President Tebboune, who first came to office in December 2019, is anticipated to seek re-election, though he has not yet formally declared his candidacy.\n\nUnder Tebboune's administration, Algeria has navigated significant economic and social challenges, including responses to the COVID-19 pandemic and fluctuating oil prices, which are critical for the country’s economy. Political reforms and public dissatisfaction with governance are also central themes, as the Hirak protest movement continues to influence the political landscape. These elections are seen as a significant barometer for the ongoing stability and democratic development in Algeria, a country with a history of both political upheaval and controlled political landscapes.\n\nSee Also: [Wikipedia 2024 Algerian presidential election](https://en.wikipedia.org/wiki/2024_Algerian_presidential_election)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-09-06T23:59:00Z",
+        "url": "https://www.metaculus.com/questions/22441",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22441",
+            "market_prob": null,
+            "resolve_time": "2024-09-14T12:00:00Z",
+            "close_time": "2024-09-06T23:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 547,
+                    "label": "Abdelmadjid Tebboune"
+                },
+                {
+                    "id": 548,
+                    "label": "Zoubida Assoul"
+                },
+                {
+                    "id": 612,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22445,
+        "title": "Which jurisdiction will be the \"Tipping Point\" in the 2024 US presidential election?",
+        "body": {
+            "resolution_criteria": "This question will resolve to the Tipping Point jurisdiction of 2024, which is defined as the jurisdiction that provides the winning candidate with the 270th electoral vote apportioned from the 2024 US presidential election. \n\n(Typically a jurisdiction is a US state but not always. See Fine Print for complete list.)\n\nThis resolution is made using the following three steps: \n\n1. Putting the winning candidate's electoral votes by jurisdiction in order from largest percentage popular vote margin to smallest.\n2. Progressively adding up electoral votes starting from the highest margin jurisdiction to the smallest.\n3. The jurisdiction that provides the winning candidate with the 270th electoral vote is the Tipping Point.\n\nIf a jurisdiction not listed is the one that provides the 270th electoral vote or no candidate reaches 270 votes, this question resolves as \"Another outcome.\"",
+            "background_info": "Popularized by [Nate Silver](https://fivethirtyeight.com/features/arizona-is-probably-not-a-swing-state/), a \"Tipping Point\" state is the most important battleground state from the winning candidate's perspective, the state that offers the 270th electoral vote and therefore has a high strategic importance for them. \n\nAccording to Silver:\n\n>When I employ the term, I mean a state that could swing the outcome of the election. That is, if the state changed hands, the victor in the Electoral College would change as well.\n\n>The most rigorous way to define this is to sort the states in order of the most Democratic to the least Democratic, or most Republican to least Republican. Then count up the number of votes the candidate accumulates as he wins successively more difficult states. The state that provides him with the 270th electoral vote, clinching an Electoral College majority, is the swingiest state — the specific term I use for it is the “tipping point state.”\n\n>From Barack Obama’s perspective in 2008, for instance, his easiest three electoral votes were in the District of Columbia. The next-easiest were the four electoral votes in Hawaii, giving him seven total. Repeat this process and you find that Colorado was the tipping point state in 2008, putting him over the top with 278 electoral votes.\n\nPast Tipping Points have been Florida in 2000 and Ohio in 2004 for George W. Bush, Colorado in 2008 and 2012 for Barack Obama, Pennsylvania in 2016 for Donald Trump, and Wisconsin in 2020 for Joe Biden.\n\nSee also: \n\nWikipedia: [Tipping-point state](https://en.wikipedia.org/wiki/Tipping-point_state)\n\n[Tipping Point v2.0](https://fivethirtyeight.com/features/tipping-point-v20/) (2008) by Nate Silver\n\nMilwaukee Journal Sentinel: [The indispensable state: Why Wisconsin could again be the electoral 'tipping point' in 2024](https://www.jsonline.com/story/news/politics/analysis/2023/08/01/wisconsin-could-be-the-electoral-college-tipping-point-in-2024/70477587007/)\n\nCNN: [These are the races that will determine the nation’s direction in 2024](https://www.cnn.com/2024/01/09/politics/2024-tipping-point-races-analysis/index.html)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-05T14:00:00Z",
+        "url": "https://www.metaculus.com/questions/22445",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22445",
+            "market_prob": null,
+            "resolve_time": "2024-12-12T17:00:00Z",
+            "close_time": "2024-11-05T14:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 558,
+                    "label": "Arizona"
+                },
+                {
+                    "id": 559,
+                    "label": "Colorado"
+                },
+                {
+                    "id": 560,
+                    "label": "Florida"
+                },
+                {
+                    "id": 561,
+                    "label": "Georgia"
+                },
+                {
+                    "id": 562,
+                    "label": "Iowa"
+                },
+                {
+                    "id": 563,
+                    "label": "Michigan"
+                },
+                {
+                    "id": 564,
+                    "label": "Nevada"
+                },
+                {
+                    "id": 565,
+                    "label": "North Carolina"
+                },
+                {
+                    "id": 566,
+                    "label": "Ohio"
+                },
+                {
+                    "id": 567,
+                    "label": "Pennsylvania"
+                },
+                {
+                    "id": 568,
+                    "label": "Texas"
+                },
+                {
+                    "id": 569,
+                    "label": "Wisconsin"
+                },
+                {
+                    "id": 570,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22453,
+        "title": "Which team will win the National League Central Division during the 2024 Major League Baseball season?",
+        "body": {
+            "resolution_criteria": "This question resolves to the team that finishes at the top of the [standings](https://www.mlb.com/standings/) at the end of the 2024 regular season.",
+            "background_info": "The [National League Central Division](https://en.wikipedia.org/wiki/National_League_Central) consists of five teams: the Chicago Cubs, the St. Louis Cardinals, the Milwaukee Brewers, the Pittsburgh Pirates, and the Cincinnati Reds. These teams have been highly competitive in recent years, and the division standings are always close."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-09-20T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/22453",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22453",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T03:00:00Z",
+            "close_time": "2024-09-20T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 573,
+                    "label": "Chicago Cubs"
+                },
+                {
+                    "id": 574,
+                    "label": "Cincinnati Reds"
+                },
+                {
+                    "id": 575,
+                    "label": "Milwaukee Brewers"
+                },
+                {
+                    "id": 576,
+                    "label": "Pittsburgh Pirates"
+                },
+                {
+                    "id": 577,
+                    "label": "St Louis Cardinals"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22461,
+        "title": "How many major hurricanes will occur in 2024 Atlantic hurricane season?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the total number of number of major hurricanes in the 2024 Atlantic hurricane season, according to the [National Hurricane Center](https://www.nhc.noaa.gov/?atlc) (NHC) website when accessed by Metaculus on December 2, 2024. \n\nThe National Weather Service [considers](https://www.weather.gov/mfl/saffirsimpson) a major hurricane to be anything Category Three or above, defined as having a 1-minute average of wind speeds greater than 110 mph (>95 knots or >177 km/hr).",
+            "background_info": "The 2024 Atlantic hurricane season is expected to be extremely active, according to forecasters at Colorado State University (CSU), whose [April outlook](https://tropical.colostate.edu/forecasting.html) calls for 23 named storms, 11 hurricanes, 5 major hurricanes, and an Accumulated Cyclone Energy (ACE) of 210, which would make 2024 one of the most active seasons on record. This bold forecast is due to two primary factors: 1) underlying forecasts indicating that the current El Niño conditions will transition to La Niña by peak hurricane season, which tends to suppress wind shear and allow more Atlantic storms to develop and strengthen, and 2) record warm sea surface temperatures across the tropical Atlantic and Gulf of Mexico, providing ample oceanic heat energy to fuel hurricanes.\n\nWhile the historic performance of April hurricane forecasts is [relatively poor](https://seasonalhurricanepredictions.bsc.es/background-information/skill), the CSU forecasters note high confidence this year due to the clear transition to La Niña conditions and record ocean warmth already in place. If accurate, 2024 would see the 3rd highest number of named storms, 5th most hurricanes, 9th most major hurricanes, and 9th highest ACE value on record.\n\nThe [Atlantic hurricane season](https://en.wikipedia.org/wiki/Atlantic_hurricane_season) runs from June 1 to November 30."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-01T07:59:00Z",
+        "url": "https://www.metaculus.com/questions/22461",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22461",
+            "market_prob": null,
+            "resolve_time": "2024-12-02T08:00:00Z",
+            "close_time": "2024-12-01T07:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 578,
+                    "label": "Three or fewer"
+                },
+                {
+                    "id": 579,
+                    "label": "Four"
+                },
+                {
+                    "id": 580,
+                    "label": "Five"
+                },
+                {
+                    "id": 581,
+                    "label": "Six"
+                },
+                {
+                    "id": 582,
+                    "label": "Seven"
+                },
+                {
+                    "id": 583,
+                    "label": "Eight or more"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22472,
+        "title": "Who will win the 2024 Men's Ballon d'Or award?",
+        "body": {
+            "resolution_criteria": "The question will resolve on October 28th, 2024, based on the reported winner of the 2024 Ballon d'Or, as announced by the official [Ballon d'Or X account](https://twitter.com/ballondor?lang=en) or other [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "The Men's Ballon d'Or award is an annual football award presented by France Football, a French news magazine, to the male footballer deemed to be the best player in the world in the past year. Starting with the 2024 awards, the Ballon d'Or 's evaluation period is based on the previous season, rather than the calendar year, which begins August 1, 2023 and ends July 31, 2024.   \n\nA selection of 100 journalists from nations around their world vote their top 5 amongst a shortlist of 30 players chosen by France Football and L'Equipe journalists, Ballon d'Or ambassador and former Chelsea and Ivory Coast footballer [Didier Drogba](https://www.britannica.com/biography/Didier-Drogba), and three media members whose ballots from the previous year aligned perfectly with the final cumulative vote. \n\nThe [criteria which voters most take into consideration](https://www.goal.com/en-us/news/who-decides-the-ballon-d-or-winner-criteria-for-football-s-prestigious-award-explained/blte206534f7b126380) are individual performance in the previous season, team success during the previous season, and player behavior and fair play during the previous season. In particular, winning [domestic league and cup competitions](https://www.uefa.com/nationalassociations/leaguesandcups/), [continental cup competitions](https://www.uefa.com/running-competitions/our-competitions/clubs/), and [national team competitions](https://worldsoccertalk.com/news/biggest-soccer-events-in-2024-mark-your-calendars-20231025-WST-464504.html) while displaying statistical dominance are key predicators of victory. \n\nThe award has also historically favored attacking players, with only [three defenders](https://www.sportskeeda.com/football/the-3-defenders-who-have-won-the-ballon-dor-ss) having won in the award's 67 year history, and just [one goalkeeper](https://www.espn.com/soccer/story/_/id/38742563/why-goalkeeper-never-win-ballon-dor-again). Once the individual journalists have voted their top 5, with first place receiving 6 points, second place receiving 4 points, third place receiving 3 points, fourth place receiving 2 points, and fifth place receiving 1 point, the player who earns the most overall points among voters is deemed to have won the award. Lionel Messi holds the record for the most Ballon d'Ors won with 8 thus far in his career, and his most recent victory coming the year prior in 2023. The [2024 Ballon d'Or Power Rankings](https://www.goal.com/en-us/lists/ballon-dor-2024-power-rankings/blt64e16da6b8170bb7) track player and team performances over the course of the year to determine who may be leading the race."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-10-25T03:59:00Z",
+        "url": "https://www.metaculus.com/questions/22472",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22472",
+            "market_prob": null,
+            "resolve_time": "2024-10-29T03:59:00Z",
+            "close_time": "2024-10-25T03:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 595,
+                    "label": "Jude Bellingham"
+                },
+                {
+                    "id": 596,
+                    "label": "Phil Foden"
+                },
+                {
+                    "id": 597,
+                    "label": "Erling Haaland"
+                },
+                {
+                    "id": 598,
+                    "label": "Harry Kane"
+                },
+                {
+                    "id": 599,
+                    "label": "Kylian Mbappe"
+                },
+                {
+                    "id": 600,
+                    "label": "Lionel Messi"
+                },
+                {
+                    "id": 601,
+                    "label": "Rodri"
+                },
+                {
+                    "id": 602,
+                    "label": "Vinicius Jr."
+                },
+                {
+                    "id": 603,
+                    "label": "Someone else"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22559,
+        "title": "Will TikTok still be available in the United States on December 31, 2025?",
+        "body": {
+            "resolution_criteria": "Resolves to \"Yes, still owned by foreign adversary\" if TikTok is available in the US on December 31 2025, and the US app continues to be owned by ByteDance or another Chinese or foreign adversary firm contrary to the divestment written in the letter of the law. \"Ownership\" here is defined the way the law does, such that it is deemed to be \"controlled by\" a foreign adversary. If courts make a ruling about its status, that decision will apply, otherwise it will be based on reading of the law as passed. Details in fine print.\n\nResolves to \"Yes, non-adversary owner\" if TikTok is available in the US on December 31 2025, but the US app is no longer owned by ByteDance or any other firm headquartered in China, including Hong Kong or Macau but not Taiwan, or a foreign adversary. In the event that TikTok is sold to a company in another country that is deemed a US adversary, it will resolve to \"Yes, still owned by foreign adversary\"\n\nResolves to \"No\" otherwise.\n\n\"Available\" means a video streaming app with at least 50% of the current US TikTok user base and at least 50% of the current TikTok content library is available for download to US users on the Google Play store or the Apple app store. If TikTok is renamed but these conditions hold then it is deemed \"available.\" Changes to the TikTok algorithm do not affect this definition. The app must allow users to watch videos but changes to other app features such as users' ability to upload content or make comments do not affect this definition.",
+            "background_info": "Congress has passed a law requiring TikTok to shut down or sell to a non-CPC affiliated entity within 9 months, with a possible 3 month extension for a sale in progress. Original house version of the bill [here](https://www.congress.gov/bill/118th-congress/house-bill/7521/text) (the senate folded it into a larger piece of legislation). In legal terms, congress is defining TikTok as a \"foreign adversary controlled application\". ByteDance is challenging the bill and [has indicated](https://www.reuters.com/technology/bytedance-prefers-tiktok-shutdown-us-if-legal-options-fail-sources-say-2024-04-25/) it would shut down rather than sell.\n\nThis question is about whether the service will continue to exist as a result of this bill passing, and in what form. It is possible that ByteDance will maintain ownership, for example via legal challenges to the bill. If ByteDance does comply is it not clear whether they would shut the service down or sell to a non-CPC entity."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-12-30T07:59:00Z",
+        "url": "https://www.metaculus.com/questions/22559",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22559",
+            "market_prob": null,
+            "resolve_time": "2026-01-01T07:59:00Z",
+            "close_time": "2025-12-30T07:59:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 658,
+                    "label": "Yes, still owned by foreign adversary"
+                },
+                {
+                    "id": 659,
+                    "label": "Yes, non-adversary owner"
+                },
+                {
+                    "id": 660,
+                    "label": "No"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22632,
+        "title": "Who will win the 2024 presidential election in Sri Lanka?",
+        "body": {
+            "resolution_criteria": "This multiple question resolves as the candidate who wins the 2024 election for President of Sri Lanka. Resolution will be based on the official results released by the [Election Commission of Sri Lanka](https://elections.gov.lk/en/elections/Election_Results_E.html) or other credible sources.\n\nThe vote is [tentatively scheduled](https://www.newswire.lk/2024/02/29/presidential-election-must-be-held-between-sept-18-to-oct-18/) to be held on some date between September 18, 2024 and October 18, 2024. If the election is not held in 2024, it resolves as **Another outcome**.",
+            "background_info": "In 2024 Sri Lanka is scheduled to hold its presidential election, which will be the first election in the country since the 2022 [political crisis](https://en.wikipedia.org/wiki/2022_Sri_Lankan_political_crisis) and will be highly contested. According to the [Associated Press](https://apnews.com/sri-lanka-election-2024):\n\n>The country declared bankruptcy amid a severe shortage of food, fuel and other necessities, triggering protests that caused the-then President Gotabaya Rajapaksa to flee and resign. The election also comes amid an IMF recovery program that kicked in last year, which opposition members have been critical of due to heavy taxes and privatization plans to meet targets. Thus, the polls will likely be seen as a referendum on Wickremesinghe, a career politician who has sought to be the face of a recovering Sri Lanka. Countries such as India and China, which provided assistance and loans to the country, will be closely watching the polls as will Sri Lanka’s bilateral and private lenders. \n\nSources have estimated the election will be held as early as September 2024 or as late as November. The major candidates are as follows.\n\nRanil Wickremesinghe: The incumbent President of Sri Lanka, elected by the Parliament of Sri Lanka in July 2022. He has [not yet](https://colombogazette.com/2024/04/15/who-will-blink-first-when-why-and-how/) officially declared his candidacy but is widely expected to announce. He is entering election season with a [low favorability rating](https://ihp.lk/press-releases/ak-dissanayake-sees-favourability-ratings-improve-other-party-leaders-see-declines). Wickremesinghe has been [accused](https://www.hrw.org/news/2024/02/14/under-ranil-wickremesinghe-sri-lanka-going-fast-reverse) by Human Rights Watch of suppressing dissent.  In the most recent [poll](https://www.ihp.lk/press-releases/nppjvp-maintains-lead-voting-intentions-continuing-increase-sjb-support) by the Institute for Health Policy, which has been the main pollster for this election so far, Wickremesinghe is trailing the other candidates.\n\nSajith Premadasa: The Leader of the Opposition, which is an [official title](https://en.wikipedia.org/wiki/Leader_of_the_Opposition_(Sri_Lanka)) in the country, Premadasa is also head of Samagi Jana Balawegaya (United People's Power), which is the political alliance that holds the second highest number of seats in the Parliament of Sri Lanka. Premadasa is in second place in the [polling averages](https://en.wikipedia.org/wiki/2024_Sri_Lankan_presidential_election#Nationwide), at the time of this question. \n\nAnura Kumara Dissanayake: The frontrunner according to the polling averages as of early 2024, Dissanayake is a socialist and head of the National People's Power political alliance. According to [this column](https://www.ft.lk/columns/The-last-endgame-AKD-NPP-positioned-to-win-but-should-beware/4-755751) by a political scientist in the Daily Financial Times, Dissanayake has a strong electoral position going into election season."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-09-17T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/22632",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22632",
+            "market_prob": null,
+            "resolve_time": "2024-10-19T16:00:00Z",
+            "close_time": "2024-09-17T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 669,
+                    "label": "Anura Kumara Dissanayake"
+                },
+                {
+                    "id": 670,
+                    "label": "Sajith Premadasa"
+                },
+                {
+                    "id": 672,
+                    "label": "Ranil Wickremesinghe"
+                },
+                {
+                    "id": 673,
+                    "label": "The Sri Lanka People's Front (SLPP) candidate"
+                },
+                {
+                    "id": 725,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22788,
+        "title": "Who will win the 2024 presidential election in Moldova?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Moldova. Resolution will be based on the results reported by the [alegeri.md](https://alegeri.md/w/Pagina_principal%C4%83) electoral platform or other [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "Moldova has [scheduled](https://www.romania-insider.com/moldova-presidential-elections-referendum-october-2024) its presidential election for October 20, 2024. Crucially, citizens will also be voting on a referendum on Moldova's accession to the European Union. \n\nThe incumbent President of Moldova, Maia Sandu, is running for re-election. In 2020 she defeated her [pro-Russian](https://www.pravda.com.ua/eng/news/2024/04/6/7450014/) predecessor, Igor Dodon, against whom she is facing a rematch. As of April 20224, she leads in the [polling averages](https://en.wikipedia.org/wiki/2024_Moldovan_presidential_election#Opinion_polls), though not enough for an absolute majority, were the election held today. In the context of Moldovan politics, Sandu is considered [pro-West](https://www.rferl.org/a/moldova-pro-european-president-sandu-second-term/32745383.html), writing in her official social media account, “Our future lies in the European family and it is necessary to say clearly -- the whole country -- which path we choose for Moldova.”\n\nDodon, her main opponent and second place in the polling averages,  has called for a \"strategic partnership with Russia,\" adding, \"Friendship and cooperation with Russia and the Russian people are in the national interests of Moldova and the Moldovan people. All public opinion polls show that this is what the majority of our citizens want, despite the openly anti-Russian policy pursued by the Sandu-PAS regime.\"\n\nRoughly tied for a distant third in the polling averages, at mid single digits, are Ion Ceban and Ion Chicu. Ceban, a former member of Dodon's Party of Socialists of the Republic of Moldova, is the mayor of Chisinau, the capital city of Moldova and also [considered](https://www.rferl.org/a/moldova-mayoral-elections-ceban-chisinau-sandu-blow/32672825.html) pro-Russian.  Chicu, also considered [pro-Russian](https://uacrisis.org/en/shady-horses-of-russian-propaganda-ion-chicu-blaming-ukraine-in-involvement-moldova-in-the-war-and-other-manipulations), was prime minister of Moldova from November 14, 2019, to December 31, 2020. \n\nThe vote is scheduled for October 20, 2024, with a second round runoff on November 3, 2024, if no candidate receives an absolute majority.\n\nSee also: [Wikipedia 2024 Moldovan presidential election](https://en.wikipedia.org/wiki/2024_Moldovan_presidential_election)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-02T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/22788",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22788",
+            "market_prob": null,
+            "resolve_time": "2024-11-04T17:00:00Z",
+            "close_time": "2024-11-02T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 685,
+                    "label": "Maia Sandu"
+                },
+                {
+                    "id": 686,
+                    "label": "Igor Dodon"
+                },
+                {
+                    "id": 687,
+                    "label": "Ion Chicu"
+                },
+                {
+                    "id": 688,
+                    "label": "Ion Ceban"
+                },
+                {
+                    "id": 689,
+                    "label": "Someone else"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22794,
+        "title": "Who will win the 2024 presidential election in South Sudan?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who is elected president of South Sudan during the 2024 election. Resolution will be determined according to reports from [credible sources](https://www.metaculus.com/help/faq/#definitions).\n\nNote that this question includes an option for \"No election is held in 2024\", and the question will resolve as this outcome if the election has not been held before January 1, 2025.",
+            "background_info": "The [2024 South Sudanese general election](https://en.wikipedia.org/wiki/2024_South_Sudanese_general_election) is [scheduled to take place in December 2024](https://apnews.com/article/south-sudan-elections-salva-kiir-97ebaa6b9317cdff86e42492f1093c10). The election will be the first since South Sudan [gained independence from Sudan in 2011](https://en.wikipedia.org/wiki/South_Sudan#Independence_(2011)), after previous elections were cancelled due to the [South Sudanese civil war](https://en.wikipedia.org/wiki/South_Sudanese_Civil_War).\n\n[Salva Kiir Mayardit](https://en.wikipedia.org/wiki/Salva_Kiir_Mayardit) has been president of South Sudan since independence, and is running for reelection."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-10T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/22794",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22794",
+            "market_prob": null,
+            "resolve_time": "2025-01-01T14:00:00Z",
+            "close_time": "2024-12-10T23:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 694,
+                    "label": "Salva Kiir Mayardit"
+                },
+                {
+                    "id": 695,
+                    "label": "Bol Gai Deng"
+                },
+                {
+                    "id": 696,
+                    "label": "Peter Mayen Majongdit"
+                },
+                {
+                    "id": 697,
+                    "label": "Deng Bol Aruei"
+                },
+                {
+                    "id": 698,
+                    "label": "Someone else"
+                },
+                {
+                    "id": 726,
+                    "label": "No election is held in 2024"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22795,
+        "title": "Who will win the 2024-25 presidential election in Croatia?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who is elected president of Croatia during the 2024 election. Resolution will be determined according to reports from [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "The first round of the [2024 Croatian presidential election](https://en.wikipedia.org/wiki/2024_Croatian_presidential_election) is scheduled to be held in December 2024. Croatia uses a two round system, where a candidate must win over 50% of the vote to be elected. If this does not occur in the first round a second round is held between the two candidates with the highest vote share, scheduled for January 2025.\n\nThe incumbent president of Croatia is [Zoran Milanović](https://en.wikipedia.org/wiki/Zoran_Milanovi%C4%87) is [expected to run for another term](https://www.theguardian.com/world/2024/feb/23/2024-global-elections-tracker-voting-dates-us-india-indonesia-belarus-haiti-pakistan-full-list#:~:text=September-,CROATIA,-Before%2022%20September) though recently was the subject of controversy when he announced he would seek to be elected Prime Minister but was [barred from doing so](https://apnews.com/article/croatia-election-president-constitution-milanovic-court-sdp-7cd3da5839c0e641a113a6f9d8b31a08) by the courts due to not resigning as president first. In the event Milanović was to become Prime Minister and resign the presidency, presidential elections would need to be held [within 60 days](https://www.constituteproject.org/constitution/Croatia_2013#:~:text=Elections%20for%20the%20new%20President%20of%20the%20Republic%20shall%20be%20held%20within%20the%20term%20of%2060%20days%20from%20the%20day%20the%20temporary%20President%20of%20the%20Republic%20has%20taken%20over%20the%20duty%20according%20to%20section%203%20of%20this%20Article.) of the resignation.\n \nMilanović ran for the presidency as a member of the Social Democratic Party of Croatia, though [as required by the Croatian Constitution](https://www.constituteproject.org/constitution/Croatia_2013#:~:text=After%20the%20election%2C%20the%20President%20of%20the%20Republic%20shall%20resign%20from%20membership%20in%20the%20political%20party%20and%20notify%20the%20Croatian%20Parliament%20thereof.) he became an independent upon assuming office."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-12-01T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/22795",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22795",
+            "market_prob": null,
+            "resolve_time": "2025-02-01T14:00:00Z",
+            "close_time": "2024-12-01T23:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 699,
+                    "label": "Zoran Milanović"
+                },
+                {
+                    "id": 700,
+                    "label": "Kolinda Grabar-Kitarović"
+                },
+                {
+                    "id": 701,
+                    "label": "Ivan Šimonović"
+                },
+                {
+                    "id": 741,
+                    "label": "Gordan Jandroković"
+                },
+                {
+                    "id": 742,
+                    "label": "Another HDZ or Coalition Partner Candidate"
+                },
+                {
+                    "id": 743,
+                    "label": "Another SDP or Coalition Partner Candidate"
+                },
+                {
+                    "id": 744,
+                    "label": "Someone else"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22796,
+        "title": "Who will win the 2024 presidential election in Palau?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Palau. Resolution will be based on the results reported by the Palau Election Commission, typically published in the [Island Times](https://islandtimes.org/), or other credible sources.\n\nThis question will resolve as \"Another outcome\" if any candidate wins other than the two listed.",
+            "background_info": "Despite its small population (under 17,000 registered voters), Palau punches far above its weight in geopolitical importance, as one of only 11 countries that have formal diplomatic relations with Taiwan, and only one of 4 in the Pacific. The two major candidates, President Surangel Whipps Jr. and former President Thomas Remengesau Jr., have the unusual distinction of being brothers in law. In the 2020 election, Remengesau Jr. was ineligible to run due to term limits, and Whipps Jr. won with 56.7% of the vote. In 2016 when the the two went head to head, the election was a \"[statistical dead heat](https://www.postguam.com/palau-election-too-close-to-call/article_5ae76d46-a24d-11e6-b77d-b7b2cbab0571.html)\" with Remengesau Jr. winning by only 2.6 points, with the deciding factor being overseas ballots. This year will see the two go head to head in a rematch. \n\nAs the incumbent, the administration of President Whipps has been very pro-American and pro-Taiwan, even at the expense of being willing to accept  [less tourism](https://www.pacificislandtimes.com/post/china-steps-up-efforts-to-win-palau-but-whipps-says-he-won-t-cave-in) from the People's Republic of China, compared with what his country would receive if it were to switch its diplomatic recognition. Whipps has [offered](https://www.fdd.org/events/2023/07/17/the-united-states-and-palaus-strategic-partnership-a-conversation-with-president-surangel-s-whipps-jr/) to host a US military base in Palau.\n\nIn contrast, former President Remengesau, although maintaining similar pro-Taiwan and pro-American policies during his administration, has been [more measured](https://globaltaiwan.org/2020/01/taiwans-pacific-stronghold-in-palau/\n) in his statements:\n\n>President Remengesau Jr. has publicly expressed his desire to maintain friendly and cooperative relations with China. In a 2017 interview, Remengesau Jr. expressed gratitude for the Chinese tourists and investments in his country. If he could, the Palauan president said he would want to recognize both Taiwan and China.\n\nThe vote is [scheduled](https://palauelection.org/election-dates/) for November 12, 2024, with a runoff election if no candidate receives an absolute majority."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-11T05:01:00Z",
+        "url": "https://www.metaculus.com/questions/22796",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22796",
+            "market_prob": null,
+            "resolve_time": "2024-11-13T17:00:00Z",
+            "close_time": "2024-11-11T05:01:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 702,
+                    "label": "Surangel Whipps Jr."
+                },
+                {
+                    "id": 703,
+                    "label": "Thomas Remengesau Jr."
+                },
+                {
+                    "id": 704,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22797,
+        "title": "Who will win the 2024 presidential election in Somaliland?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Somaliland. Resolution will be based on the results announced by the National Electoral Commission of Somaliland, as reported by [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "An [unrecognized](https://theconversation.com/somaliland-has-been-pursuing-independence-for-33-years-expert-explains-the-impact-of-the-latest-deal-with-ethiopia-221502) country that [declared independence](https://www.cfr.org/backgrounder/somaliland-horn-africas-breakaway-state) from Somalia in 1991,  Somaliland is in a geopolitically important area, wedged between Djibouti, Ethiopia and Somalia, and across the Gulf of Aden from Yemen. \n\nDespite the fact that the 2024 election has been delayed by two years and there have been restrictions on press freedoms, Somaliland's elections have been [surprisingly free and fair](https://africacenter.org/spotlight/2024-elections/somaliland/), given its region in the world--as evidenced by peaceful transitions of power such as in the 2010 election, when an opposition party candidate beat the incumbent. For the 2024 election, the major candidates are as follows:\n\nThe Kulmiye Peace, Unity and Development Party candidate is likely to be incumbent President Muse Bihi Abdi, although as of April 27, 2024, he has [not yet announced](https://en.wikipedia.org/wiki/2024_Somaliland_presidential_election) whether he is running for re-election. He won the last election, in 2017, by a margin of 14.4 points over the 2nd place finisher, the then (and current) Waddani Party candidate.\n\nThe Waddani or Somaliland National Party candidate is Abdirahman Mohamed Abdullahi Irro, founder of the party who is [Speaker](https://www.somalilandcurrent.com/somaliland-who-is-mr-abdirahman-irro/) of Somaliland's House of Representatives. The 2024 election represents a rematch between Irro and President Bihi, should the latter choose to run.\n\nThe UCID or Justice and Welfare Party candidate is Faysal Ali Warabe, who came in 3rd place in the 2017, 2010 and 2003 elections. He has adopted a more [hawkish tone](https://thesomalidigest.com/ucid-chairman-waraabe-incites-tribal-tensions-and-calls-for-conflict/) with respect to Somaliland's [territorial dispute](https://en.wikipedia.org/wiki/Puntland%E2%80%93Somaliland_dispute) with Somalia, compared with the other candidates."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-12T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/22797",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22797",
+            "market_prob": null,
+            "resolve_time": "2024-11-14T17:00:00Z",
+            "close_time": "2024-11-12T17:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 705,
+                    "label": "Muse Bihi Abdi"
+                },
+                {
+                    "id": 706,
+                    "label": "Another Kulmiye Party candidate"
+                },
+                {
+                    "id": 707,
+                    "label": "A Waddani Party candidate"
+                },
+                {
+                    "id": 708,
+                    "label": "A Justice and Welfare Party candidate"
+                },
+                {
+                    "id": 754,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22814,
+        "title": "Who will win the 2024 presidential election in Namibia?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Namibia. Resolution will be based on the results announced by the [Electoral Commission of Namibia](https://www.ecn.na/) or other credible sources.",
+            "background_info": "Following the January 2024 death from cancer of Namibia's popular president, Hage Geingob, his vice president, Nangolo Mbumba, took over as interim president. The following month, Mbumba [announced](https://www.reuters.com/world/africa/namibia-interim-president-says-no-plan-run-this-years-election-2024-02-04/) he was not running in the 2024 elections.\n\nThe major candidates are as follows:\n\nNetumbo Nandi-Ndaitwah of the ruling  South West Africa People's Organisation (SWAPO party) - Ms. Nandi-Ndaitwah is the current interim vice president, after serving as deputy prime minister from 2015 to 2024. While the SWAPO candidate has dominated Namibian presidential elections since independence in 1990, the margins [have been decreasing](https://africacenter.org/spotlight/2024-elections/namibia/), and SWAPO's popularity has been suffering in recent years due to scandals and younger voters, particularly those born after independence, supporting other parties. Recently SWAPO has [lost in local elections](https://www.namibian.com.na/swapo-has-lost-middle-class-votes-melber/) such as in the capital city of Windhoek. If she were to win, Nandi-Ndaitwah would be Namibia's first female president.\n\nPanduleni Filemon Bango Itula, founder of Independent Patriots for Change - Mr. Itula [was expelled](https://www.namibian.com.na/swapo-will-welcome-itula-back-with-open-arms-nekongo/) from the ruling SWAPO party in 2020 following his independent challenge to President Geingob in 2019. In that election, Itula came in 2nd, receiving 29.4% of the vote compared to Geingob's 56.3%.\n\nMcHenry Venaani, president of the Popular Democratic Movement opposition political alliance, technically registered as one party - Mr. Venanni came in 3rd in the 2019 elections. His PDM has the second highest number of seats in Namibia's parliament. Venaani famously [served as pallbearer](https://www.namibian.com.na/carrying-geingobs-coffin-an-honour-of-a-lifetime-venaani/) at the funeral of President Geingob, highlighting Namibia's status as an open multiparty democracy. \n\nThe vote is [scheduled](https://www.ecn.na/wp-content/uploads/2024/03/ECN_A4_Key-Electoral-Activities_2024.pdf) for November 27, 2024, with a runoff if no candidate receives a majority.\n\nSee Also:\n\n- [DW Namibia: What next after President Hage Geingob's death?](https://www.dw.com/en/namibia-what-next-after-president-hage-geingobs-death/a-68184518DW)\n\n- [BTI Namibia Country Report 2024](https://bti-project.org/en/reports/country-report/NAM)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-26T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/22814",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22814",
+            "market_prob": null,
+            "resolve_time": "2024-11-28T17:00:00Z",
+            "close_time": "2024-11-26T17:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 709,
+                    "label": "Netumbo Nandi-Ndaitwah"
+                },
+                {
+                    "id": 710,
+                    "label": "Panduleni Itula"
+                },
+                {
+                    "id": 711,
+                    "label": "McHenry Venaani"
+                },
+                {
+                    "id": 712,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22815,
+        "title": "Who will win the 2024 presidential election in Mozambique?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Mozambique. Resolution will be based on final results reported by the National Election Commission of Mozambique, the Electoral Institute for Sustainable Democracy in Africa (EISA), or other [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "Rich in [mineral resources](https://en.wikipedia.org/wiki/Mineral_industry_of_Mozambique), Mozambique has risen in geopolitical importance since Russia's invasion of Ukraine, [abstaining](https://www.zitamar.com/understanding-current-mozambique-russia-relations/) from UN votes on the conflict, while seeking beneficial investments from Russia's oil and gas giants Gazprom and Rosneft. Wagner Group [began offering](https://www.cfr.org/backgrounder/russias-growing-footprint-africa) its services to the Mozambique government beginning in 2019. \n\nPresident Filipe Nyusi is running for his third term in office, after having officially won re-election in 2019 by 52 points in an election subject to widespread fraud and manipulation, [according to research](https://www.tandfonline.com/doi/full/10.1080/03057070.2023.2291897) published in the Journal of Southern African Studies. \n\nThe main opposition party, RENAMO, has not yet chosen its candidate and is [embroiled](https://clubofmozambique.com/news/mozambique-venancio-mondlane-says-profile-of-renamo-presidential-candidates-is-illegal-aim-256993/) in internal division over who its candidate will be. One possibility is Venancio Mondlane, the party's candidate for mayor of Maputo, the capital city, but he has been officially barred and the party is [scheduled](https://allafrica.com/stories/202404150387.html) to make its final decision in mid May. \n\nElections are often postponed in Africa, with the latest being [Senegal](https://www.france24.com/en/africa/20240203-france-24-s-special-edition-senegal-vote-postponement-historical-in-west-africa-s-most-stable-democracy) in February 2024, which if it were to happen in Mozambique would resolve for the option of \"Someone else or Another outcome\". \n\nThe vote is [scheduled](https://www.eisa.org/election-calendar/) for October 9, 2024, with a runoff if no candidate receives a majority.\n\nFor Further Background \n\n- Africa Center for Strategic Studies: [Mozambique: October 9](https://africacenter.org/spotlight/2024-elections/mozambique/)\n\n- BTI: [Mozambique Country Report 2024](https://bti-project.org/en/reports/country-report/MOZ)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-10-08T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/22815",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22815",
+            "market_prob": null,
+            "resolve_time": "2024-10-10T16:00:00Z",
+            "close_time": "2024-10-08T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 713,
+                    "label": "Filipe Nyusi"
+                },
+                {
+                    "id": 714,
+                    "label": "The RENAMO candidate"
+                },
+                {
+                    "id": 715,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 22905,
+        "title": "Who will win the 2024 presidential election in Romania?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the candidate who wins the 2024 election for President of Romania. Resolution will be based on the results reported by Romania's Central Electoral Bureau or other [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "As a NATO country bordering Ukraine and Moldova, Romania's election this year is dominated by war and the economy, with the country [divided](https://ecfr.eu/publication/wars-and-elections-how-european-leaders-can-maintain-public-support-for-ukraine/#total-victory-v-a-settlement) on the conflict in Ukraine and EU rules [requiring](https://www.bloomberg.com/news/articles/2024-02-20/romania-may-need-the-rest-of-the-decade-to-reduce-budget-deficit?embedded-checkout=true) Romania to reduce its budget deficit. The incumbent president, Klaus Iohannis, is term limited and will not be running for re-election. The major candidates are as follows:\n\nMircea Geoană - The leader in the [polling averages](https://en.wikipedia.org/wiki/Opinion_polling_for_the_2024_Romanian_presidential_election) as of April 2024, Mr. Geoană is the Deputy Secretary General of NATO.\n\nMarcel Ciolacu - Mr. Ciolacu is the Prime Minister of Romania and is president of the Social Democratic Party, which has the most seats in both houses of Romania's parliament.\n\nGeorge Simion - As president of the [far-right](https://www.euronews.com/2023/11/02/is-aur-resorting-to-tried-and-tested-tricks-as-romanian-far-rights-popularity-spikes) AUR party, Simion was in [second place](https://www.digi24.ro/stiri/actualitate/politica/sondaj-atlasintel-pentru-digi24-pe-cine-ar-vota-romanii-la-prezidentiale-geoana-e-pe-primul-loc-cat-ar-obtine-ciolacu-sau-ciuca-2755473) in the AtlasIntel April 2024 poll and is widely considered to have [momentum](https://www.ips-journal.eu/topics/democracy-and-society/romanias-election-year-amid-a-far-right-momentum-7294/) this year. He is [less pro-Ukrainian](https://www.global-focus.eu/2024/02/the-political-discourse-of-george-simion-and-aur-mainstreaming-or-deceit/) compared with most other candidates.\n\nNicolae Ciucă -  Mr. Ciucă is the chairman of the National Liberal Party and has not yet declared his candidacy, other than [saying](https://www.agerpres.ro/english/2024/04/09/nicolae-ciuca-says-pnl-will-have-a-candidate-for-romania-s-presidency--1278282) that his party would have a candidate in 2024, possibly a joint candidate.  Although a long shot, Ciucă is [widely considered](https://www.digi24.ro/stiri/actualitate/politica/sondaj-inscop-cine-ar-castiga-primul-tur-al-alegerilor-prezidentiale-george-simion-nu-intra-in-turul-doi-2752727) one of the top 5 political personalities in Romania.\n\nDiana Iovanovici Șoșoacă -Ms. Șoșoacă is president of the far-right [S.O.S. Romania](https://en.wikipedia.org/wiki/S.O.S._Romania) party.  She is positioned in the election as [pro-Russian](https://uacrisis.org/en/kremlin-shady-horses-diana-sosoaca-pushing-for-peace-negotiations-creating-fakes-and-territorial-claims-to-ukraine) and [has advocated](https://en.wikipedia.org/wiki/Diana_Iovanovici_%C8%98o%C8%99oac%C4%83) that Romania seize certain territories from Ukraine such as Snake Island.\n\nCozmin Gușă - Host of the most popular political talk show in Romania, Mr. Gușă [announced](https://www.thediplomaticaffairs.com/2024/04/21/cozmin-gusa-presidency/) his candidacy in April 2024. He is a critic of the frontrunner, Mircea Geoană.\n\nThe vote is scheduled for September 15, 2024, with a second round runoff on September 29, 2024, if no candidate receives an absolute majority."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-09-28T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/22905",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22905",
+            "market_prob": null,
+            "resolve_time": "2024-10-01T02:00:00Z",
+            "close_time": "2024-09-28T16:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 716,
+                    "label": "Mircea Geoană"
+                },
+                {
+                    "id": 717,
+                    "label": "Marcel Ciolacu"
+                },
+                {
+                    "id": 718,
+                    "label": "George Simion"
+                },
+                {
+                    "id": 719,
+                    "label": "Nicolae Ciucă"
+                },
+                {
+                    "id": 720,
+                    "label": "Diana Iovanovici Șoșoacă"
+                },
+                {
+                    "id": 723,
+                    "label": "Cozmin Gușă"
+                },
+                {
+                    "id": 724,
+                    "label": "Someone else"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 23033,
+        "title": "In which year will Tesla officially unveil a new passenger vehicle, possibly called the Model 2, priced under $25,000?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** for the first year in which Tesla officially unveils a new passenger vehicle with a specifically-mentioned starting Manufacturer's Suggested Retail Price (MSRP) of under $25,000. It might be referred to as the \"Model 2,\" but that is not required for resolution. The unveiling must also substantially reveal a prototype or physical model of the passenger vehicle; a mere mention of its existence does not count. \n\nThe  official unveiling by Tesla can come through any medium including but not limited to an unveiling event, press release, an announcement on Tesla's social media accounts, or Tesla’s website. If no such announcement or unveiling happens before January 1, 2027, this question will resolve as **Not before 2027**.",
+            "background_info": "In April 2024, Reuters [reported](https://www.cnbc.com/2024/04/05/tesla-scraps-low-cost-car-plans-amid-fierce-chinese-ev-competition-reuters.html) that Tesla had scrapped its plans to build its low-cost Model 2, a rumored compact car with a starting price of about $25,000. Tesla CEO Elon Musk [denied](https://twitter.com/elonmusk/status/1776272471324606778) the report, saying that \"Reuters is lying.\" However, on April 15, 2024, Electrek [reported](https://electrek.co/2024/04/15/tesla-puts-electric-car-codenamed-nv9-back-burner-despite-elon-musk-said/) that it \"can confirm that Tesla indeed put its upcoming ‘$25,000 electric car, sometimes referred to as ‘Model 2’, on the back burner despite what Elon Musk said.\" It added that according to sources within the company, Tesla is going to focus resources on expanding its Gigafactory Texas to turn company attention onto the Robotaxi project instead.\n\nIn recent months, analysts have been divided in their forecasts. Felix Page, news editor of Autocar magazine, [wrote](https://www.autocar.co.uk/car-news/new-cars/tesla-model-2-set-production-next-year-sub-%C2%A325k-ev) in March 2024 that he expects production to begin in 2025, likely in Tesla's Gigafactory Berlin-Brandenburg. On the other hand, on April 27, 2024, analyst Troy Teslike [tweeted](https://twitter.com/TroyTeslike/status/1784201788301701517) his forecast that the Model 2 has been postponed until 2028."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2026-12-30T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/23033",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/23033",
+            "market_prob": null,
+            "resolve_time": "2027-01-01T17:00:00Z",
+            "close_time": "2026-12-30T17:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 762,
+                    "label": "2024"
+                },
+                {
+                    "id": 763,
+                    "label": "2025"
+                },
+                {
+                    "id": 764,
+                    "label": "2026"
+                },
+                {
+                    "id": 765,
+                    "label": "Not before 2027"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 23451,
+        "title": "Which car brand will have the highest owner satisfaction rating, according to the 2024 Consumer Reports Annual Auto Survey?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the car brand ranked highest in  \"Owner Satisfaction by Brand\" in the 2024 Consumer Reports Annual Auto Surveys. \n\nResults are expected to be released around the beginning of February 2025 and in the March 2025 issue of Consumer Reports, but if they aren't released before July 1, 2025, the question will be **Annulled**.",
+            "background_info": "When Consumer Reports released its car brand loyalty rankings in February 2024, many analysts were surprised to see newcomer Rivian dominating the list ([example](https://twitter.com/GuyDealership/status/1772751503523987629)), even after Consumer Reports' own reviewers [derided it](https://electrek.co/2024/02/04/rivian-tops-consumer-reports-most-loved-ranks-after-its-reviewers-derided-it/). \n\nThe top 5 owner satisfaction rankings released in February 2024 are as follows:\n\n| Rank | Brand  | Satisfaction Score | Owners Who Would Buy Again |\n|------|--------|--------------------|-----------------------|\n| 1    | Rivian | 5                  | 86%                   |\n| 2    | Mini   | 4                  | 77%                   |\n| 3    | BMW    | 4                  | 76%                   |\n| 4    | Porsche| 4                  | 76%                   |\n| 5    | Tesla  | 4                  | 74%                   |\n\n(Source: [Consumer Reports Most and Least Loved Car Brands](https://www.consumerreports.org/cars/car-reliability-owner-satisfaction/most-and-least-liked-car-brands-a1291429338/))\n\nThe top 5 rankings released February 2, 2023, were:\n\n| Rank | Brand  | Satisfaction Score | Owners Who Would Buy Again |\n|------|--------|--------------------|-----------------------|\n| 1    | Porsche | 5                  | 83%                   |\n| 2    | Genesis   | 4                  | 80%                   |\n| 3    | Tesla    | 4                  | 78%                   |\n| 4    | BMW| 4                  | 73%                   |\n| 5    | Subaru  | 4                  | 73%                   |"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2025-01-31T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/23451",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/23451",
+            "market_prob": null,
+            "resolve_time": "2025-02-02T17:00:00Z",
+            "close_time": "2025-01-31T17:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 806,
+                    "label": "BMW"
+                },
+                {
+                    "id": 807,
+                    "label": "Genesis"
+                },
+                {
+                    "id": 808,
+                    "label": "Mini"
+                },
+                {
+                    "id": 809,
+                    "label": "Porsche"
+                },
+                {
+                    "id": 810,
+                    "label": "Rivian"
+                },
+                {
+                    "id": 811,
+                    "label": "Subaru"
+                },
+                {
+                    "id": 812,
+                    "label": "Tesla"
+                },
+                {
+                    "id": 813,
+                    "label": "Another brand"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 24039,
+        "title": "Which science fiction novel will win a Hugo Award in 2024?",
+        "body": {
+            "resolution_criteria": "The winner will be the novel that's [announced](https://glasgow2024.org/chairs-statement-15th-february-2024/) to have won at the ceremony scheduled for August 11, 2024.",
+            "background_info": "In the science fiction genre, the Hugo Awards are the [premier awards](https://en.wikipedia.org/wiki/Hugo_Award). The 2023 awards were subject to a firestorm of [controversy](https://www.npr.org/2024/02/23/1233355111/the-hugo-awards-scandal-has-shaken-the-sci-fi-community) due to possible tampering, so the organizers have pledged greater transparency this year. \n\nThe winner will be Presented at: [Glasgow 2024, a Worldcon for Our Futures](https://glasgow2024.org/), Glasgow, Scotland, August 11, 2024.\n\nThe Final Ballot for the 2024 Hugo Awards, Astounding Award, and Lodestar Award is now open! All ballots must be received by Saturday, 20th July 2024, 20:17 GMT.\n\nThe options above are the nominees, announced [here](https://www.thehugoawards.org/hugo-history/2024-hugo-awards/).\nYou can also check out [this FAQ](https://www.thehugoawards.org/hugo-faq/) about the Hugos."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-08-10T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/24039",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24039",
+            "market_prob": null,
+            "resolve_time": "2024-08-12T06:00:00Z",
+            "close_time": "2024-08-10T19:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 869,
+                    "label": "Starter Villain - John Scalzi"
+                },
+                {
+                    "id": 870,
+                    "label": "The Saint of Bright Doors - Chandrasekera"
+                },
+                {
+                    "id": 871,
+                    "label": "Witch King - Martha Wells"
+                },
+                {
+                    "id": 872,
+                    "label": "Some Desperate Glory - Emily Tesh"
+                },
+                {
+                    "id": 873,
+                    "label": "Adventures of Amina al-Sirafi - Chakraborty"
+                },
+                {
+                    "id": 874,
+                    "label": "Translation State - Ann Leckie"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 24040,
+        "title": "Who will win the popular vote in the 2024 United States presidential election?",
+        "body": {
+            "resolution_criteria": "This question will be resolved based on the popular vote count as reported by reputable sources such as the Associated Press, CNN, or the New York Times. The candidate with the highest number of popular votes will be considered the winner.",
+            "background_info": "This question asks who will win the popular vote in the 2024 United States presidential election. The popular vote is the total number or percentage of votes cast for a candidate by the electorate, as opposed to the electoral vote, which determines the actual winner of the presidency.\n\nThe candidates listed are those expected to run for office, but the list will be updated as the election approaches and official candidates are declared."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-05T05:00:00Z",
+        "url": "https://www.metaculus.com/questions/24040",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24040",
+            "market_prob": null,
+            "resolve_time": "2024-11-05T17:00:00Z",
+            "close_time": "2024-11-05T05:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 875,
+                    "label": "Joe Biden"
+                },
+                {
+                    "id": 876,
+                    "label": "Donald Trump"
+                },
+                {
+                    "id": 877,
+                    "label": "Robert F. Kennedy Jr."
+                },
+                {
+                    "id": 878,
+                    "label": "Other"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 24331,
+        "title": "How Many States Will Split the Senate-Presidential Ticket in the 2024 US Election?",
+        "body": {
+            "resolution_criteria": "This question will resolve to the number of states that elect candidates of different parties for the US Senate and the presidency in the 2024 US elections.\n\nThis question will resolve based on the winner of the votes cast, as reported by [credible sources](https://www.metaculus.com/help/faq/#definitions).",
+            "background_info": "The 2024 United States presidential election is scheduled for November 5th, when voters will cast ballots for the President of the United States. The presidential election will take place alongside numerous Senate races, where voters will elect candidates for the US senate.\n\nHistorically, states often split their tickets, electing candidates from different parties to the presidency and the Senate. However, in recent years, this trend has declined significantly, with voters becoming increasingly likely to vote for candidates from the same party across different offices.\n\nIn the 2020 election, only one state, Maine, split its ticket, electing a Republican to the Senate while voting for a Democrat for president. \n\nFor the upcoming 2024 election, polling suggests that split-ticket voting may be more prevalent than in recent elections, with five states, as of May 24th, showing clear split ticket polling.\n\n-----\n\nSenate Polls:\n\n[Arizona](https://projects.fivethirtyeight.com/polls/senate/2024/arizona/)\n[Nevada](https://projects.fivethirtyeight.com/polls/senate/2024/nevada/)\n[Michigan](https://projects.fivethirtyeight.com/polls/senate/2024/michigan/)\n[Wisconsin](https://projects.fivethirtyeight.com/polls/senate/2024/wisconsin/)\n[Pennsylvania](https://projects.fivethirtyeight.com/polls/senate/2024/pennsylvania/)\n\nPresidential Polls:\n\n[Arizona](https://projects.fivethirtyeight.com/polls/president-general/2024/arizona/)\n[Nevada](https://projects.fivethirtyeight.com/polls/president-general/2024/nevada/)\n[Michigan](https://projects.fivethirtyeight.com/polls/president-general/2024/michigan/)\n[Wisconsin](https://projects.fivethirtyeight.com/polls/president-general/2024/wisconsin/)\n[Pennsylvania](https://projects.fivethirtyeight.com/polls/president-general/2024/pennsylvania/)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2024-11-04T01:00:00Z",
+        "url": "https://www.metaculus.com/questions/24331",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24331",
+            "market_prob": null,
+            "resolve_time": "2024-12-18T01:00:00Z",
+            "close_time": "2024-11-04T01:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 921,
+                    "label": "0"
+                },
+                {
+                    "id": 922,
+                    "label": "1"
+                },
+                {
+                    "id": 923,
+                    "label": "2"
+                },
+                {
+                    "id": 924,
+                    "label": "3"
+                },
+                {
+                    "id": 925,
+                    "label": "4"
+                },
+                {
+                    "id": 926,
+                    "label": "5"
+                },
+                {
+                    "id": 927,
+                    "label": "6"
+                },
+                {
+                    "id": 929,
+                    "label": "7 or more"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 24623,
+        "title": "Which faction in the Sudanese civil war will come out as the victor?",
+        "body": {
+            "resolution_criteria": "The question will be resolved either when any of these conditions are met:\n\n- There is a **formal surrender** by either side, or a formal **long-term ceasefire/armistice** agreement.<br>\n- [CFR](https://www.cfr.org/global-conflict-tracker/) **no longer lists** Sudan as in a state of civil war.<br>\n- The date is **April 15, 2033**, exactly 10 years after the war began.<br><br>\n\nWhen that occurs:\n\n- If one side has formally **disbanded, surrendered, or capitulated**, the other side is automatically considered the **victor**.<br>\n- If both sides still exist, and one side, according to [credible sources](https://www.metaculus.com/help/faq/#definitions), **controls the entirety of the capital area (defined as Khartoum, Omdurman, and Khartoum Bahri)**, then they are considered the **victor**.<br>\n\nIf neither side has come out as the victor before April 15, 2033, then this resolves as **Another outcome**. Examples of such scenarios include but are not limited to: \n\n- A **continued stalemate**. If both sides still exist, and neither side has managed to completely drive the other side out of the capital area, then the the resolution is considered a stalemate.\n- Another entity such as another country takes control of Sudan.\n- Another Sudanese faction, distinct from the SAF and RSF, takes control.\n- United Nations, African Union, or other peacekeepers deployed to Sudan.\n- Sudan dissolving or splitting into new countries.\n- A SAF/RSF coalition government.\n- Any other unforeseen event that prevents resolution.",
+            "background_info": "On April 15, 2023, the two factions composing Sudan's military dictatorship, the **Sudanese Armed Forces (SAF)** and the **Rapid Support Forces (RSF)** went to war with each other over fears the the SAF was going to undermine the RSF's power.<br>\nAs of May 2024, both sides control roughly half of Sudan, including half of the capital area (Khartoum, Omdurman, and Khartoum Bahri). Neither side appears to have an advantage over the other at the moment.<br>\nFurther reading:<br>\n[The war's Wikipedia page](https://en.wikipedia.org/wiki/Sudanese_civil_war_(2023–present))<br>\n[r/Sudan post about the situation](https://www.reddit.com/r/Sudan/comments/18tszo5/please_read_war_in_sudan/)<br>\n[Center for Strategic & International Studies: Looking Ahead after a Year of Conflict in Sudan](https://www.csis.org/analysis/looking-ahead-after-year-conflict-sudan)"
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2033-04-14T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/24623",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24623",
+            "market_prob": null,
+            "resolve_time": "2033-04-15T19:00:00Z",
+            "close_time": "2033-04-14T19:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 930,
+                    "label": "Sudanese Armed Forces (SAF)"
+                },
+                {
+                    "id": 931,
+                    "label": "Rapid Support Forces (RSF)"
+                },
+                {
+                    "id": 932,
+                    "label": "Another outcome"
+                }
+            ]
+        },
+        "resolution": null
+    },
+    {
+        "id": 25790,
+        "title": "If Donald Trump wins the 2024 US presidential election, how many US Supreme Court Justices will have been appointed by him on January 21, 2029?",
+        "body": {
+            "resolution_criteria": "This question will resolve as the number of Supreme Court Justices nominated by Donald Trump who have been confirmed by the Senate as of 00:00 Eastern on January 21, 2029. \n\nThis is the total number of all such persons over time, not the number of serving or living Trump-appointed justices at that time.\n\nIf Donald Trump does not win the 2024 US presidential election, this question will be **annulled**.",
+            "background_info": "The [Supreme Court of the United States](https://en.wikipedia.org/wiki/Supreme_Court_of_the_United_States?useskin=vector) (SCOTUS) is the highest court in the federal judiciary of the United States. The Court currently consists of nine justices, each having life tenure. Justices are nominated to the Court by the president, and their nominations either rejected or confirmed by the Senate. \n\nOf the nine [current justices](https://en.wikipedia.org/wiki/Supreme_Court_of_the_United_States?useskin=vector#Current_justices), six were appointed by Republican presidents, and three were appointed by Democratic presidents. As of July 2024, their tenures on the Court range from just over two years to nearly 33 years.\n\n- Chief Justice John Roberts, born 1959, nominated by George W. Bush, serving since 2005\n\n- Associate Justice Clarence Thomas, born 1948, nominated by George H. W. Bush, serving since 1991\n\n- Associate Justice Samuel Alito, born 1950, nominated by George W. Bush, serving since 2006\n\n- Associate Justice Sonia Sotomayor, born 1954, nominated by Barack Obama, serving since 2009\n\n- Associate Justice Elena Kagan, born 1960, nominated by Barack Obama, serving since 2010\n\n- Associate Justice Neil Gorsuch, born 1967, nominated by Donald Trump, serving since 2017\n\n- Associate Justice Brett Kavanaugh, born 1965, nominated by Donald Trump, serving since 2018\n\n- Associate Justice Amy Coney Barrett, born 1972, nominated by Donald Trump, serving since 2020\n\n- Associate Justice Ketanji Brown Jackson, born 1970, nominated by Joe Biden, serving since 2022\n\n\nAs Donald Trump is running for a second, non-consecutive term in the [2024 presidential election](https://en.wikipedia.org/wiki/2024_United_States_presidential_election?useskin=vector), it is possible that he could nominate one or more additional jurists to serve on the Court. This presents the possibility that the Court's [current conservative majority](https://en.wikipedia.org/wiki/Ideological_leanings_of_United_States_Supreme_Court_justices?useskin=vector#Partisan_balance) could be preserved for decades to come; and that by recent standards, an unusually high proportion of justices on the Court would have been [nominated by a single president.](https://en.wikipedia.org/wiki/List_of_presidents_of_the_United_States_by_judicial_appointments?useskin=vector) The last president to appoint more than three individuals to the Court was Richard Nixon, and the last to appoint more than four was Dwight Eisenhower."
+        },
+        "question_type": "multiple_choice",
+        "resolution_date": "2029-01-01T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/25790",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/25790",
+            "market_prob": null,
+            "resolve_time": "2029-01-21T12:00:00Z",
+            "close_time": "2029-01-01T12:00:00Z",
+            "effected_close_time": null,
+            "choices": [
+                {
+                    "id": 1119,
+                    "label": "3"
+                },
+                {
+                    "id": 1120,
+                    "label": "4"
+                },
+                {
+                    "id": 1121,
+                    "label": "5"
+                },
+                {
+                    "id": 1122,
+                    "label": "6"
+                },
+                {
+                    "id": 1123,
+                    "label": "7 or more"
+                }
+            ]
+        },
+        "resolution": null
+    }
+]
