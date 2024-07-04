@@ -18,6 +18,7 @@ from common.llm_utils import (
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
+    BiddingQuestion,
 )
 from common.perscache import register_models_for_cache
 from question_generators import question_formatter
@@ -1280,6 +1281,66 @@ class Consequence(MiniInstantiator):
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
+
+
+class RelevantInfo(MiniInstantiator):
+    """Given some forecasting question(s), generates relevant question(s)
+    whose answer a forecaster might want to know in order to answer the
+    original question(s)."""
+
+    class BaseSentenceFormat(BaseModel):
+        X: list[ForecastingQuestion]
+
+    class BaseSentenceFormat_stripped(BaseModel):
+        X: list[ForecastingQuestion_stripped]
+
+    class OutputFormat(BaseModel):
+        K: list[BiddingQuestion]
+
+    class OutputFormat_stripped(BaseModel):
+        K: list[BiddingQuestion]
+
+    def instantiate_sync(
+        self,
+        base_sentences: list[ForecastingQuestion],
+        **kwargs,
+    ) -> "Self.OutputFormat":
+        if self.use_examples_here:
+            examples = self.examples
+        else:
+            examples = None
+        based_sentences = self.BaseSentenceFormat_stripped(
+            X=[x.cast_stripped() for x in base_sentences]
+        )
+        return answer_sync(
+            prompt=based_sentences,
+            preface=self.preface,
+            examples=examples,
+            prepare_messages_func=prepare_messages_alt,
+            response_model=self.OutputFormat_stripped,
+            **kwargs,
+        )
+
+    async def instantiate(
+        self,
+        base_sentences: list[ForecastingQuestion],
+        **kwargs,
+    ) -> "Self.OutputFormat":
+        if self.use_examples_here:
+            examples = self.examples
+        else:
+            examples = None
+        based_sentences = self.BaseSentenceFormat_stripped(
+            X=[x.cast_stripped() for x in base_sentences]
+        )
+        return await answer(
+            prompt=based_sentences,
+            preface=self.preface,
+            examples=examples,
+            prepare_messages_func=prepare_messages_alt,
+            response_model=self.OutputFormat,
+            **kwargs,
+        )
 
 
 register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
