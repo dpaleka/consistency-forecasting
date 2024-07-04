@@ -18,7 +18,7 @@ from common.llm_utils import (
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
-    BiddingQuestion,
+    InformationPiece,
 )
 from common.perscache import register_models_for_cache
 from question_generators import question_formatter
@@ -1295,22 +1295,261 @@ class RelevantInfo(MiniInstantiator):
         X: list[ForecastingQuestion_stripped]
 
     class OutputFormat(BaseModel):
-        K: list[BiddingQuestion]
+        K: list[InformationPiece]
 
     class OutputFormat_stripped(BaseModel):
-        K: list[BiddingQuestion]
+        K: list[InformationPiece]
 
     def __init__(self):
-        self.preface = ...
-        self.examples = ...
+        self.preface = (
+            "You are a superforecaster. I will give you one or more forecasting questions. "
+            "You need to think of what pieces of information would be {rel} useful to you in "
+            "answering these questions / what questions you would like the answer to, "
+            "that you expect to be {rel} useful in informing your probability estimate for the "
+            "original forecasting question(s).\n\n"
+            "These pieces of information should be specific answerable questions with YES/NO "
+            "answers, whose answers can be definitively known with some research, well before "
+            "the original forecasting question resolves."
+        )
+        self.preface_relevance_high = self.preface.format(rel="most")
+        self.preface_relevance_mid = self.preface.format(rel="somewhat")
+        self.preface_relevance_low = self.preface.format(
+            rel="not at all (completely irrelevant)"
+        )
+        self.examples = [
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
+                                body=(
+                                    "Resolves YES if the price of Bitcoin on 1st January 2025 is more than "
+                                    "$100,000. Resolves NO otherwise."
+                                ),
+                            )
+                        ]
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Has a bill been proposed in the US Congress to ban Bitcoin?",
+                                body=(
+                                    "Resolves YES if any member of the US Congress has introduced a bill to "
+                                    "ban Bitcoin as of 31 March 2024. "
+                                ),
+                                question_type="binary",
+                            ),
+                            InformationPiece(
+                                title="Has a major financial institution announced plans to accept Bitcoin?",
+                                body=(
+                                    "Resolves YES if any major financial institution has announced plans to "
+                                    "accept Bitcoin as of 31 March 2024. "
+                                ),
+                                question_type="binary",
+                            ),
+                        ]
+                    ),
+                ),
+                "relevance": 8,
+            },
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will a Republican win the 2028 US presidential election?",
+                                body=(
+                                    "Resolves YES if the Republican nominee in the 2028 presidential election "
+                                    "gets more than 60% of the vote. Resolves NO otherwise."
+                                ),
+                            )
+                        ]
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Will the Democratic nominee get more than 60% of the vote in the 2028 presidential election?",
+                                body=(
+                                    "Resolves YES if the Democratic nominee in the 2028 presidential election "
+                                    "gets more than 60% of the vote. Resolves NO otherwise."
+                                ),
+                                question_type="binary",
+                            ),
+                            InformationPiece(
+                                title="Will the Libertarian nominee get more than 60% of the vote in the 2028 presidential election?",
+                                body=(
+                                    "Resolves YES if the Libertarian nominee in the 2028 presidential election "
+                                    "gets more than 60% of the vote. Resolves NO otherwise."
+                                ),
+                                question_type="binary",
+                            ),
+                        ]
+                    ),
+                ),
+                "relevance": 8,
+            },
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will Donald Trump be convicted of a crime by 2025?",
+                                body=(
+                                    "Resolves YES if Donald Trump is convicted of a crime by 2025. "
+                                ),
+                            ),
+                        ]
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Of the jury members in the trial of Donald Trump, are there at least 3 who are registered Democrats?",
+                                body=(
+                                    "Resolves YES if there are at least 3 jury members who are registered Democrats. "
+                                ),
+                                question_type="binary",
+                            ),
+                            InformationPiece(
+                                title="Is the judge in the trial of Donald Trump a registered Democrat?",
+                                body=(
+                                    "Resolves YES if the judge is a registered Democrat. "
+                                ),
+                                question_type="binary",
+                            ),
+                        ]
+                    ),
+                ),
+                "relevance": 8,
+            },
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will there be a trillionaire by 2050?",
+                                body=(
+                                    "Resolves YES if at any point before 2050, there is a person whose net worth "
+                                    "exceeds $1 trillion according to Forbes. Resolves NO otherwise."
+                                ),
+                            ),
+                        ]
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Is Elon Musk considering running for president?",
+                                body=(
+                                    "Resolves YES if Elon Musk is considering running for president "
+                                    "at any time in his lifetime."
+                                ),
+                                question_type="binary",
+                            ),
+                            InformationPiece(
+                                title="Is socialism popular among 18-24 year olds in the US?",
+                                body=(
+                                    "Resolves YES if at least 50 percent of 18-24 year olds in the US have a positive "
+                                    "view of socialism according to a reputable poll."
+                                ),
+                                question_type="binary",
+                            ),
+                        ]
+                    ),
+                ),
+                "relevance": 5,
+            },
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will Joe Biden win the 2024 US presidential election?",
+                                body=(
+                                    "Resolves YES if Joe Biden wins the 2024 US presidential election. "
+                                    "Resolves NO otherwise."
+                                ),
+                            ),
+                        ],
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Is the US GDP growth rate in Q3 of FY 2023 at least 2 percent?",
+                                body=(
+                                    "Resolves YES if the US GDP growth rate in Q3 of FY 2023 is at least 2 percent."
+                                ),
+                                question_type="binary",
+                            ),
+                        ],
+                    ),
+                ),
+                "relevance": 5,
+            },
+            {
+                "example": Example(
+                    user=self.BaseSentenceFormat_stripped(
+                        X=[
+                            ForecastingQuestion_stripped(
+                                title="Will Joe Biden win the 2024 US presidential election?",
+                                body=(
+                                    "Resolves YES if Joe Biden wins the 2024 US presidential election. "
+                                    "Resolves NO otherwise."
+                                ),
+                            ),
+                        ],
+                    ),
+                    assistant=self.OutputFormat_stripped(
+                        K=[
+                            InformationPiece(
+                                title="Did it rain in Tokyo on 3 July 2024?",
+                                body=(
+                                    "Resolves YES if it rained in Tokyo on 3 July 2024."
+                                ),
+                                question_type="binary",
+                            ),
+                        ],
+                    ),
+                ),
+                "relevance": 1,
+            },
+        ]
+        self.examples_relevance_high = [
+            example["example"] for example in self.examples if example["relevance"] >= 7
+        ]
+        self.examples_relevance_mid = [
+            example["example"]
+            for example in self.examples
+            if 4 <= example["relevance"] < 7
+        ]
+        self.examples_relevance_low = [
+            example["example"] for example in self.examples if example["relevance"] < 4
+        ]
 
     def instantiate_sync(
         self,
         base_sentences: list[ForecastingQuestion],
+        relevance="high",
         **kwargs,
     ) -> "Self.OutputFormat":
+        preface = (
+            self.preface_relevance_high
+            if relevance == "high"
+            else (
+                self.preface_relevance_mid
+                if relevance == "mid"
+                else self.preface_relevance_low
+            )
+        )
         if self.use_examples_here:
-            examples = self.examples
+            examples = (
+                self.examples_relevance_high
+                if relevance == "high"
+                else (
+                    self.examples_relevance_mid
+                    if relevance == "mid"
+                    else self.examples_relevance_low
+                )
+            )
         else:
             examples = None
         based_sentences = self.BaseSentenceFormat_stripped(
@@ -1318,7 +1557,7 @@ class RelevantInfo(MiniInstantiator):
         )
         return answer_sync(
             prompt=based_sentences,
-            preface=self.preface,
+            preface=preface,
             examples=examples,
             prepare_messages_func=prepare_messages_alt,
             response_model=self.OutputFormat_stripped,
@@ -1328,10 +1567,28 @@ class RelevantInfo(MiniInstantiator):
     async def instantiate(
         self,
         base_sentences: list[ForecastingQuestion],
+        relevance="high",
         **kwargs,
     ) -> "Self.OutputFormat":
+        preface = (
+            self.preface_relevance_high
+            if relevance == "high"
+            else (
+                self.preface_relevance_mid
+                if relevance == "mid"
+                else self.preface_relevance_low
+            )
+        )
         if self.use_examples_here:
-            examples = self.examples
+            examples = (
+                self.examples_relevance_high
+                if relevance == "high"
+                else (
+                    self.examples_relevance_mid
+                    if relevance == "mid"
+                    else self.examples_relevance_low
+                )
+            )
         else:
             examples = None
         based_sentences = self.BaseSentenceFormat_stripped(
@@ -1339,7 +1596,7 @@ class RelevantInfo(MiniInstantiator):
         )
         return await answer(
             prompt=based_sentences,
-            preface=self.preface,
+            preface=preface,
             examples=examples,
             prepare_messages_func=prepare_messages_alt,
             response_model=self.OutputFormat,
@@ -1349,7 +1606,16 @@ class RelevantInfo(MiniInstantiator):
 
 register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
 
-for instantiator in [Trivial, Neg, And, Or, Paraphrase, Conditional, Consequence]:
+for instantiator in [
+    Trivial,
+    Neg,
+    And,
+    Or,
+    Paraphrase,
+    Conditional,
+    Consequence,
+    RelevantInfo,
+]:
     register_models_for_cache(
         [
             instantiator.BaseSentenceFormat,
