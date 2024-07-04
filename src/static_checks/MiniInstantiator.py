@@ -1300,6 +1300,10 @@ class RelevantInfo(MiniInstantiator):
     class OutputFormat_stripped(BaseModel):
         K: list[BiddingQuestion]
 
+    def __init__(self):
+        self.preface = ...
+        self.examples = ...
+
     def instantiate_sync(
         self,
         base_sentences: list[ForecastingQuestion],
