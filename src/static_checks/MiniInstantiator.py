@@ -153,9 +153,13 @@ class MiniInstantiator(ABC):
 
     def instantiate_sync(
         self,
-        base_sentences: dict[str, ForecastingQuestion],
+        base_sentences: dict[str, ForecastingQuestion | InformationPiece],
         **kwargs,
     ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
+        for k, v in base_sentences.items():
+            if isinstance(v, InformationPiece):
+                base_sentences[k] = v.cast_FQ()
+
         title_body = self.title_body_sync(base_sentences, **kwargs)
         return self.OutputFormat(
             **{
@@ -171,10 +175,14 @@ class MiniInstantiator(ABC):
 
     async def instantiate(
         self,
-        base_sentences: dict[str, ForecastingQuestion],
+        base_sentences: dict[str, ForecastingQuestion | InformationPiece],
         n_verify=3,
         **kwargs,
     ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
+        for k, v in base_sentences.items():
+            if isinstance(v, InformationPiece):
+                base_sentences[k] = v.cast_FQ()
+
         if verify_before_instantion:
             for i in range(n_verify):
                 title_body = await self.title_body(base_sentences, **kwargs)

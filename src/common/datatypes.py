@@ -158,8 +158,7 @@ class ForecastingQuestion(BaseModel):
 register_model_for_cache(ForecastingQuestion)
 
 
-class ForecastingQuestion_with_subsidy(ForecastingQuestion):
-    fq: ForecastingQuestion_stripped
+class ForecastingQuestion_with_subsidy(ForecastingQuestion_stripped):
     market_subsidy: float
 
     @field_validator("market_subsidy")
@@ -173,6 +172,21 @@ class InformationPiece(BaseModel):
     title: str
     body: str
     question_type: str
+
+    def expected_answer_type(self, mode="default") -> type:
+        return exp_answer_types[mode][self.question_type]
+
+    def cast_stripped(self):
+        return ForecastingQuestion_stripped(title=self.title, body=self.body)
+
+    def cast_FQ(self):
+        """For eliciting probability estimates on information pieces."""
+        return ForecastingQuestion(
+            id=uuid4(),
+            title=self.title,
+            body=self.body,
+            resolution_date=datetime.now(),
+        )
 
 
 class BiddingQuestion(BaseModel):

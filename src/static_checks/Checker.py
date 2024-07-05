@@ -24,6 +24,9 @@ from common.datatypes import (
     ForecastingQuestion,
     Prob,
     VerificationResult,
+    InformationPiece,
+    BiddingQuestion,
+    ForecastingQuestion_with_subsidy,
 )
 from common.utils import (
     write_jsonl_async_from_str,
@@ -52,6 +55,7 @@ from .MiniInstantiator import (
     Conditional,
     Paraphrase,
     Consequence,
+    RelevantInfo,
 )
 
 load_dotenv()
@@ -2133,6 +2137,284 @@ class SymmetryOrChecker(Checker):
         return (
             all([a is not None for a in answers.values()])
             and answers["P_or_Q"] == answers["Q_or_P"]
+        )
+
+
+class BidChecker(Checker):
+    """
+    BiddingQuestion:
+    X1 X2 ... Xn
+    K1 K2 ... Km
+
+    U(K1, K2 ... Km) given we want to bet on X1, X2 ... Xn
+
+    I(K1, K2 ... Km ; X1, X2 ... Xn)
+
+    We need to instantiate combinations
+    K1 and K2 and ... Km -- 2^m
+    X1 and X2 and ... Xn -- 2^n
+    X1 and X2 and ... Xn and K1 and K2 and ... Km -- 2^(m+n)
+    ^^ we elicit probabilities on these *forecasting questions*
+    -- compute sum_(2^(m+n) combinations) P(and all) * log P(and all) / P(and X) P(and K)
+    -- elicit bid on BiddingQuestion from Bidcaster
+    -- calculate absolute difference
+    """
+
+    class TupleFormat(BaseModel):
+        fq_combinations: dict[tuple, ForecastingQuestion]
+        ip_combinations: dict[tuple, ForecastingQuestion]
+        fqip_combinations: dict[
+            tuple[tuple, tuple], ForecastingQuestion
+        ]  # e.g. ((True, False), (True, True, True)): ForecastingQuestion(...)
+        bidding_question: BiddingQuestion
+
+        @field_validator("fqs")
+        def check_question_type(cls, value):
+            for fq in value.values():
+                if fq.question_type != "binary":
+                    raise ValueError("Question type must be binary")
+            return value
+
+    def instantiate_bidding_question_sync(
+        self,
+        forecasting_questions: list[ForecastingQuestion],
+        subsidies: list[float] = None,
+        relevance="high",
+        **kwargs,
+    ) -> BiddingQuestion:
+        if subsidies is None:
+            subsidies = [1.0] * len(forecasting_questions)
+        offered_information = RelevantInfo().instantiate_sync(
+            forecasting_questions, relevance, **kwargs
+        )
+        goal_questions = [
+            ForecastingQuestion_with_subsidy(
+                title=fq.title,
+                body=fq.body,
+                subsidy=subsidy,
+            )
+            for fq, subsidy in zip(forecasting_questions, subsidies)
+        ]
+        return BiddingQuestion(
+            offered_information=offered_information, goal_questions=goal_questions
+        )
+
+    async def instantiate_bidding_question(
+        self,
+        forecasting_questions: list[ForecastingQuestion],
+        subsidies: list[float] = None,
+        relevance="high",
+        **kwargs,
+    ) -> BiddingQuestion:
+        if subsidies is None:
+            subsidies = [1.0] * len(forecasting_questions)
+        offered_information = await RelevantInfo().instantiate(
+            forecasting_questions, relevance, **kwargs
+        )
+        goal_questions = [
+            ForecastingQuestion_with_subsidy(
+                title=fq.title,
+                body=fq.body,
+                subsidy=subsidy,
+            )
+            for fq, subsidy in zip(forecasting_questions, subsidies)
+        ]
+        return BiddingQuestion(
+            offered_information=offered_information, goal_questions=goal_questions
+        )
+
+    def instantiate_with_signature_sync(
+        self,
+        signature: tuple,
+        forecasting_questions: list[ForecastingQuestion | InformationPiece],
+        **kwargs,
+    ) -> ForecastingQuestion:
+        assert len(signature) == len(forecasting_questions)
+        fq_combined = None
+        for sign, fq in zip(signature, forecasting_questions):
+            if sign is True:
+                fq_ = Trivial().instantiate_sync({"P": fq}, **kwargs)
+                if fq_combined is None:
+                    fq_combined = fq_
+                else:
+                    fq_combined = (
+                        And()
+                        .instantiate_sync({"P": fq_combined, "Q": fq_}, **kwargs)
+                        .P_and_Q
+                    )
+            elif sign is False:
+                fq_ = Neg().instantiate_sync({"P": fq}, **kwargs)
+                if fq_combined is None:
+                    fq_combined = fq_
+                else:
+                    fq_combined = (
+                        And()
+                        .instantiate_sync({"P": fq_combined, "Q": fq_}, **kwargs)
+                        .P_and_Q
+                    )
+            else:
+                t = type(sign)
+                raise ValueError("Signature {sign} is of unrecognized type {t}")
+        return fq_combined
+
+    def instantiate_with_signature_rec_sync(
+        self,
+        signature: tuple[tuple, tuple],
+        forecasting_questions: list[ForecastingQuestion],
+        information_pieces: list[InformationPiece],
+        **kwargs,
+    ) -> ForecastingQuestion:
+        fq_combined = self.instantiate_with_signature_sync(
+            signature[0], forecasting_questions, **kwargs
+        )
+        ip_combined = self.instantiate_with_signature_sync(
+            signature[1], information_pieces, **kwargs
+        )
+        return (
+            And()
+            .instantiate_sync({"P": fq_combined, "Q": ip_combined}, **kwargs)
+            .P_and_Q
+        )
+
+    async def instantiate_with_signature(
+        self,
+        signature: tuple,
+        forecasting_questions: list[ForecastingQuestion | InformationPiece],
+        **kwargs,
+    ) -> ForecastingQuestion:
+        assert len(signature) == len(forecasting_questions)
+        fq_combined = None
+        for sign, fq in zip(signature, forecasting_questions):
+            if sign is True:
+                fq_ = await Trivial().instantiate({"P": fq}, **kwargs)
+                if fq_combined is None:
+                    fq_combined = fq_
+                else:
+                    fq_combined = (
+                        await And().instantiate({"P": fq_combined, "Q": fq_}, **kwargs)
+                    ).P_and_Q
+            elif sign is False:
+                fq_ = await Neg().instantiate({"P": fq}, **kwargs)
+                if fq_combined is None:
+                    fq_combined = fq_
+                else:
+                    fq_combined = (
+                        await And().instantiate({"P": fq_combined, "Q": fq_}, **kwargs)
+                    ).P_and_Q
+            else:
+                t = type(sign)
+                raise ValueError("Signature {sign} is of unrecognized type {t}")
+        return fq_combined
+
+    async def instantiate_with_signature_rec(
+        self,
+        signature: tuple[tuple, tuple],
+        forecasting_questions: list[ForecastingQuestion],
+        information_pieces: list[InformationPiece],
+        subsidies: list[float] = None,
+        relevance="high",
+        **kwargs,
+    ) -> ForecastingQuestion:
+        fq_combined = await self.instantiate_with_signature(
+            signature[0],
+            forecasting_questions,
+            subsidies=subsidies,
+            relevance=relevance,
+            **kwargs,
+        )
+        ip_combined = await self.instantiate_with_signature(
+            signature[1],
+            information_pieces,
+            subsidies=subsidies,
+            relevance=relevance,
+            **kwargs,
+        )
+        return (
+            await And().instantiate({"P": fq_combined, "Q": ip_combined}, **kwargs)
+        ).P_and_Q
+
+    def instantiate_sync(
+        self, forecasting_questions: list[ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        # instantiate all possible combinations of forecasting questions
+        # and the bidding question
+        bidding_question = self.instantiate_bidding_question_sync(
+            forecasting_questions, **kwargs
+        )
+        information_pieces = bidding_question.offered_information
+        fq_combinations_keys = list(
+            product([True, False], repeat=len(forecasting_questions))
+        )
+        ip_combinations_keys = list(
+            product([True, False], repeat=len(information_pieces))
+        )
+        fqip_combinations_keys = list(
+            product(fq_combinations_keys, ip_combinations_keys)
+        )
+        fq_combinations = {
+            key: self.instantiate_with_signature_sync(
+                key, forecasting_questions, **kwargs
+            )
+            for key in fq_combinations_keys
+        }
+        ip_combinations = {
+            key: self.instantiate_with_signature_sync(key, information_pieces, **kwargs)
+            for key in ip_combinations_keys
+        }
+        fqip_combinations = {
+            key: self.instantiate_with_signature_rec_sync(
+                key, forecasting_questions, information_pieces, **kwargs
+            )
+            for key in fqip_combinations_keys
+        }
+        return self.TupleFormat(
+            fq_combinations=fq_combinations,
+            ip_combinations=ip_combinations,
+            fqip_combinations=fqip_combinations,
+            bidding_question=bidding_question,
+        )
+
+    async def instantiate(
+        self, forecasting_questions: list[ForecastingQuestion], **kwargs
+    ) -> "Self.TupleFormat":
+        # instantiate all possible combinations of forecasting questions
+        # and the bidding question
+        bidding_question = await self.instantiate_bidding_question(
+            forecasting_questions, **kwargs
+        )
+        information_pieces = bidding_question.offered_information
+        fq_combinations_keys = list(
+            product([True, False], repeat=len(forecasting_questions))
+        )
+        ip_combinations_keys = list(
+            product([True, False], repeat=len(information_pieces))
+        )
+        fqip_combinations_keys = list(
+            product(fq_combinations_keys, ip_combinations_keys)
+        )
+        fq_combinations = {
+            key: await self.instantiate_with_signature(
+                key, forecasting_questions, **kwargs
+            )
+            for key in fq_combinations_keys
+        }
+        ip_combinations = {
+            key: await self.instantiate_with_signature(
+                key, information_pieces, **kwargs
+            )
+            for key in ip_combinations_keys
+        }
+        fqip_combinations = {
+            key: await self.instantiate_with_signature_rec(
+                key, forecasting_questions, information_pieces, **kwargs
+            )
+            for key in fqip_combinations_keys
+        }
+        return self.TupleFormat(
+            fq_combinations=fq_combinations,
+            ip_combinations=ip_combinations,
+            fqip_combinations=fqip_combinations,
+            bidding_question=bidding_question,
         )
 
 
