@@ -185,8 +185,13 @@ class InformationPiece(BaseModel):
             id=uuid4(),
             title=self.title,
             body=self.body,
+            question_type=self.question_type,
             resolution_date=datetime.now(),
         )
+
+    def set_question_type(self, question_type: str = "binary"):
+        self.question_type = question_type
+        return self
 
 
 class BiddingQuestion(BaseModel):

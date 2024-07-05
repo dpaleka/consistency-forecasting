@@ -1,8 +1,10 @@
 # %%
 
 from static_checks.MiniInstantiator import RelevantInfo, ForecastingQuestion, datetime
+from static_checks.Checker import BidChecker
 
-ri = RelevantInfo()
+# ri = RelevantInfo()
+bc = BidChecker()
 
 base_sentences = [
     ForecastingQuestion(
@@ -14,6 +16,8 @@ base_sentences = [
     ),
 ]
 
-x=ri.instantiate_sync(base_sentences, relevance="mid")
+# x=ri.instantiate_sync(base_sentences, relevance="mid")
+
+# x=await bc.instantiate(base_sentences)
 
 # %%

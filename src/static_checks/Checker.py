@@ -2168,7 +2168,7 @@ class BidChecker(Checker):
         ]  # e.g. ((True, False), (True, True, True)): ForecastingQuestion(...)
         bidding_question: BiddingQuestion
 
-        @field_validator("fqs")
+        @field_validator("fq_combinations")
         def check_question_type(cls, value):
             for fq in value.values():
                 if fq.question_type != "binary":
@@ -2191,12 +2191,12 @@ class BidChecker(Checker):
             ForecastingQuestion_with_subsidy(
                 title=fq.title,
                 body=fq.body,
-                subsidy=subsidy,
+                market_subsidy=subsidy,
             )
             for fq, subsidy in zip(forecasting_questions, subsidies)
         ]
         return BiddingQuestion(
-            offered_information=offered_information, goal_questions=goal_questions
+            offered_information=offered_information.K, goal_questions=goal_questions
         )
 
     async def instantiate_bidding_question(
@@ -2215,12 +2215,12 @@ class BidChecker(Checker):
             ForecastingQuestion_with_subsidy(
                 title=fq.title,
                 body=fq.body,
-                subsidy=subsidy,
+                market_subsidy=subsidy,
             )
             for fq, subsidy in zip(forecasting_questions, subsidies)
         ]
         return BiddingQuestion(
-            offered_information=offered_information, goal_questions=goal_questions
+            offered_information=offered_information.K, goal_questions=goal_questions
         )
 
     def instantiate_with_signature_sync(
@@ -2234,6 +2234,7 @@ class BidChecker(Checker):
         for sign, fq in zip(signature, forecasting_questions):
             if sign is True:
                 fq_ = Trivial().instantiate_sync({"P": fq}, **kwargs)
+                fq_ = fq_.P
                 if fq_combined is None:
                     fq_combined = fq_
                 else:
@@ -2244,14 +2245,14 @@ class BidChecker(Checker):
                     )
             elif sign is False:
                 fq_ = Neg().instantiate_sync({"P": fq}, **kwargs)
+                fq_ = fq_.not_P
                 if fq_combined is None:
                     fq_combined = fq_
                 else:
-                    fq_combined = (
-                        And()
-                        .instantiate_sync({"P": fq_combined, "Q": fq_}, **kwargs)
-                        .P_and_Q
+                    fq_combined = And().instantiate_sync(
+                        {"P": fq_combined, "Q": fq_}, **kwargs
                     )
+                    fq_combined = fq_combined.P_and_Q
             else:
                 t = type(sign)
                 raise ValueError("Signature {sign} is of unrecognized type {t}")
@@ -2287,20 +2288,24 @@ class BidChecker(Checker):
         for sign, fq in zip(signature, forecasting_questions):
             if sign is True:
                 fq_ = await Trivial().instantiate({"P": fq}, **kwargs)
+                fq_ = fq_.P
                 if fq_combined is None:
                     fq_combined = fq_
                 else:
-                    fq_combined = (
-                        await And().instantiate({"P": fq_combined, "Q": fq_}, **kwargs)
-                    ).P_and_Q
+                    fq_combined = await And().instantiate(
+                        {"P": fq_combined, "Q": fq_}, **kwargs
+                    )
+                    fq_combined = fq_combined.P_and_Q
             elif sign is False:
                 fq_ = await Neg().instantiate({"P": fq}, **kwargs)
+                fq_ = fq_.not_P
                 if fq_combined is None:
                     fq_combined = fq_
                 else:
-                    fq_combined = (
-                        await And().instantiate({"P": fq_combined, "Q": fq_}, **kwargs)
-                    ).P_and_Q
+                    fq_combined = await And().instantiate(
+                        {"P": fq_combined, "Q": fq_}, **kwargs
+                    )
+                    fq_combined = fq_combined.P_and_Q
             else:
                 t = type(sign)
                 raise ValueError("Signature {sign} is of unrecognized type {t}")
@@ -2416,6 +2421,19 @@ class BidChecker(Checker):
             fqip_combinations=fqip_combinations,
             bidding_question=bidding_question,
         )
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        ...
+
+    async def verify(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
+        ...
+
+    def verify_sync(
+        self, generated_tuple: "Self.TupleFormat", **kwargs
+    ) -> VerificationResult:
+        ...
 
 
 checker_classes = [

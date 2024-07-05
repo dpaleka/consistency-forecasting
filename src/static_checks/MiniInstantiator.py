@@ -1562,7 +1562,7 @@ class RelevantInfo(MiniInstantiator):
         based_sentences = self.BaseSentenceFormat_stripped(
             X=[x.cast_stripped() for x in base_sentences]
         )
-        return answer_sync(
+        response = answer_sync(
             prompt=based_sentences,
             preface=preface,
             examples=examples,
@@ -1570,6 +1570,8 @@ class RelevantInfo(MiniInstantiator):
             response_model=self.OutputFormat_stripped,
             **kwargs,
         )
+        response = self.OutputFormat(K=[x.set_question_type() for x in response.K])
+        return response
 
     async def instantiate(
         self,
@@ -1601,7 +1603,7 @@ class RelevantInfo(MiniInstantiator):
         based_sentences = self.BaseSentenceFormat_stripped(
             X=[x.cast_stripped() for x in base_sentences]
         )
-        return await answer(
+        response = await answer(
             prompt=based_sentences,
             preface=preface,
             examples=examples,
@@ -1609,6 +1611,8 @@ class RelevantInfo(MiniInstantiator):
             response_model=self.OutputFormat,
             **kwargs,
         )
+        response = self.OutputFormat(K=[x.set_question_type() for x in response.K])
+        return response
 
 
 register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
