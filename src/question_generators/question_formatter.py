@@ -150,7 +150,11 @@ The fields are:
 - resolution_date: The date when the outcome of the question will be decided.
 
 I want you to validate according to the following criteria:
-- The resolution date should be consistent with the question. 
+
+- The resolution date should be consistent with the question. In particular:
+   - In case of events that happen at a fixed time (e.g. "Will France win the FIFA World Cup in 2026"), it should *never* be *before* the date when the event is scheduled to happen. Ideally it is exactly at the date. There can be *at most a month of leeway* to account for resolution issues and delays. If the delay is too long, the question should be marked invalid.
+   - In case of events that could resolve at an uncertain date (will Warren Buffet die of cancer?), the resolution date should be such that it is highly likely the event will happen before it. In this case, the `body` should say the question resolves N/A if the resolution date comes and there was no resolution.
+
 - The resolution criteria should not be excessively vague or ambiguous, and should be consistent with the question.
 
 The format of your response should be:
@@ -164,7 +168,7 @@ resolution_date: 2020-01-01 00:00:00
 
 ->
 
-reasoning: The resolution criteria are clear and consistent with the title.
+reasoning: The body (resolution criteria) is clear and consistent with the title.
 valid: True
 
 
@@ -175,23 +179,34 @@ resolution_date: 2030-01-01 00:00:00
 
 ->
 
-reasoning: The resolution criteria is too vague.
+reasoning: The body is too vague.
 valid: False
 
 
 Example 3:
-title: Will Kanye West become the president of the United States by 2030?
+title: Will Kanye West become the president of the United States before January 2030?
 body: This question will resolve as Yes if Kanye West is elected and inaugurated as the president of the United States before January 1, 2030.
 resolution_date: 2030-01-01 00:00:00
 
 ->
 
+
 reasoning: The resolution criteria are clear and consistent with the title.
 The resolution date is consistent with the title and in the future.
 valid: True
 
-
 Example 4:
+title: Will Kanye West become the president of the United States by 2030?
+body: This question will resolve as Yes if Kanye West is elected and inaugurated as the president of the United States before January 1, 2030.
+resolution_date: 2031-12-01 00:00:00
+
+->
+
+reasoning: The resolution date is too late compared to when the body says the question will resolve.
+valid: False
+
+
+Example 5:
 title: Will any member of Kanye West's family become the president of the United States by 2035?
 body: This question will resolve as Yes if Kanye West or any of his family members (including his wife, children, siblings and parents) is elected and... Show More\n
 resolution_date: 2035-01-01 00:00:00
