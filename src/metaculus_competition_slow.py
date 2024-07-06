@@ -63,19 +63,17 @@ API_BASE_URL = "https://www.metaculus.com/api2"
 
 
 ## TODO (change)
-TOURNAMENT_ID = (
-    3294  # 3294 is WARMUP_TOURNAMENT_ID, fill this in with competition details
-)
+TOURNAMENT_ID = 3349  # 3294 is WARMUP_TOURNAMENT_ID, fill this in with competition details, 3349 is the real tournament id
 SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
 LOG_FILE_PATH = "metaculus_submissions.log"  # log file
 ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
-SAMPLES = 10  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
+SAMPLES = 5  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
 IGNORE_VISITED = (
     True,
-)  # If true, will note update / predict a market already submitted to.
+)  # If true, will not update / predict a market already submitted to.
 
 
 ## paramaterize forecasters
