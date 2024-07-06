@@ -1,7 +1,9 @@
 import pytest
 import os
+from common.datatypes import PlainText
 from common.llm_utils import (
     answer,
+    answer_sync,
 )  # Adjust the import based on your script's structure
 from pydantic import BaseModel
 
@@ -62,3 +64,30 @@ async def test_answer_fails_openrouter(model):
             response = await answer(prompt, model=model, response_model=UserInfo)
     finally:
         os.environ["USE_OPENROUTER"] = original_use_openrouter
+
+
+def test_answer_sync():
+    example_prompt = "Generate a sample forecasting question"
+
+    result = answer_sync(
+        prompt=example_prompt,
+        preface=None,
+        model="gpt-4o-2024-05-13",
+        response_model=PlainText,
+    )
+
+    assert isinstance(result, PlainText) and len(result.text) > 0
+    print(f"Generated question: {result.text}")
+
+
+@pytest.mark.asyncio
+async def test_answer_sync_async():
+    example_prompt = "Generate a sample forecasting question"
+    result = await answer(
+        prompt=example_prompt,
+        preface=None,
+        model="gpt-4o-2024-05-13",
+        response_model=PlainText,
+    )
+    assert isinstance(result, PlainText) and len(result.text) > 0
+    print(f"Generated question: {result.text}")
