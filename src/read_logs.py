@@ -1,7 +1,12 @@
 import re
+import os
 
 
 def submission_log_only_stats(filename):
+    if not os.path.exists(filename):
+        print("Log file does not exist:", filename)
+        return []
+
     with open(filename, "r") as file:
         lines = file.readlines()
 

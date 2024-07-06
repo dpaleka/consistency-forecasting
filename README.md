@@ -83,7 +83,7 @@ The streamlit app [`data_labeling/feedback_form.py`](data_labeling/feedback_form
 Do not try to install its dependencies in the main Python environment.
 Instead, make a new virtual environment and install the requirements with:
 ```
-pip install -r data_labeling/requirements.txt
+pip install -r data_labeling/streamlit_requirements.txt
 ```
 Alternatively, for now you can use [pipx](https://github.com/pypa/pipx), run `pipx install streamlit`, and continue to use the Python environment you have been using so far.
 
@@ -95,6 +95,24 @@ streamlit run feedback_form.py -- -f ../src/data/fq/synthetic/{filename}.jsonl
 ```
 It writes into `src/data/feedback/`.
 
+## Bot for the Metaculus competition
+We run the forecasters on the Metaculus [AI Forecasting Benchmark Series (July 2024)](https://www.metaculus.com/notebooks/25525/announcing-the-ai-forecasting-benchmark-series--july-8-120k-in-prizes/) (contact @amaster97 for details).
+The bot to call the forecasters is developed in `src/metaculus_competition_fast.py`.
+It can be run as a daily job on [Modal](https://modal.com/) by doing:
+```
+python competition_bot/modal_daily_job.py
+```
+
+To set up, you need Modal credentials.
+Do not try to install `modal` in the main Python environment.
+Instead, make a new virtual environment and install the requirements with:
+```
+pip install -r competition_bot/modal_requirements.txt
+modal token new
+```
+and follow the instructions.
+
+In addition to the LLM API costs, each daily run costs Modal credits for the CPU time occupied. Modal gives $30 in credits to new users, and it should be enough for this competition.
 
 ## Entry points to the code
 
