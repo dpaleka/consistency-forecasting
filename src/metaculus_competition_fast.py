@@ -406,6 +406,7 @@ async def submission_log(log_file_path, message):
     # Check if the log file exists
     if not os.path.exists(log_file_path):
         # If the file doesn't exist, create it
+        print("Creating log file")
         open(log_file_path, "w").close()
 
     ##Write
