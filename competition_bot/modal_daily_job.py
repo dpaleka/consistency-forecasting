@@ -5,12 +5,13 @@ import os
 
 stub = modal.App("daily-metaculus-job")
 
-env_path = Path(__file__).parent / ".env.bot"
-secrets = [modal.Secret.from_dotenv(env_path)]
-
 
 # Specify the path to your requirements.txt file
-root_path = Path(__file__).parent.parent
+bot_path = Path(__file__).parent
+
+env_path = bot_path / ".env.bot"
+
+root_path = bot_path.parent
 requirements_path = root_path / "requirements.txt"
 src_path = root_path / "src"
 
@@ -19,13 +20,18 @@ image = modal.Image.debian_slim().pip_install_from_requirements(requirements_pat
 
 # Mount the src directory
 src_volume = modal.Mount.from_local_dir(src_path, remote_path="/root/src")
+bot_volume = modal.Mount.from_local_dir(bot_path, remote_path="/root/competition_bot")
+secrets = [modal.Secret.from_dotenv(env_path)]
 
 
 @stub.function(
-    image=image, schedule=modal.Period(days=1), secrets=secrets, mounts=[src_volume]
+    image=image,
+    schedule=modal.Period(days=1),
+    secrets=secrets,
+    mounts=[src_volume, bot_volume],
 )
 def run_daily_job():
-    os.chdir("/root/src")
+    os.chdir("/root/competition_bot")
     try:
         # Run the fast script
         process = subprocess.Popen(["python", "metaculus_competition_fast.py"])
