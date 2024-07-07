@@ -16,11 +16,21 @@ requirements_path = root_path / "requirements.txt"
 src_path = root_path / "src"
 
 # Create a Modal image with the requirements installed
-image = modal.Image.debian_slim().pip_install_from_requirements(requirements_path)
+env = {
+    "NO_CACHE": "True",
+    "MAX_CONCURRENT_QUERIES": "20",
+    "USE_OPENROUTER": "True",
+    "SKIP_NEWSCATCHER": "True",
+}
+image = (
+    modal.Image.debian_slim().pip_install_from_requirements(requirements_path).env(env)
+)
 
-# Mount the src directory
+# Mount the directories
 src_volume = modal.Mount.from_local_dir(src_path, remote_path="/root/src")
 bot_volume = modal.Mount.from_local_dir(bot_path, remote_path="/root/competition_bot")
+
+# We pass secrets like this, other relevant env vars above
 secrets = [modal.Secret.from_dotenv(env_path)]
 
 
