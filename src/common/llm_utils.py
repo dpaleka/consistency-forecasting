@@ -49,8 +49,8 @@ override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
-
-global_semaphore = asyncio.Semaphore(max_concurrent_queries)
+print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
+global_llm_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
@@ -138,7 +138,11 @@ def get_openai_client_native() -> OpenAI:
 
 @singleton_constructor
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+    )
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
     return instructor.from_openai(_client, mode=Mode.MD_JSON, **kwargs)
 
@@ -147,16 +151,21 @@ def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
 def get_async_openrouter_client_native() -> AsyncOpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 
 @singleton_constructor
 def get_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+    )
     print("Calling models through OpenRouter")
     _client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
+    print(f"OPENROUTER_API_KEY: {os.getenv('OPENROUTER_API_KEY')}")
     return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
 
 
@@ -164,6 +173,7 @@ def get_openrouter_client_pydantic(**kwargs) -> Instructor:
 def get_openrouter_client_native() -> OpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 
@@ -309,9 +319,6 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
         os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
     )
     if use_openrouter:
-        print(
-            "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
-        )
         kwargs = {}
         if provider == "mistral":
             # https://python.useinstructor.com/hub/mistral/
@@ -660,7 +667,9 @@ async def answer(
     }
     options = default_options | kwargs  # override defaults with kwargs
 
-    async with global_semaphore:
+    print(f"options: {options}")
+    print(f"messages: {messages}")
+    async with global_llm_semaphore:
         return await query_api_chat(messages=messages, **options)
 
 
@@ -738,11 +747,15 @@ async def parallelized_call(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
     )
 
+    # Create a local semaphore
+    local_semaphore = asyncio.Semaphore(max_concurrent_queries)
+
     async def call_func(sem, func, datapoint):
         async with sem:
             return await func(datapoint)
 
-    tasks = [call_func(global_semaphore, func, d) for d in data]
+    print("Calling call_func")
+    tasks = [call_func(local_semaphore, func, d) for d in data]
     return await asyncio.gather(*tasks)
 
 
