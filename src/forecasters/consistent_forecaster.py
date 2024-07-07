@@ -1,7 +1,16 @@
 from common.utils import shallow_dict
 from .forecaster import Forecaster
+from .basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion
-from static_checks import Checker
+from static_checks import (
+    Checker,
+    NegChecker,
+    ParaphraseChecker,
+    AndOrChecker,
+    ButChecker,
+    CondChecker,
+    CondCondChecker,
+)
 from static_checks.tuple_relevance import (
     get_relevant_questions,
     get_relevant_questions_sync,
@@ -39,8 +48,15 @@ class ConsistentForecaster(Forecaster):
         hypocrite: Forecaster,
         checks: list[Checker] = None,
     ):
-        self.hypocrite = hypocrite
-        self.checks = checks or []
+        self.hypocrite = hypocrite or BasicForecaster()
+        self.checks = checks or [
+            NegChecker(),
+            ParaphraseChecker(),
+            AndOrChecker(),
+            ButChecker(),
+            CondChecker(),
+            CondCondChecker(),
+        ]
 
     def bq_function(
         self, sentence: ForecastingQuestion, keys: dict = None, **kwargs
@@ -141,7 +157,7 @@ class ConsistentForecaster(Forecaster):
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple)
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = await check.max_min_arbitrage(hypocrite_answers)
+            cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
         return ans_P
 

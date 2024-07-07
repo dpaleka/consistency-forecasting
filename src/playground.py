@@ -29,7 +29,7 @@ fq = ForecastingQuestion(
     resolution=None,
 )
 
-x=cf.call(fq)
+x= await cf.call_async(fq)
 
 #%% 
 
