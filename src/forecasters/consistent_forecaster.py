@@ -1,3 +1,4 @@
+from common.utils import shallow_dict
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion
 from static_checks import Checker
@@ -88,7 +89,9 @@ class ConsistentForecaster(Forecaster):
         tup = res[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
-    def call(self, sentence: ForecastingQuestion, bq_func_kwargs, **kwargs) -> float:
+    def call(
+        self, sentence: ForecastingQuestion, bq_func_kwargs=None, **kwargs
+    ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -96,12 +99,17 @@ class ConsistentForecaster(Forecaster):
             bq_func_kwargs (dict): Keyword arguments for bq_function.
 
         """
+        if bq_func_kwargs is None:
+            bq_func_kwargs = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = self.bq_function(
                 sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
             )
-            cons_tuple = self.hypocrite.instantiate_sync(bq_tuple)
+            cons_tuple = check.instantiate_sync(bq_tuple)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = self.hypocrite.elicit(cons_tuple)
             hypocrite_answers["P"] = ans_P
@@ -109,7 +117,9 @@ class ConsistentForecaster(Forecaster):
             ans_P = cons_answers["P"]
         return ans_P
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, bq_func_kwargs=None, **kwargs
+    ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -117,15 +127,26 @@ class ConsistentForecaster(Forecaster):
             bq_func_kwargs (dict): Keyword arguments for bq_function.
 
         """
+        if bq_func_kwargs is None:
+            bq_func_kwargs = {}
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = await self.bq_function_async(
                 sentence, tuple_size=check.num_base_questions, **kwargs
             )
-            cons_tuple = await self.hypocrite.instantiate(bq_tuple)
+            cons_tuple = await check.instantiate(bq_tuple)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple)
             hypocrite_answers["P"] = ans_P
             cons_answers, v = await check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
         return ans_P
+
+    def dump_config(self):
+        return {
+            "hypocrite": self.hypocrite.dump_config(),
+            "checks": [c.dump_config() for c in self.checks],
+        }

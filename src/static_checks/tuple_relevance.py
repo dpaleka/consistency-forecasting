@@ -261,10 +261,13 @@ examples = [
 ]
 
 
-def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
+def relevance_sync(
+    base_sentences: dict[str, ForecastingQuestion] | list[ForecastingQuestion],
+) -> float:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
-    base_sentences = list(base_sentences.values())
+    if isinstance(base_sentences, dict):
+        base_sentences = list(base_sentences.values())
 
     result = answer_sync(
         simple_combine(*base_sentences),
