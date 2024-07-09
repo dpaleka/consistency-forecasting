@@ -314,14 +314,28 @@ async def gen_comments(q):
     )
 
     cleaned_text = re.sub(
-        r"\n4\. Output *",
+        r"(?s)4\. Output.*",
         "",
         ensemble_dict["meta_reasoning"],
         flags=re.DOTALL,
     )
 
     cleaned_text = re.sub(
-        r"\n4\. Final prediction*",
+        r"(?s)4\. Final prediction.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"(?s)4\. \*\*Output.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"\*\d+\.\d+\*",
         "",
         cleaned_text,
         flags=re.DOTALL,
