@@ -46,11 +46,9 @@ import aiohttp
 
 from read_logs import extract_element, submission_log_only_stats
 
-
 from pathlib import Path
 
 bot_path = Path(__file__).parent
-
 
 global VISITED_IDS
 VISITED_IDS = set()
