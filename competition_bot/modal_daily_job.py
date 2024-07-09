@@ -31,6 +31,11 @@ image = (
 src_volume = modal.Mount.from_local_dir(src_path, remote_path="/root/src")
 bot_volume = modal.Mount.from_local_dir(bot_path, remote_path="/root/competition_bot")
 
+
+# Create a NetworkFileSystem instance
+nfs = modal.NetworkFileSystem.persisted("logs-nfs")
+
+
 # We pass secrets like this, other relevant env vars above
 secrets = [modal.Secret.from_dotenv(env_path)]
 
@@ -41,6 +46,9 @@ secrets = [modal.Secret.from_dotenv(env_path)]
     secrets=secrets,
     mounts=[src_volume, bot_volume],
     timeout=3 * 3600,  # Increase timeout to 3 hours
+    shared_mounts={
+        bot_path: nfs
+    },  # Mount the NetworkFileSystem at /root/competition_bot/logs
 )
 def run_daily_job():
     os.chdir("/root/competition_bot")
