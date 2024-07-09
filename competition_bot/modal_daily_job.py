@@ -33,7 +33,7 @@ bot_volume = modal.Mount.from_local_dir(bot_path, remote_path="/root/competition
 
 
 # Create a NetworkFileSystem instance
-nfs = modal.NetworkFileSystem.from_name("logs-nfs", create_if_missing=True)
+volume = modal.Volume.from_name("logs-volume", create_if_missing=True)
 
 # We pass secrets like this, other relevant env vars above
 secrets = [modal.Secret.from_dotenv(env_path)]
@@ -43,7 +43,8 @@ secrets = [modal.Secret.from_dotenv(env_path)]
     image=image,
     schedule=modal.Period(days=1),
     secrets=secrets,
-    mounts=[src_volume, bot_volume, nfs],
+    mounts=[src_volume, bot_volume],
+    volumes={"/mnt/logs": volume},  # Mount the volume at /mnt/logs
     timeout=3 * 3600,  # Increase timeout to 3 hours
 )
 def run_daily_job():
@@ -61,16 +62,6 @@ def run_daily_job():
 
         # Run the slow script
         subprocess.run(["python", "metaculus_competition_slow.py"])
-
-    # Copy log files from remote to local
-    """
-    for log_file in ["metaculus_submissions.log", "metaculus_submission_errors.log"]:
-        remote_path = os.path.join("/root/competition_bot", log_file)
-        local_path = os.path.join(bot_path, log_file)
-        with modal.io.open(remote_path, "rb") as remote_file:
-            with open(local_path, "wb") as local_file:
-                local_file.write(remote_file.read())
-    """
 
 
 if __name__ == "__main__":
