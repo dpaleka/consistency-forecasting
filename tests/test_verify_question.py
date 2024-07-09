@@ -9,10 +9,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+model = "gpt-4o-2024-05-13"
+
+
 async def assert_verification_result(
     question: ForecastingQuestion, expected_valid: bool, comment: str = ""
 ):
-    result = await verify_question_all_methods(question)
+    result = await verify_question_all_methods(question, model=model)
+    print(result)
     assert isinstance(result, VerificationResult)
     assert result.valid == expected_valid, f"Comment: {comment}"
 
@@ -88,7 +92,7 @@ async def test_verify_nobel_invalid_question():
         "A Nobel Prize in Physics is awarded for the discovery of dark matter, and within five years of the award, "
         "there is a measurable and significant impact on the global economy as reported by at least three major "
         "financial institutions or economic research bodies. Significant impact is defined as a change in global GDP "
-        "by at least 0.5\% attributable directly to technologies or innovations derived from the discovery of "
+        "by at least 0.5%% attributable directly to technologies or innovations derived from the discovery of "
         "dark matter.\n"
         "A Nobel Prize in Physics is awarded for the discovery of dark matter, and it leads to the development "
         "of a new industry or the significant expansion of an existing industry, with a global market value exceeding "
@@ -115,10 +119,10 @@ async def test_verify_nobel_invalid_question():
 async def test_verify_republican_valid_question():
     republican_valid_q = ForecastingQuestion(
         id=uuid.uuid4(),
-        title="Will the Republican Party propose an increase of at least 20\% in NASA's budget for space exploration in their 2024 platform?",
+        title="Will the Republican Party propose an increase of at least 20%% in NASA's budget for space exploration in their 2024 platform?",
         body="The question will resolve as Yes if the Republican Party's official platform for the 2024 United States "
         "presidential election includes a proposal that specifies an increase in NASA's budget for space exploration "
-        "by at least 20\% compared to the fiscal year 2023 budget. The budget increase must be explicitly allocated "
+        "by at least 20%% compared to the fiscal year 2023 budget. The budget increase must be explicitly allocated "
         "for space exploration activities, including but not limited to manned and unmanned missions, research and "
         "development of space technologies, and exploration of the Moon, Mars, or other celestial bodies.\n\nThe "
         "resolution will rely on the official platform document released by the Republican Party, as well as any "
@@ -132,3 +136,16 @@ async def test_verify_republican_valid_question():
         data_source="synthetic",
     )
     await assert_verification_result(republican_valid_q, True)
+
+
+@pytest.mark.asyncio
+async def test_verify_building_valid_question():
+    building_valid_q = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will there be a breakthrough in engineering that allows for the construction of a building over 2,000 meters tall by 2030?",
+        body="This question will resolve as Yes if, by December 31, 2030, there is a verifiable report or announcement by a recognized authority in the field of engineering or architecture (such as the Council on Tall Buildings and Urban Habitat or a similar authoritative body) that a building measuring over 2,000 meters in height has been built. If construction is still underway at the time of resolution, this resolves Yes if the height built so far (as reported by the aforementioned bodies) is over 2,000 meters at the time of resolution, and No otherwise. In the event of conflicting reports, the resolution will be based on the preponderance of evidence from credible sources.",
+        resolution_date=datetime(2030, 12, 31, 23, 59, 59),
+        question_type="binary",
+        data_source="synthetic",
+    )
+    await assert_verification_result(building_valid_q, True)
