@@ -44,6 +44,10 @@ NO_CACHE=True python -m pytest -s
 This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
 
+#### Notable tests
+`T_SKIP_VERIFICATION`
+- [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected.
+
 ### Paths
 Use [`src/common/path_utils.py`](/src/common/path_utils.py) to specify paths in code, Jupyter notebooks, etc.
 Do not hardcode paths, except relative to `pathlib.Path` objects returned by the utils in `path_utils.py`.
