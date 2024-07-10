@@ -9,7 +9,7 @@ cf = ConsistentForecaster(
     BasicForecaster(),
     checks=[
         NegChecker(),
-        AndOrChecker(),
+#        AndOrChecker(),
         CondChecker(),
         ParaphraseChecker(),
     ],
@@ -29,9 +29,16 @@ fq = ForecastingQuestion(
     resolution=None,
 )
 
-x= await cf.call_async(fq)
+import asyncio
+x = cf.call(fq)
+#x= await cf.call_async(fq)
+#x = asyncio.run(cf.call_async(fq))
 
 #%% 
+print(f"{x=}")
+
+raise
+#%%
 
 from static_checks.Checker import *
 from time import time
@@ -144,49 +151,3 @@ messages = [
 #response = query_api_chat_sync(messages=messages, verbose=True, model="mistralai/mistral-large")
     
 
-
-# %%
-TEST_MANUAL=False
-if TEST_MANUAL:
-    from openai import OpenAI
-    from os import getenv
-    import instructor
-
-    # gets API Key from environment variable OPENAI_API_KEY
-    #_client = OpenAI(
-    #base_url="https://openrouter.ai/api/v1",
-    #api_key=getenv("OPENROUTER_API_KEY"),
-    #)
-    _client = OpenAI(
-    base_url="https://api.together.xyz/v1",
-    api_key=os.environ["TOGETHER_API_KEY"],
-)
-
-    #client = instructor.from_openai(_client, mode=instructor.Mode.MISTRAL_TOOLS)
-    client = instructor.from_openai(_client,  mode=instructor.Mode.TOOLS)
-
-    completion = client.chat.completions.create(
-        model="mistralai/Mixtral-8x7B-Instruct-v0.1",
-        #model="meta-llama/llama-3-70b-instruct",
-        messages=[
-            {
-            "role": "user",
-            "content": "Say this is a test",
-            },
-        ],
-        response_model=PlainText,
-    )
-    print(completion)
-
-
-
-#%%
-#response = query_api_chat_sync_native(messages=messages, verbose=True, model="mistralai/mistral-large")
-#print(response)
-#%%
-#response = query_api_chat_sync_native(messages=messages, verbose=True, model="meta-llama/llama-2-70b-chat-hf")
-#print(response)
-#%%
-response = query_api_chat_sync_native(messages=messages, verbose=True, model="mistralai/mistral-large")
-print(response)
-# %%
