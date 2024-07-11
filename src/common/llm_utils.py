@@ -166,7 +166,7 @@ def get_openrouter_client_pydantic(**kwargs) -> Instructor:
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
     print(f"OPENROUTER_API_KEY: {os.getenv('OPENROUTER_API_KEY')}")
-    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
+    return instructor.from_openai(_client, mode=Mode.TOOLS, **kwargs)
 
 
 @singleton_constructor
