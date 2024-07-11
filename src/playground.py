@@ -1,4 +1,4 @@
-#%%
+# %%
 
 from forecasters.consistent_forecaster import ConsistentForecaster
 from forecasters.basic_forecaster import BasicForecaster
@@ -31,74 +31,79 @@ fq = ForecastingQuestion(
 )
 
 import asyncio
-#x = cf.call(fq)
-x= await cf.call_async(fq, bq_func_kwargs={"model": "gpt-3.5"}, instantiation_kwargs={"model": "gpt-3.5"}, model="gpt-3.5")
-#x = asyncio.run(cf.call_async(fq))
 
-#%% 
+# x = cf.call(fq)
+x = asyncio.run(cf.call_async(
+    fq,
+    bq_func_kwargs={"model": "gpt-3.5"},
+    instantiation_kwargs={"model": "gpt-3.5"},
+    model="gpt-3.5",
+))
+# x = asyncio.run(cf.call_async(fq))
+
+# %%
 print(f"{x=}")
 
 raise
-#%%
+# %%
 
 from static_checks.Checker import *
 from time import time
 
 checkers = {
-    'para': {
-        'answers': {'P': 0.4, 'para_P': 0.43},
-        'checker': ParaphraseChecker()
+    "para": {"answers": {"P": 0.4, "para_P": 0.43}, "checker": ParaphraseChecker()},
+    "neg": {"answers": {"P": 0.6, "not_P": 0.57}, "checker": NegChecker()},
+    "cond": {
+        "answers": {"P": 0.15, "Q_given_P": 0.6, "P_and_Q": 0.15},
+        "checker": CondChecker(),
     },
-    'neg': {
-        'answers': {'P' : 0.6, 'not_P' : 0.57},
-        'checker': NegChecker()
+    "andor": {
+        "answers": {"P": 0.6, "Q": 0.6, "P_and_Q": 0.55, "P_or_Q": 0.6},
+        "checker": AndOrChecker(),
     },
-    'cond': {
-        'answers': {'P' : 0.15, 'Q_given_P': 0.6, 'P_and_Q': 0.15},
-        'checker': CondChecker()
+    "but": {
+        "answers": {"P": 0.6, "Q_and_not_P": 0.3, "P_or_Q": 0.94},
+        "checker": ButChecker(),
     },
-    'andor': {
-        'answers': {'P' : 0.6, 'Q' : 0.6, 'P_and_Q' : 0.55, 'P_or_Q' : 0.6},
-        'checker': AndOrChecker()
+    "condcond": {
+        "answers": {
+            "P": 0.5,
+            "Q_given_P": 0.5,
+            "R_given_P_and_Q": 0.5,
+            "P_and_Q_and_R": 0.16,
+        },
+        "checker": CondCondChecker(),
     },
-    'but': {
-        'answers': {'P': 0.6, 'Q_and_not_P' : 0.3, 'P_or_Q': 0.94},
-        'checker': ButChecker()
-    },
-    'condcond': {
-        'answers': {'P' : 0.5, 'Q_given_P' : 0.5, 'R_given_P_and_Q' : 0.5, 'P_and_Q_and_R' : 0.16},
-        'checker': CondCondChecker()
-    },
-    'cons': {
-        'answers': {'P' : 0.5, 'cons_P': 0.45},
-        'checker': ConsequenceChecker()
-    }
+    "cons": {"answers": {"P": 0.5, "cons_P": 0.45}, "checker": ConsequenceChecker()},
 }
 
-for k,v in checkers.items():
-    checker = v['checker']
-    answers = v['answers']
-    if k != 'cons':
+for k, v in checkers.items():
+    checker = v["checker"]
+    answers = v["answers"]
+    if k != "cons":
         continue
-    print('Checker:', k)
+    print("Checker:", k)
     time0 = time()
-    result_shgo = checker.max_min_arbitrage(answers, methods = ('shgo',))
+    result_shgo = checker.max_min_arbitrage(answers, methods=("shgo",))
     time1 = time()
-    print('SHGO:', result_shgo, '\nTime:', time1-time0)
-    result_diff_evol = checker.max_min_arbitrage(answers, methods = ('differential_evolution',))
+    print("SHGO:", result_shgo, "\nTime:", time1 - time0)
+    result_diff_evol = checker.max_min_arbitrage(
+        answers, methods=("differential_evolution",)
+    )
     time2 = time()
-    print('Diff Evolution:', result_diff_evol, '\nTime:', time2-time1)
-    result_dual_annealing = checker.max_min_arbitrage(answers, methods = ('dual_annealing',))
+    print("Diff Evolution:", result_diff_evol, "\nTime:", time2 - time1)
+    result_dual_annealing = checker.max_min_arbitrage(
+        answers, methods=("dual_annealing",)
+    )
     time3 = time()
-    print('Dual Annealing:', result_dual_annealing, '\nTime:', time3-time2)
-    result_basinhopping = checker.max_min_arbitrage(answers, methods = ('basinhopping',))
+    print("Dual Annealing:", result_dual_annealing, "\nTime:", time3 - time2)
+    result_basinhopping = checker.max_min_arbitrage(answers, methods=("basinhopping",))
     time4 = time()
-    print('Basinhopping:', result_basinhopping, '\nTime:', time4-time3)
+    print("Basinhopping:", result_basinhopping, "\nTime:", time4 - time3)
     result_plain = checker.max_min_arbitrage(answers)
     time5 = time()
-    print('No kwargs:', result_plain, '\nTime:', time5-time4)
-    print('\n\n')
-
+    print("No kwargs:", result_plain, "\nTime:", time5 - time4)
+    print("\n\n")
 
 
 # print('----------------')
@@ -109,9 +114,15 @@ for k,v in checkers.items():
 # print(CondChecker().arbitrage(outcome3, ex, exa))
 # print('----------------')
 
-#%%
+# %%
 import json
-from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion, Prob_cot, Prob, PlainText
+from common.datatypes import (
+    ForecastingQuestion_stripped,
+    ForecastingQuestion,
+    Prob_cot,
+    Prob,
+    PlainText,
+)
 from common.llm_utils import query_api_chat_sync, query_api_chat_sync_native
 import os
 
@@ -144,11 +155,12 @@ print(fqs.__str__())
 
 # %%
 
-#os.environ["USE_OPENROUTER"] = "True"
+# os.environ["USE_OPENROUTER"] = "True"
 messages = [
-    {"role": "system", "content": "You are a helpful assistant. Summarize the question for the user."},
-    {"role": "user", "content": fq.__str__()}
+    {
+        "role": "system",
+        "content": "You are a helpful assistant. Summarize the question for the user.",
+    },
+    {"role": "user", "content": fq.__str__()},
 ]
-#response = query_api_chat_sync(messages=messages, verbose=True, model="mistralai/mistral-large")
-    
-
+# response = query_api_chat_sync(messages=messages, verbose=True, model="mistralai/mistral-large")
