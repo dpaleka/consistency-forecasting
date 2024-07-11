@@ -133,7 +133,7 @@ class ConsistentForecaster(Forecaster):
                 cons_tuple = cons_tuple[0]
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = self.hypocrite.elicit(cons_tuple)
+            hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
             cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
@@ -160,14 +160,14 @@ class ConsistentForecaster(Forecaster):
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = await self.bq_function_async(
-                sentence, tuple_size=check.num_base_questions, **kwargs
+                sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
             )
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple)
+            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
             cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
