@@ -10,7 +10,7 @@ cf = ConsistentForecaster(
     BasicForecaster(),
     checks=[
         NegChecker(),
-#        AndOrChecker(),
+        AndOrChecker(),
         CondChecker(),
         ParaphraseChecker(),
     ],
@@ -31,8 +31,8 @@ fq = ForecastingQuestion(
 )
 
 import asyncio
-x = cf.call(fq)
-#x= await cf.call_async(fq)
+#x = cf.call(fq)
+x= await cf.call_async(fq, bq_func_kwargs={"model": "gpt-3.5"}, instantiation_kwargs={"model": "gpt-3.5"}, model="gpt-3.5")
 #x = asyncio.run(cf.call_async(fq))
 
 #%% 

@@ -15,6 +15,7 @@ from static_checks.tuple_relevance import (
     get_relevant_questions,
     get_relevant_questions_sync,
 )
+from common.path_utils import get_data_path
 
 
 class ConsistentForecaster(Forecaster):
@@ -47,6 +48,10 @@ class ConsistentForecaster(Forecaster):
         self,
         hypocrite: Forecaster,
         checks: list[Checker] = None,
+        base_data_path=get_data_path()
+        / "fq"
+        / "real"
+        / "questions_cleaned_formatted.jsonl",
     ):
         self.hypocrite = hypocrite or BasicForecaster()
         self.checks = checks or [
@@ -57,19 +62,24 @@ class ConsistentForecaster(Forecaster):
             CondChecker(),
             CondCondChecker(),
         ]
+        self.base_data_path = base_data_path
 
     def bq_function(
-        self, sentence: ForecastingQuestion, keys: dict = None, **kwargs
+        self,
+        sentence: ForecastingQuestion,
+        keys: list = None,
+        n_relevance: int = 10,
+        n_return: int = 1,
+        tuple_size=2,
+        base_data_path=None,
+        **kwargs,
     ) -> dict:
         """Get relevant questions for the given sentence.
 
         Args:
 
         sentence (ForecastingQuestion): Sentence to get relevant questions for.
-        keys (dict): Keys to use for the relevant questions.
-
-        Keyword Args:
-
+        keys (list): Keys to use for the relevant questions.
         n_relevance (int): Number of retrieved questions to consider.
         n_return (int): Number of questions to return.
         tuple_size (int): Size of the tuple to get.
@@ -78,30 +88,69 @@ class ConsistentForecaster(Forecaster):
         """
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
-        tup = get_relevant_questions_sync(existing_questions=[sentence], **kwargs)[0][0]
+        if base_data_path is None:
+            base_data_path = self.base_data_path
+        tup = get_relevant_questions_sync(
+            existing_questions=[sentence],
+            n_relevance=n_relevance,
+            n_return=n_return,
+            tuple_size=tuple_size,
+            base_data_path=base_data_path,
+            **kwargs,
+        )[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
     async def bq_function_async(
-        self, sentence: ForecastingQuestion, keys: dict = None, **kwargs
+        self,
+        sentence: ForecastingQuestion,
+        keys: list = None,
+        n_relevance: int = 10,
+        n_return: int = 1,
+        tuple_size=2,
+        base_data_path=None,
+        **kwargs,
     ) -> dict[str, ForecastingQuestion]:
         """Get relevant questions for the given sentence.
 
         Args:
 
         sentence (ForecastingQuestion): Sentence to get relevant questions for.
-        keys (dict): Keys to use for the relevant questions.
-
-        Keyword Args:
-
+        keys (list): Keys to use for the relevant questions.
         n_relevance (int): Number of retrieved questions to consider.
         n_return (int): Number of questions to return.
         tuple_size (int): Size of the tuple to get.
         base_data_path (Path): Path to questions to retrieve from.
 
+        Example usage:
+
+        ```python
+        cf.call(
+            fq,
+            bq_func_kwargs={
+                "n_relevance": 10,
+                "n_return": 1,
+                "tuple_size": 2,
+                "model": "gpt-4o",
+            },
+            instantiation_kwargs={
+                "model": "gpt-4o",
+            },
+            model="gpt-4o",
+        )
+
         """
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
-        res = await get_relevant_questions(existing_questions=[sentence], **kwargs)
+        if base_data_path is None:
+            base_data_path = self.base_data_path
+        res = await get_relevant_questions(
+            existing_questions=[sentence],
+            n_relevance=n_relevance,
+            n_return=n_return,
+            tuple_size=tuple_size,
+            base_data_path=base_data_path,
+            **kwargs,
+        )
         tup = res[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
@@ -117,6 +166,24 @@ class ConsistentForecaster(Forecaster):
         Args:
             sentence (ForecastingQuestion): Sentence to forecast.
             bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        Example usage:
+
+        ```python
+        cf.call(
+            fq,
+            bq_func_kwargs={
+                "n_relevance": 10,
+                "n_return": 1,
+                "tuple_size": 2,
+                "model": "gpt-4o",
+            },
+            instantiation_kwargs={
+                "model": "gpt-4o",
+            },
+            model="gpt-4o",
+        )
 
         """
         if bq_func_kwargs is None:
