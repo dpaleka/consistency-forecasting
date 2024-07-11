@@ -4,6 +4,7 @@ from forecasters.consistent_forecaster import ConsistentForecaster
 from forecasters.basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion
 from static_checks.Checker import *
+from time import time
 
 cf = ConsistentForecaster(
     BasicForecaster(),
@@ -29,7 +30,11 @@ fq = ForecastingQuestion(
     resolution=None,
 )
 
+t0 = time()
 x= await cf.call_async(fq)
+t = time()
+
+print('Time:', t-t0)
 
 #%% 
 
