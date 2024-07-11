@@ -183,8 +183,9 @@ def test_consistent_forecaster_call_sync(consistent_forecaster):
 async def test_consistent_forecaster_consistent_async(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {"model": "gpt-3.5-turbo"}
-    instantiation_kwargs = {"model": "gpt-3.5-turbo"}
+    call_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    instantiation_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    bq_func_kwargs = {"model": "gpt-3.5-turbo"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions
@@ -201,7 +202,12 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 
     tup = await checker.instantiate(bqs, **instantiation_kwargs)
 
-    answers = await consistent_forecaster_single.elicit_async(tup, **call_kwargs)
+    answers = await consistent_forecaster_single.elicit_async(
+        tup,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
+    )
     print("Answers:\n", answers)
     v = checker.violation(answers)
     print("Violation: ", v)
@@ -211,8 +217,9 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {"model": "gpt-3.5-turbo"}
-    instantiation_kwargs = {"model": "gpt-3.5-turbo"}
+    call_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    instantiation_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    bq_func_kwargs = {"model": "gpt-3.5-turbo"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions
@@ -228,8 +235,101 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
     tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
-    answers = consistent_forecaster_single.elicit(tup, **call_kwargs)
+    answers = consistent_forecaster_single.elicit(
+        tup,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
+    )
     print("Answers:\n", answers)
     v = checker.violation(answers)
     print("Violation: ", v)
     assert v < 0.0001, "The violation should be 0"
+
+
+@pytest.mark.asyncio
+async def test_consistent_forecaster_more_consistent_async(
+    consistent_forecaster_single,
+):
+    # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
+
+    call_kwargs = {"model": "gpt-3.5-turbo"}
+    instantiation_kwargs = {"model": "gpt-3.5-turbo"}
+    bq_func_kwargs = {"model": "gpt-3.5-turbo"}
+
+    checker = consistent_forecaster_single.checks[0]
+    n = checker.num_base_questions
+
+    keys = ["P", "Q", "R", "S", "T"]
+    bq_list = [
+        test_fq_around_fifty_fifty,
+        test_fq_two,
+        test_fq_three,
+        test_fq_four,
+        test_fq_five,
+    ]
+    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
+
+    tup = await checker.instantiate(bqs, **instantiation_kwargs)
+
+    answers = await consistent_forecaster_single.elicit_async(
+        tup,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
+    )
+    print("Answers:\n", answers)
+    v = checker.violation(answers)
+    print("Violation: ", v)
+    print("---")
+    hypocrite_answers = await consistent_forecaster_single.hypocrite.elicit_async(
+        tup, **call_kwargs
+    )
+    print("Hypocrite Answers:\n", hypocrite_answers)
+    hv = checker.violation(hypocrite_answers)
+    print("Hypocrite Violation: ", hv)
+    assert (
+        v <= hv
+    ), "The ConsistentForecaster should be at least as consistent as the hypocrite"
+
+
+def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single):
+    # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
+
+    call_kwargs = {"model": "gpt-3.5-turbo"}
+    instantiation_kwargs = {"model": "gpt-3.5-turbo"}
+    bq_func_kwargs = {"model": "gpt-3.5-turbo"}
+
+    checker = consistent_forecaster_single.checks[0]
+    n = checker.num_base_questions
+
+    keys = ["P", "Q", "R", "S", "T"]
+    bq_list = [
+        test_fq_around_fifty_fifty,
+        test_fq_two,
+        test_fq_three,
+        test_fq_four,
+        test_fq_five,
+    ]
+    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
+
+    tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+    answers = consistent_forecaster_single.elicit(
+        tup,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
+    )
+    print("Answers:\n", answers)
+    v = checker.violation(answers)
+    print("Violation: ", v)
+    print("---")
+    hypocrite_answers = consistent_forecaster_single.hypocrite.elicit(
+        tup, **call_kwargs
+    )
+    print("Hypocrite Answers:\n", hypocrite_answers)
+    hv = checker.violation(hypocrite_answers)
+    print("Hypocrite Violation: ", hv)
+    assert (
+        v <= hv
+    ), "The ConsistentForecaster should be at least as consistent as the hypocrite"

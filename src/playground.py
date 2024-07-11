@@ -35,8 +35,8 @@ import asyncio
 # x = cf.call(fq)
 x = asyncio.run(cf.call_async(
     fq,
-    bq_func_kwargs={"model": "gpt-3.5"},
-    instantiation_kwargs={"model": "gpt-3.5"},
+    bq_func_kwargs={"model": "gpt-3.5-turbo"},
+    instantiation_kwargs={"model": "gpt-3.5-turbo"},
     model="gpt-3.5",
 ))
 # x = asyncio.run(cf.call_async(fq))

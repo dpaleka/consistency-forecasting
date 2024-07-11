@@ -121,23 +121,6 @@ class ConsistentForecaster(Forecaster):
         tuple_size (int): Size of the tuple to get.
         base_data_path (Path): Path to questions to retrieve from.
 
-        Example usage:
-
-        ```python
-        cf.call(
-            fq,
-            bq_func_kwargs={
-                "n_relevance": 10,
-                "n_return": 1,
-                "tuple_size": 2,
-                "model": "gpt-4o",
-            },
-            instantiation_kwargs={
-                "model": "gpt-4o",
-            },
-            model="gpt-4o",
-        )
-
         """
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
@@ -157,14 +140,14 @@ class ConsistentForecaster(Forecaster):
     def call(
         self,
         sentence: ForecastingQuestion,
-        bq_func_kwargs=None,
-        instantiation_kwargs=None,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
             sentence (ForecastingQuestion): Sentence to forecast.
+
+        Keyword args:
             bq_func_kwargs (dict): Keyword arguments for bq_function.
             instantiation_kwargs (dict): Keyword arguments for instantiation.
 
@@ -186,10 +169,8 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if bq_func_kwargs is None:
-            bq_func_kwargs = {}
-        if instantiation_kwargs is None:
-            instantiation_kwargs = {}
+        bq_func_kwargs = kwargs.get("bq_func_kwargs", {})
+        instantiation_kwargs = kwargs.get("instantiation_kwargs", {})
         ans_P = self.hypocrite.call(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = self.bq_function(
@@ -209,21 +190,38 @@ class ConsistentForecaster(Forecaster):
     async def call_async(
         self,
         sentence: ForecastingQuestion,
-        bq_func_kwargs=None,
-        instantiation_kwargs=None,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
             sentence (ForecastingQuestion): Sentence to forecast.
+
+        Keyword args:
             bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        Example usage:
+
+        ```python
+        cf.call(
+            fq,
+            bq_func_kwargs={
+                "n_relevance": 10,
+                "n_return": 1,
+                "tuple_size": 2,
+                "model": "gpt-4o",
+            },
+            instantiation_kwargs={
+                "model": "gpt-4o",
+            },
+            model="gpt-4o",
+        )
 
         """
-        if bq_func_kwargs is None:
-            bq_func_kwargs = {}
-        if instantiation_kwargs is None:
-            instantiation_kwargs = {}
+        bq_func_kwargs = kwargs.get("bq_func_kwargs", {})
+        instantiation_kwargs = kwargs.get("instantiation_kwargs", {})
+
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = await self.bq_function_async(
