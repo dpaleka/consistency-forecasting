@@ -1479,6 +1479,73 @@ class CondChecker(Checker):
         # )
 
 
+class ExpectedEvidenceChecker(Checker):
+    num_base_questions = 2
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+        P_given_Q: ForecastingQuestion
+        P_given_not_Q: ForecastingQuestion
+
+        @field_validator("P", "Q")
+        def check_question_type_binary(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("P_given_Q", "P_given_not_Q")
+        def check_question_type_condbinary(cls, value):
+            if value.question_type != "conditional_binary":
+                raise ValueError("Question type must be conditional binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> List["Self.TupleFormat"]:
+        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        P_given_Q = Conditional().instantiate_sync(base_sentences, **kwargs)
+        not_Q = Neg().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        P_given_not_Q = Conditional().instantiate_sync(
+            {"P": base_sentences["P"], "Q": not_Q.not_P}
+        )
+        return [
+            self.TupleFormat(
+                P=P.P,
+                Q=Q.P,
+                P_given_Q=P_given_Q.Q_given_P,
+                P_given_not_Q=P_given_not_Q.Q_given_P,
+            )
+        ]
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> List["Self.TupleFormat"]:
+        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        P_given_Q = await Conditional().instantiate(base_sentences, **kwargs)
+        not_Q = await Neg().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        P_given_not_Q = await Conditional().instantiate(
+            {"P": base_sentences["P"], "Q": not_Q.not_P}
+        )
+        return [
+            self.TupleFormat(
+                P=P.P,
+                Q=Q.P,
+                P_given_Q=P_given_Q.Q_given_P,
+                P_given_not_Q=P_given_not_Q.Q_given_P,
+            )
+        ]
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return all([a is not None for a in answers.values()]) and answers[
+            "P"
+        ] == answers["P_given_Q"] * answers["Q"] + answers["P_given_not_Q"] * (
+            1 - answers["Q"]
+        )
+
+
 class ConsequenceChecker(Checker):
     num_base_questions = 1
 
