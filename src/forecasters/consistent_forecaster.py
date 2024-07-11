@@ -106,7 +106,11 @@ class ConsistentForecaster(Forecaster):
         return {k: fq for k, fq in zip(keys, tup)}
 
     def call(
-        self, sentence: ForecastingQuestion, bq_func_kwargs=None, **kwargs
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs=None,
+        instantiation_kwargs=None,
+        **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
@@ -117,12 +121,14 @@ class ConsistentForecaster(Forecaster):
         """
         if bq_func_kwargs is None:
             bq_func_kwargs = {}
+        if instantiation_kwargs is None:
+            instantiation_kwargs = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = self.bq_function(
                 sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
             )
-            cons_tuple = check.instantiate_sync(bq_tuple)
+            cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]
             cons_tuple = shallow_dict(cons_tuple)
@@ -134,7 +140,11 @@ class ConsistentForecaster(Forecaster):
         return ans_P
 
     async def call_async(
-        self, sentence: ForecastingQuestion, bq_func_kwargs=None, **kwargs
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs=None,
+        instantiation_kwargs=None,
+        **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
@@ -145,12 +155,14 @@ class ConsistentForecaster(Forecaster):
         """
         if bq_func_kwargs is None:
             bq_func_kwargs = {}
+        if instantiation_kwargs is None:
+            instantiation_kwargs = {}
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = await self.bq_function_async(
                 sentence, tuple_size=check.num_base_questions, **kwargs
             )
-            cons_tuple = await check.instantiate(bq_tuple)
+            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]
             cons_tuple = shallow_dict(cons_tuple)
