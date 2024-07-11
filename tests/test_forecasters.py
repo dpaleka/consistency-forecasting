@@ -202,6 +202,9 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 
     tup = await checker.instantiate(bqs, **instantiation_kwargs)
 
+    if isinstance(tup, list):
+        tup = tup[0]
+
     answers = await consistent_forecaster_single.elicit_async(
         tup,
         bq_func_kwargs=bq_func_kwargs,
@@ -235,6 +238,10 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
     tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+
+    if isinstance(tup, list):
+        tup = tup[0]
+
     answers = consistent_forecaster_single.elicit(
         tup,
         bq_func_kwargs=bq_func_kwargs,
@@ -271,6 +278,9 @@ async def test_consistent_forecaster_more_consistent_async(
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
     tup = await checker.instantiate(bqs, **instantiation_kwargs)
+
+    if isinstance(tup, list):
+        tup = tup[0]
 
     answers = await consistent_forecaster_single.elicit_async(
         tup,
@@ -314,6 +324,10 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
     tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+
+    if isinstance(tup, list):
+        tup = tup[0]
+
     answers = consistent_forecaster_single.elicit(
         tup,
         bq_func_kwargs=bq_func_kwargs,

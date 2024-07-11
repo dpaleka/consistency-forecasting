@@ -140,14 +140,14 @@ class ConsistentForecaster(Forecaster):
     def call(
         self,
         sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
             sentence (ForecastingQuestion): Sentence to forecast.
-
-        Keyword args:
             bq_func_kwargs (dict): Keyword arguments for bq_function.
             instantiation_kwargs (dict): Keyword arguments for instantiation.
 
@@ -169,8 +169,10 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        bq_func_kwargs = kwargs.get("bq_func_kwargs", {})
-        instantiation_kwargs = kwargs.get("instantiation_kwargs", {})
+        if bq_func_kwargs is None:
+            bq_func_kwargs = {}
+        if instantiation_kwargs is None:
+            instantiation_kwargs = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = self.bq_function(
@@ -190,14 +192,14 @@ class ConsistentForecaster(Forecaster):
     async def call_async(
         self,
         sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
             sentence (ForecastingQuestion): Sentence to forecast.
-
-        Keyword args:
             bq_func_kwargs (dict): Keyword arguments for bq_function.
             instantiation_kwargs (dict): Keyword arguments for instantiation.
 
@@ -219,9 +221,10 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        bq_func_kwargs = kwargs.get("bq_func_kwargs", {})
-        instantiation_kwargs = kwargs.get("instantiation_kwargs", {})
-
+        if bq_func_kwargs is None:
+            bq_func_kwargs = {}
+        if instantiation_kwargs is None:
+            instantiation_kwargs = {}
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         for check in self.checks:
             bq_tuple = await self.bq_function_async(
