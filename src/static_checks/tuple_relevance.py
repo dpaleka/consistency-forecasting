@@ -263,6 +263,7 @@ examples = [
 
 def relevance_sync(
     base_sentences: dict[str, ForecastingQuestion] | list[ForecastingQuestion],
+    **kwargs,
 ) -> float:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
@@ -274,6 +275,7 @@ def relevance_sync(
         preface=preface,
         # examples=examples,
         response_model=RelevanceResult,
+        **kwargs,
     )
 
     print("---")
