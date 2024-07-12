@@ -46,6 +46,12 @@ import aiohttp
 
 from read_logs import extract_element, submission_log_only_stats
 
+
+from pathlib import Path
+
+bot_path = Path(__file__).parent
+
+
 global VISITED_IDS
 VISITED_IDS = set()
 
@@ -71,8 +77,8 @@ API_BASE_URL = "https://www.metaculus.com/api2"
 TOURNAMENT_ID = 3349  # 3294 is WARMUP_TOURNAMENT_ID, fill this in with competition details, 3349 is the real tournament id
 SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
-LOG_FILE_PATH = "metaculus_submissions.log"  # log file
-ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
+LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
+ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 5  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
@@ -298,9 +304,30 @@ async def gen_comments(q):
     )
 
     cleaned_text = re.sub(
-        r"\n4\. Output your prediction \(a number between 0 and 1\) with an asterisk at the beginning and end of the decimal\.\n.*",
+        r"(?s)4\. Output.*",
         "",
         ensemble_dict["meta_reasoning"],
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"(?s)4\. Final prediction.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"(?s)4\. \*\*Output.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"\*\d+\.\d+\*",
+        "",
+        cleaned_text,
         flags=re.DOTALL,
     )
 
