@@ -1,5 +1,7 @@
+import time
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion
+from typing import Optional
 
 # llm_forecasting imports
 from forecasters.llm_forecasting.prompts.prompts import PROMPT_DICT
@@ -114,7 +116,13 @@ class AdvancedForecaster(Forecaster):
         # print(f"Retrieval config: {self.retrieval_config}")
         # print(f"Reasoning config: {self.reasoning_config}")
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    async def call_async(
+        self,
+        sentence: ForecastingQuestion,
+        today_date: Optional[str] = None,
+        retrieval_interval_length: int = 30,
+        **kwargs,
+    ) -> float:
         question = sentence.title
         background_info = (
             sentence.metadata["background_info"]
@@ -126,14 +134,20 @@ class AdvancedForecaster(Forecaster):
             sentence.body
         )  # resolution criteria and other info is in |body|
 
-        today_date = get_todays_date()
+        if today_date is None:
+            today_date: str = get_todays_date()
+        else:
+            # formatted_date = today.strftime("%Y-%m-%d")
+            assert (
+                isinstance(today_date, str) and len(today_date) == 10
+            ), "today_date must be a string of the form 'YYYY-MM-DD'"
+
         # If open date is set in data structure, change beginning of retrieval to question open date.
         # Retrieve from [today's date - 1 month, today's date].
         retrieval_dates = (
-            subtract_days_from_date(today_date, 30),
+            subtract_days_from_date(today_date, retrieval_interval_length),
             today_date,
         )
-
         (
             ranked_articles,
             all_articles,
@@ -175,9 +189,17 @@ class AdvancedForecaster(Forecaster):
 
         return ensemble_dict["meta_prediction"]
 
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    def call(
+        self,
+        sentence: ForecastingQuestion,
+        today_date: Optional[str] = None,
+        retrieval_interval_length: int = 30,
+        **kwargs,
+    ) -> float:
         # This won't work inside a Jupyter notebook or similar; but there you can use await
-        return asyncio.run(self.call_async(sentence, **kwargs))
+        return asyncio.run(
+            self.call_async(sentence, today_date, retrieval_interval_length, **kwargs)
+        )
 
     def dump_config(self):
         return {

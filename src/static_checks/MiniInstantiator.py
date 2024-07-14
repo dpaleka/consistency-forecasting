@@ -5,19 +5,21 @@ from common.utils import shallow_dict
 from datetime import datetime
 from dateutil.tz import UTC
 from abc import ABC, abstractmethod
-from typing import Type, Any, Optional, Self  # noqa
-from pydantic import BaseModel, create_model, field_validator
+from enum import Enum
+from typing import Type, Any, Optional, Self, List, List  # noqa
+from pydantic import BaseModel, field_validator
 from common.utils import write_jsonl_async_from_str  # noqa
 from common.llm_utils import (
     answer,
     answer_sync,
     Example,
     prepare_messages_alt,
-)  # noqa
+)
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
-)  # noqa
+)
+from common.perscache import register_models_for_cache
 from question_generators import question_formatter
 
 load_dotenv()
@@ -38,13 +40,14 @@ class MiniInstantiator(ABC):
 
     @property
     def BaseSentenceFormat_stripped(self) -> Type[BaseModel]:
-        return create_model(
-            "BaseSentenceFormat_stripped",
-            **{
-                k: (ForecastingQuestion_stripped, ...)
-                for k in self.BaseSentenceFormat.model_fields
-            },
-        )
+        # return create_model(
+        #     "BaseSentenceFormat_stripped",
+        #     **{
+        #         k: (ForecastingQuestion_stripped, ...)
+        #         for k in self.BaseSentenceFormat.model_fields
+        #     },
+        # )
+        pass
 
     @property
     @abstractmethod
@@ -53,13 +56,14 @@ class MiniInstantiator(ABC):
 
     @property
     def OutputFormat_stripped(self) -> Type[BaseModel]:
-        return create_model(
-            "OutputFormat_stripped",
-            **{
-                k: (ForecastingQuestion_stripped, ...)
-                for k in self.OutputFormat.model_fields
-            },
-        )
+        # return create_model(
+        #     "OutputFormat_stripped",
+        #     **{
+        #         k: (ForecastingQuestion_stripped, ...)
+        #         for k in self.OutputFormat.model_fields
+        #     },
+        # )
+        pass
 
     def title_body_sync_(
         self,
@@ -151,7 +155,7 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         **kwargs,
-    ) -> "Self.OutputFormat":
+    ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         title_body = self.title_body_sync(base_sentences, **kwargs)
         return self.OutputFormat(
             **{
@@ -170,7 +174,7 @@ class MiniInstantiator(ABC):
         base_sentences: dict[str, ForecastingQuestion],
         n_verify=3,
         **kwargs,
-    ) -> "Self.OutputFormat":
+    ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         if verify_before_instantion:
             for i in range(n_verify):
                 title_body = await self.title_body(base_sentences, **kwargs)
@@ -210,8 +214,14 @@ class Trivial(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
         P: ForecastingQuestion
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
 
     def title_body_sync_(
         self, base_sentences: "Self.BaseSentenceFormat", **kwargs
@@ -237,8 +247,14 @@ class Neg(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         not_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        not_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -393,8 +409,15 @@ class And(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P_and_Q: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P_and_Q: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -593,8 +616,15 @@ class Or(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         P_or_Q: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        P_or_Q: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -732,8 +762,14 @@ class Paraphrase(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         para_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        para_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -795,8 +831,15 @@ class Conditional(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+        Q: ForecastingQuestion_stripped
+
     class OutputFormat(BaseModel):
         Q_given_P: ForecastingQuestion
+
+    class OutputFormat_stripped(BaseModel):
+        Q_given_P: ForecastingQuestion_stripped
 
     def __init__(self):
         self.preface = (
@@ -904,202 +947,363 @@ class Consequence(MiniInstantiator):
                 raise ValueError("Question type must be binary")
             return value
 
+    class BaseSentenceFormat_stripped(BaseModel):
+        P: ForecastingQuestion_stripped
+
+    class ConsequenceType(str, Enum):
+        quantity = "quantity"
+        time = "time"
+        misc = "misc"
+        none = "none"
+
+    class ClassifyOutput(BaseModel):
+        consequence_type: List["Consequence.ConsequenceType"]
+
+    class InstantiateOutput(BaseModel):
+        title: str
+        body: str
+        resolution_date: datetime
+
     class OutputFormat(BaseModel):
         cons_P: ForecastingQuestion
 
+    class OutputFormat_stripped(BaseModel):
+        cons_P: ForecastingQuestion_stripped
+
     def __init__(self):
-        self.preface = (
-            "You are a helpful assistant."
-            "I will give you a forecasting questions P with Yes/No answer. "
-            "You should then give me a guaranteed logical consequence of P. "
-            "Notes:\n\n"
-            " - Make sure that your output is truly a guaranteed logical consequence of P. "
-            "Look at the resolution criteria for P and make sure your output question will "
-            "necessarily resolve True if the resolution criteria for P are met.\n"
-            " - Do not make any asssumptions. Your output must follow from P without any assumptions. \n"
-            " - It should not be just something completely equivalent to P. Think of something "
-            "that is different but logically follows from P.\n"
-            " - The question title of your output should itself be a logical consequence of the question title of P. "
-            "And once again, not just something logically equivalent to the title of P. This is very important!\n"
-            " - Be careful with deriving consequences of conditional statements! If a question asks "
-            "'Will A happen if B?' or 'Given B then A' or 'Conditional on B, then A', then A is *not* "
-            "a consequence of this question! Instead, you should provide a statement with the same condition "
-            "(B), but an outcome that is a logical consequence of the original outcome (A).\n"
-            " - If P resolves when any of a set of conditions are met, then you CANNOT give one of those "
-            "conditions as a consequence, since P can be true due to one of the other conditions. This is "
-            "important! You keep making this mistake.\n"
-            " - Your result should be exactly a consequence of P, not just 'something whose truth value "
-            "can be derived from P's truth value. Sometimes you literally give me a consequence of not P, "
-            "that's not what I want.\n"
-            " - You cannot just make the resolution criteria more vague and call it a day. You can certainly "
-            "*loosen* the resolution criteria and call it a day, as long as it is still precise. "
-            "But e.g. just removing some clarification of a vague word does not count as a consequence, as "
-            "that's just removing information.\n"
-            " - Most importantly: if there is any background information (not resolution criteria) "
-            "in the question body, make sure you retain all relevant information in the question body "
-            "of the output you give. We will be giving these questions to a population sample to see "
-            "if they give consistent answers (like giving a higher probability to 'Is Kelly a bank-'"
-            "teller?' than 'Is Kelly a bank-teller active in the feminist movement?') so it is critical "
-            "that any information that might inform someone's probability estimate to your output question "
-            "is clearly included.\n"
-            "- Also, make sure that the title is more-or-less self-sufficient independent of the body. "
-            "It's OK if some detailed criteria/nuances/background info/ambiguity resolution are only in "
-            "the body, but the title should be basically a well-formed question on its own.\n"
-            " - One type of question you may be given is a single choice from a multiple choice question. For example, "
-            "you may be given 'Which of these countries will legalize human cloning by 2030? (Japan)'. "
-            "This is asking if Japan will recognize and legalize human cloning by 2030. Such a question may also "
-            "itself be a logical combination -- e.g. "
-            "'Which of these countries will legalize human cloning by 2030? (UK, France, or Germany) "
-            "is asking if any either of the UK, France, or Germany will legalize human cloning by 2030.\n"
-            " - If you really cannot think of any consequence, just don't rather than coming up with something "
-            "dumb. Just output 'ERROR: NO CONSEQUENCE FOUND'."
+        self.consequence_type_prompt = (
+            "You are a helpful assistant. I want you to assist me with a task. \n"
+            "We need to classify a forecasting question P with a Yes/No answer "
+            "into one or more of the following categories: (1) _quantity_, (2) _time_, (3) _misc_ or (4) _none_. "
+            "We will do this depending on which questions can be found to be logical consequences of P. "
+            "A question Q is a _consequence_ of P if a positive answer to P implies a positive answer to Q. "
+            "*Quantity:*\n"
+            "A question Q can be a consequence of P due to _quantity monotonicity_. Example: "
+            "P: Will China win more than 10 gold medals in the 2026 Winter Olympics? "
+            "Q: Will China win more than 8 medals in the 2026 Winter Olympics? "
+            "We will classify P as _quantity-monotonic_ if we can find a question Q that is a consequence of P "
+            "due to quantity monotonicity. "
+            "Examples:\n"
+            "P: Will the Republican nominee get more than 60\% of the vote in the 2028 presidential election? "
+            "P: Will the record for 100m sprint will be lower than 9.30 seconds by 2030"
+            "*Time:*\n"
+            "A question Q can be a consequence of P due to _time monotonicity_. Example: "
+            "P: Will the price of Bitcoin reach a peak of 100k at any point before 2027? "
+            "Q: Will the price of Bitcoin reach a peak of 100k at any point before 2028? "
+            "We will classify P as _time-monotonic_ if we can find a question Q that is a consequence of P "
+            "due to time monotonicity. "
+            "Examples:\n"
+            "P: Will a Swiss person set foot on Mars before 2085? "
+            "P: Will Catalonia have a referendum on independence before 2030?"
+            "*Misc:*\n"
+            "A question Q can be a consequence of P due to other reasons. Example: "
+            "P: Will a Swiss person set foot on Mars before 2085? "
+            "Q: Will any human set foot on Mars before 2085?\n "
+            "P: Will solar energy account for 50\% or more of the US energy production in 2030?\n"
+            "Q: Will renewables (solar, wind, hydro) account for 50\% or more of the US energy production in 2030?\n"
+            "We will classify P as _misc_ if we can find a question Q that is a consequence of P "
+            "due to other reasons, including but not limited to:\n"
+            "(i)  Generalization of subjects: If P involves a specific subject or group, Q can generalize this to a broader category, as in the Swiss person -> any human example above.\n"
+            "(ii) Inclusion of additional scenarios: If P involves a specific scenario, Q can include this scenario, as in the renewables -> solar, wind, hydro example above.\n"
+            "*None:*\n"
+            "Finally there are cases where it is not clear if there is a consequence between the two questions. "
+            "Classify P as _none_ if it is not clear how to find a question Q that is a straightforward consequence of P. "
+            "Examples:\n"
+            "P: Will Rihanna release a new album in 2025?\n"
+            "P: Will there be a snowstorm in Toronto on New Year's Eve?\n"
+            "P: Will Germany win or draw against France in their next World Cup match?\n"
+            "\n\n"
+            "Your task now is to classify the following question into one or more of the categories: quantity, time, misc or none. "
+            "To help, we also provide precise resolution criteria (body) as well as the title.\n"
+            "P:\n"
+            "title: {title}\n"
+            "body: {body}\n\n"
+            "Recall that you need to classify P into one or more of the categories: quantity, time, misc or none."
         )
 
-        self.examples = [
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will the price of Bitcoin be above $100,000 on 1st January 2025?",
-                        body=(
-                            "Resolves YES if the spot price of Bitcoin against USD is more than "
-                            "100,000 on 1st January 2025. Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will the price of Bitcoin be above $70,000 on 1st January 2025?",
-                        body=(
-                            "Resolves YES if the spot price of Bitcoin against USD is more than "
-                            "70,000 on 1st January 2025. Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will SpaceX manage to land a person on Mars before 2100?",
-                        body=(
-                            "Resolves YES if the company SpaceX builds the rocketship that carries a person to Mars before Jan 1, 2100 as defined by that individual touching the surface of the planet. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will a human land on Mars before 2100?",
-                        body=(
-                            "Resolves YES if a member of the human species manages to touch the surface of Mars before Jan 1, 2100.  "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will a peace treaty be declared between Russia and Ukraine before 2025?",
-                        body=(
-                            "Resolves YES if a peace treaty is declared between Russia and Ukraine before Jan 1, 2025 regarding the current war. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will a ceasefire be declared between Russia and Ukraine before 2025?",
-                        body=(
-                            "Resolves YES if a ceasefire is declared between Russia and Ukraine before Jan 1, 2025.  "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will Shinzo Abe be elected US president in 2024?",
-                        body=(
-                            "Resolves YES if Shinzo Abe is elected US president in 2024. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title=(
-                            "Will someone who is not a natural-born US citizen be elected US "
-                            "president in 2024?"
-                        ),
-                        body=(
-                            "Resolves YES if someone who is not a natural-born US citizen is "
-                            "elected US president in 2024. Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will a human being land on Mars by 2200?",
-                        body=(
-                            "Resolves YES if a human being lands on Mars before Jan 1, 2200. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will a human being land on Mars by 2100?",
-                        body=(
-                            "Resolves YES if a human being lands on Mars before Jan 1, 2100. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will Vladimir Putin be assassinated by Jan 1, 2030?",
-                        body=(
-                            "Resolves YES if a professional autopsy determines that Vladimir Putin, the current president of Russia, is dead before Jan 1, 2030, and the cause is most likely by an assassination attempt. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will Vladimir Putin be dead by Jan 1, 2030?",
-                        body=(
-                            "Resolves YES if a professional autopsy determines that Vladimir Putin, the current president of Russia, is dead before Jan 1, 2030. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-            Example(
-                user=self.BaseSentenceFormat_stripped(
-                    P=ForecastingQuestion_stripped(
-                        title="Will Sam Bankman-Fried, ex-FTX CEO, serve at least 20 years of his prison sentence?",
-                        body=(
-                            "Resolves YES Sam Bankman-Fried is incarcerated for 20 years or more. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-                assistant=self.OutputFormat_stripped(
-                    cons_P=ForecastingQuestion_stripped(
-                        title="Will Sam Bankman-Fried, ex-FTX CEO, serve at least 15 years of his prison sentence?",
-                        body=(
-                            "Resolves YES Sam Bankman-Fried is incarcerated for 15 years or more. "
-                            "Resolves NO otherwise."
-                        ),
-                    )
-                ),
-            ),
-        ]
+        self.quantity_instantiator_prompt = (
+            "You are a helpful assistant. I want you to assist me with a task. \n"
+            "For a given P I want to find a question Q that is a consequence of P due to quantity monotonicity.\n"
+            "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+            "Both P and Q will have Yes/No answers. Both P and Q will have the following fields:\n"
+            "Title: The question statement.\n"
+            "Body: A longer description of the conditions and the resolution criteria.\n"
+            "Resolution date: The date by which the question should be resolved.\n"
+            "Q should be a consequence of P due to quantity monotonicity, so the resolution date should be the same.\n"
+            "Change the body as little as possible, but make sure that the question is a consequence of P due to quantity monotonicity.\n"
+            "Examples:\n"
+            "P:\n"
+            "title: Will China win more than 10 gold medals in the 2026 Winter Olympics?\n"
+            "body: Resolves YES if China wins more than 10 gold medals in the 2026 Winter Olympics. Resolves NO otherwise.\n"
+            "resolution date: 2026-03-01 00:00:00\n"
+            "Q:\n"
+            "title: Will China win more than 8 medals in the 2026 Winter Olympics?\n"
+            "body: Resolves YES if China wins more than 8 medals in the 2026 Winter Olympics. Resolves NO otherwise.\n"
+            "resolution date: 2026-03-01 00:00:00\n"
+            "\n"
+            "P:\n"
+            "title: Will the global sales of electric vehicles exceed 5 million units in 2025?\n"
+            "body: Resolves YES if the global sales of electric vehicles exceed 5 million units in 2025. Resolves NO otherwise.\n"
+            "resolution date: 2025-12-31 00:00:00\n"
+            "Q:\n"
+            "title: Will the global sales of electric vehicles exceed 4 million units in 2025?\n"
+            "body: Resolves YES if the global sales of electric vehicles exceed 4 million units in 2025. Resolves NO otherwise.\n"
+            "resolution date: 2025-12-31 00:00:00\n"
+            "\n"
+            "P:\n"
+            "title: Will the average temperature of the Earth increase by less than 1.5 degrees Celsius by 2050?\n"
+            "body: Resolves YES if the average temperature of the Earth increases by less than 1.5 degrees Celsius by 2050. Resolves NO otherwise.\n"
+            "resolution date: 2050-12-31 00:00:00\n"
+            "Q:\n"
+            "title: Will the average temperature of the Earth increase by less than 2 degrees Celsius by 2050?\n"
+            "body: Resolves YES if the average temperature of the Earth increases by less than 2 degrees Celsius by 2050. Resolves NO otherwise.\n"
+            "resolution date: 2050-12-31 00:00:00\n"
+            "\n\n"
+            "P:\n"
+            "title: {title}\n"
+            "body: {body}\n"
+            "resolution date: {resolution_date}\n"
+        )
+
+        self.time_instantiator_prompt = (
+            "You are a helpful assistant. I want you to assist me with a task. \n"
+            "For a given P I want to find a question Q that is a consequence of P due to time monotonicity.\n"
+            "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+            "Both P and Q will have Yes/No answers. Both P and Q will have the following fields:\n"
+            "Title: The question statement.\n"
+            "Body: A longer description of the conditions and the resolution criteria.\n"
+            "Resolution date: The date by which the question should be resolved.\n"
+            "Q should be a consequence of P due to time monotonicity, so the resolution date should not be the same.\n"
+            "It should be a later date if P being true at that date implies Q being true at a later date.\n"
+            "It should be an earlier date if P being true at that date implies Q being true at an earlier date.\n"
+            "Change the body as little as possible, but make sure that the question is a consequence of P due to time monotonicity.\n"
+            "Examples:\n"
+            "P:\n"
+            "title: Will the price of Bitcoin reach a peak of 100k at any point before 2027?\n"
+            "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2027. Resolves NO otherwise.\n"
+            "resolution date: 2027-01-01 00:00:00\n"
+            "Q:\n"
+            "title: Will the price of Bitcoin reach a peak of 100k at any point before 2028?\n"
+            "body: Resolves YES if the price of Bitcoin reaches a peak of 100k at any point before 2028. Resolves NO otherwise.\n"
+            "resolution date: 2027-01-01 00:00:00\n"
+            "\n"
+            "P:\n"
+            "title: Will a Swiss person set foot on Mars before 2085?\n"
+            "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+            "resolution date: 2085-01-01 00:00:00\n"
+            "Q:\n"
+            "title: Will a Swiss person set foot on Mars before 2086?\n"
+            "body: Resolves YES if a Swiss person sets foot on Mars before 2086.\n"
+            "resolution date: 2086-01-01 00:00:00\n"
+            "P:\n"
+            "title: Will the Golden Bay Bridge remain standing in 2095?\n"
+            "body: The resolution of this question will be based on credible reports and sources available on January 1, 2095."
+            " Sources may include, but are not limited to, news articles, government publications, and official announcements "
+            "from the agency responsible for the bridge's maintenance.\n"
+            "If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome."
+            "resolution date: 2095-01-01 00:00:00\n"
+            "Q:\n"
+            "title: Will the Golden Bay Bridge remain standing in 2090?\n"
+            "body: The resolution of this question will be based on credible reports and sources available on January 1, 2090."
+            " Sources may include, but are not limited to, news articles, government publications, and official announcements "
+            "from the agency responsible for the bridge's maintenance.\n"
+            "If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome."
+            "resolution date: 2090-01-01 00:00:00\n"
+            "\n\n"
+            "P:\n"
+            "title: {title}\n"
+            "body: {body}\n"
+            "resolution date: {resolution_date}\n"
+        )
+
+        self.misc_instantiator_prompt = (
+            "You are a helpful assistant. I want you to assist me with a task. \n"
+            "For a given P I want to find a question Q that is a consequence of P due to reasons other than time and quantity monotonicity.\n"
+            "A question Q is a consequence of P if a positive answer to P implies a positive answer to Q.\n"
+            "Both P and Q will have Yes/No answers. Both P and Q will have the following fields:\n"
+            "Title: The question statement.\n"
+            "Body: A longer description of the conditions and the resolution criteria.\n"
+            "Resolution date: The date by which the question should be resolved.\n"
+            "The resolution date should be the same as P.\n"
+            "Change the body as little as possible, but make sure that the question is a consequence of P due to other reasons.\n"
+            "Examples:\n"
+            "P:\n"
+            "title: Will a Swiss person set foot on Mars before 2085?\n"
+            "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+            "resolution date: 2085-01-01 00:00:00\n"
+            "Q:\n"
+            "title: Will any human set foot on Mars before 2085?\n"
+            "body: Resolves YES if any human sets foot on Mars before 2085. Resolves NO otherwise.\n"
+            "resolution date: 2085-01-01 00:00:00\n"
+            "\n"
+            "P:\n"
+            "title: Will the Golden Bay Bridge remain standing in 2095?\n"
+            "body: The resolution of this question will be based on credible reports and sources available on January 1, 2095. "
+            "Sources may include, but are not limited to, news articles, government publications, and official announcements "
+            "from the agency responsible for the bridge's maintenance. If there is ambiguity or conflicting reports, a preponderance "
+            "of evidence standard will be used to determine the outcome.\n"
+            "resolution date: 2095-01-01 00:00:00\n"
+            "Q:\n"
+            "title: Will the Golden Bay Bridge remain operational in 2095?\n"
+            "body: The resolution of this question will be based on credible reports and sources available on January 1, 2095. "
+            "Sources may include, but are not limited to, news articles, government publications, and official announcements "
+            "from the agency responsible for the bridge's maintenance. If there is ambiguity or conflicting reports, a preponderance "
+            "of evidence standard will be used to determine the outcome.\n"
+            "resolution date: 2095-01-01 00:00:00\n"
+            "\n"
+            "P:\n"
+            "title: Will a new species of mammal be discovered by 2050?\n"
+            "body: The resolution of this question will be based on credible scientific reports and publications available by December 31, 2050. "
+            "Sources may include, but are not limited to, peer-reviewed journals, announcements from scientific organizations, and official records "
+            "of new species discovery. If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome.\n"
+            "resolution date: 2050-12-31 00:00:00\n"
+            "Q:\n"
+            "title: Will a new species of mammal be discovered in the Amazon rainforest by 2050?\n"
+            "body: The resolution of this question will be based on credible scientific reports and publications available by December 31, 2050. "
+            "Sources may include, but are not limited to, peer-reviewed journals, announcements from scientific organizations, and official records "
+            "of new species discovery. If there is ambiguity or conflicting reports, a preponderance of evidence standard will be used to determine the outcome.\n"
+            "resolution date: 2050-12-31 00:00:00\n"
+            "\n\n"
+            "P:\n"
+            "title: {title}\n"
+            "body: {body}\n"
+            "resolution_date: {resolution_date}\n"
+        )
+
+    async def instantiate(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        n_verify=3,
+        **kwargs,
+    ) -> "Self.OutputFormat":
+        p = base_sentences["P"]
+        consequence_types = await self._classify_consequence(p)
+        instantiation_results = []
+        if self.ConsequenceType.none in consequence_types.consequence_type:
+            return instantiation_results
+        for consequence_type in consequence_types.consequence_type:
+            if consequence_type == self.ConsequenceType.quantity:
+                instantiation_results.append(await self._instantiate(p, "quantity"))
+            elif consequence_type == self.ConsequenceType.time:
+                instantiation_results.append(await self._instantiate(p, "time"))
+            else:
+                instantiation_results.append(await self._instantiate(p, "misc"))
+        return instantiation_results
+
+    def instantiate_sync(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        n_verify=3,
+        **kwargs,
+    ) -> "Self.OutputFormat":
+        p = base_sentences["P"]
+        consequence_types = self._classify_consequence_sync(p)
+        instantiation_results = []
+        if self.ConsequenceType.none in consequence_types.consequence_type:
+            return instantiation_results
+        for consequence_type in consequence_types.consequence_type:
+            if consequence_type == self.ConsequenceType.quantity:
+                instantiation_results.append(self._instantiate_sync(p, "quantity"))
+            elif consequence_type == self.ConsequenceType.time:
+                instantiation_results.append(self._instantiate_sync(p, "time"))
+            else:
+                instantiation_results.append(self._instantiate_sync(p, "misc"))
+        return instantiation_results
+
+    async def _classify_consequence(
+        self, p: ForecastingQuestion
+    ) -> "Self.ClassifyOutput":
+        prompt = self.consequence_type_prompt.format(
+            title=p.title,
+            body=p.body,
+        )
+        consequence_types = await answer(prompt, response_model=self.ClassifyOutput)
+        return consequence_types
+
+    def _classify_consequence_sync(
+        self, p: ForecastingQuestion
+    ) -> "Self.ClassifyOutput":
+        prompt = self.consequence_type_prompt.format(
+            title=p.title,
+            body=p.body,
+        )
+        consequence_types = answer_sync(prompt, response_model=self.ClassifyOutput)
+        return consequence_types
+
+    async def _instantiate(
+        self, p: ForecastingQuestion, consequence_type: str
+    ) -> "Self.OutputFormat":
+        if consequence_type == "quantity":
+            prompt = self.quantity_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        elif consequence_type == "time":
+            prompt = self.time_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        else:
+            prompt = self.misc_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        return self._get_output_format(
+            p, await answer(prompt, response_model=self.InstantiateOutput)
+        )
+
+    def _instantiate_sync(
+        self, p: ForecastingQuestion, consequence_type: str
+    ) -> "Self.OutputFormat":
+        if consequence_type == "quantity":
+            prompt = self.quantity_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        elif consequence_type == "time":
+            prompt = self.time_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        else:
+            prompt = self.misc_instantiator_prompt.format(
+                title=p.title,
+                body=p.body,
+                resolution_date=p.resolution_date,
+            )
+        return self._get_output_format(
+            p, answer_sync(prompt, response_model=self.InstantiateOutput)
+        )
+
+    def _get_output_format(
+        self, p: ForecastingQuestion, instantiate_output: "Self.InstantiateOutput"
+    ) -> "Self.OutputFormat":
+        forecasting_question = ForecastingQuestion(
+            title=instantiate_output.title,
+            body=instantiate_output.body,
+            resolution_date=instantiate_output.resolution_date,
+            question_type=p.question_type,
+            metadata={**p.metadata, "consequence_type": "quantity"},
+        )
+        return self.OutputFormat(cons_P=forecasting_question)
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
+
+
+register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
+
+for instantiator in [Trivial, Neg, And, Or, Paraphrase, Conditional, Consequence]:
+    register_models_for_cache(
+        [
+            instantiator.BaseSentenceFormat,
+            instantiator.BaseSentenceFormat_stripped,
+            instantiator.OutputFormat,
+            instantiator.OutputFormat_stripped,
+        ]
+    )

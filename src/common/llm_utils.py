@@ -3,17 +3,18 @@
 
 # %%
 import os
-from typing import Coroutine
+from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
 import instructor
 from instructor.client import Instructor
+from instructor.mode import Mode
 import asyncio
 from pydantic import BaseModel
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from dotenv import load_dotenv
+from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 from huggingface_hub import snapshot_download
@@ -21,7 +22,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
-from .path_utils import get_src_path
+from .path_utils import get_src_path, get_root_path
 
 
 from .perscache import (
@@ -37,6 +38,19 @@ from .perscache import (
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
+
+load_dotenv(override=False)
+
+# We override all keys and tokens (bc those could have been set globally in the user's system). Other flags stay if they are set.
+env_path = get_root_path() / ".env"
+env_vars = dotenv_values(env_path)
+KEYS = [k for k in env_vars.keys() if "KEY" in k or "TOKEN" in k]
+override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
+os.environ.update(override_env_vars)
+
+max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
+print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
+global_llm_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
@@ -80,10 +94,8 @@ embeddings_cache = Cache(
 
 FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
 
+
 client = None
-load_dotenv(override=True)  # TODO check what this means for CLI-provided env vars
-
-
 PROVIDERS = ["openai", "mistral", "anthropic", "togetherai", "huggingface_local"]
 
 
@@ -126,32 +138,42 @@ def get_openai_client_native() -> OpenAI:
 
 @singleton_constructor
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+    )
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
-    return instructor.from_openai(_client, **kwargs)
+    return instructor.from_openai(_client, mode=Mode.MD_JSON, **kwargs)
 
 
 @singleton_constructor
 def get_async_openrouter_client_native() -> AsyncOpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 
 @singleton_constructor
 def get_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+    )
     print("Calling models through OpenRouter")
     _client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
-    return instructor.from_openai(_client, **kwargs)
+    print(f"OPENROUTER_API_KEY: {os.getenv('OPENROUTER_API_KEY')}")
+    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
 
 
 @singleton_constructor
 def get_openrouter_client_native() -> OpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
 
 
@@ -280,7 +302,10 @@ def get_provider(model: str) -> str:
 def is_model_name_valid(model: str) -> bool:
     if len(model) > 40:
         return False  # Model name is too long, probably a mistake
-    return get_provider(model) is not None
+    try:
+        return get_provider(model) is not None
+    except NotImplementedError:
+        return False
 
 
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
@@ -290,10 +315,10 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
             "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
         )
 
-    if os.getenv("USE_OPENROUTER"):
-        print(
-            "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
-        )
+    use_openrouter = (
+        os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
+    )
+    if use_openrouter:
         kwargs = {}
         if provider == "mistral":
             # https://python.useinstructor.com/hub/mistral/
@@ -407,7 +432,7 @@ async def query_api_chat(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -445,7 +470,7 @@ async def query_api_chat_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -491,7 +516,7 @@ def query_api_chat_sync(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -530,7 +555,7 @@ def query_api_chat_sync_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4-1106-preview",
+        "model": "gpt-4o-2024-05-13",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -626,8 +651,8 @@ def prepare_messages_alt(
 
 async def answer(
     prompt: str,
-    preface: str | None = None,
-    examples: list[Example] | None = None,
+    preface: Optional[str] = None,
+    examples: Optional[List[Example]] = None,
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
@@ -637,11 +662,15 @@ async def answer(
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
         "model": "gpt-4o",
-        "temperature": 0.0,
+        "temperature": 0.5,
         "response_model": PlainText,
     }
     options = default_options | kwargs  # override defaults with kwargs
-    return await query_api_chat(messages=messages, **options)
+
+    print(f"options: {options}")
+    print(f"messages: {messages}")
+    async with global_llm_semaphore:
+        return await query_api_chat(messages=messages, **options)
 
 
 def answer_sync(
@@ -656,8 +685,8 @@ def answer_sync(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
-        "model": "gpt-4-1106-preview",
-        "temperature": 0.0,
+        "model": "gpt-4o-2024-05-13",
+        "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
     return query_api_chat_sync(messages=messages, **options)
@@ -709,21 +738,24 @@ async def parallelized_call(
         print(f"Running {func} on {len(data)} datapoints sequentially")
         return [await func(d) for d in data]
 
-    max_concurrent_queries = int(
-        os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)
+    max_concurrent_queries = min(
+        max_concurrent_queries,
+        int(os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)),
     )
 
     print(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
     )
 
-    sem = asyncio.Semaphore(max_concurrent_queries)
+    # Create a local semaphore
+    local_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
     async def call_func(sem, func, datapoint):
         async with sem:
             return await func(datapoint)
 
-    tasks = [call_func(sem, func, d) for d in data]
+    print("Calling call_func")
+    tasks = [call_func(local_semaphore, func, d) for d in data]
     return await asyncio.gather(*tasks)
 
 

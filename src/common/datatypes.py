@@ -2,11 +2,15 @@ from typing import Optional, Type
 from datetime import datetime
 from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, validator, field_validator, create_model
+from .perscache import register_model_for_cache
 
 
 ### Pydantic models ###
 class PlainText(BaseModel):
     text: str
+
+
+register_model_for_cache(PlainText)
 
 
 class Prob(BaseModel):
@@ -20,9 +24,15 @@ class Prob(BaseModel):
         return v
 
 
+register_model_for_cache(Prob)
+
+
 class Prob_cot(Prob):
     chain_of_thought: str
     prob: float  # redefine to maintain order
+
+
+register_model_for_cache(Prob_cot)
 
 
 # this is what we pass to llms for instantiation and forecasting
@@ -51,7 +61,7 @@ class ForecastingQuestion_stripped(BaseModel):
         Keyword Args:
             url (Optional[str]): You probably shouldn't add this.
             metadata (Optional[dict]): Metadata.
-            resolution (Optional[str]): The resolution of the question.
+            resolution (Optional[bool]): The resolution of the question.
         """
         return ForecastingQuestion(
             title=self.title,
@@ -65,6 +75,8 @@ class ForecastingQuestion_stripped(BaseModel):
     def cast_stripped(self):
         return self
 
+
+register_model_for_cache(ForecastingQuestion_stripped)
 
 exp_answer_types = {
     "default": {"binary": Prob, "conditional_binary": Prob},
@@ -122,9 +134,14 @@ class ForecastingQuestion(BaseModel):
         return self.dict()
 
 
+register_model_for_cache(ForecastingQuestion)
+
+
 class ForecastingQuestions(BaseModel):
     questions: list[ForecastingQuestion]
 
+
+register_model_for_cache(ForecastingQuestions)
 
 # e.g. fields = = {'P' : 'binary', 'Q' : 'numerical', 'not_P' : 'binary'}
 
@@ -167,9 +184,15 @@ class ValidationResult(BaseModel):
     valid: bool
 
 
+register_model_for_cache(ValidationResult)
+
+
 class VerificationResult(BaseModel):
     reasoning: str
     valid: bool
+
+
+register_model_for_cache(VerificationResult)
 
 
 class RelevanceResult(BaseModel):
@@ -178,13 +201,22 @@ class RelevanceResult(BaseModel):
     score: float
 
 
+register_model_for_cache(RelevanceResult)
+
+
 class BodyAndDate(BaseModel):
     resolution_date: datetime
     resolution_criteria: str
 
 
+register_model_for_cache(BodyAndDate)
+
+
 class ResolutionDate(BaseModel):
     resolution_date: datetime
+
+
+register_model_for_cache(ResolutionDate)
 
 
 class SyntheticTagQuestion(BaseModel):
@@ -195,6 +227,9 @@ class SyntheticTagQuestion(BaseModel):
     fixed: Optional[bool] = False
 
 
+register_model_for_cache(SyntheticTagQuestion)
+
+
 class SyntheticRelQuestion(BaseModel):
     title: str
     source_question: Optional[str] = None
@@ -202,8 +237,14 @@ class SyntheticRelQuestion(BaseModel):
     fixed: Optional[bool] = False
 
 
+register_model_for_cache(SyntheticRelQuestion)
+
+
 class QuestionGenerationResponse(BaseModel):
     questions: list[SyntheticRelQuestion]
+
+
+register_model_for_cache(QuestionGenerationResponse)
 
 
 class QuestionGenerationResponse3(BaseModel):
@@ -211,6 +252,8 @@ class QuestionGenerationResponse3(BaseModel):
     question_2: SyntheticTagQuestion
     question_3: SyntheticTagQuestion
 
+
+register_model_for_cache(QuestionGenerationResponse3)
 
 ### end Pydantic models ###
 

@@ -44,6 +44,10 @@ NO_CACHE=True python -m pytest -s
 This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
 
+#### Notable tests
+`T_SKIP_VERIFICATION`
+- [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected.
+
 ### Paths
 Use [`src/common/path_utils.py`](/src/common/path_utils.py) to specify paths in code, Jupyter notebooks, etc.
 Do not hardcode paths, except relative to `pathlib.Path` objects returned by the utils in `path_utils.py`.
@@ -83,7 +87,7 @@ The streamlit app [`data_labeling/feedback_form.py`](data_labeling/feedback_form
 Do not try to install its dependencies in the main Python environment.
 Instead, make a new virtual environment and install the requirements with:
 ```
-pip install -r data_labeling/requirements.txt
+pip install -r data_labeling/streamlit_requirements.txt
 ```
 Alternatively, for now you can use [pipx](https://github.com/pypa/pipx), run `pipx install streamlit`, and continue to use the Python environment you have been using so far.
 
@@ -95,16 +99,34 @@ streamlit run feedback_form.py -- -f ../src/data/fq/synthetic/{filename}.jsonl
 ```
 It writes into `src/data/feedback/`.
 
+## Bot for the Metaculus competition
+We run the forecasters on the Metaculus [AI Forecasting Benchmark Series (July 2024)](https://www.metaculus.com/notebooks/25525/announcing-the-ai-forecasting-benchmark-series--july-8-120k-in-prizes/) (contact @amaster97 for details).
+The bot to call the forecasters is developed in `src/metaculus_competition_fast.py`.
+It can be run as a daily job on [Modal](https://modal.com/) by doing:
+```
+python competition_bot/modal_daily_job.py
+```
+
+To set up, you need Modal credentials.
+Do not try to install `modal` in the main Python environment.
+Instead, make a new virtual environment and install the requirements with:
+```
+pip install -r competition_bot/modal_requirements.txt
+modal token new
+```
+and follow the instructions.
+
+In addition to the LLM API costs, each daily run costs Modal credits for the CPU time occupied. Modal gives $30 in credits to new users, and it should be enough for this competition.
 
 ## Entry points to the code
 
-- [`scripts/pipeline/scrape_questions.sh`](scripts/pipeline/scrape_questions.sh) runs pipeline to scrape metaculus for questions and stores them in `questions_cleaned_formatted.jsonl`.
+- `scripts/pipeline/{DATASOURCE}/scrape_questions.sh` runs pipeline to scrape the given DATASOURCE for questions and stores them in `{DATASOURCE}_cleaned_formatted.jsonl`.  By defalt the questions scraped will resolve in more than 30 days and less than 10 years.  To change this, adjust the arg params given to the {DATASOURCE}.py file.  For example [`scripts/pipeline/metaculus/scrape_questions.sh`](scripts/pipeline/metaculus/scrape_questions.sh) will retrieve data from metacluls.
 
 - [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions from topics.
-- 
+  
 - [`src/generate_related_questions.py`](src/generate_related_questions.py) Generates "raw" synthetic questions from source questions.
 
-- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) questions, optionally fills the rest of the fields for a ForecastingQuestion, and verifies basic sanity checks using a LLM call. If you want it to fill in the resolution criteria, use the `--fill_in_body` flag. *Read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
+- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
 
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions. Does not write anything.
 
