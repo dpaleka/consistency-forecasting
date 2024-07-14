@@ -15,15 +15,7 @@ import concurrent.futures
 from forecasters import Forecaster, AdvancedForecaster, BasicForecaster, COT_Forecaster
 from static_checks.Checker import (
     Checker,
-    NegChecker,
-    AndChecker,
-    OrChecker,
-    AndOrChecker,
-    ButChecker,
-    CondChecker,
-    ConsequenceChecker,
-    ParaphraseChecker,
-    CondCondChecker,
+    choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
 
@@ -35,20 +27,6 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-
-checker_classes = [
-    ("NegChecker", NegChecker),
-    ("AndChecker", AndChecker),
-    ("OrChecker", OrChecker),
-    ("AndOrChecker", AndOrChecker),
-    ("ButChecker", ButChecker),
-    ("CondChecker", CondChecker),
-    ("ConsequenceChecker", ConsequenceChecker),
-    ("ParaphraseChecker", ParaphraseChecker),
-    ("CondCondChecker", CondCondChecker),
-    #    ("SymmetryAndChecker", SymmetryAndChecker),
-    #    ("SymmetryOrChecker", SymmetryOrChecker),
-]
 
 metrics = ["default", "frequentist"]
 
@@ -336,10 +314,7 @@ def main(
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
 
-    checkers: dict[str, Checker] = {
-        checker_name: cls(path=tuple_dir / f"{checker_name}.jsonl")
-        for checker_name, cls in checker_classes
-    }
+    checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
     match forecaster_class:
         case "BasicForecaster":
@@ -389,24 +364,18 @@ def main(
             load_dir.exists() and load_dir.is_dir()
         ), "LOAD_DIR must be a valid directory"
 
-    if relevant_checks[0] == "all":
-        relevant_checks = list(checkers.keys())
-    print(f"Relevant checks: {relevant_checks}")
+    print(f"Relevant checks: {checkers.keys()}")
 
     logged_config = {
         "forecaster_class": forecaster.__class__.__name__,
         "forecaster": forecaster.dump_config(),
-        "checkers": [
-            checker.dump_config()
-            for name, checker in checkers.items()
-            if name in relevant_checks
-        ],
+        "checkers": [checker.dump_config() for name, checker in checkers.items()],
         "model": model,
         "is_async": is_async,
         "use_threads": use_threads,
         "run": run,
         "load_dir": str(load_dir),
-        "relevant_checks": relevant_checks,
+        "relevant_checks": list(checkers.keys()),
         "tuple_dir": str(tuple_dir),
         "num_lines": num_lines,
     }
@@ -422,7 +391,7 @@ def main(
 
     if use_threads:
         with concurrent.futures.ThreadPoolExecutor(
-            max_workers=len(relevant_checks)
+            max_workers=len(checkers.keys())
         ) as executor:
             process_check_func = functools.partial(
                 process_check,
@@ -440,11 +409,11 @@ def main(
             all_stats = {
                 check_name: stats
                 for check_name, stats in zip(
-                    relevant_checks, executor.map(process_check_func, relevant_checks)
+                    checkers.keys(), executor.map(process_check_func, checkers.keys())
                 )
             }
     else:
-        for check_name in relevant_checks:
+        for check_name in checkers.keys():
             stats = process_check(
                 check_name=check_name,
                 checkers=checkers,

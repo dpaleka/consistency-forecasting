@@ -1,20 +1,11 @@
 import jsonlines
 import asyncio
+import click
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks import Checker
 from static_checks.Checker import (
-    NegChecker,  # noqa
-    AndChecker,  # noqa
-    OrChecker,  # noqa
-    AndOrChecker,  # noqa
-    ButChecker,  # noqa
-    CondChecker,  # noqa
-    ConsequenceChecker,  # noqa
-    ParaphraseChecker,  # noqa
-    SymmetryAndChecker,  # noqa
-    SymmetryOrChecker,  # noqa
-    CondCondChecker,  # noqa
+    choose_checkers,
 )
 from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
@@ -24,67 +15,42 @@ from common.llm_utils import parallelized_call
 import functools
 import random
 
-# MODEL = "gpt-3.5-turbo"
+# The following are defaults, but can be overriden in the script args
 MODEL = "gpt-4o"
 MODEL_RELEVANCE = "gpt-4o"
-# MODEL = 'gpt-4o'
-# BASE_DATA_PATH: Path = (
-#     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
-# )
 BASE_DATA_PATH: Path = (
-    get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
+    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
-
+# BASE_DATA_PATH: Path = (
+#    get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
+# )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-# TUPLES_PATH: Path = get_data_path() / "tuples/"
-TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-
-checkers: dict[str, Checker] = {
-    # "NegChecker": NegChecker(path=TUPLES_PATH / "NegChecker.jsonl"),
-    # "AndChecker": AndChecker(path=TUPLES_PATH / "AndChecker.jsonl"),
-    # "OrChecker": OrChecker(path=TUPLES_PATH / "OrChecker.jsonl"),
-    # "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
-    # "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
-    # "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
-    "ConsequenceChecker": ConsequenceChecker(
-        path=TUPLES_PATH / "ConsequenceChecker.jsonl"
-    ),
-    # "ParaphraseChecker": ParaphraseChecker(
-    #     path=TUPLES_PATH / "ParaphraseChecker.jsonl"
-    # ),
-    # "SymmetryAndChecker": SymmetryAndChecker(
-    #     path=TUPLES_PATH / "SymmetryAndChecker.jsonl"
-    # ),
-    # "SymmetryOrChecker": SymmetryOrChecker(
-    #     path=TUPLES_PATH / "SymmetryOrChecker.jsonl"
-    # ),
-    # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
-}
+TUPLES_PATH: Path = get_data_path() / "tuples/"
+# TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
+RELEVANT_CHECKS = ["ConsequenceChecker"]
 
 
 async def instantiate(
     BASE_DATA_PATH: Path,
     checker_list: dict[str, Checker],
     n_relevance: int = 10,
-    # n_top_relevance: int = 3,
     n_write: int = -1,
-    # n_write_after=None,
+    model: str = MODEL,
+    model_relevance: str = MODEL_RELEVANCE,
+    seed: int = 42,
     **kwargs,
 ):
     """
     Tests n_relevance potential combinations for relevance, and sorts by relevance score.
-    Writes the top n_top_relevance tuples to the Checker.
+    Writes the n_write tuples to the Checker.
     Checker stops instantiating after n_write tuples have successfully passed verification.
 
     Args:
         BASE_DATA_PATH (Path): path to a jsonl file of ForecastingQuestions
         checker_list (dict[str, Checker]): dictionary of Checkers to instantiate with
         n_relevance (int, optional): _description_. number of possible tuples to test for relevance
-        # n_top_relevance (int, optional): _description_. top n relevant possible tuples;
-        #     usually > n_write because some might fail verification -- cancelled, just sort don't truncate
         n_write (int, optional): _description_. max number of tuples we actually want to write.
             Leave as -1 to write all tuples that pass verification
-        # n_write_after (int, optional): number to try at a time after trying full n_write once
     """
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
@@ -96,6 +62,8 @@ async def instantiate(
             print(e)
             continue
     print(f"Loaded {len(bqs)} questions.")
+
+    random.seed(seed)
 
     possible_tuples = {}  # {i: list of i-tuples}
     i_set = {checker.num_base_questions for checker in checker_list.values()}
@@ -113,7 +81,7 @@ async def instantiate(
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")
-            func = functools.partial(relevance, model=MODEL_RELEVANCE)
+            func = functools.partial(relevance, model=model_relevance)
             relevances = await parallelized_call(
                 func=func, data=possible_ituples, max_concurrent_queries=25
             )
@@ -129,7 +97,7 @@ async def instantiate(
         print(f"Instantiating and writing {checker.__class__.__name__}")
         await checker.instantiate_and_write_many(
             possible_tuples[checker.num_base_questions],
-            model=MODEL,
+            model=model,
             n_write=n_write,
             overwrite=True,
             n_verification=3,
@@ -137,15 +105,62 @@ async def instantiate(
         )
 
 
-# this should probably go in scripts
-if __name__ == "__main__":
+@click.command()
+@click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
+@click.option("--n_relevance", default=1000, help="Number of relevance samples.")
+@click.option("--n_write", default=100, help="Number of writes.")
+@click.option(
+    "--model_main",
+    default=MODEL,
+    help="Model to use for instantiation and verification.",
+)
+@click.option(
+    "--model_relevance",
+    default=MODEL_RELEVANCE,
+    help="Model to use for relevance scoring.",
+)
+@click.option(
+    "--relevant_checks",
+    "-k",
+    default=RELEVANT_CHECKS,
+    multiple=True,
+    help='Relevant checks to perform. In case of "all", all checkers are used.',
+)
+@click.option(
+    "--tuple_dir",
+    "-t",
+    type=click.Path(exists=True),
+    default=TUPLES_PATH,
+    help="Directory to read tuples from.",
+)
+@click.option(
+    "--seed",
+    default=42,
+    help="Seed for reproducibility. Controls random sampling, not necessarily any randomness in external model calls.",
+)
+def main(
+    data_path,
+    n_relevance,
+    n_write,
+    model_main,
+    model_relevance,
+    relevant_checks,
+    tuple_dir,
+    seed,
+):
+    checkers = choose_checkers(relevant_checks, tuple_dir)
     asyncio.run(
         instantiate(
-            BASE_DATA_PATH=BASE_DATA_PATH,
+            BASE_DATA_PATH=data_path,
             checker_list=checkers,
-            n_relevance=1000,
-            # n_top_relevance=50,
-            n_write=100,
-            # n_write_after=5,
+            n_relevance=n_relevance,
+            n_write=n_write,
+            model=model_main,
+            model_relevance=model_relevance,
+            seed=seed,
         )
     )
+
+
+if __name__ == "__main__":
+    main()

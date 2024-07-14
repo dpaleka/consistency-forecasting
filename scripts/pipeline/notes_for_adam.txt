@@ -1,0 +1,32 @@
+questions can be NOT resolved (future expiration date), even though they are active: "closed"and are clearly already done
+    Fix by if the question 
+
+    we want to remove unresolved questions in the future.
+    is closed = True and
+    resolution: NULL (resolved:False) and 
+    DATE today is BEFORE the {start date of file}
+
+    we want to remove resolved questions in the past
+    is closed == False
+
+
+
+
+    close_time:  when is the latest it's supposed to close.
+    effected_close_time:  if closed_earlier than close_time, else None
+    resolve_time: when the question officially resolves.  Note this can be much later than close or effected_close_time if we need to wait on some data.
+
+    "close_time":"2024-11-05T00:00:00Z","effected_close_time":"2024-03-04T15:00:00Z","resolve_time":"2024-03-04T15:00:00Z
+
+
+    generally should filter:
+    if effected_close_time (this one the best)
+    else:
+        min(close_time, resolve_time)
+
+
+    for headers then (filtering):
+        close_time and resolve_time < end_date
+        effected_close_time < end_date if it exists
+
+        same for start but reverse signs

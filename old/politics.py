@@ -29,7 +29,6 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from common.llm_utils import query_api_chat_sync, query_api_chat, parallelized_call
 
-#model = "gpt-4-0125-preview"
 model = "gpt-3.5-turbo"
 
 def generate_politics_questions(country: str, k: int = 5) -> list[str]:

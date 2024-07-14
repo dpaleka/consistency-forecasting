@@ -3,13 +3,13 @@
         "default": {
             "n": 80,
             "violated": 48,
-            "viol_avg": 0.03713360125000001,
+            "viol_avg": 0.0371754,
             "viol_med": 0.012004
         },
         "frequentist": {
             "n": 80,
             "violated": 48,
-            "viol_avg": 0.19676464875000008,
+            "viol_avg": 0.1967646,
             "viol_med": 0.1550434
         }
     },
@@ -17,13 +17,13 @@
         "default": {
             "n": 80,
             "violated": 2,
-            "viol_avg": 0.007546726250000001,
+            "viol_avg": 0.0075559,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
             "violated": 2,
-            "viol_avg": 0.020281425000000002,
+            "viol_avg": 0.0202814,
             "viol_med": 0
         }
     },
@@ -31,55 +31,55 @@
         "default": {
             "n": 80,
             "violated": 39,
-            "viol_avg": 0.03635748,
+            "viol_avg": 0.0363922,
             "viol_med": 0.0078486
         },
         "frequentist": {
             "n": 80,
             "violated": 39,
-            "viol_avg": 0.17602236875,
+            "viol_avg": 0.1760224,
             "viol_med": 0.1069656
         }
     },
     "AndOrChecker": {
         "default": {
             "n": 80,
-            "violated": 48,
-            "viol_avg": 0.04723541875,
-            "viol_med": 0.016237
+            "violated": 52,
+            "viol_avg": 0.0490113,
+            "viol_med": 0.0193905
         },
         "frequentist": {
             "n": 80,
             "violated": 55,
-            "viol_avg": 0.24504463624999998,
+            "viol_avg": 0.2450446,
             "viol_med": 0.195389
         }
     },
     "ButChecker": {
         "default": {
             "n": 80,
-            "violated": 44,
-            "viol_avg": 0.04452882749999999,
-            "viol_med": 0.0187785
+            "violated": 52,
+            "viol_avg": 0.0487032,
+            "viol_med": 0.0216663
         },
         "frequentist": {
             "n": 80,
             "violated": 55,
-            "viol_avg": 0.24665966499999997,
+            "viol_avg": 0.2466597,
             "viol_med": 0.207143
         }
     },
     "CondChecker": {
         "default": {
             "n": 80,
-            "violated": 28,
-            "viol_avg": 0.01855538125,
-            "viol_med": 0.0056704
+            "violated": 31,
+            "viol_avg": 0.0201923,
+            "viol_med": 0.0062755
         },
         "frequentist": {
             "n": 80,
             "violated": 13,
-            "viol_avg": 0.08557179875000001,
+            "viol_avg": 0.0855718,
             "viol_med": 0.0670552
         }
     },
@@ -87,13 +87,13 @@
         "default": {
             "n": 80,
             "violated": 6,
-            "viol_avg": 0.023375378750000002,
+            "viol_avg": 0.0233754,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
             "violated": 6,
-            "viol_avg": 0.05555953500000001,
+            "viol_avg": 0.0555595,
             "viol_med": 0
         }
     },
@@ -101,27 +101,27 @@
         "default": {
             "n": 80,
             "violated": 27,
-            "viol_avg": 0.015664541249999997,
+            "viol_avg": 0.0156645,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
             "violated": 28,
-            "viol_avg": 0.10094616625,
+            "viol_avg": 0.1009462,
             "viol_med": 0.0
         }
     },
     "CondCondChecker": {
         "default": {
             "n": 80,
-            "violated": 28,
-            "viol_avg": 0.013177988749999998,
-            "viol_med": 0.0021589
+            "violated": 39,
+            "viol_avg": 0.0187081,
+            "viol_med": 0.0090745
         },
         "frequentist": {
             "n": 80,
             "violated": 34,
-            "viol_avg": 0.13135344624999995,
+            "viol_avg": 0.1313534,
             "viol_med": 0.1137643
         }
     }

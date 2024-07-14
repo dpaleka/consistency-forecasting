@@ -13,10 +13,12 @@ from scipy.optimize import (
     dual_annealing,
     shgo,
     brute,
+    root,
 )
+from pathlib import Path
 from itertools import product
 from abc import ABC, abstractmethod
-from typing import Type, Any, Self, Callable, Optional
+from typing import Type, Any, List, Self, Callable
 from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import (
     ForecastingQuestion,
@@ -37,6 +39,8 @@ from .checker_prompts import (
     but_verification_prompt,
     conditional_verification_prompt,
     consequence_verification_prompt,
+    consequence_quantity_verification_prompt,
+    consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
 from forecasters import Forecaster
@@ -135,13 +139,13 @@ class Checker(ABC):
     @abstractmethod
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         pass
 
     @abstractmethod
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         pass
 
     def instantiate_with_verification_sync(
@@ -150,31 +154,43 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> Optional[tuple["Self.TupleFormat", VerificationResult]]:
+    ) -> List[tuple["Self.TupleFormat", VerificationResult]]:
         """
-        Synchronously instantiate and verify the tuple format with metadata multiple times, returning the instantiated
-        object if verification succeeds within the given attempts.
+        Synchronously instantiate and verify the tuple format with metadata multiple times,
+        returning a list of instantiated objects and their verification results if verification
+        succeeds within the given attempts.
         """
+        verified_objects = []
+
         if verify_before_instantiation:
             for _ in range(n_verification):
-                instantiated_object = self.instantiate_sync(base_sentences, **kwargs)
-                verification_result = self.verify_sync(instantiated_object, **kwargs)
-                if verify_length:
-                    length_check = self.verify_length(
-                        instantiated_object, base_sentences, **kwargs
+                instantiated_objects = self.instantiate_sync(base_sentences, **kwargs)
+                for instantiated_object in instantiated_objects:
+                    verification_result = self.verify_sync(
+                        instantiated_object, **kwargs
                     )
-                else:
-                    length_check = True
-                if verification_result.valid and length_check:
-                    self.counter += 1
-                    return instantiated_object, verification_result
-            return instantiated_object
+                    if verify_length:
+                        length_check = self.verify_length(
+                            instantiated_object, base_sentences, **kwargs
+                        )
+                    else:
+                        length_check = True
+                    if verification_result.valid and length_check:
+                        self.counter += 1
+                        verified_objects.append(
+                            (instantiated_object, verification_result)
+                        )
+                if verified_objects:
+                    return verified_objects
+            return []
         else:
-            instantiated_object = self.instantiate_sync(
+            instantiated_objects = self.instantiate_sync(
                 base_sentences, supplied_metadata, **kwargs
             )
-            self.counter += 1
-            return instantiated_object
+            for instantiated_object in instantiated_objects:
+                self.counter += 1
+                verified_objects.append((instantiated_object, None))
+            return verified_objects
 
     async def instantiate_with_verification(
         self,
@@ -182,37 +198,50 @@ class Checker(ABC):
         supplied_metadata=None,
         n_verification=3,
         **kwargs,
-    ) -> Optional[tuple["Self.TupleFormat", VerificationResult]]:
+    ) -> List[tuple["Self.TupleFormat", VerificationResult]]:
         """
-        If the global variable 'verify_before_instantiation' is True, this method
-        will instantiate and verify the tuple format with metadata three times,
-        returning the instantiated object and a list of verification results from each iteration.
+        Asynchronously instantiate and verify the tuple format with metadata multiple times,
+        returning a list of instantiated objects and their verification results if verification
+        succeeds within the given attempts.
         """
+        verified_objects = []
+
         if verify_before_instantiation:
-            for i in range(n_verification):
-                instantiated_object = await self.instantiate(base_sentences, **kwargs)
-                verification_result = await self.verify(instantiated_object, **kwargs)
-                if verify_length:
-                    length_check = self.verify_length(
-                        instantiated_object, base_sentences, **kwargs
+            for _ in range(n_verification):
+                instantiated_objects = await self.instantiate(base_sentences, **kwargs)
+                for instantiated_object in instantiated_objects:
+                    verification_result = await self.verify(
+                        instantiated_object, **kwargs
                     )
-                else:
-                    length_check = True
-                if verification_result.valid and length_check:
-                    self.counter += 1
-                    return instantiated_object, verification_result
-            return None
+                    if verify_length:
+                        length_check = self.verify_length(
+                            instantiated_object, base_sentences, **kwargs
+                        )
+                    else:
+                        length_check = True
+                    if verification_result.valid and length_check:
+                        self.counter += 1
+                        verified_objects.append(
+                            (instantiated_object, verification_result)
+                        )
+                if verified_objects:
+                    return verified_objects
+            return []
         else:
-            instantiated_object = await self.instantiate(base_sentences, **kwargs)
-            self.counter += 1
-            return instantiated_object
+            instantiated_objects = await self.instantiate(
+                base_sentences, supplied_metadata, **kwargs
+            )
+            for instantiated_object in instantiated_objects:
+                self.counter += 1
+                verified_objects.append((instantiated_object, None))
+            return verified_objects
 
     def instantiate_sync_with_metadata(
         self,
         base_sentences: dict[str, ForecastingQuestion],
         supplied_metadata=None,
         **kwargs,
-    ) -> "Self.TupleFormat_with_metadata":
+    ) -> List["Self.TupleFormat_with_metadata"]:
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
@@ -220,26 +249,30 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        result = self.instantiate_with_verification_sync(base_sentences, **kwargs)
-        if result:
+        results = self.instantiate_with_verification_sync(base_sentences, **kwargs)
+
+        instantiated_with_metadata = []
+        for result in results:
             if verify_before_instantiation:
                 instantiated_object, verification_result = result
                 more_metadata = {"verification_result": verification_result.dict()}
                 update_recursive(metadata, more_metadata)
             else:
                 instantiated_object = result
-            return self.TupleFormat_with_metadata(
-                **instantiated_object.dict(), metadata=metadata
+            instantiated_with_metadata.append(
+                self.TupleFormat_with_metadata(
+                    **instantiated_object.dict(), metadata=metadata
+                )
             )
-        else:
-            return None
+
+        return instantiated_with_metadata
 
     async def instantiate_with_metadata(
         self,
         base_sentences: dict[str, ForecastingQuestion],
         supplied_metadata=None,
         **kwargs,
-    ) -> Optional["Self.TupleFormat_with_metadata"]:
+    ) -> List["Self.TupleFormat_with_metadata"]:
         """Instantiate with a metadata field that can store the base questions and other things.
         supplied_metadata is used to *recursively* update the metadata so you can surgically
         update nested fields."""
@@ -247,19 +280,23 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        result = await self.instantiate_with_verification(base_sentences, **kwargs)
-        if result:
+        results = await self.instantiate_with_verification(base_sentences, **kwargs)
+
+        instantiated_with_metadata = []
+        for result in results:
             if verify_before_instantiation:
                 instantiated_object, verification_result = result
                 more_metadata = {"verification_result": verification_result.dict()}
                 update_recursive(metadata, more_metadata)
             else:
                 instantiated_object = result
-            return self.TupleFormat_with_metadata(
-                **instantiated_object.dict(), metadata=metadata
+            instantiated_with_metadata.append(
+                self.TupleFormat_with_metadata(
+                    **instantiated_object.dict(), metadata=metadata
+                )
             )
-        else:
-            return None
+
+        return instantiated_with_metadata
 
     @abstractmethod
     def verify_sync(
@@ -287,14 +324,12 @@ class Checker(ABC):
         supplied_metadata=None,
         **kwargs,
     ):
-        result = await self.instantiate_with_metadata(
+        results = await self.instantiate_with_metadata(
             base_sentences, supplied_metadata=supplied_metadata, **kwargs
         )
-        # result = await self.instantiate(base_sentences, **kwargs)
-        if result:
-            await write_jsonl_async_from_str(
-                self.path, [result.model_dump_json()], append=True
-            )
+        if results:
+            json_list = [result.model_dump_json() for result in results]
+            await write_jsonl_async_from_str(self.path, json_list, append=True)
 
     async def instantiate_and_write_many(
         self,
@@ -373,15 +408,9 @@ class Checker(ABC):
                 score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
         return score
 
-    def min_arbitrage(
-        self,
-        answers: dict[str, Prob],
-        arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
-    ) -> float:
-        """Minimum arbitrage earned regardless of outcome, given forcaster answers
-        and arbitrageur_answers."""
-        x = answers.keys()
+    @property
+    def Omega(self):
+        x = self.TupleFormat.model_fields
         v = [True, False, None]
         outcomes = product(v, repeat=len(x))
 
@@ -391,6 +420,26 @@ class Checker(ABC):
             if self.check_exact(outcome_dict):
                 Omega.append(outcome_dict)
 
+        return Omega
+
+    def min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        arbitrageur_answers: dict[str, Prob],
+        scoring: Callable[[Prob], float] = np.log,
+    ) -> float:
+        """Minimum arbitrage earned regardless of outcome, given forcaster answers
+        and arbitrageur_answers."""
+        # x = answers.keys()
+        # v = [True, False, None]
+        # outcomes = product(v, repeat=len(x))
+
+        # Omega = []
+        # for outcome in outcomes:
+        #     outcome_dict = dict(zip(x, outcome))
+        #     if self.check_exact(outcome_dict):
+        #         Omega.append(outcome_dict)
+
         return np.amin(
             [
                 self.arbitrage(
@@ -399,7 +448,7 @@ class Checker(ABC):
                     arbitrageur_answers=arbitrageur_answers,
                     scoring=scoring,
                 )
-                for outcom in Omega
+                for outcom in self.Omega
             ]
         )
 
@@ -408,7 +457,7 @@ class Checker(ABC):
         answers: dict[str, Prob],
         scoring: Callable[[Prob], float] = np.log,
         initial_guess: list[float] | str | None = None,
-        method="shgo",
+        methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> float:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -417,11 +466,16 @@ class Checker(ABC):
             answers (dict[str, Prob]): Forecaster answers.
             scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
-            method (str, optional): Optimization method. Options:
+            methods (tuple[str], optional): Optimization method. Options:
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
-                differential_evolution, shgo, dual_annealing -- working
+                shgo, differential_evolution, dual_annealing -- working. shgo takes negligible time but is unreliable
+                    for small violations; differential_evolution takes much longer but is more reliable. dual_annealing
+                    takes 2x the time as differential_evolution and doesn't seem to hold any advantage over it.
+                root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
+                    arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
+                    arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
             Defaults to "shgo".
 
         """
@@ -449,48 +503,104 @@ class Checker(ABC):
         # bounds
         bounds = [(0.001, 0.999)] * len(x)  # avoid log(0)
 
-        if method == "differential_evolution":
-            result = differential_evolution(
-                fun_to_minimize,
-                bounds=bounds,
-                disp=False,
-            )
-        elif method == "brute":
-            result = brute(
-                fun_to_minimize,
-                ranges=bounds,
-                disp=False,
-            )
-        elif method == "shgo":
-            result = shgo(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "dual_annealing":
-            result = dual_annealing(
-                fun_to_minimize,
-                bounds=bounds,
-            )
-        elif method == "basinhopping":
-            result = basinhopping(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                minimizer_kwargs={"bounds": bounds},
-            )
-        else:
-            result = minimize(
-                fun_to_minimize,
-                arbitrageur_answers_list_initial,
-                bounds=bounds,
-                # options={"disp": True},
-                method=method,
-                # tol=1e-6,
+        maxes = []
+
+        for method in methods:
+            if method == "root":
+
+                def funs_to_equate(arbitrageur_answers_list):
+                    return [
+                        self.arbitrage(
+                            outcome,
+                            answers,
+                            dict(zip(x, arbitrageur_answers_list)),
+                            scoring,
+                        )
+                        for outcome in self.Omega
+                    ]
+
+                def funs_to_zero(arbitrageur_answers_list):
+                    return (
+                        np.array(funs_to_equate(arbitrageur_answers_list))
+                        - funs_to_equate(arbitrageur_answers_list)[0]
+                    )
+
+                solutions = root(
+                    funs_to_zero,
+                    arbitrageur_answers_list_initial,
+                    method="lm",
+                )
+                if solutions.success:
+                    arbitrage_argmax = dict(zip(x, solutions.x))
+                    arbitrage_max = self.arbitrage(
+                        self.Omega[0], answers, arbitrage_argmax, scoring
+                    )
+                    maxes.append(
+                        {
+                            "arbitrage_argmax": arbitrage_argmax,
+                            "arbitrage_max": arbitrage_max,
+                        }
+                    )
+                    # arbitrage_argmaxes = [dict(zip(x, sol)) for sol in solutions.x]
+                    # results = {arbitr_argmax:
+                    #     self.arbitrage(self.Omega[0], answers, arbitr_argmax, scoring)
+                    #     for arbitr_argmax in arbitrage_argmaxes
+                    # }
+                    # arbitrage_argmax = max(results, key=results.get)
+                    # arbitrage_max = results[arbitrage_argmax]
+                    # return arbitrage_argmax, arbitrage_max
+                else:
+                    print(f"Root optimization failed: {solutions.message}")
+            elif method == "differential_evolution":
+                result = differential_evolution(
+                    fun_to_minimize,
+                    bounds=bounds,
+                    disp=False,
+                )
+            elif method == "brute":
+                result = brute(
+                    fun_to_minimize,
+                    ranges=bounds,
+                    disp=False,
+                )
+            elif method == "shgo":
+                result = shgo(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "dual_annealing":
+                result = dual_annealing(
+                    fun_to_minimize,
+                    bounds=bounds,
+                )
+            elif method == "basinhopping":
+                result = basinhopping(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    minimizer_kwargs={"bounds": bounds},
+                )
+            else:
+                result = minimize(
+                    fun_to_minimize,
+                    arbitrageur_answers_list_initial,
+                    bounds=bounds,
+                    # options={"disp": True},
+                    method=method,
+                    # tol=1e-6,
+                )
+
+            arbitrage_argmax = dict(zip(x, result.x))
+            arbitrage_max = -result.fun
+
+            maxes.append(
+                {"arbitrage_argmax": arbitrage_argmax, "arbitrage_max": arbitrage_max}
             )
 
-        arbitrage_argmax = dict(zip(x, result.x))
-        arbitrage_max = -result.fun
+        best_max = max(maxes, key=lambda x: x["arbitrage_max"])
+        return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
-        return arbitrage_argmax, arbitrage_max
+    def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
+        return self.max_min_arbitrage(answers, **kwargs)[1]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
@@ -500,7 +610,7 @@ class Checker(ABC):
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         if metric == "default":
-            v = self.max_min_arbitrage(answers)[1]
+            v = self.arbitrage_violation(answers)
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
@@ -736,17 +846,30 @@ class NegChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
         not_P = Neg().instantiate_sync(base_sentences, **kwargs)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
         not_P = await Neg().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, not_P=not_P.not_P)
+        return [self.TupleFormat(P=P.P, not_P=not_P.not_P)]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * (1 - answers["not_P"]))
+        B = np.sqrt((1 - answers["P"]) * answers["not_P"])
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "not_P": 1 - p}, v
 
     def frequentist_violation(
         self,
@@ -823,19 +946,19 @@ class AndChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
+        return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)
+        return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     def frequentist_violation(
         self, answers: dict[str, Any], sigma: float = 0.01, gamma: float = 3
@@ -924,19 +1047,19 @@ class OrChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)
+        return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)
+        return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         # This is essentially the reverse of the AndChecker.frequentist_violation
@@ -1067,25 +1190,29 @@ class AndOrChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
+            )
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
+            )
+        ]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q, P_or_Q, P_and_Q = (
@@ -1169,29 +1296,33 @@ class ButChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         not_P = Neg().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q_and_not_P = And().instantiate_sync(
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
+            )
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         not_P = await Neg().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q_and_not_P = await And().instantiate(
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
+            )
+        ]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_and_not_P, P_or_Q = answers["P"], answers["Q_and_not_P"], answers["P_or_Q"]
@@ -1270,27 +1401,64 @@ class CondChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = Conditional().instantiate_sync(base_sentences, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
+            )
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = await Conditional().instantiate(base_sentences, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(
-            P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
+        return [
+            self.TupleFormat(
+                P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
+            )
+        ]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+
+        a = np.sqrt(
+            (1 - answers["P"] * answers["Q_given_P"])
+            / (answers["P"] * (1 - answers["Q_given_P"]))
         )
+        b = np.sqrt(
+            (1 - answers["Q_given_P"])
+            * (1 - answers["P_and_Q"])
+            / (answers["Q_given_P"] * answers["P_and_Q"])
+        )
+
+        p = (1 + b / a) / (1 + b * a)
+        q = 1 / (1 + b / a)
+        r = 1 / (1 + b * a)
+
+        v = -2 * np.log(
+            np.sqrt(answers["P"] * answers["Q_given_P"] * answers["P_and_Q"])
+            + np.sqrt(
+                (1 - answers["P"] * answers["Q_given_P"]) * (1 - answers["P_and_Q"])
+            )
+        )
+
+        return {"P": p, "Q_given_P": q, "P_and_Q": r}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, P_and_Q = answers["P"], answers["Q_given_P"], answers["P_and_Q"]
-        denom = P * (1 - P) + Q_given_P * (1 - Q_given_P) + P_and_Q * (1 - P_and_Q)
+        denom = P * Q_given_P * (
+            Q_given_P * (1 - P) + P * (1 - Q_given_P)
+        ) + P_and_Q * (1 - P_and_Q)
         denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P - P_and_Q) / denom
         return v
@@ -1338,9 +1506,30 @@ class ConsequenceChecker(Checker):
     async def verify(
         self, generated_tuple: "Self.TupleFormat", **kwargs
     ) -> VerificationResult:
-        prompt = consequence_verification_prompt.format(
-            P=generated_tuple.P, cons_P=generated_tuple.cons_P
-        )
+        metadata = generated_tuple.cons_P.metadata
+        consequence_type = metadata.get("consequence_type", None) if metadata else None
+        if consequence_type == "quantity":
+            prompt = consequence_quantity_verification_prompt.format(
+                P_title=generated_tuple.P.title,
+                P_body=generated_tuple.P.body,
+                Q_title=generated_tuple.cons_P.title,
+                Q_body=generated_tuple.cons_P.body,
+            )
+        elif consequence_type == "time":
+            prompt = consequence_time_verification_prompt.format(
+                P_title=generated_tuple.P.title,
+                P_body=generated_tuple.P.body,
+                Q_title=generated_tuple.cons_P.title,
+                Q_body=generated_tuple.cons_P.body,
+            )
+        else:
+            prompt = consequence_verification_prompt.format(
+                P_title=generated_tuple.P.title,
+                P_body=generated_tuple.P.body,
+                Q_title=generated_tuple.cons_P.title,
+                Q_body=generated_tuple.cons_P.body,
+            )
+
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result(
@@ -1358,17 +1547,33 @@ class ConsequenceChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
-        cons_P = Consequence().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
+        cons_P_list = Consequence().instantiate_sync(base_sentences, **kwargs)
+        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P) for cons_P in cons_P_list]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.TupleFormat":
         P = await Trivial().instantiate(base_sentences, **kwargs)
-        cons_P = await Consequence().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, cons_P=cons_P.cons_P)
+        cons_P_list = await Consequence().instantiate(base_sentences, **kwargs)
+        return [self.TupleFormat(P=P.P, cons_P=cons_P.cons_P) for cons_P in cons_P_list]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        if answers["P"] <= answers["cons_P"]:
+            return answers, 0.0
+        else:
+            # _answers = {"P": answers["P"], "para_P": answers["cons_P"]}
+            answers["para_P"] = answers.pop("cons_P")
+            p, v = ParaphraseChecker().max_min_arbitrage(answers, **kwargs)
+            p["cons_P"] = p.pop("para_P")
+            return p, v
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
@@ -1435,17 +1640,30 @@ class ParaphraseChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
         para_P = Paraphrase().instantiate_sync(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, para_P=para_P.para_P)
+        return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
-        return self.TupleFormat(P=P.P, para_P=para_P.para_P)
+        return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        **kwargs,
+    ) -> float:
+        if kwargs:
+            return super().max_min_arbitrage(answers, **kwargs)
+        A = np.sqrt(answers["P"] * answers["para_P"])
+        B = np.sqrt((1 - answers["P"]) * (1 - answers["para_P"]))
+        p = A / (A + B)
+        v = -2 * np.log(A + B)
+        return {"P": p, "para_P": p}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, para_P = answers["P"], answers["para_P"]
@@ -1496,7 +1714,7 @@ class CondCondChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
@@ -1518,16 +1736,18 @@ class CondCondChecker(Checker):
         )
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
-        return self.TupleFormat(
-            P=P,
-            Q_given_P=Q_given_P,
-            R_given_P_and_Q=R_given_P_and_Q,
-            P_and_Q_and_R=P_and_Q_and_R,
-        )
+        return [
+            self.TupleFormat(
+                P=P,
+                Q_given_P=Q_given_P,
+                R_given_P_and_Q=R_given_P_and_Q,
+                P_and_Q_and_R=P_and_Q_and_R,
+            )
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
@@ -1549,12 +1769,14 @@ class CondCondChecker(Checker):
         )
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
-        return self.TupleFormat(
-            P=P,
-            Q_given_P=Q_given_P,
-            R_given_P_and_Q=R_given_P_and_Q,
-            P_and_Q_and_R=P_and_Q_and_R,
-        )
+        return [
+            self.TupleFormat(
+                P=P,
+                Q_given_P=Q_given_P,
+                R_given_P_and_Q=R_given_P_and_Q,
+                P_and_Q_and_R=P_and_Q_and_R,
+            )
+        ]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q_given_P, R_given_P_and_Q, P_and_Q_and_R = (
@@ -1563,9 +1785,18 @@ class CondCondChecker(Checker):
             answers["R_given_P_and_Q"],
             answers["P_and_Q_and_R"],
         )
-        denom = P * Q_given_P * R_given_P_and_Q * (
-            3 - (P + Q_given_P + R_given_P_and_Q)
-        ) + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        denom = (
+            P
+            * Q_given_P
+            * R_given_P_and_Q
+            * (
+                P * Q_given_P
+                + Q_given_P * R_given_P_and_Q
+                + P * Q_given_P * R_given_P_and_Q
+            )
+            - 3 * (P * Q_given_P * R_given_P_and_Q) ** 2
+            + P_and_Q_and_R * (1 - P_and_Q_and_R)
+        )
         denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
         v = abs(P * Q_given_P * R_given_P_and_Q - P_and_Q_and_R) / denom
         return v
@@ -1716,29 +1947,33 @@ class SymmetryAndChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
         Q_and_P = And().instantiate_sync(
             {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
         )
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
+            )
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         Q_and_P = await And().instantiate(
             {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
         )
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
-        )
+        return [
+            self.TupleFormat(
+                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
+            )
+        ]
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
@@ -1864,29 +2099,29 @@ class SymmetryOrChecker(Checker):
 
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
         Q_or_P = Or().instantiate_sync(
             {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
         )
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
-        )
+        return [
+            self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q)
+        ]
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> "Self.TupleFormat":
+    ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
         Q_or_P = await Or().instantiate(
             {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
         )
-        return self.TupleFormat(
-            P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q
-        )
+        return [
+            self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q)
+        ]
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
@@ -1899,3 +2134,30 @@ class SymmetryOrChecker(Checker):
             all([a is not None for a in answers.values()])
             and answers["P_or_Q"] == answers["Q_or_P"]
         )
+
+
+checker_classes = [
+    ("NegChecker", NegChecker),
+    ("AndChecker", AndChecker),
+    ("OrChecker", OrChecker),
+    ("AndOrChecker", AndOrChecker),
+    ("ButChecker", ButChecker),
+    ("CondChecker", CondChecker),
+    ("ConsequenceChecker", ConsequenceChecker),
+    ("ParaphraseChecker", ParaphraseChecker),
+    ("CondCondChecker", CondCondChecker),
+]
+
+
+def choose_checkers(relevant_checks: list[str], tuple_dir: Path) -> dict[str, Checker]:
+    print(f"Relevant checks: {relevant_checks}")
+    if relevant_checks[0] == "all":
+        relevant_checks = [c[0] for c in checker_classes]
+
+    checkers: dict[str, Checker] = {
+        checker_name: cls(path=tuple_dir / f"{checker_name}.jsonl")
+        for checker_name, cls in checker_classes
+        if checker_name in relevant_checks
+    }
+
+    return checkers
