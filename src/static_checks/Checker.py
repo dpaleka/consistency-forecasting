@@ -641,6 +641,16 @@ class Checker(ABC):
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
 
+    async def elicit_and_violation_async(
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
+    ) -> float:
+        return self.violation(await forecaster.elicit_async(sentences, **kwargs))
+
+    async def elicit_and_check_async(
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
+    ) -> bool:
+        return self.check(await forecaster.elicit_async(sentences, **kwargs))
+
     def get_line_obj(self, line: dict[str, Any]) -> "Self.TupleFormat":
         metadata = line.pop("metadata", None)
         line_obj = self.TupleFormat.model_validate(line)
