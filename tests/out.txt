@@ -1,0 +1,117 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.7, pytest-8.1.1, pluggy-1.4.0
+rootdir: /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting
+configfile: pyproject.toml
+plugins: anyio-4.3.0, asyncio-0.23.6
+asyncio: mode=Mode.STRICT
+LOCAL_CACHE: /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting/cache
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+
+[1m NO_CACHE [0m
+
+collected 3 items
+
+test_api_call.py Testing model: gpt-3.5-turbo
+Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website.
+{'model': 'gpt-3.5-turbo', 'response_model': <class 'test_api_call.UserInfo'>, 'temperature': 0.0} Approx num tokens: 17
+name='John Doe' age=25
+.Testing model: meta-llama/llama-3-8b-instruct:nitro
+Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website.
+{'model': 'meta-llama/llama-3-8b-instruct:nitro', 'response_model': <class 'test_api_call.UserInfo'>, 'temperature': 0.0} Approx num tokens: 17
+name='John Doe' age=25
+.Testing model: anthropic/claude-3.5-sonnet
+Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website.
+F
+
+=================================== FAILURES ===================================
+______________ test_answer_real_api[anthropic/claude-3.5-sonnet] _______________
+
+model = 'anthropic/claude-3.5-sonnet'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("model", [
+        "gpt-3.5-turbo",
+        "meta-llama/llama-3-8b-instruct:nitro",
+        #"claude-3-opus-20240229",
+        "anthropic/claude-3.5-sonnet",
+    ])
+    async def test_answer_real_api(model):
+        # Define your inputs
+        prompt = "John Doe is 25 years old."
+    
+        # Save the original value of the environment variable
+        original_use_openrouter = os.getenv("USE_OPENROUTER","False")
+    
+        try:
+            # Set the environment variable based on the model
+            if True:
+                os.environ["USE_OPENROUTER"] = "True"
+            else:
+                os.environ["USE_OPENROUTER"] = "False"
+    
+            print(f"Testing model: {model}")
+>           response = await answer(prompt, model=model, response_model=UserInfo)  # Assuming answer takes model and preface as arguments
+
+test_api_call.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../src/common/llm_utils.py:657: in answer
+    return await query_api_chat(messages=messages, **options)
+../src/common/llm_utils.py:428: in query_api_chat
+    client, client_name = get_client_pydantic(options["model"], use_async=True)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+model = 'anthropic/claude-3.5-sonnet', use_async = True
+
+    def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
+        provider = get_provider(model)
+        if provider == "togetherai" and "nitro" not in model:
+            raise NotImplementedError(
+                "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
+            )
+    
+        use_openrouter = os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
+        if use_openrouter:
+            print(
+                "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+            )
+            kwargs = {}
+            if provider == "mistral":
+                # https://python.useinstructor.com/hub/mistral/
+                print(
+                    "Only some Mistral endpoints have `response_format` on OpenRouter. If you encounter errors, please check on the OpenRouter website."
+                )
+                kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
+            elif provider == "anthropic":
+>               raise NotImplementedError(
+                    "Anthropic over OpenRouter does not work as of June 4 2024"
+                )
+E               NotImplementedError: Anthropic over OpenRouter does not work as of June 4 2024
+
+../src/common/llm_utils.py:318: NotImplementedError
+=============================== warnings summary ===============================
+../venv/lib/python3.11/site-packages/requests/__init__.py:102
+  /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting/venv/lib/python3.11/site-packages/requests/__init__.py:102: RequestsDependencyWarning: urllib3 (1.26.7) or chardet (5.2.0)/charset_normalizer (2.0.4) doesn't match a supported version!
+    warnings.warn("urllib3 ({}) or chardet ({})/charset_normalizer ({}) doesn't match a supported "
+
+tests/test_api_call.py::test_answer_real_api[gpt-3.5-turbo]
+tests/test_api_call.py::test_answer_real_api[meta-llama/llama-3-8b-instruct:nitro]
+  /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting/venv/lib/python3.11/site-packages/instructor/process_response.py:222: DeprecationWarning: FUNCTIONS is deprecated and will be removed in future versions
+    if mode == Mode.FUNCTIONS:
+
+tests/test_api_call.py::test_answer_real_api[gpt-3.5-turbo]
+tests/test_api_call.py::test_answer_real_api[meta-llama/llama-3-8b-instruct:nitro]
+  /Users/alejandroalvarez/Code/OtherRepos/consistency-forecasting/venv/lib/python3.11/site-packages/instructor/function_calls.py:114: DeprecationWarning: FUNCTIONS is deprecated and will be removed in future versions
+    if mode == Mode.FUNCTIONS:
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED test_api_call.py::test_answer_real_api[anthropic/claude-3.5-sonnet] - ...
+=================== 1 failed, 2 passed, 5 warnings in 4.24s ====================

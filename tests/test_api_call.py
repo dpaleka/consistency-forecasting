@@ -12,7 +12,8 @@ class UserInfo(BaseModel):
 @pytest.mark.parametrize("model", [
     "gpt-3.5-turbo",
     "meta-llama/llama-3-8b-instruct:nitro",
-    "claude-3-opus-20240229"
+    #"claude-3-opus-20240229",
+    "anthropic/claude-3.5-sonnet",
 ])
 async def test_answer_real_api(model):
     # Define your inputs
@@ -23,7 +24,7 @@ async def test_answer_real_api(model):
 
     try:
         # Set the environment variable based on the model
-        if "meta-llama" in model:
+        if True:
             os.environ["USE_OPENROUTER"] = "True"
         else:
             os.environ["USE_OPENROUTER"] = "False"
