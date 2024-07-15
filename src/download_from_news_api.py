@@ -93,7 +93,7 @@ def news_api_download_file_path(
 
 def download_news_from_api(
     start_date: datetime, end_date: datetime, num_pages: int, api_key: str
-) -> None:
+) -> str:
     """
     Downloads popular news as response pages from News API from a set of curated domains
 
@@ -102,24 +102,26 @@ def download_news_from_api(
     :num_pages: Number of pages (each containing max 100 articles) to be downloaded
     :api_key: News API key
 
-    :returns: None
+    :returns: file where the data is downloaded
     """
+    assert num_pages == -1 or num_pages > 0
+
     articles_download_path = news_api_download_file_path(
         start_date, end_date, num_pages
     )
 
+    # Make the data dump directory
+    os.makedirs(NEWS_API_DATA_DUMP_DIR, exist_ok=True)
+
     # Failsafe to prevent redundant News API queries
     if os.path.exists(articles_download_path):
         print(
-            f"\nThe data has already been downloaded to {articles_download_path} \nReturning without downloading anything new!"
+            f"\tThe data has already been downloaded to {articles_download_path}\n\tReturning without downloading anything new!"
         )
-        return
+        return articles_download_path
 
     if not os.getenv("NEWS_API_KEY"):
         raise RuntimeError("OS enviroment for NEWS_API_KEY either missing or None!")
-
-    # Make the data dump directory
-    os.makedirs(NEWS_API_DATA_DUMP_DIR, exist_ok=True)
 
     first_page_news = get_news_from_api(start_date, end_date, 1, api_key)
 
@@ -155,6 +157,8 @@ def download_news_from_api(
             for article in news_articles:
                 jsonl_file.write(json.dumps(article) + "\n")
 
+    return articles_download_path
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -183,8 +187,6 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
-    assert args.num_pages == -1 or args.num_pages > 0
 
     download_news_from_api(
         args.start_date, args.end_date, args.num_pages, os.getenv("NEWS_API_KEY")
