@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
 
@@ -12,46 +12,50 @@ mock_response_list = ["0.03", "0.05", "0.02"]
 mock_response = MagicMock(prob=0.09)
 
 
-# @pytest.fixture
-# def basic_forecaster():
-#    examples = [mock_q_and_a]
-#    return BasicForecaster(preface="Test preface")
-#
-#
-# @pytest.fixture
-# def mock_forecasting_question():
-#    return ForecastingQuestion(
-#        id=uuid.uuid4(),
-#        title="Test Title",
-#        body="Test Body",
-#        question_type="binary",
-#        resolution_date=datetime(2024, 1, 1),
-#        data_source="synthetic",
-#        url="http://example.com",
-#        metadata={"topics": ["test"]},
-#        resolution=True
-#    )
-#
-#
-# @patch("forecasters.basic_forecaster.answer_sync", return_value=mock_response)
-# def test_basic_forecaster_call(mock_answer_sync, basic_forecaster, mock_forecasting_question):
-#    expected_prob = mock_response.prob
-#    prob = basic_forecaster.call(mock_forecasting_question)
-#    assert prob == pytest.approx(
-#        expected_prob
-#    ), "The calculated probability does not match the expected value"
-#    mock_answer_sync.assert_called_once()
-#
-#
-# @pytest.mark.asyncio
-# @patch("forecasters.basic_forecaster.answer", return_value=mock_response)
-# async def test_basic_forecaster_call_async(mock_answer, basic_forecaster, mock_forecasting_question):
-#    expected_prob = mock_response.prob
-#    prob = await basic_forecaster.call_async(mock_forecasting_question)
-#    assert prob == pytest.approx(
-#        expected_prob
-#    ), "The calculated probability does not match the expected value"
-#    mock_answer.assert_called_once()
+@pytest.fixture
+def basic_forecaster():
+    examples = [mock_q_and_a]
+    return BasicForecaster(preface="Test preface")
+
+
+@pytest.fixture
+def mock_forecasting_question():
+    return ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Test Title",
+        body="Test Body",
+        question_type="binary",
+        resolution_date=datetime(2024, 1, 1),
+        data_source="synthetic",
+        url="http://example.com",
+        metadata={"topics": ["test"]},
+        resolution=True,
+    )
+
+
+@patch("forecasters.basic_forecaster.answer_sync", return_value=mock_response)
+def test_basic_forecaster_call(
+    mock_answer_sync, basic_forecaster, mock_forecasting_question
+):
+    expected_prob = mock_response.prob
+    prob = basic_forecaster.call(mock_forecasting_question)
+    assert prob == pytest.approx(
+        expected_prob
+    ), "The calculated probability does not match the expected value"
+    mock_answer_sync.assert_called_once()
+
+
+@pytest.mark.asyncio
+@patch("forecasters.basic_forecaster.answer", return_value=mock_response)
+async def test_basic_forecaster_call_async(
+    mock_answer, basic_forecaster, mock_forecasting_question
+):
+    expected_prob = mock_response.prob
+    prob = await basic_forecaster.call_async(mock_forecasting_question)
+    assert prob == pytest.approx(
+        expected_prob
+    ), "The calculated probability does not match the expected value"
+    mock_answer.assert_called_once()
 
 
 @pytest.fixture
@@ -183,8 +187,8 @@ def test_consistent_forecaster_call_sync(consistent_forecaster):
 async def test_consistent_forecaster_consistent_async(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {}  # {"model": "gpt-3.5-turbo"}
-    instantiation_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    call_kwargs = {"model": "gpt-4o-2024-05-13"}
+    instantiation_kwargs = {"model": "gpt-4o-2024-05-13"}
     bq_func_kwargs = {"model": "gpt-3.5-turbo"}
 
     checker = consistent_forecaster_single.checks[0]
@@ -220,8 +224,8 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {}  # {"model": "gpt-3.5-turbo"}
-    instantiation_kwargs = {}  # {"model": "gpt-3.5-turbo"}
+    call_kwargs = {"model": "gpt-4o-2024-05-13"}
+    instantiation_kwargs = {"model": "gpt-4o-2024-05-13"}
     bq_func_kwargs = {"model": "gpt-3.5-turbo"}
 
     checker = consistent_forecaster_single.checks[0]
