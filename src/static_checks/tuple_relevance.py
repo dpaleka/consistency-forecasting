@@ -3,7 +3,21 @@ from common.datatypes import (
     ForecastingQuestion_stripped,
     RelevanceResult,
 )
-from common.llm_utils import answer_sync, answer, Example
+from common.llm_utils import answer_sync, answer, Example, parallelized_call
+from common.path_utils import get_data_path
+from pathlib import Path
+import jsonlines
+import random
+import functools
+
+MODEL_RELEVANCE = "gpt-4o"
+BASE_DATA_PATH: Path = (
+    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
+)
+# BASE_DATA_PATH: Path = (
+#    get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
+# )
+
 
 preface = r"""I'm doing a project that involve eliciting probabilities from LLMs to measure the calibration, consistency 
 and such properties of LLM forecasters. As part of this project we will be taking logical combinations of forecasting 
@@ -247,16 +261,21 @@ examples = [
 ]
 
 
-def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
+def relevance_sync(
+    base_sentences: dict[str, ForecastingQuestion] | list[ForecastingQuestion],
+    **kwargs,
+) -> float:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
-    base_sentences = list(base_sentences.values())
+    if isinstance(base_sentences, dict):
+        base_sentences = list(base_sentences.values())
 
     result = answer_sync(
         simple_combine(*base_sentences),
         preface=preface,
         # examples=examples,
         response_model=RelevanceResult,
+        **kwargs,
     )
 
     print("---")
@@ -267,10 +286,13 @@ def relevance_sync(base_sentences: dict[str, ForecastingQuestion]) -> float:
     return {"relevance": result.model_dump()}
 
 
-async def relevance(base_sentences: dict[str, ForecastingQuestion], **kwargs) -> dict:
+async def relevance(
+    base_sentences: dict[str, ForecastingQuestion] | list[ForecastingQuestion], **kwargs
+) -> dict:
     """Gives a score to assess if it's worth instantiating some given combination of base sentences."""
 
-    base_sentences = list(base_sentences.values())
+    if isinstance(base_sentences, dict):
+        base_sentences = list(base_sentences.values())
 
     result = await answer(
         simple_combine(*base_sentences),
@@ -286,3 +308,88 @@ async def relevance(base_sentences: dict[str, ForecastingQuestion], **kwargs) ->
     print("---")
 
     return {"relevance": result.model_dump()}
+
+
+async def get_relevant_questions(
+    base_data_path: Path = BASE_DATA_PATH,
+    existing_questions: list[ForecastingQuestion] = None,
+    n_relevance: int = 10,
+    n_return: int = 1,
+    tuple_size=2,
+    seed: int = 42,
+    **kwargs,
+) -> list[tuple[list[ForecastingQuestion], dict]]:
+    if existing_questions is None:
+        existing_questions = []
+
+    bqs = []
+    print(f"Loading questions from {base_data_path}...")
+    for line in jsonlines.open(base_data_path):
+        try:
+            bq = ForecastingQuestion(**line)
+            bqs.append(bq)
+        except Exception as e:
+            print(e)
+            continue
+    print(f"Loaded {len(bqs)} questions.")
+
+    random.seed(seed)
+
+    sampled_qs = [
+        random.sample(bqs, tuple_size - len(existing_questions))
+        for _ in range(n_relevance)
+    ]
+
+    tuples = [existing_questions + list(sample) for sample in sampled_qs]
+
+    relevances = await parallelized_call(
+        functools.partial(relevance, **kwargs),
+        tuples,
+    )
+
+    tuples_with_relevances = list(zip(tuples, relevances))
+
+    tuples_with_relevances.sort(key=lambda x: x[1]["relevance"]["score"], reverse=True)
+
+    return tuples_with_relevances[:n_return]
+
+
+def get_relevant_questions_sync(
+    base_data_path: Path = BASE_DATA_PATH,
+    existing_questions: list[ForecastingQuestion] = None,
+    n_relevance: int = 10,
+    n_return: int = 1,
+    tuple_size=2,
+    seed: int = 42,
+    **kwargs,
+) -> list[tuple[list[ForecastingQuestion], dict]]:
+    if existing_questions is None:
+        existing_questions = []
+
+    bqs = []
+    print(f"Loading questions from {base_data_path}...")
+    for line in jsonlines.open(base_data_path):
+        try:
+            bq = ForecastingQuestion(**line)
+            bqs.append(bq)
+        except Exception as e:
+            print(e)
+            continue
+    print(f"Loaded {len(bqs)} questions.")
+
+    random.seed(seed)
+
+    sampled_qs = [
+        random.sample(bqs, tuple_size - len(existing_questions))
+        for _ in range(n_relevance)
+    ]
+
+    tuples = [existing_questions + list(sample) for sample in sampled_qs]
+
+    relevances = [relevance_sync(base_sentences=tuple, **kwargs) for tuple in tuples]
+
+    tuples_with_relevances = list(zip(tuples, relevances))
+
+    tuples_with_relevances.sort(key=lambda x: x[1]["relevance"]["score"], reverse=True)
+
+    return tuples_with_relevances[:n_return]
