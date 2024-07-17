@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from uuid import uuid4
 from common.llm_utils import answer_sync
 from common.datatypes import ForecastingQuestion
+from common.perscache import register_model_for_cache
 
 load_dotenv()
 
@@ -19,8 +20,14 @@ class ForecastingQuestion_stripped_with_resolution(BaseModel):
     resolution: bool
 
 
+register_model_for_cache(ForecastingQuestion_stripped_with_resolution)
+
+
 class ForecastingQuestion_stripped_with_resolution_list(BaseModel):
     questions: list[ForecastingQuestion_stripped_with_resolution]
+
+
+register_model_for_cache(ForecastingQuestion_stripped_with_resolution_list)
 
 
 class RoughForecastingQuestionGenerator:
