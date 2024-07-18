@@ -1,8 +1,9 @@
 import pytest
+from pytest_mock import mocker
 import uuid
 from datetime import datetime
 from common.datatypes import ForecastingQuestion, VerificationResult
-from question_generators.question_formatter import verify_question_all_methods
+from question_generators.question_formatter import verify_question_all_methods, verify_question_llm
 import os
 from dotenv import load_dotenv
 
@@ -21,13 +22,14 @@ async def assert_verification_result(
     assert result.valid == expected_valid, f"Comment: {comment}"
 
 
-if os.getenv("TEST_FQ_VERIFICATION", "True").lower() == "false":
-    pytest.skip(
-        "Skipping verification tests because TEST_VERIFICATION is set to False",
-        allow_module_level=True,
-    )
+
+pytest.mark.expensive = pytest.mark.skipif(
+    os.getenv("TEST_FQ_VERIFICATION", "True").lower() == "false",
+    reason="Skipping expensive verification tests"
+)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_spacex_valid_question():
     spacex_valid_q = ForecastingQuestion(
@@ -41,6 +43,7 @@ async def test_verify_spacex_valid_question():
     await assert_verification_result(spacex_valid_q, True)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_ai_invalid_question():
     ai_invalid_q = ForecastingQuestion(
@@ -54,6 +57,7 @@ async def test_verify_ai_invalid_question():
     await assert_verification_result(ai_invalid_q, False)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_inconsistent_date_question():
     inconsistent_date_question = ForecastingQuestion(
@@ -69,6 +73,7 @@ async def test_verify_inconsistent_date_question():
     await assert_verification_result(inconsistent_date_question, False)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_past_invalid_question():
     past_invalid_question = ForecastingQuestion(
@@ -83,6 +88,7 @@ async def test_verify_past_invalid_question():
     # await assert_verification_result(past_invalid_question, False)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_nobel_invalid_question():
     nobel_invalid_q = ForecastingQuestion(
@@ -115,6 +121,7 @@ async def test_verify_nobel_invalid_question():
     )
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_republican_valid_question():
     republican_valid_q = ForecastingQuestion(
@@ -138,6 +145,7 @@ async def test_verify_republican_valid_question():
     await assert_verification_result(republican_valid_q, True)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_building_valid_question():
     building_valid_q = ForecastingQuestion(
@@ -149,3 +157,45 @@ async def test_verify_building_valid_question():
         data_source="synthetic",
     )
     await assert_verification_result(building_valid_q, True)
+
+@pytest.mark.expensive
+@pytest.mark.asyncio
+async def test_verify_market_probability_in_body():
+    market_prob_question = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will SpaceX successfully land humans on Mars by 2030?",
+        body="This question will resolve as Yes if SpaceX successfully lands at least one human on the surface of Mars before January 1, 2031. The current market probability for this event is 30%.",
+        resolution_date=datetime(2030, 12, 31),
+        question_type="binary",
+        data_source="synthetic",
+    )
+    await assert_verification_result(
+        market_prob_question,
+        False,
+        comment="The body should not contain market probabilities."
+    )
+
+@pytest.mark.asyncio
+async def test_verify_invalid_title_single_call(mocker):
+    invalid_title_question = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will AI take over the world?",
+        body="This question will resolve as Yes if artificial intelligence gains control over major world governments and financial systems by 2050.",
+        resolution_date=datetime(2050, 12, 31),
+        question_type="binary",
+        data_source="synthetic",
+    )
+    
+    # Mock the 'answer' function
+    mock_answer = mocker.patch('question_generators.question_formatter.answer', new_callable=mocker.AsyncMock)
+    mock_answer.return_value = VerificationResult(valid=False, reasoning="Invalid title")
+
+    # Call the function
+    result = await verify_question_llm(invalid_title_question, datetime.now())
+    
+    # Assert that the result is as expected
+    assert result.valid == False
+    assert "Title validation failed" in result.reasoning
+    
+    # Assert that 'answer' was called only once
+    mock_answer.assert_called_once()
