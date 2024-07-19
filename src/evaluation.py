@@ -12,7 +12,13 @@ import logging
 import functools
 import concurrent.futures
 
-from forecasters import Forecaster, AdvancedForecaster, BasicForecaster, COT_Forecaster
+from forecasters import (
+    Forecaster,
+    AdvancedForecaster,
+    BasicForecaster,
+    COT_Forecaster,
+    ConsistentForecaster,
+)
 from static_checks.Checker import (
     Checker,
     choose_checkers,
@@ -97,11 +103,11 @@ def write_to_dirs(
 ):
     for dir in dirs_to_write:
         if overwrite:
-            with open(dir / filename, "w") as f:
+            with open(dir / filename, "w", encoding="utf-8") as f:
                 for result in results:
                     f.write(json.dumps(result) + "\n")
         else:
-            with open(dir / filename, "a") as f:
+            with open(dir / filename, "a", encoding="utf-8") as f:
                 for result in results:
                     f.write(json.dumps(result) + "\n")
 
@@ -120,7 +126,7 @@ def process_check(
     forecaster_class: str,
 ) -> dict:
     print("Checker: ", check_name)
-    with open(checkers[check_name].path, "r") as f:
+    with open(checkers[check_name].path, "r", encoding="utf-8") as f:
         print(f"Path: {checkers[check_name].path}")
         checker_tuples = [json.loads(line) for line in f.readlines()[:num_lines]]
 
@@ -148,7 +154,7 @@ def process_check(
         results = []
         for batch_idx, batch in enumerate(batches):
             match forecaster_class:
-                case "BasicForecaster" | "CoTForecaster":
+                case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster":
                     if is_async:
                         results_batch = asyncio.run(
                             checkers[check_name].test(
@@ -199,7 +205,7 @@ def process_check(
             results.extend(results_batch)
 
     else:
-        with open(load_dir / f"{check_name}.jsonl", "r") as f:
+        with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
             results = [json.loads(line) for line in f.readlines()]
 
         assert (
@@ -241,7 +247,7 @@ def process_check(
     "-f",
     "--forecaster_class",
     default="AdvancedForecaster",
-    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, or AdvancedForecaster.",
+    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster.",
 )
 @click.option(
     "-c",
@@ -321,8 +327,10 @@ def main(
             forecaster = BasicForecaster()
         case "COT_Forecaster":
             forecaster = COT_Forecaster()
+        case "ConsistentForecaster":
+            forecaster = ConsistentForecaster(hypocrite=BasicForecaster())
         case "AdvancedForecaster":
-            with open(config_path, "r") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 config: dict[str, Any] = yaml.safe_load(f)
             forecaster = AdvancedForecaster(**config)
         case _:
@@ -431,15 +439,19 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
-    with open(output_directory / "stats_summary.json", "a") as f:
+    with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
-    with open(most_recent_directory / "stats_summary.json", "a") as f2:
+    with open(
+        most_recent_directory / "stats_summary.json", "a", encoding="utf-8"
+    ) as f2:
         # TODO: this one append on old data if it exists in the dir
         json.dump(all_stats, f2, indent=4)
 
     for check_name, stats in all_stats.items():
-        with open(output_directory / f"stats_{check_name}.json", "w") as f, open(
-            most_recent_directory / f"stats_{check_name}.json", "w"
+        with open(
+            output_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
+        ) as f, open(
+            most_recent_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
         ) as f2:
             json.dump(stats, f, indent=4)
             json.dump(stats, f2, indent=4)
