@@ -9,7 +9,6 @@ from static_checks import (
     AndOrChecker,
     ButChecker,
     CondChecker,
-    CondCondChecker,
 )
 from static_checks.tuple_relevance import (
     get_relevant_questions,
@@ -52,6 +51,10 @@ class ConsistentForecaster(Forecaster):
         / "fq"
         / "real"
         / "questions_cleaned_formatted.jsonl",
+        pregenerate=True,
+        instantiation_kwargs: dict = None,
+        bq_func_kwargs: dict = None,
+        **kwargs,
     ):
         self.hypocrite = hypocrite or BasicForecaster()
         self.checks = checks or [
@@ -60,9 +63,12 @@ class ConsistentForecaster(Forecaster):
             AndOrChecker(),
             ButChecker(),
             CondChecker(),
-            CondCondChecker(),
         ]
         self.base_data_path = base_data_path
+        self.pregenerate = pregenerate
+        self.instantiation_kwargs = instantiation_kwargs or {}
+        self.bq_func_kwargs = bq_func_kwargs or {}
+        self.kwargs = kwargs
 
     def bq_function(
         self,
@@ -142,7 +148,6 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
-        pregenerate=True,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -170,13 +175,12 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if bq_func_kwargs is None:
-            bq_func_kwargs = {}
-        if instantiation_kwargs is None:
-            instantiation_kwargs = {}
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
         ans_P = self.hypocrite.call(sentence, **kwargs)
 
-        if pregenerate:
+        if self.pregenerate:
             # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
             max_tuple_size = max(check.num_base_questions for check in self.checks)
             bq_tuple_max = self.bq_function(
@@ -184,7 +188,7 @@ class ConsistentForecaster(Forecaster):
             )
 
         for check in self.checks:
-            if pregenerate:
+            if self.pregenerate:
                 bq_tuple = {
                     k: v
                     for k, v in bq_tuple_max.items()
@@ -210,7 +214,6 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
-        pregenerate=True,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -238,12 +241,11 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if bq_func_kwargs is None:
-            bq_func_kwargs = {}
-        if instantiation_kwargs is None:
-            instantiation_kwargs = {}
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
-        if pregenerate:
+        if self.pregenerate:
             # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
             max_tuple_size = max(check.num_base_questions for check in self.checks)
             bq_tuple_max = self.bq_function(
@@ -251,7 +253,7 @@ class ConsistentForecaster(Forecaster):
             )
 
         for check in self.checks:
-            if pregenerate:
+            if self.pregenerate:
                 bq_tuple = {
                     k: v
                     for k, v in bq_tuple_max.items()
@@ -276,4 +278,9 @@ class ConsistentForecaster(Forecaster):
         return {
             "hypocrite": self.hypocrite.dump_config(),
             "checks": [c.dump_config() for c in self.checks],
+            "base_data_path": self.base_data_path,
+            "pregenerate": self.pregenerate,
+            "instantiation_kwargs": self.instantiation_kwargs,
+            "bq_func_kwargs": self.bq_func_kwargs,
+            "call_kwargs": self.kwargs,
         }
