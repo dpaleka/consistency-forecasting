@@ -46,7 +46,7 @@ class ConsistentForecaster(Forecaster):
 
     def __init__(
         self,
-        hypocrite: Forecaster,
+        hypocrite: Forecaster = None,
         checks: list[Checker] = None,
         base_data_path=get_data_path()
         / "fq"
@@ -73,7 +73,7 @@ class ConsistentForecaster(Forecaster):
         tuple_size=2,
         base_data_path=None,
         **kwargs,
-    ) -> dict:
+    ) -> dict[str, ForecastingQuestion]:
         """Get relevant questions for the given sentence.
 
         Args:
@@ -142,6 +142,7 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
+        pregenerate=True,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -174,10 +175,25 @@ class ConsistentForecaster(Forecaster):
         if instantiation_kwargs is None:
             instantiation_kwargs = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
-        for check in self.checks:
-            bq_tuple = self.bq_function(
-                sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
+
+        if pregenerate:
+            # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+            max_tuple_size = max(check.num_base_questions for check in self.checks)
+            bq_tuple_max = self.bq_function(
+                sentence, tuple_size=max_tuple_size, **bq_func_kwargs
             )
+
+        for check in self.checks:
+            if pregenerate:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
+            else:
+                bq_tuple = self.bq_function(
+                    sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
+                )
             cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]
@@ -194,6 +210,7 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
+        pregenerate=True,
         **kwargs,
     ) -> float:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -226,10 +243,24 @@ class ConsistentForecaster(Forecaster):
         if instantiation_kwargs is None:
             instantiation_kwargs = {}
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
-        for check in self.checks:
-            bq_tuple = await self.bq_function_async(
-                sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
+        if pregenerate:
+            # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+            max_tuple_size = max(check.num_base_questions for check in self.checks)
+            bq_tuple_max = self.bq_function(
+                sentence, tuple_size=max_tuple_size, **bq_func_kwargs
             )
+
+        for check in self.checks:
+            if pregenerate:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
+            else:
+                bq_tuple = self.bq_function(
+                    sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
+                )
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]

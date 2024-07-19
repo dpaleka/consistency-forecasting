@@ -348,7 +348,7 @@ class Checker(ABC):
                 because some will fail verification). If -1, will make as many as possible.
         """
         if overwrite:
-            with open(self.path, "w") as f:
+            with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 
         def _instantiate_and_write(
@@ -712,7 +712,7 @@ class Checker(ABC):
 
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-            with open(self.path, "r") as file:
+            with open(self.path, "r", encoding="utf-8") as file:
                 data: list[dict[str, Any]] = [json.loads(line) for line in file]
             if line_end >= 0:
                 print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
@@ -767,7 +767,7 @@ class Checker(ABC):
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
-            with open(self.path, "r") as file:
+            with open(self.path, "r", encoding="utf-8") as file:
                 data = [json.loads(line) for line in file]
             if line_end >= 0:
                 print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
