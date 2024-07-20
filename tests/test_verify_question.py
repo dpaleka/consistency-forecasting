@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-model = "gpt-4o-2024-05-13"
+model = "gpt-4o-mini-2024-07-18"
 
 
 async def assert_verification_result(

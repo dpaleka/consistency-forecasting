@@ -74,7 +74,7 @@ async def get_async_response(
 
     Args:
         prompt (str): Fully specififed prompt to use for the API call.
-        model_name (str, optional): Name of the model to use (such as "gpt-3.5-turbo").
+        model_name (str, optional): Name of the model to use (such as "gpt-4o-mini").
         temperature (float, optional): Sampling temperature.
         max_tokens (int, optional): Maximum number of tokens to sample.
 

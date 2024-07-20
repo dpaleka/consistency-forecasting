@@ -259,7 +259,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-2024-05-13",
+    default="gpt-4o-mini-2024-07-18",
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")

@@ -16,8 +16,8 @@ import functools
 import random
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o"
-MODEL_RELEVANCE = "gpt-4o"
+MODEL = "gpt-4o-mini"
+MODEL_RELEVANCE = "gpt-4o-mini"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )

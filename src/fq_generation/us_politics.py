@@ -43,7 +43,7 @@ instruction.format(num_examples=5)
 # %%
 from common.llm_utils import query_api_chat_sync, get_client_pydantic
 
-MODEL = "gpt-3.5-turbo"
+MODEL = "gpt-4o-mini"
 client, _ = get_client_pydantic(MODEL, use_async=False)
 
 
