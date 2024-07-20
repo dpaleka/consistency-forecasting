@@ -328,7 +328,11 @@ def main(
         case "COT_Forecaster":
             forecaster = COT_Forecaster()
         case "ConsistentForecaster":
-            forecaster = ConsistentForecaster(hypocrite=BasicForecaster())
+            forecaster = ConsistentForecaster(
+                hypocrite=BasicForecaster(),
+                instantiation_kwargs={"model": model},
+                bq_func_kwargs={"model": model},
+            )
         case "AdvancedForecaster":
             with open(config_path, "r", encoding="utf-8") as f:
                 config: dict[str, Any] = yaml.safe_load(f)
@@ -448,11 +452,16 @@ def main(
         json.dump(all_stats, f2, indent=4)
 
     for check_name, stats in all_stats.items():
-        with open(
-            output_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
-        ) as f, open(
-            most_recent_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
-        ) as f2:
+        with (
+            open(
+                output_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
+            ) as f,
+            open(
+                most_recent_directory / f"stats_{check_name}.json",
+                "w",
+                encoding="utf-8",
+            ) as f2,
+        ):
             json.dump(stats, f, indent=4)
             json.dump(stats, f2, indent=4)
 
@@ -475,3 +484,4 @@ if __name__ == "__main__":
 
 # run the script with the following command:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
