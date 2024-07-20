@@ -52,6 +52,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         pregenerate=True,
+        ignore_nonbinary_qs=True,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -65,6 +66,7 @@ class ConsistentForecaster(Forecaster):
             CondChecker(),
         ]
         self.base_data_path = base_data_path
+        self.ignore_nonbinary_qs = ignore_nonbinary_qs
         self.pregenerate = pregenerate
         self.instantiation_kwargs = instantiation_kwargs or {}
         self.bq_func_kwargs = bq_func_kwargs or {}
@@ -175,6 +177,8 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
+        if self.ignore_nonbinary_qs and not sentence.question_type == "binary":
+            return self.hypocrite.call(sentence, **kwargs)
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
@@ -188,7 +192,6 @@ class ConsistentForecaster(Forecaster):
             )
 
         for check in self.checks:
-            print("BABA BLACK SHEEP", check.name)
             if self.pregenerate:
                 bq_tuple = {
                     k: v
@@ -242,6 +245,8 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
+        if self.ignore_nonbinary_qs and not sentence.question_type == "binary":
+            return await self.hypocrite.call_async(sentence, **kwargs)
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
@@ -249,7 +254,7 @@ class ConsistentForecaster(Forecaster):
         if self.pregenerate:
             # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
             max_tuple_size = max(check.num_base_questions for check in self.checks)
-            bq_tuple_max = self.bq_function(
+            bq_tuple_max = await self.bq_function_async(
                 sentence, tuple_size=max_tuple_size, **bq_func_kwargs
             )
 
@@ -261,7 +266,7 @@ class ConsistentForecaster(Forecaster):
                     if k in list(bq_tuple_max.keys())[: check.num_base_questions]
                 }
             else:
-                bq_tuple = self.bq_function(
+                bq_tuple = await self.bq_function_async(
                     sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
                 )
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
