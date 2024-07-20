@@ -1,0 +1,20 @@
+{
+    "CondCondChecker": {
+        "default": {
+            "label": "CondCondChecker",
+            "num_samples": 3,
+            "num_violations": 3,
+            "avg_violation": 0.024973,
+            "avg_violation_no_outliers": 0.024721,
+            "median_violation": 0.024721
+        },
+        "frequentist": {
+            "label": "CondCondChecker",
+            "num_samples": 3,
+            "num_violations": 3,
+            "avg_violation": 0.19257,
+            "avg_violation_no_outliers": 0.184398,
+            "median_violation": 0.184398
+        }
+    }
+}
