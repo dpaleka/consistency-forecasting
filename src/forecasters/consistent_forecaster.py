@@ -188,6 +188,7 @@ class ConsistentForecaster(Forecaster):
             )
 
         for check in self.checks:
+            print("BABA BLACK SHEEP", check.name)
             if self.pregenerate:
                 bq_tuple = {
                     k: v
@@ -278,7 +279,7 @@ class ConsistentForecaster(Forecaster):
         return {
             "hypocrite": self.hypocrite.dump_config(),
             "checks": [c.dump_config() for c in self.checks],
-            "base_data_path": self.base_data_path,
+            "base_data_path": str(self.base_data_path),
             "pregenerate": self.pregenerate,
             "instantiation_kwargs": self.instantiation_kwargs,
             "bq_func_kwargs": self.bq_func_kwargs,

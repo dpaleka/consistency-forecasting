@@ -43,7 +43,7 @@ from .checker_prompts import (
     consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
-from forecasters import Forecaster
+from forecasters.forecaster import Forecaster
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -866,6 +866,10 @@ class NegChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
         not_P = await Neg().instantiate(base_sentences, **kwargs)
+        print("BABA BLACK SHEEP")
+        print(P)
+        print(not_P)
+        print("BABA BLACK SHEEP")
         return [self.TupleFormat(P=P.P, not_P=not_P.not_P)]
 
     def max_min_arbitrage(
