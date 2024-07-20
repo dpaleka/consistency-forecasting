@@ -52,7 +52,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         pregenerate=True,
-        ignore_nonbinary_qs=True,
+        coerce_nonbinary_qs=True,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -66,7 +66,7 @@ class ConsistentForecaster(Forecaster):
             CondChecker(),
         ]
         self.base_data_path = base_data_path
-        self.ignore_nonbinary_qs = ignore_nonbinary_qs
+        self.coerce_nonbinary_qs = coerce_nonbinary_qs
         self.pregenerate = pregenerate
         self.instantiation_kwargs = instantiation_kwargs or {}
         self.bq_func_kwargs = bq_func_kwargs or {}
@@ -177,8 +177,8 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.ignore_nonbinary_qs and not sentence.question_type == "binary":
-            return self.hypocrite.call(sentence, **kwargs)
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
@@ -245,8 +245,8 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.ignore_nonbinary_qs and not sentence.question_type == "binary":
-            return await self.hypocrite.call_async(sentence, **kwargs)
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
