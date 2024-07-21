@@ -4,7 +4,8 @@ from datetime import datetime
 import uuid
 
 from common.datatypes import ForecastingQuestion
-from forecasters import BasicForecaster, ConsistentForecaster
+from forecasters import BasicForecaster
+from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import NegChecker, CondCondChecker
 
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"

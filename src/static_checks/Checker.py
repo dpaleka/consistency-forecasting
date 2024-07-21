@@ -43,7 +43,6 @@ from .checker_prompts import (
     consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
-from forecasters import Forecaster
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -53,6 +52,7 @@ from .MiniInstantiator import (
     Paraphrase,
     Consequence,
 )
+from forecasters import Forecaster
 
 load_dotenv()
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
