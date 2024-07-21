@@ -143,24 +143,25 @@ Question: {title}
 
 # From Halawi et al.
 verify_forecasting_title_prompt = """
-I’m trying to assess the quality of an old forecasting dataset.
-Here is a forecasting question from the dataset: {question}.
-Please flag questions that don’t sound like binary forecasting questions by outputting "flag". If it sounds
-like a reasonable question, output valid is True.
+I'm trying to assess the quality of an old forecasting dataset. Here is a forecasting question from the dataset: {question}. Please flag questions that don't sound like binary forecasting questions by outputting "flag". If it sounds like a reasonable question, output valid is True.
+
 Examples of strings that should be flagged:
-• Will I finish my homework tonight?
-• Metaculus party 2023
-• Will Hell freeze over?
-• Heads or tails
-• Will this video reach 100k views by the EOD?
+- Will I finish my homework tonight?
+- Metaculus party 2023
+- Will Hell freeze over?
+- Heads or tails
+- Will this video reach 100k views by the EOD?
+
 Examples of strings that should not be flagged:
-• Will Megan Markle and Prince Harry have a baby by the end of the year?
-• Will the Brain Preservation Foundation’s Large Mammal preservation prize be won by Feb 9th, 2017?
-• Will there be more novel new drugs approved by the FDA in 2016 than in 2015?
-If a question is already resolved, that doesn’t mean it should be flagged. When in doubt, mark it as "ok".
+- Will Megan Markle and Prince Harry have a baby by the end of the year?
+- Will the Brain Preservation Foundation's Large Mammal preservation prize be won by Feb 9th, 2017?
+- Will there be more novel new drugs approved by the FDA in 2016 than in 2015?
+
+If a question is already resolved, that doesn't mean it should be flagged. When in doubt, mark it as "True".
+
 Your response should take the following structure:
-Reasoning: {{ insert your concise thoughts here }}
-Valid: {{ True/False }}
+reasoning: {{ insert your concise thoughts here }}
+valid: {{ True/False }}
 """
 
 verify_forecasting_body_prompt = """
@@ -415,45 +416,51 @@ async def verify_question_llm(
 ) -> VerificationResult:
     # Verify the question title
     title_prompt = verify_forecasting_title_prompt.format(question=question.title)
-    title_verification = await answer(title_prompt, response_model=VerificationResult, **kwargs)
-    
+    title_verification = await answer(
+        title_prompt, response_model=VerificationResult, **kwargs
+    )
+
     if not title_verification.valid:
         return VerificationResult(
             reasoning=f"Title validation failed: {title_verification.reasoning}",
-            valid=False
+            valid=False,
         )
-    
+
     # Verify the question body
     body_prompt = verify_forecasting_body_prompt.format(body=question.body)
-    body_verification = await answer(body_prompt, response_model=VerificationResult, **kwargs)
-    
+    body_verification = await answer(
+        body_prompt, response_model=VerificationResult, **kwargs
+    )
+
     if not body_verification.valid:
         return VerificationResult(
             reasoning=f"Body validation failed: {body_verification.reasoning}\nTitle was valid.",
-            valid=False
+            valid=False,
         )
-    
+
     # Verify the full question (title, body, and resolution date)
     full_prompt = verify_forecasting_question_prompt.format(
         title=question.title,
         body=question.body,
         resolution_date=question.resolution_date,
     )
-    full_verification = await answer(full_prompt, response_model=VerificationResult, **kwargs)
-    
+    full_verification = await answer(
+        full_prompt, response_model=VerificationResult, **kwargs
+    )
+
     if not full_verification.valid:
         return VerificationResult(
             reasoning=f"Full question validation failed: {full_verification.reasoning}\nTitle and body were valid individually.",
-            valid=False
+            valid=False,
         )
-    
+
     # If all verifications passed
     combined_reasoning = (
         f"Title: {title_verification.reasoning}\n"
         f"Body: {body_verification.reasoning}\n"
         f"Full: {full_verification.reasoning}"
     )
-    
+
     return VerificationResult(reasoning=combined_reasoning, valid=True)
 
 
@@ -500,7 +507,6 @@ async def verify_question_all_methods(
 async def verify_question(
     question: ForecastingQuestion, **kwargs
 ) -> VerificationResult:
-
     try:
         verification = await verify_question_all_methods(question, **kwargs)
         if write_verification:
