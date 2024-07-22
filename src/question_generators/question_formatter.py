@@ -182,7 +182,7 @@ Examples of valid bodies:
 
 Examples of invalid bodies:
 - This question will resolve as Yes if it happens.
-- {"resolution_criteria": "nini","background_info": "50% chance. Resolves NO if dismissed, dropped, or still in process.\n\nResolves YES if there is a settlement or judgement for either side.\n\nhttps://www.politico.com/news/2024/06/17/george-norcross-indictment-new-jersey-corruption-00163700\n\n[image]"}
+- {{"resolution_criteria": "nini","background_info": "50% chance. Resolves NO if dismissed, dropped, or still in process.\n\nResolves YES if there is a settlement or judgement for either side.\n\nhttps://www.politico.com/news/2024/06/17/george-norcross-indictment-new-jersey-corruption-00163700\n\n[image]"}}
 - This question will resolve as Yes if, by December 31, 2030, a new strain of influenza virus is identified that meets the following criteria: 
   - The strain must be genetically distinct from previously identified strains, with genetic differences significant enough to be considered a new strain by the World Health Organization (WHO) or a similar authoritative body.
   - The strain must have demonstrated the ability to cause human infection and have the potential for sustained human-to-human transmission.
@@ -411,15 +411,27 @@ async def from_string(
     )
 
 
+async def verify_title(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    title_prompt = verify_forecasting_title_prompt.format(question=question.title)
+    return await answer(title_prompt, response_model=VerificationResult, **kwargs)
+
+async def verify_body(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    body_prompt = verify_forecasting_body_prompt.format(body=question.body)
+    return await answer(body_prompt, response_model=VerificationResult, **kwargs)
+
+async def verify_full_question(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    full_prompt = verify_forecasting_question_prompt.format(
+        title=question.title,
+        body=question.body,
+        resolution_date=question.resolution_date,
+    )
+    return await answer(full_prompt, response_model=VerificationResult, **kwargs)
+
 async def verify_question_llm(
     question: ForecastingQuestion, current_date: datetime, **kwargs
 ) -> VerificationResult:
     # Verify the question title
-    title_prompt = verify_forecasting_title_prompt.format(question=question.title)
-    title_verification = await answer(
-        title_prompt, response_model=VerificationResult, **kwargs
-    )
-
+    title_verification = await verify_title(question, **kwargs)
     if not title_verification.valid:
         return VerificationResult(
             reasoning=f"Title validation failed: {title_verification.reasoning}",
@@ -427,11 +439,7 @@ async def verify_question_llm(
         )
 
     # Verify the question body
-    body_prompt = verify_forecasting_body_prompt.format(body=question.body)
-    body_verification = await answer(
-        body_prompt, response_model=VerificationResult, **kwargs
-    )
-
+    body_verification = await verify_body(question, **kwargs)
     if not body_verification.valid:
         return VerificationResult(
             reasoning=f"Body validation failed: {body_verification.reasoning}\nTitle was valid.",
@@ -439,15 +447,7 @@ async def verify_question_llm(
         )
 
     # Verify the full question (title, body, and resolution date)
-    full_prompt = verify_forecasting_question_prompt.format(
-        title=question.title,
-        body=question.body,
-        resolution_date=question.resolution_date,
-    )
-    full_verification = await answer(
-        full_prompt, response_model=VerificationResult, **kwargs
-    )
-
+    full_verification = await verify_full_question(question, **kwargs)
     if not full_verification.valid:
         return VerificationResult(
             reasoning=f"Full question validation failed: {full_verification.reasoning}\nTitle and body were valid individually.",
@@ -460,7 +460,6 @@ async def verify_question_llm(
         f"Body: {body_verification.reasoning}\n"
         f"Full: {full_verification.reasoning}"
     )
-
     return VerificationResult(reasoning=combined_reasoning, valid=True)
 
 

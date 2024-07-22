@@ -175,6 +175,45 @@ async def test_verify_market_probability_in_body():
         comment="The body should not contain market probabilities."
     )
 
+@pytest.mark.expensive
+@pytest.mark.asyncio
+async def test_verify_spacex_invalid_title():
+    spacex_valid_q = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="SpaceX is cool",
+        body="This question will resolve as Yes if SpaceX successfully lands at least one human on the surface of Mars before January 1, 2031. The landing must be confirmed by at least two reputable space agencies (e.g., NASA, ESA, Roscosmos) or through clear and untampered video evidence broadcast live from Mars.",
+        resolution_date=datetime(2030, 12, 31),
+        question_type="binary",
+        data_source="metaculus",
+    )
+    await assert_verification_result(spacex_valid_q, False)
+
+@pytest.mark.expensive
+@pytest.mark.asyncio
+async def test_verify_spacex_invalid_nonrelevant_body():
+    spacex_valid_q = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will SpaceX successfully land humans on Mars by 2030?",
+        body="This question will resolve as Yes if Trump successfully lands at least one human on the surface of Mars before January 1, 2031. The landing must be confirmed by at least two reputable space agencies (e.g., NASA, ESA, Roscosmos) or through clear and untampered video evidence broadcast live from Mars.",
+        resolution_date=datetime(2030, 12, 31),
+        question_type="binary",
+        data_source="metaculus",
+    )
+    await assert_verification_result(spacex_valid_q, False)
+
+@pytest.mark.expensive
+@pytest.mark.asyncio
+async def test_verify_spacex_invalid_date():
+    spacex_valid_q = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will SpaceX successfully land humans on Mars by 2030?",
+        body="This question will resolve as Yes if SpaceX successfully lands at least one human on the surface of Mars before January 1, 2031. The landing must be confirmed by at least two reputable space agencies (e.g., NASA, ESA, Roscosmos) or through clear and untampered video evidence broadcast live from Mars.",
+        resolution_date=datetime(2070, 12, 31),
+        question_type="binary",
+        data_source="metaculus",
+    )
+    await assert_verification_result(spacex_valid_q, False)
+
 @pytest.mark.asyncio
 async def test_verify_invalid_title_single_call(mocker):
     invalid_title_question = ForecastingQuestion(
@@ -187,7 +226,7 @@ async def test_verify_invalid_title_single_call(mocker):
     )
     
     # Mock the 'answer' function
-    mock_answer = mocker.patch('question_generators.question_formatter.answer', new_callable=mocker.AsyncMock)
+    mock_answer = mocker.patch('question_generators.question_formatter.verify_title', new_callable=mocker.AsyncMock)
     mock_answer.return_value = VerificationResult(valid=False, reasoning="Invalid title")
 
     # Call the function
