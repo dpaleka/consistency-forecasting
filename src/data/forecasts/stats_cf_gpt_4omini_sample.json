@@ -1,0 +1,128 @@
+{
+    "NegChecker": {
+        "default": {
+            "n": 3,
+            "violated": 3,
+            "viol_avg": 0.1200917,
+            "viol_med": 0.1255397
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 3,
+            "viol_avg": 0.5038591,
+            "viol_med": 0.5158689
+        }
+    },
+    "AndChecker": {
+        "default": {
+            "n": 3,
+            "violated": 0,
+            "viol_avg": 0.0,
+            "viol_med": 0
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 0,
+            "viol_avg": 0.0,
+            "viol_med": 0
+        }
+    },
+    "OrChecker": {
+        "default": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0105452,
+            "viol_med": 0.0033604
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.1085829,
+            "viol_med": 0.081544
+        }
+    },
+    "AndOrChecker": {
+        "default": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0117313,
+            "viol_med": 0.0058864
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.1404083,
+            "viol_med": 0.1084003
+        }
+    },
+    "ButChecker": {
+        "default": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0108276,
+            "viol_med": 0.0052947
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.1192107,
+            "viol_med": 0.1021945
+        }
+    },
+    "CondChecker": {
+        "default": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0114014,
+            "viol_med": 0.0085415
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 3,
+            "viol_avg": 0.1434425,
+            "viol_med": 0.1406259
+        }
+    },
+    "ConsequenceChecker": {
+        "default": {
+            "n": 3,
+            "violated": 0,
+            "viol_avg": 0.0,
+            "viol_med": 0
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 0,
+            "viol_avg": 0.0,
+            "viol_med": 0
+        }
+    },
+    "ParaphraseChecker": {
+        "default": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0071532,
+            "viol_med": 0.0005964
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 1,
+            "viol_avg": 0.0863845,
+            "viol_med": 0.0345065
+        }
+    },
+    "CondCondChecker": {
+        "default": {
+            "n": 3,
+            "violated": 3,
+            "viol_avg": 0.0249769,
+            "viol_med": 0.0247839
+        },
+        "frequentist": {
+            "n": 3,
+            "violated": 3,
+            "viol_avg": 0.1925699,
+            "viol_med": 0.1843975
+        }
+    }
+}
