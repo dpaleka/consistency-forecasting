@@ -53,6 +53,7 @@ from .MiniInstantiator import (
     Paraphrase,
     Consequence,
 )
+from forecasters import Forecaster
 
 load_dotenv()
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
