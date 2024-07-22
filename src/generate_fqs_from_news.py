@@ -15,6 +15,54 @@ from fq_from_news.fq_from_news_utils import (
 load_dotenv()
 
 
+def generate_forecasting_questions_from_news_sync(articles_download_path, args):
+    # Generating the rough intermediate forecasting questions
+    if args.only_gen_rough:
+        generate_rough_forecasting_data_sync(
+            articles_download_path,
+            args.start_date,
+            args.end_date,
+            args.num_pages,
+            args.num_articles,
+            args.rough_fq_gen_model_name,
+        )
+
+    # Generating the final forecasting questions
+    if args.only_gen_final:
+        generate_final_forecasting_question_sync(
+            args.start_date,
+            args.end_date,
+            args.num_pages,
+            args.num_articles,
+            args.rough_fq_gen_model_name,
+            args.final_fq_gen_model_name,
+        )
+
+
+async def generate_forecasting_questions(articles_download_path, args):
+    # Generating the rough intermediate forecasting questions
+    if args.only_gen_rough:
+        await generate_rough_forecasting_data(
+            articles_download_path,
+            args.start_date,
+            args.end_date,
+            args.num_pages,
+            args.num_articles,
+            args.rough_fq_gen_model_name,
+        )
+
+    # Generating the final forecasting questions
+    if args.only_gen_final:
+        await generate_final_forecasting_question(
+            args.start_date,
+            args.end_date,
+            args.num_pages,
+            args.num_articles,
+            args.rough_fq_gen_model_name,
+            args.final_fq_gen_model_name,
+        )
+
+
 def main(args: argparse.Namespace) -> None:
     """
     Pipeline for generating forecasting question using News API downloaded articles.
@@ -44,52 +92,9 @@ def main(args: argparse.Namespace) -> None:
         args.final_fq_gen_model_name = args.model_name
 
     if args.sync:
-        # Generating the rough intermediate forecasting questions
-        if args.only_gen_rough:
-            generate_rough_forecasting_data_sync(
-                articles_download_path,
-                args.start_date,
-                args.end_date,
-                args.num_pages,
-                args.num_articles,
-                args.rough_fq_gen_model_name,
-            )
-
-        # Generating the final forecasting questions
-        if args.only_gen_final:
-            generate_final_forecasting_question_sync(
-                args.start_date,
-                args.end_date,
-                args.num_pages,
-                args.num_articles,
-                args.rough_fq_gen_model_name,
-                args.final_fq_gen_model_name,
-            )
-
+        generate_forecasting_questions_from_news_sync(articles_download_path, args)
     else:
-        if args.only_gen_rough:
-            asyncio.run(
-                generate_rough_forecasting_data(
-                    articles_download_path,
-                    args.start_date,
-                    args.end_date,
-                    args.num_pages,
-                    args.num_articles,
-                    args.rough_fq_gen_model_name,
-                )
-            )
-
-        if args.only_gen_final:
-            asyncio.run(
-                generate_final_forecasting_question(
-                    args.start_date,
-                    args.end_date,
-                    args.num_pages,
-                    args.num_articles,
-                    args.rough_fq_gen_model_name,
-                    args.final_fq_gen_model_name,
-                )
-            )
+        asyncio.run(generate_forecasting_questions(articles_download_path, args))
 
 
 if __name__ == "__main__":

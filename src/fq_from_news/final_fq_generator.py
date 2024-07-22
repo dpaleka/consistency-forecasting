@@ -43,8 +43,8 @@ class FinalForecastingQuestionGenerator:
     {example_fq_2}
     ```
 
-    Here are the guidelines for a forecasting question to be "valid".
-    1. The questions should definitively answer YES or NO based on factual information from recent news articles, confirming the outcome without room for speculation. Ensure the resolution aligns with the article's information, treating True as "Yes" and False as "No".
+    Here are the guidelines for forecasting questions to be "valid".
+    1. Questions should definitively answer YES or NO based on factual information from recent news articles, confirming the outcome without room for speculation. Ensure the resolution aligns with the article's information, treating True as "Yes" and False as "No".
 
     2. Questions must accurately forecast binary outcomes using recent news articles. The resolution should be valid for all potential scenarios up to the resolution date. For questions involving numeric values where uncertainty exists (e.g., terms like "over" or "at least"), frame the question inversely. For instance, if the article states a value is above 47, valid questions could ask if the value will be above 40 (resolving to Yes) or below 45 (resolving to No).
 
@@ -55,14 +55,18 @@ class FinalForecastingQuestionGenerator:
     5. Questions should not be overly specific, where a simple algorithm could guess the answer based on the information provided without requiring a nuanced understanding of current events. 
        Overly specific questions have fallacies including:
         a. They focus on niche, relatively unknown individuals or events that are not widely covered in mainstream news, making the outcome predictable to algorithms monitoring niche sources.
-        b. They involve specific age-related outcomes which are personal and not widely reported unless the individual is highly publicized.
+        b. They involve specific outcomes which are personal and not widely reported unless the individual is highly publicized.
         c. They pertain to future events that are too far out or specific in nature, which are less likely to be covered extensively in current news, thus making the outcome easier to predict for algorithms.
        Examples of overly specific questions that are NOT valid include:
         a. Will an appeals court reject Garth Drabinsky's antitrust lawsuit against Actors' Equity by the end of this month?
         b. Will Pål Enger's death at age 57 be reported in major news outlets this month?
         c. Will Tarmo Peltokoski start his term as music director of the Hong Kong Philharmonic in the 2026-27 season?
 
+    6. Questions must remain accurate for all foreseeable futures until the specified resolution date. To avoid simplistic forecasting algorithm exploitation, the resolution date should be slightly vague. For instance, use broader timeframes like "by the end of July 2024" or "by mid-2024" instead of precise dates like "by July 31, 2024." 
+       However, if the article forming the question references a statement or announcement from an entity, you may use specific dates relevant to the article's timing (day or week) at your discretion. This ensures the resolution remains correct even if the entity later retracts or negates their announcement.
 
+    7. Questions should not have obvious answers that can be guessed easily by using common sense. 
+       
     If a forecasting question follows the above guidelines, it is said to be validated.
 
     From this, you must do the following based on the guidelines given above: 
