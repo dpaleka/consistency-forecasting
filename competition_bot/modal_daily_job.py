@@ -53,7 +53,7 @@ def run_daily_job():
         # Run the fast script
         process = subprocess.Popen(["python", "metaculus_competition_fast.py"])
 
-        # Wait for 1 hour
+        volume.commit()
         process.wait(timeout=3600)
     except subprocess.TimeoutExpired:
         # If it takes more than 1 hour, terminate the process
@@ -63,8 +63,8 @@ def run_daily_job():
         # Run the slow script
         subprocess.run(["python", "metaculus_competition_slow.py"])
 
-    # Commit changes to the volume
-    volume.commit()
+        # Commit changes to the volume
+        volume.commit()
 
 
 if __name__ == "__main__":
