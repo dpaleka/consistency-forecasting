@@ -141,6 +141,71 @@ resolution_date: 2030-12-31 00:00:00
 Question: {title}
 """
 
+# From Halawi et al.
+verify_forecasting_title_prompt = """
+I'm trying to assess the quality of an old forecasting dataset. Here is a forecasting question from the dataset: {question}. Please flag questions that don't sound like binary forecasting questions by outputting "flag". If it sounds like a reasonable question, output valid is True.
+
+Examples of strings that should be flagged:
+- Will I finish my homework tonight?
+- Metaculus party 2023
+- Will Hell freeze over?
+- Heads or tails
+- Will this video reach 100k views by the EOD?
+
+Examples of strings that should not be flagged:
+- Will Megan Markle and Prince Harry have a baby by the end of the year?
+- Will the Brain Preservation Foundation's Large Mammal preservation prize be won by Feb 9th, 2017?
+- Will there be more novel new drugs approved by the FDA in 2016 than in 2015?
+
+If a question is already resolved, that doesn't mean it should be flagged. When in doubt, mark it as "True".
+
+Your response should take the following structure:
+reasoning: {{ insert your concise thoughts here }}
+valid: {{ True/False }}
+"""
+
+verify_forecasting_body_prompt = """
+I'm assessing the quality of the body (resolution criteria) of a forecasting question. Here's the body of the question:
+
+{body}
+
+Please evaluate the body according to the following criteria:
+
+1. Clarity: The resolution criteria should be clear and unambiguous.
+2. Objectivity: The criteria should be objectively measurable or verifiable.
+3. Completeness: All necessary information for resolving the question should be included.
+4. Appropriateness: The criteria should not mention market probabilities, betting odds, or other inappropriate elements.
+
+Examples of valid bodies:
+- This question will resolve as Yes if Kanye West is elected and inaugurated as the president of the United States before January 1, 2030.
+- France has last won the FIFA World Cup in 2018. This question will resolve as Yes if, by December 31, 2026, the French national football team (senior, not youth or women's) has won either the FIFA World Cup or the UEFA European Championship.
+
+Examples of invalid bodies:
+- This question will resolve as Yes if it happens.
+- {{"resolution_criteria": "nini","background_info": "50% chance. Resolves NO if dismissed, dropped, or still in process.\n\nResolves YES if there is a settlement or judgement for either side.\n\nhttps://www.politico.com/news/2024/06/17/george-norcross-indictment-new-jersey-corruption-00163700\n\n[image]"}}
+- This question will resolve as Yes if, by December 31, 2030, a new strain of influenza virus is identified that meets the following criteria: 
+  - The strain must be genetically distinct from previously identified strains, with genetic differences significant enough to be considered a new strain by the World Health Organization (WHO) or a similar authoritative body.
+  - The strain must have demonstrated the ability to cause human infection and have the potential for sustained human-to-human transmission.
+  - The strain must be assessed by the WHO or a similar authoritative body as having pandemic potential, meaning it has a significant risk of causing widespread illness across multiple countries or continents.
+  In the absence of a formal declaration by the WHO or a similar authoritative body, a consensus among at least three leading infectious disease research institutions will be considered sufficient for resolution.
+
+Issues to flag:
+- Vague or subjective terms without clear definitions
+- Inconsistencies within the body itself
+- Missing crucial information needed for resolution
+- Multiple distinct pathways to resolution that aren't all important for the question
+- Any mention of market probabilities, betting odds, or similar concepts
+- Use of external links or images that are crucial for understanding the resolution criteria
+- Overly complex or ambiguous resolution criteria
+
+Your response should take the following structure:
+Reasoning: {{ insert your concise evaluation here, addressing the criteria above }}
+Valid: {{ True if the body meets all criteria, False otherwise }}
+
+Remember, when in doubt, it's better to flag potential issues.
+"""
+
+
 verify_forecasting_question_prompt = """\
 I want you to help me validate if a forecasting question (as on sites like Metaculus / Manifold) is well defined. 
 The question will ask about an event in the future or past.
@@ -156,6 +221,7 @@ I want you to validate according to the following criteria:
    - In case of events that could resolve at an uncertain date (will Warren Buffet die of cancer?), the resolution date should be such that it is highly likely the event will happen before it. In this case, the `body` should say the question resolves N/A if the resolution date comes and there was no resolution.
 
 - The resolution criteria should not be excessively vague or ambiguous, and should be consistent with the question.
+
 
 The format of your response should be:
 reasoning: [reasoning here]
@@ -345,18 +411,56 @@ async def from_string(
     )
 
 
-async def verify_question_llm(
-    question: ForecastingQuestion, current_date: datetime, **kwargs
-) -> VerificationResult:
-    prompt = verify_forecasting_question_prompt.format(
+async def verify_title(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    title_prompt = verify_forecasting_title_prompt.format(question=question.title)
+    return await answer(title_prompt, response_model=VerificationResult, **kwargs)
+
+async def verify_body(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    body_prompt = verify_forecasting_body_prompt.format(body=question.body)
+    return await answer(body_prompt, response_model=VerificationResult, **kwargs)
+
+async def verify_full_question(question: ForecastingQuestion, **kwargs) -> VerificationResult:
+    full_prompt = verify_forecasting_question_prompt.format(
         title=question.title,
         body=question.body,
         resolution_date=question.resolution_date,
-        current_date=current_date,
     )
-    print(f"kwargs: {kwargs}")
-    verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-    return verification
+    return await answer(full_prompt, response_model=VerificationResult, **kwargs)
+
+async def verify_question_llm(
+    question: ForecastingQuestion, current_date: datetime, **kwargs
+) -> VerificationResult:
+    # Verify the question title
+    title_verification = await verify_title(question, **kwargs)
+    if not title_verification.valid:
+        return VerificationResult(
+            reasoning=f"Title validation failed: {title_verification.reasoning}",
+            valid=False,
+        )
+
+    # Verify the question body
+    body_verification = await verify_body(question, **kwargs)
+    if not body_verification.valid:
+        return VerificationResult(
+            reasoning=f"Body validation failed: {body_verification.reasoning}\nTitle was valid.",
+            valid=False,
+        )
+
+    # Verify the full question (title, body, and resolution date)
+    full_verification = await verify_full_question(question, **kwargs)
+    if not full_verification.valid:
+        return VerificationResult(
+            reasoning=f"Full question validation failed: {full_verification.reasoning}\nTitle and body were valid individually.",
+            valid=False,
+        )
+
+    # If all verifications passed
+    combined_reasoning = (
+        f"Title: {title_verification.reasoning}\n"
+        f"Body: {body_verification.reasoning}\n"
+        f"Full: {full_verification.reasoning}"
+    )
+    return VerificationResult(reasoning=combined_reasoning, valid=True)
 
 
 async def verify_question_filter_known_smells(
@@ -402,19 +506,24 @@ async def verify_question_all_methods(
 async def verify_question(
     question: ForecastingQuestion, **kwargs
 ) -> VerificationResult:
-    verification = await verify_question_all_methods(question, **kwargs)
+    try:
+        verification = await verify_question_all_methods(question, **kwargs)
+        if write_verification:
+            filename = get_data_path() / "verification/question_verification.jsonl"
+            dict_to_write = question.model_dump_json()
+            verification_flat = (
+                dict_to_write[:-1]
+                + ","
+                + '"verification": '
+                + verification.model_dump_json()
+                + "}"
+            )
+            dict_to_write = verification_flat
+            await write_jsonl_async_from_str(filename, [dict_to_write], append=True)
 
-    if write_verification:
-        filename = get_data_path() / "verification/question_verification.jsonl"
-        dict_to_write = question.model_dump_json()
-        verification_flat = (
-            dict_to_write[:-1]
-            + ","
-            + '"verification": '
-            + verification.model_dump_json()
-            + "}"
+        return verification
+    except Exception as e:
+        print(f"Error during question verification: {e}")
+        return VerificationResult(
+            reasoning=f"Verification failed: {str(e)}", valid=False
         )
-        dict_to_write = verification_flat
-        await write_jsonl_async_from_str(filename, [dict_to_write], append=True)
-
-    return verification
