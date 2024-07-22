@@ -72,14 +72,22 @@ def main(args: argparse.Namespace) -> None:
     :returns: None
     """
 
-    # If neither is set, do both
-    if (not args.only_gen_rough) and (not args.only_gen_final):
+    # If neither is set and not asked to only download news
+    if (
+        (not args.only_gen_rough)
+        and (not args.only_gen_final)
+        and (not args.only_download_news)
+    ):
         args.only_gen_rough = args.only_gen_final = True
 
     # Download the articles (skips if already downloaded)
     articles_download_path = download_news_from_api(
         args.start_date, args.end_date, args.num_pages, os.getenv("NEWS_API_KEY")
     )
+
+    # If asked to only download news, return here
+    if args.only_download_news:
+        return
 
     # Set number of articles to be generated to a very large number if using all articles
     if args.num_articles == -1:
@@ -162,6 +170,14 @@ if __name__ == "__main__":
         default=False,
     )
     parser.add_argument(
+        "--only-download-news",
+        action="store_true",
+        help="""
+        Set to True to only download the news articles and undertake nno further steps.  
+        """,
+        default=False,
+    )
+    parser.add_argument(
         "--rough-fq-gen-model-name",
         type=str,
         help="""
@@ -184,6 +200,9 @@ if __name__ == "__main__":
     assert not (
         args.only_gen_final and args.only_gen_rough
     ), "To generate both the intermediate rough forecasting questions and the final ones, provide NO --only-* flags!"
+    assert not (
+        (args.only_gen_final or args.only_gen_rough) and args.only_download_news
+    ), "Set --only-download-news to only download news and not any of the further steps to form the FQs."
     assert (
         args.num_articles == -1 or args.num_articles > 0
     ), "Set a positive number or -1 for --num-articles!"
