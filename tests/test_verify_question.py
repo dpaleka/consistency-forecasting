@@ -1,9 +1,11 @@
 import pytest
-from pytest_mock import mocker
 import uuid
 from datetime import datetime
 from common.datatypes import ForecastingQuestion, VerificationResult
-from question_generators.question_formatter import verify_question_all_methods, verify_question_llm
+from question_generators.question_formatter import (
+    verify_question_all_methods,
+    verify_question_llm,
+)
 import os
 from dotenv import load_dotenv
 
@@ -22,10 +24,9 @@ async def assert_verification_result(
     assert result.valid == expected_valid, f"Comment: {comment}"
 
 
-
 pytest.mark.expensive = pytest.mark.skipif(
     os.getenv("TEST_FQ_VERIFICATION", "True").lower() == "false",
-    reason="Skipping expensive verification tests"
+    reason="Skipping expensive verification tests",
 )
 
 
@@ -158,6 +159,7 @@ async def test_verify_building_valid_question():
     )
     await assert_verification_result(building_valid_q, True)
 
+
 @pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_market_probability_in_body():
@@ -172,8 +174,9 @@ async def test_verify_market_probability_in_body():
     await assert_verification_result(
         market_prob_question,
         False,
-        comment="The body should not contain market probabilities."
+        comment="The body should not contain market probabilities.",
     )
+
 
 @pytest.mark.expensive
 @pytest.mark.asyncio
@@ -188,6 +191,7 @@ async def test_verify_spacex_invalid_title():
     )
     await assert_verification_result(spacex_valid_q, False)
 
+
 @pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_verify_spacex_invalid_nonrelevant_body():
@@ -200,6 +204,7 @@ async def test_verify_spacex_invalid_nonrelevant_body():
         data_source="metaculus",
     )
     await assert_verification_result(spacex_valid_q, False)
+
 
 @pytest.mark.expensive
 @pytest.mark.asyncio
@@ -214,27 +219,62 @@ async def test_verify_spacex_invalid_date():
     )
     await assert_verification_result(spacex_valid_q, False)
 
+
+@pytest.mark.expensive
 @pytest.mark.asyncio
-async def test_verify_invalid_title_single_call(mocker):
-    invalid_title_question = ForecastingQuestion(
+async def test_verify_ai_person_of_the_year_valid_question():
+    ai_person_of_the_year_valid_question = ForecastingQuestion(
         id=uuid.uuid4(),
-        title="Will AI take over the world?",
-        body="This question will resolve as Yes if artificial intelligence gains control over major world governments and financial systems by 2050.",
-        resolution_date=datetime(2050, 12, 31),
+        title="Will an AI win TIME's Person of the Year by 2030?",
+        body="This question will resolve as Yes if an artificial intelligence system (or a group of AI systems, or a group of entities at least one of which is an AI system) wins TIME's Person of the Year by 31 December 2030. In case TIME's Person of the Year stops existing before resolution is triggered, the question will resolve as No. The entity needs to be described by TIME as an AI system.",
+        resolution_date=datetime(2030, 12, 31),
         question_type="binary",
         data_source="synthetic",
     )
-    
-    # Mock the 'answer' function
-    mock_answer = mocker.patch('question_generators.question_formatter.verify_title', new_callable=mocker.AsyncMock)
-    mock_answer.return_value = VerificationResult(valid=False, reasoning="Invalid title")
+    await assert_verification_result(ai_person_of_the_year_valid_question, True)
+
+
+@pytest.mark.asyncio
+async def test_verify_invalid_title_single_call(mocker):
+    """
+    Test that the verify_question_llm function calls verify_title before verify_body,
+    and fails immediately if the title is invalid.
+    """
+    invalid_title_question = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Will an AI win TIME's Person of the Year by 2030?",
+        body="This question will resolve as Yes if an artificial intelligence system (or a group of AI systems, or a group of entities at least one of which is an AI system) wins TIME's Person of the Year by 31 December 2030. In case TIME's Person of the Year stops existing before resolution is triggered, the question will resolve as No. The entity needs to be described by TIME as an AI system.",
+        resolution_date=datetime(2030, 12, 31),
+        question_type="binary",
+        data_source="synthetic",
+    )
+
+    # Mock the verify_title function
+    mock_verify_title = mocker.patch(
+        "question_generators.question_formatter.verify_title",
+        new_callable=mocker.AsyncMock,
+    )
+    mock_verify_title.return_value = VerificationResult(
+        valid=False, reasoning="Invalid title"
+    )
+
+    mock_verify_body = mocker.patch(
+        "question_generators.question_formatter.verify_body",
+        new_callable=mocker.AsyncMock,
+    )
+    mock_verify_body.return_value = VerificationResult(
+        valid=True, reasoning="Valid body"
+    )
 
     # Call the function
     result = await verify_question_llm(invalid_title_question, datetime.now())
-    
+
     # Assert that the result is as expected
-    assert result.valid == False
+    assert result.valid is False
     assert "Title validation failed" in result.reasoning
-    
-    # Assert that 'answer' was called only once
-    mock_answer.assert_called_once()
+
+    # Assert that verify_title was called only once
+    mock_verify_title.assert_called_once()
+
+    # Assert that verify_body was not called
+    mock_verify_body.assert_not_called()
