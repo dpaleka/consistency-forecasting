@@ -5,6 +5,7 @@ src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
 src/data/forecasts/A_*_most_recent/
 scripts/references/
+src/*see_eval.txt
 
 
 # Local
