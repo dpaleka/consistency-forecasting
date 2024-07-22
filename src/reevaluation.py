@@ -286,6 +286,9 @@ paths_gpt_4o = [
     "BasicForecaster_05-30-23-27",  # real qs
     "BasicForecaster_05-30-23-26",  # synthetic qs
 ]
+paths_cf_gpt_4omini_sample = [
+    "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
+]
 
 paths = paths_adv + paths_gpt_3_5 + paths_gpt_4o
 metrics = ["default", "frequentist"]
@@ -295,12 +298,22 @@ if __name__ == "__main__":
     append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
     append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=True, write=True)
     append_violations_all(paths_gpt_4o, metrics=metrics, recalc=True, write=True)
+    append_violations_all(
+        paths_cf_gpt_4omini_sample, metrics=metrics, recalc=True, write=True
+    )
     print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
     print(
         get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json")
     )
     print(
         get_stats_from_paths(paths_gpt_4o, metrics=metrics, write="stats_gpt_4o.json")
+    )
+    print(
+        get_stats_from_paths(
+            paths_cf_gpt_4omini_sample,
+            metrics=metrics,
+            write="stats_cf_gpt_4omini_sample.json",
+        )
     )
     # checker_viols, checker_checks = append_violations_all(
     #     paths_adv, metrics=metrics, recalc=False, write=False
