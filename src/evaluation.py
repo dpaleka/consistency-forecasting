@@ -1,5 +1,3 @@
-import sys
-import io
 import os
 import json
 import asyncio
@@ -33,8 +31,6 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -406,6 +402,7 @@ def main(
     all_stats = {}
 
     if use_threads:
+        print("Using threads")
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=len(checkers.keys())
         ) as executor:
