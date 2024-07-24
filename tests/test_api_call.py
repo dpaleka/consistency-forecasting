@@ -1,6 +1,7 @@
 import pytest
 import os
 from common.datatypes import PlainText
+from common.perscache import register_model_for_cache
 from common.llm_utils import (
     answer,
     answer_sync,
@@ -11,6 +12,9 @@ from pydantic import BaseModel
 class UserInfo(BaseModel):
     name: str
     age: int
+
+
+register_model_for_cache(UserInfo)
 
 
 @pytest.mark.asyncio

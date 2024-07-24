@@ -50,7 +50,21 @@ os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
-global_llm_semaphore = asyncio.Semaphore(max_concurrent_queries)
+
+
+def reset_global_semaphore():
+    """
+    Use if your code uses asyncio.run()
+    """
+    global global_llm_semaphore
+    global_llm_semaphore = asyncio.Semaphore(max_concurrent_queries)
+    print(
+        f"Resetting global semaphore, max concurrent queries: {max_concurrent_queries}"
+    )
+
+
+reset_global_semaphore()
+
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
