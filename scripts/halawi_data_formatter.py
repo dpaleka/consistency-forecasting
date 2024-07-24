@@ -54,7 +54,7 @@ with open(input_file, "r") as f:
     data = json.load(f)
 
 # Generate the output file name
-output_file = os.path.splitext(input_file)[0] + ".jsonl"
+output_file = os.path.splitext(input_file)[0] + "_formatted.jsonl"
 
 # Convert the data and write to the output file
 with open(output_file, "w") as f:
