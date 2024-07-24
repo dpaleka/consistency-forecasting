@@ -1,5 +1,3 @@
-import sys
-import io
 import os
 import json
 import asyncio
@@ -24,6 +22,8 @@ from static_checks.Checker import (
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
+import common.llm_utils  # noqa
+from common.llm_utils import reset_global_semaphore
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
@@ -31,8 +31,6 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -156,6 +154,7 @@ def process_check(
             match forecaster_class:
                 case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster":
                     if is_async:
+                        reset_global_semaphore()
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
@@ -177,6 +176,7 @@ def process_check(
                 case "AdvancedForecaster":
                     # we don't pass model to the test function, it's specified in the config
                     if is_async:
+                        reset_global_semaphore()
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
@@ -402,6 +402,7 @@ def main(
     all_stats = {}
 
     if use_threads:
+        print("Using threads")
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=len(checkers.keys())
         ) as executor:
