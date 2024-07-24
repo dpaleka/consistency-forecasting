@@ -17,8 +17,8 @@ from forecasters import (
     AdvancedForecaster,
     BasicForecaster,
     COT_Forecaster,
-    ConsistentForecaster,
 )
+from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
     choose_checkers,
