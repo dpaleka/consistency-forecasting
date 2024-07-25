@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-from simple_parsing import ArgumentParser
 import argparse
 import os
 import asyncio
@@ -105,43 +104,79 @@ def main(args: argparse.Namespace) -> None:
         asyncio.run(generate_forecasting_questions(articles_download_path, args))
 
 
-if __name__ == "__main__":
-    parser = ArgumentParser()
+def get_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
 
+    # News source
     parser.add_argument(
-        "--start-date",
-        type=parse_date,
-        help="Start date for downloading news in YYYY-MM-DD format",
-        required=True,
+        "--news-source",
+        choices=["NewsAPI", "sentinel"],
+        default="NewsAPI",
+        help="Source of news data",
     )
-    parser.add_argument(
-        "--end-date",
-        type=parse_date,
-        help="End date for downloading news in YYYY-MM-DD format",
-        required=True,
-    )
-    parser.add_argument(
-        "--num-pages",
-        type=int,
-        help="""
-        News API returns data in a paginated form. We set the number of articles downloaded per page to a 100 (maximum),
-        By default, we only download the first page. 
 
-        Set to the number of pages to be downloaded. Set to -1 to download all pages.
-        """,
-        default=1,
+    # Placeholder for conditional arguments
+    conditional_args = argparse.Namespace()
+    conditional_args.NewsAPI = []
+    conditional_args.sentinel = []
+
+    # NewsAPI arguments
+    conditional_args.NewsAPI.append(
+        parser.add_argument(
+            "--num-pages",
+            type=int,
+            help="""
+            Use with NewsAPI.
+
+            News API returns data in a paginated form. We set the number of articles downloaded per page to a 100 (maximum),
+            By default, we only download the first page. 
+
+            Set to the number of pages to be downloaded. Set to -1 to download all pages.
+            """,
+            default=1,
+        )
     )
-    parser.add_argument(
-        "--num-articles",
-        type=int,
-        help="""
-        Set to the number of downloaded articles to be used to form the rough intermediate FQ data. 
-        Set to -1 to use all articles.
-        
-        In case of generating only final FQs, set to number used to generate rough FQ data. 
-        """,
-        default=-1,
+    conditional_args.NewsAPI.append(
+        parser.add_argument(
+            "--num-articles",
+            type=int,
+            help="""
+            Use with NewsAPI.
+
+            Set to the number of downloaded articles to be used to form the rough intermediate FQ data. 
+            Set to -1 to use all articles.
+            
+            In case of generating only final FQs, set to number used to generate rough FQ data. 
+            """,
+            default=-1,
+        )
     )
+    conditional_args.NewsAPI.append(
+        parser.add_argument(
+            "--start-date",
+            type=parse_date,
+            help="""
+            Use with NewsAPI.
+
+            Start date for downloading news in YYYY-MM-DD format.
+            """,
+            required=True,
+        )
+    )
+    conditional_args.NewsAPI.append(
+        parser.add_argument(
+            "--end-date",
+            type=parse_date,
+            help="""
+            Use with NewsAPI.
+
+            End date for downloading news in YYYY-MM-DD format.
+            """,
+            required=True,
+        )
+    )
+
+    # Model arguments
     parser.add_argument(
         "--model-name",
         type=str,
@@ -149,40 +184,11 @@ if __name__ == "__main__":
         default="gpt-4o-2024-05-13",
     )
     parser.add_argument(
-        "--sync",
-        action="store_true",
-        help="Set to True if FQs should be generated WITHOUT leverging aysnc (parallel) behaviour.",
-        default=False,
-    )
-    parser.add_argument(
-        "--only-gen-rough",
-        action="store_true",
-        help="Set to True if only the intermediate rough forecasting questions should be generated and downloaded.",
-        default=False,
-    )
-    parser.add_argument(
-        "--only-gen-final",
-        action="store_true",
-        help="""
-        Set to True if the intermediate rough forecasting questions have already been downloaded 
-        and you wish to create the final forecasting questions from them.  
-        """,
-        default=False,
-    )
-    parser.add_argument(
-        "--only-download-news",
-        action="store_true",
-        help="""
-        Set to True to only download the news articles and undertake nno further steps.  
-        """,
-        default=False,
-    )
-    parser.add_argument(
         "--rough-fq-gen-model-name",
         type=str,
         help="""
         Overrides the value set by --model-name to use a separate model for generating 
-        rough intermediuate forecasting question data.
+        rough intermediate forecasting question data.
         """,
         default="",
     )
@@ -196,13 +202,58 @@ if __name__ == "__main__":
         default="",
     )
 
+    # Sync enabling argument
+    parser.add_argument(
+        "--sync",
+        action="store_true",
+        help="Set to True if FQs should be generated WITHOUT leveraging async (parallel) behaviour.",
+        default=False,
+    )
+
+    # Arguments to permit exclusive actions
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "--only-gen-rough",
+        action="store_true",
+        help="Set to True if only the intermediate rough forecasting questions should be generated and downloaded.",
+        default=False,
+    )
+    group.add_argument(
+        "--only-gen-final",
+        action="store_true",
+        help="""
+        Set to True if the intermediate rough forecasting questions have already been downloaded 
+        and you wish to create the final forecasting questions from them.  
+        """,
+        default=False,
+    )
+    group.add_argument(
+        "--only-download-news",
+        action="store_true",
+        help="""
+        Set to True to only download the news articles and undertake no further steps.  
+        """,
+        default=False,
+    )
+
     args = parser.parse_args()
-    assert not (
-        args.only_gen_final and args.only_gen_rough
-    ), "To generate both the intermediate rough forecasting questions and the final ones, provide NO --only-* flags!"
-    assert not (
-        (args.only_gen_final or args.only_gen_rough) and args.only_download_news
-    ), "Set --only-download-news to only download news and not any of the further steps to form the FQs."
+
+    # Conditionally add arguments based on news_source
+    if args.news_source == "NewsAPI":
+        print("Using NewsAPI to download news")
+        for arg in conditional_args.NewsAPI:
+            parser.add_argument(arg)
+    else:
+        raise NotImplementedError("Sentinel scraping has not been implemented yet")
+
+    args = parser.parse_args()
+
+    return args
+
+
+if __name__ == "__main__":
+    args = get_args()
+
     assert (
         args.num_articles == -1 or args.num_articles > 0
     ), "Set a positive number or -1 for --num-articles!"
