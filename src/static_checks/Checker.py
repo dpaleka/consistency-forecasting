@@ -43,7 +43,6 @@ from .checker_prompts import (
     consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
-from forecasters.forecaster import Forecaster
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -601,7 +600,13 @@ class Checker(ABC):
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
-        return self.max_min_arbitrage(answers, **kwargs)[1]
+        try:
+            return self.max_min_arbitrage(answers, **kwargs)[1]
+        except ZeroDivisionError:
+            return 123
+        except Exception as e:
+            print(f"Error in arbitrage_violation: {e}")
+            return 148
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
