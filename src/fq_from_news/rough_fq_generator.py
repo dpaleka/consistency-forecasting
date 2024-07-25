@@ -12,7 +12,7 @@ class RoughForecastingQuestionGenerator:
     """
 
     news_api_rough_fq_save_dir = (
-        "./data/news_feed_fq_generation/rough_forecasting_question_data"
+        "./data/news_feed_fq_generation/news_api/rough_forecasting_question_data"
     )
     # Create the save path directory
     os.makedirs(news_api_rough_fq_save_dir, exist_ok=True)

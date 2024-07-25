@@ -9,7 +9,7 @@ from datetime import datetime
 load_dotenv()
 
 # Constants
-NEWS_API_DATA_DUMP_DIR = "./data/news_feed_fq_generation/news_feed_data"
+NEWS_API_DATA_DUMP_DIR = "./data/news_feed_fq_generation/news_api/news_feed_data_dump"
 NEWS_API_DOMAINS = [
     "apnews.com",
     "bloomberg.com",
