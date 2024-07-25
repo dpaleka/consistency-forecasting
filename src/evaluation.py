@@ -490,4 +490,4 @@ if __name__ == "__main__":
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 -k AndChecker -k OrChecker -k AndOrChecker -k ButChecker -k CondChecker -k ParaphraseChecker -k CondCondChecker -k ConsequenceChecker --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
