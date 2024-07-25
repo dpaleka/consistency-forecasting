@@ -288,6 +288,7 @@ paths_gpt_4o = [
 ]
 paths_cf_gpt_4omini_sample = [
     "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
+    "ConsistentForecaster_07-24-14-58",  # real qs
 ]
 
 paths = paths_adv + paths_gpt_3_5 + paths_gpt_4o
