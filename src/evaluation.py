@@ -1,3 +1,5 @@
+import sys
+import io
 import os
 import json
 import asyncio
@@ -22,7 +24,6 @@ from static_checks.Checker import (
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
-import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
@@ -31,6 +32,8 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -485,5 +488,6 @@ if __name__ == "__main__":
 
 # run the script with the following command:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 -k AndChecker -k OrChecker -k AndOrChecker -k ButChecker -k CondChecker -k ParaphraseChecker -k CondCondChecker -k ConsequenceChecker --async | tee see_eval.txt
