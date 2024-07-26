@@ -7,7 +7,8 @@ from common.datatypes import (
     SyntheticTagQuestion,
     SyntheticRelQuestion,
 )
-from question_generators import question_formatter
+import fq_verification.question_verifier as question_verifier
+import fq_generation.fq_body_generator as fq_body_generator
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
 from common.path_utils import get_data_path, get_scripts_path
@@ -42,7 +43,7 @@ async def validate_and_format_question(
     fill_in_body: bool = False,
 ) -> Optional[ForecastingQuestion]:
     for i in range(2):
-        forecasting_question = await question_formatter.from_string(
+        forecasting_question = await fq_body_generator.from_string(
             question["title"],
             data_source=question["data_source"],
             question_type=question.get("question_type"),
@@ -55,7 +56,7 @@ async def validate_and_format_question(
             fill_in_body=fill_in_body,
         )
         if verify:
-            verification = await question_formatter.verify_question(
+            verification = await question_verifier.verify_question(
                 forecasting_question, model=model
             )
             print(f"Verification: {verification}")
@@ -82,7 +83,7 @@ async def validate_and_format_synthetic_question(
     else:
         metadata = {"tags": question.tags, "category": question.category}
     for i in range(2):
-        forecasting_question = await question_formatter.from_string(
+        forecasting_question = await fq_body_generator.from_string(
             question.title,
             data_source="synthetic",
             question_type="binary",
@@ -91,9 +92,7 @@ async def validate_and_format_synthetic_question(
             **kwargs,
         )
         if verify:
-            verification = await question_formatter.verify_question(
-                forecasting_question
-            )
+            verification = await question_verifier.verify_question(forecasting_question)
             if verification.valid:
                 break
             else:

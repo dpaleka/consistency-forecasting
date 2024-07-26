@@ -2,7 +2,7 @@ import pytest
 import uuid
 from datetime import datetime
 from common.datatypes import ForecastingQuestion, VerificationResult
-from question_generators.question_formatter import (
+from fq_verification.question_verifier import (
     verify_question_all_methods,
     verify_question_llm,
 )
@@ -251,7 +251,7 @@ async def test_verify_invalid_title_single_call(mocker):
 
     # Mock the verify_title function
     mock_verify_title = mocker.patch(
-        "question_generators.question_formatter.verify_title",
+        "fq_verification.question_verifier.verify_title",
         new_callable=mocker.AsyncMock,
     )
     mock_verify_title.return_value = VerificationResult(
@@ -259,7 +259,7 @@ async def test_verify_invalid_title_single_call(mocker):
     )
 
     mock_verify_body = mocker.patch(
-        "question_generators.question_formatter.verify_body",
+        "fq_verification.question_verifier.verify_body",
         new_callable=mocker.AsyncMock,
     )
     mock_verify_body.return_value = VerificationResult(

@@ -20,7 +20,7 @@ from common.datatypes import (
     ForecastingQuestion_stripped,
 )
 from common.perscache import register_models_for_cache
-from question_generators import question_formatter
+import fq_verification.question_verifier as question_verifier
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
@@ -188,7 +188,7 @@ class MiniInstantiator(ABC):
                         data_source=self.data_source(base_sentences),
                         resolution=self.resolution(base_sentences)[k],
                     )
-                    validate_result = await question_formatter.verify_question(
+                    validate_result = await question_verifier.verify_question(
                         fqs[k], **kwargs
                     )
                     valid[k] = validate_result.valid
