@@ -39,7 +39,7 @@ def read_json_or_jsonl(file_path: Path):
 async def validate_and_format_question(
     question: dict,
     verify: bool = True,
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
 ) -> Optional[ForecastingQuestion]:
     for i in range(2):
@@ -109,7 +109,7 @@ async def process_synthetic_questions_from_file(
     file_path: Path,
     output_path: Path,
     max_questions: Optional[int] = None,
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
     concurrent_queries=15,
 ) -> List[ForecastingQuestion]:
@@ -149,7 +149,7 @@ async def process_synthetic_questions_from_file(
 async def process_questions_from_file(
     file_path: Path,
     max_questions: Optional[int],
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
     concurrent_queries: int = 15,
 ) -> List[ForecastingQuestion]:
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         "--model",
         "-M",
         type=str,
-        default="gpt-4o-2024-05-13",
+        default="gpt-4o-mini-2024-07-18",
         help="Model to use",
     )
     parser.add_argument(

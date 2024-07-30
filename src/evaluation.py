@@ -259,7 +259,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-2024-05-13",
+    default="gpt-4o-mini-2024-07-18",
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -485,4 +485,4 @@ if __name__ == "__main__":
 
 # run the script with the following command:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt

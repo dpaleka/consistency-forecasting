@@ -1288,7 +1288,9 @@ class Consequence(MiniInstantiator):
             body=instantiate_output.body,
             resolution_date=instantiate_output.resolution_date,
             question_type=p.question_type,
-            metadata={**p.metadata, "consequence_type": "quantity"},
+            metadata=({**p.metadata} if p.metadata else {}).update(
+                {"consequence_type": "quantity"}
+            ),
         )
         return self.OutputFormat(cons_P=forecasting_question)
 

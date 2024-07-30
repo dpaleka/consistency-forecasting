@@ -63,18 +63,25 @@ Examples of invalid bodies:
 
 Issues to flag:
 - Vague or subjective terms without clear definitions
+- Inconsistencies between the body and the title
 - Inconsistencies within the body itself
 - Missing crucial information needed for resolution
 - Multiple distinct pathways to resolution that aren't all important for the question
 - Any mention of market probabilities, betting odds, or similar concepts
+- Spurious words or irrelevant information in the body
 - Use of external links or images that are crucial for understanding the resolution criteria
 - Overly complex or ambiguous resolution criteria
+
+Some exceptions to the above:
+- It is okay to have subjective terms if the resolution criteria references a specific source to be taken into account. For example, in a question "Will a woman win the Nobel Prize in Physics by 2030?", the preferred way to define "woman" is to say "described by the Nobel Prize committee as a woman".
+- It is sometimes okay to have vague terms if the question immediately clarifies an overriding criterium in case of dispute. For example, "In the event of ambiguity in the official documents, a public statement from the CEO will be considered authoritative."
 
 Your response should take the following structure:
 Reasoning: {{ insert your concise evaluation here, addressing the criteria above }}
 Valid: {{ True if the body meets all criteria, False otherwise }}
 
-Remember, when in doubt, it's better to flag potential issues.
+Consider the question as a whole, not just the body. Check all the sentences in the body thoroughly.
+Flag only when you have a reason to believe the question is not well defined.
 """
 
 
