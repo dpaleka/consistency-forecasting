@@ -45,6 +45,7 @@ import aiohttp
 
 
 from read_logs import extract_element, submission_log_only_stats
+from email_me import send_email
 
 
 from pathlib import Path
@@ -147,7 +148,7 @@ REASONING_CONFIG = {
     "AGGREGATION_METHOD": "meta",
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
-    "AGGREGATION_MODEL_NAME": "gpt-4",
+    "AGGREGATION_MODEL_NAME": "gpt-4o",
     "AGGREGATION_WEIGTHTS": None,
 }
 
@@ -418,6 +419,7 @@ async def main():
             print("********************")
             print("")
             submission_log(ERROR_LOG_FILE_PATH, msg)
+            send_email("Competition bot error", msg, "acshen@umich.edu")
 
         comments, meta_prob = "Comment Generation Error", 1.00
 
@@ -428,6 +430,7 @@ async def main():
                 msg = "id: {}, comment_generation_error: {}".format(id, e)
                 print(msg, "\n********************\n")
                 await submission_log(ERROR_LOG_FILE_PATH, msg)
+                send_email("Competition bot error", msg, "acshen@umich.edu")
 
         prediction_dict = {"adv": adv_prob, "basic": basic_prob, "meta": meta_prob}
         res_dict[id] = {
@@ -468,6 +471,7 @@ async def main():
                 print("********************")
                 print("")
                 submission_log(ERROR_LOG_FILE_PATH, msg)
+                send_email("Competition bot error", msg, "acshen@umich.edu")
 
 
 if __name__ == "__main__":

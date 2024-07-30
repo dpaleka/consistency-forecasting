@@ -16,7 +16,7 @@ src_path = root_path / "src"
 env = {
     "NO_CACHE": "True",
     "MAX_CONCURRENT_QUERIES": "20",
-    "USE_OPENROUTER": "True",
+    "USE_OPENROUTER": "False",
     "SKIP_NEWSCATCHER": "True",
 }
 
