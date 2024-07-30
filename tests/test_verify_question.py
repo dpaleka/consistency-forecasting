@@ -26,7 +26,7 @@ async def assert_verification_result(
 
 
 pytest.mark.expensive = pytest.mark.skipif(
-    os.getenv("TEST_FQ_VERIFICATION", "True").lower() == "false",
+    os.getenv("TEST_FQ_VERIFICATION", "False").lower() == "false",
     reason="Skipping expensive verification tests",
 )
 
