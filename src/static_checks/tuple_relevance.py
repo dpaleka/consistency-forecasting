@@ -10,7 +10,7 @@ import jsonlines
 import random
 import functools
 
-MODEL_RELEVANCE = "gpt-4o-mini"
+MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )

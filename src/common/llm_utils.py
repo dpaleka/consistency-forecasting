@@ -675,7 +675,7 @@ async def answer(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
-        "model": "gpt-4o-mini",
+        "model": "gpt-4o-mini-2024-07-18",
         "temperature": 0.5,
         "response_model": PlainText,
     }
@@ -777,7 +777,7 @@ async def parallelized_call(
 async def get_embedding(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=True)
@@ -789,7 +789,7 @@ async def get_embedding(
 def get_embeddings_sync(
     texts: list[str],
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[list[float]]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=False)
@@ -801,7 +801,7 @@ def get_embeddings_sync(
 def get_embedding_sync(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-4o-mini",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     return get_embeddings_sync([text], embedding_model, model)[0]
 

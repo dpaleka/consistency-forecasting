@@ -158,9 +158,9 @@ test_fq_five = ForecastingQuestion(
 
 @pytest.mark.asyncio
 async def test_consistent_forecaster_call_async(consistent_forecaster):
-    call_kwargs = {"model": "gpt-4o-mini"}
+    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {
-        "model": "gpt-4o-mini"
+        "model": "gpt-4o-mini-2024-07-18"
     }  # doesn't pass, unsure where to provide model
     prob = await consistent_forecaster.call_async(
         test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
@@ -173,8 +173,8 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
 
 
 def test_consistent_forecaster_call_sync(consistent_forecaster):
-    call_kwargs = {"model": "gpt-4o-mini"}
-    bq_func_kwargs = {"model": "gpt-4o-mini"}
+    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     prob = consistent_forecaster.call(
         test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
     )
@@ -190,7 +190,7 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini"}
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions
@@ -227,7 +227,7 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
 
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini"}
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions
@@ -265,9 +265,9 @@ async def test_consistent_forecaster_more_consistent_async(
 ):
     # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
 
-    call_kwargs = {"model": "gpt-4o-mini"}
-    instantiation_kwargs = {"model": "gpt-4o-mini"}
-    bq_func_kwargs = {"model": "gpt-4o-mini"}
+    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions
@@ -311,9 +311,9 @@ async def test_consistent_forecaster_more_consistent_async(
 def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single):
     # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
 
-    call_kwargs = {"model": "gpt-4o-mini"}
-    instantiation_kwargs = {"model": "gpt-4o-mini"}
-    bq_func_kwargs = {"model": "gpt-4o-mini"}
+    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
     checker = consistent_forecaster_single.checks[0]
     n = checker.num_base_questions

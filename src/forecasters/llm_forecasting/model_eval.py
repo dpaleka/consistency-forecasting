@@ -65,7 +65,7 @@ def get_response_from_model(
 
 async def get_async_response(
     prompt,
-    model_name="gpt-3.5-turbo-1106",
+    model_name="gpt-4o-mini-2024-07-18",
     temperature=0.0,
     max_tokens=4000,
 ):
