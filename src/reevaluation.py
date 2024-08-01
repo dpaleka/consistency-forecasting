@@ -40,6 +40,24 @@ checkers: dict[str, Checker] = {
     "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
 }
 
+paths = {
+    "adv": [
+        "AdvancedForecaster_05-30-02-55",  # real qs
+        "AdvancedForecaster_05-30-11-34",  # synthetic qs
+    ],
+    "gpt_3_5": [
+        "BasicForecaster_05-31-12-24",  # real qs
+        "BasicForecaster_05-31-12-18",  # synthetic qs
+    ],
+    "gpt_4o": [
+        "BasicForecaster_05-30-23-27",  # real qs
+        "BasicForecaster_05-30-23-26",  # synthetic qs
+    ],
+    "cf_gpt_4omini_sample": [
+        "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
+    ],
+}
+
 
 def append_violation(
     checker: Checker, tuple: dict[str, Any], metric=None
@@ -281,33 +299,41 @@ def get_stats_from_paths(paths, metrics=None, write: Path | None = None):
             f.write(json.dumps(stats, indent=4))
 
 
-paths_adv = [
-    "AdvancedForecaster_05-30-02-55",  # real qs
-    "AdvancedForecaster_05-30-11-34",  # synthetic qs
-]
-paths_gpt_3_5 = [
-    "BasicForecaster_05-31-12-24",  # real qs
-    "BasicForecaster_05-31-12-18",  # synthetic qs
-]
-paths_gpt_4o = [
-    "BasicForecaster_05-30-23-27",  # real qs
-    "BasicForecaster_05-30-23-26",  # synthetic qs
-]
-paths_cf_gpt_4omini_sample = [
-    "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
-]
-
-paths = paths_adv + paths_gpt_3_5 + paths_gpt_4o
-metrics = ["default", "frequentist"]
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process violations for checkers.")
     parser.add_argument(
+        "-m",
+        "--metrics",
+        nargs="*",
+        help="Metrics to calculate violations for; by default ['default', 'frequentist']",
+    )
+    parser.add_argument(
+        "-f",
+        "--forecasters",
+        nargs="*",
+        help=(
+            "Forecasters to calculate violations for; by default "
+            "['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini_sample']"
+        ),
+    )
+    parser.add_argument(
+        "-c",
+        "--checkers",
+        nargs="*",
+        help=(
+            "Checkers to calculate violations for; by default "
+            "['NegChecker', 'AndChecker', 'OrChecker', 'AndOrChecker', 'ButChecker', 'CondChecker', "
+            "'ConsequenceChecker', 'ParaphraseChecker', 'CondCondChecker']"
+        ),
+    )
+    parser.add_argument(
         "-r", "--recalculate", action="store_true", help="Recalculate violations"
     )
+    parser.add_argument(
+        "-x", "--reset", action="store_true", help="Reset all appended violations"
+    )
     args = parser.parse_args()
-
+    
     RECALC: bool = args.recalculate
 
     print(f"Recalculating violations: {RECALC}")
@@ -321,48 +347,48 @@ if __name__ == "__main__":
             print("Operation cancelled.")
             exit()
 
-    # TODO add some notifications about what files will get modified, and y/n. ideally together with the edits that introduces cli args to this
-    append_violations_all(paths_adv, metrics=metrics, recalc=RECALC, write=True)
-    append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=RECALC, write=True)
-    append_violations_all(paths_gpt_4o, metrics=metrics, recalc=RECALC, write=True)
-    append_violations_all(
-        paths_cf_gpt_4omini_sample, metrics=metrics, recalc=RECALC, write=True
-    )
-    print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
-    print(
-        get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json")
-    )
-    print(
-        get_stats_from_paths(paths_gpt_4o, metrics=metrics, write="stats_gpt_4o.json")
-    )
-    print(
-        get_stats_from_paths(
-            paths_cf_gpt_4omini_sample,
-            metrics=metrics,
-            write="stats_cf_gpt_4omini_sample.json",
+    if args.metrics:
+        metrics = args.metrics
+    else:
+        metrics = ["default", "frequentist"]
+    
+    if args.forecasters:
+        paths = {k: v for k, v in paths.items() if k in args.forecasters}
+    
+    if args.checkers:
+        checkers = {k: v for k, v in checkers.items() if k in args.checkers}
+
+    if args.reset:
+        reset_all_appended_viols(
+            [
+                FORECASTS_PATH / path / checker.name
+                for path in paths.values()
+                for checker in checkers.values()
+            ]
         )
-    )
-    checker_viols, checker_checks = append_violations_all(
-        paths_adv, metrics=metrics, recalc=RECALC, write=False
-    )
-    print(plot(checker_viols["CondChecker"]["default"], cap=0.1))
-    print(plot_all(checker_viols, metric="default", cap=0.1))
-    print(plot_all(checker_viols, metric="frequentist", cap=1.0, ymax=10))
-
-    # save the plots
-    plot(checker_viols["CondChecker"]["default"], cap=0.1).save(
-        "cond_checker_default.png"
-    )
-
-    # remove AndChecker from the plot bc it looks ugly
-    checker_viols.pop("AndChecker")
-    # remove ConsequenceChecker from the plot bc the data might not be correct
-    checker_viols.pop("ConsequenceChecker")
-    keys_to_rename = [k for k in checker_viols.keys() if k.endswith("Checker")]
-    for k in keys_to_rename:
-        checker_viols[k.replace("Checker", "")] = checker_viols.pop(k)
-
-    plot_all(checker_viols, metric="default", cap=0.1).save("all_default.png")
-    plot_all(checker_viols, metric="frequentist", cap=1.0, ymax=10).save(
-        "all_frequentist.png"
-    )
+        exit()
+        
+    for forecaster, paths in paths.items():
+        checker_viols, checker_checks = append_violations_all(
+            paths, metrics=metrics, recalc=RECALC, write=True
+        )
+        print(get_stats_from_paths(paths, metrics=metrics, write=f"stats_{forecaster}.json"))
+        
+        # neaten up before plotting
+        checker_viols.pop("AndChecker")
+        checker_viols.pop("ConsequenceChecker")
+        keys_to_rename = [k for k in checker_viols.keys() if k.endswith("Checker")]
+        for k in keys_to_rename:
+            checker_viols[k.replace("Checker", "")] = checker_viols.pop(k)
+        
+        # plot:
+        for checker, viols in checker_viols.items():
+            for metric, v in viols.items():
+                plot(v, cap=0.1).save(f"figs/{forecaster}_{checker}_{metric}.png")
+        for metric in metrics:
+            plot_all(checker_viols, metric=metric, cap=0.1).save(f"figs/{forecaster}_all_{metric}.png")
+            plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(f"figs/{forecaster}_all_{metric}_zoomed.png")
+        
+        
+# Example usage:
+# python src/reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r
