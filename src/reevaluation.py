@@ -1,4 +1,5 @@
 import json
+import argparse
 from pathlib import Path
 from typing import Any
 from static_checks.Checker import (
@@ -8,12 +9,16 @@ from static_checks.Checker import (
     OrChecker,
     AndOrChecker,
     ButChecker,
+    ParaphraseChecker,
     CondChecker,
+    CondCondChecker,
+    ConsequenceChecker,
 )
 from common.path_utils import get_data_path
 from common.utils import round_floats
 import plotnine as p9
 import pandas as pd
+import numpy as np
 
 TUPLES_PATH: Path = get_data_path() / "tuples/"
 FORECASTS_PATH: Path = get_data_path() / "forecasts"
@@ -26,13 +31,34 @@ checkers: dict[str, Checker] = {
     "AndOrChecker": AndOrChecker(path=TUPLES_PATH / "AndOrChecker.jsonl"),
     "ButChecker": ButChecker(path=TUPLES_PATH / "ButChecker.jsonl"),
     "CondChecker": CondChecker(path=TUPLES_PATH / "CondChecker.jsonl"),
-    # "ConsequenceChecker": ConsequenceChecker(
-    #     path=TUPLES_PATH / "ConsequenceChecker.jsonl"
-    # ),
-    # "ParaphraseChecker": ParaphraseChecker(
-    #     path=TUPLES_PATH / "ParaphraseChecker.jsonl"
-    # ),
-    # "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
+    "ConsequenceChecker": ConsequenceChecker(
+        path=TUPLES_PATH / "ConsequenceChecker.jsonl"
+    ),
+    "ParaphraseChecker": ParaphraseChecker(
+        path=TUPLES_PATH / "ParaphraseChecker.jsonl"
+    ),
+    "CondCondChecker": CondCondChecker(path=TUPLES_PATH / "CondCondChecker.jsonl"),
+}
+
+paths = {
+    "adv": [
+        "AdvancedForecaster_05-30-02-55",  # real qs, n = 50
+        "AdvancedForecaster_05-30-11-34",  # synthetic qs, n = 30
+    ],
+    "gpt_3_5": [
+        "BasicForecaster_05-31-12-24",  # real qs, n = 50
+        "BasicForecaster_05-31-12-18",  # synthetic qs, n = 30
+    ],
+    "gpt_4o": [
+        "BasicForecaster_05-30-23-27",  # real qs, n = 50
+        "BasicForecaster_05-30-23-26",  # synthetic qs, n = 30
+    ],
+    "cf_gpt_4omini_sample": [
+        "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
+    ],
+    "cf_gpt_4omini": [
+        "ConsistentForecaster_07-24-14-58",  # real qs, n = 50
+    ],
 }
 
 
@@ -113,7 +139,7 @@ def append_violations(
     if write:
         with open(tuples_files, "w", encoding="utf-8") as f:
             for tuple in tuples:
-                tuple = round_floats(tuple, precision=7)
+                tuple = round_floats(tuple, precision=5)
                 f.write(json.dumps(tuple) + "\n")
     return viols_all, checks_all
 
@@ -224,17 +250,19 @@ def plot(viols: list[float], binwidth=0.005, cap=None):
     """Plot a histogram of violations."""
     df = pd.DataFrame({"violation": viols})
     if cap:
-        df["viol_capped"] = df["violation"].apply(lambda x: min(x, cap))
+        df["Violation"] = df["violation"].apply(lambda x: min(x, cap))
     else:
-        cap = 999999
+        cap = max(viols)
+
+    # Create custom breaks and labels
+    breaks = np.arange(0, cap + binwidth, cap / 5)
+    labels = [f"{b:.2f}" for b in breaks[:-1]] + [f"> {cap:.2f}"]
+
     return (
-        p9.ggplot(df, p9.aes(x="viol_capped"))
-        # + p9.geom_histogram(binwidth=binwidth, closed='left')
+        p9.ggplot(df, p9.aes(x="Violation"))
         + p9.geom_density()
-        # + p9.scale_x_continuous(
-        #     #breaks=range(int(df['CappedValues'].min()), int(cap) + 1),
-        #     labels=lambda l: ["%.1f" % v if v != cap else ">{cap}" for v in l])
-        # + p9.theme_minimal()
+        + p9.scale_x_continuous(breaks=breaks, labels=labels)
+        + p9.ylab("Density")
     )
 
 
@@ -245,16 +273,19 @@ def plot_all(checker_viols, metric="default", binwidth=0.005, cap=None, ymax=30)
     for checker, viols in checker_viols.items():
         df = df._append(pd.DataFrame({"violation": viols[metric], "checker": checker}))
     if not cap:
-        cap = 999999
-    df["viol_capped"] = df["violation"].apply(lambda x: min(x, cap))
+        cap = df["violation"].max()
+    df["Violation"] = df["violation"].apply(lambda x: min(x, cap))
+
+    # Create custom breaks and labels
+    breaks = np.arange(0, cap + binwidth, cap / 5)
+    labels = [f"{b:.2f}" for b in breaks[:-1]] + [f"> {cap:.2f}"]
+
     return (
-        p9.ggplot(df, p9.aes(x="viol_capped", color="checker"))
+        p9.ggplot(df, p9.aes(x="Violation", color="checker"))
         + p9.geom_density()
         + p9.ylim(0, ymax)
-        # + p9.scale_x_continuous(
-        #     #breaks=range(int(df['CappedValues'].min()), int(cap) + 1),
-        #     labels=lambda l: ["%.1f" % v if v != cap else ">{cap}" for v in l])
-        # + p9.theme_minimal()
+        + p9.scale_x_continuous(breaks=breaks, labels=labels)
+        + p9.ylab("Density")
     )
 
 
@@ -267,68 +298,110 @@ def get_stats_from_paths(paths, metrics=None, write: Path | None = None):
         if isinstance(write, str):
             write = FORECASTS_PATH / write
         with open(write, "w", encoding="utf-8") as f:
-            stats = round_floats(stats, precision=7)
+            stats = round_floats(stats, precision=4)
             f.write(json.dumps(stats, indent=4))
 
 
-paths_adv = [
-    "AdvancedForecaster_05-30-02-55",  # real qs, n = 50
-    "AdvancedForecaster_05-30-11-34",  # synthetic qs, n = 30
-]
-paths_gpt_3_5 = [
-    "BasicForecaster_05-31-12-24",  # real qs, n = 50
-    "BasicForecaster_05-31-12-18",  # synthetic qs, n = 30
-]
-paths_gpt_4o = [
-    "BasicForecaster_05-30-23-27",  # real qs, n = 50
-    "BasicForecaster_05-30-23-26",  # synthetic qs, n = 30
-]
-paths_gpt_4omini = [
-    "BasicForecaster_07-24-14-34"  # real qs, n = 50
-]
-paths_cf_gpt_4omini_sample = [
-    "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
-]
-paths_cf_gpt_4omini = [
-    "ConsistentForecaster_07-24-14-58",  # real qs, n = 50
-]
-
-paths = (
-    paths_adv + paths_gpt_3_5 + paths_gpt_4o + paths_cf_gpt_4omini + paths_cf_gpt_4omini
-)
-metrics = ["default", "frequentist"]
-
 if __name__ == "__main__":
-    # TODO add some notifications about what files will get modified, and y/n. ideally together with the edits that introduces cli args to this
-    # append_violations_all(paths_adv, metrics=metrics, recalc=True, write=True)
-    # append_violations_all(paths_gpt_3_5, metrics=metrics, recalc=True, write=True)
-    # append_violations_all(paths_gpt_4o, metrics=metrics, recalc=True, write=True)
-    # append_violations_all(
-    #     paths_gpt_4omini, metrics=metrics, recalc=True, write=True
-    # )
-    append_violations_all(paths_cf_gpt_4omini, metrics=metrics, recalc=True, write=True)
-    # print(get_stats_from_paths(paths_adv, metrics=metrics, write="stats_adv.json"))
-    # print(
-    #     get_stats_from_paths(paths_gpt_3_5, metrics=metrics, write="stats_gpt_3_5.json")
-    # )
-    # print(
-    #     get_stats_from_paths(paths_gpt_4o, metrics=metrics, write="stats_gpt_4o.json")
-    # )
-    print(
-        get_stats_from_paths(
-            paths_gpt_4omini, metrics=metrics, write="stats_gpt_4omini.json"
-        )
+    parser = argparse.ArgumentParser(description="Process violations for checkers.")
+    parser.add_argument(
+        "-m",
+        "--metrics",
+        nargs="*",
+        help="Metrics to calculate violations for; by default ['default', 'frequentist']",
     )
-    print(
-        get_stats_from_paths(
-            paths_cf_gpt_4omini,
-            metrics=metrics,
-            write="stats_cf_gpt_4omini.json",
-        )
+    parser.add_argument(
+        "-f",
+        "--forecasters",
+        nargs="*",
+        help=(
+            "Forecasters to calculate violations for; by default "
+            "['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini']"
+        ),
     )
-    # checker_viols, checker_checks = append_violations_all(
-    #     paths_adv, metrics=metrics, recalc=False, write=False
-    # )
-    # print(plot(checker_viols["CondChecker"]["default"], cap=0.1))
-    # print(plot_all(checker_viols, metric="default", cap=0.1))
-    # print(plot_all(checker_viols, metric="frequentist", cap=1.0, ymax=10))
+    parser.add_argument(
+        "-c",
+        "--checkers",
+        nargs="*",
+        help=(
+            "Checkers to calculate violations for; by default "
+            "['NegChecker', 'AndChecker', 'OrChecker', 'AndOrChecker', 'ButChecker', 'CondChecker', "
+            "'ConsequenceChecker', 'ParaphraseChecker', 'CondCondChecker']"
+        ),
+    )
+    parser.add_argument(
+        "-r", "--recalculate", action="store_true", help="Recalculate violations"
+    )
+    parser.add_argument(
+        "-x", "--reset", action="store_true", help="Reset all appended violations"
+    )
+    args = parser.parse_args()
+    
+    RECALC: bool = args.recalculate
+
+    print(f"Recalculating violations: {RECALC}")
+
+    # Ask for confirmation before modifying files
+    if RECALC:
+        confirm = input(
+            "This will modify existing files and take some time to run. Are you sure you want to continue? (y/[n]): "
+        )
+        if confirm.lower() != "y":
+            print("Operation cancelled.")
+            exit()
+
+    if args.metrics:
+        metrics = args.metrics
+    else:
+        metrics = ["default", "frequentist"]
+    
+    if args.forecasters:
+        forecasters = args.forecasters
+    else:
+        forecasters = ['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini']
+    paths = {k: v for k, v in paths.items() if k in forecasters}
+    
+    if args.checkers:
+        checkers = {k: v for k, v in checkers.items() if k in args.checkers}
+
+    if args.reset:
+        reset_all_appended_viols(
+            [
+                FORECASTS_PATH / path / checker.name
+                for path in paths.values()
+                for checker in checkers.values()
+            ]
+        )
+        exit()
+        
+    for forecaster, paths in paths.items():
+        checker_viols, checker_checks = append_violations_all(
+            paths, metrics=metrics, recalc=RECALC, write=True
+        )
+        print(get_stats_from_paths(paths, metrics=metrics, write=f"stats_{forecaster}.json"))
+        
+        # neaten up before plotting
+        checker_viols.pop("AndChecker", None)
+        checker_viols.pop("ConsequenceChecker", None)
+        keys_to_rename = [k for k in checker_viols.keys() if k.endswith("Checker")]
+        for k in keys_to_rename:
+            checker_viols[k.replace("Checker", "")] = checker_viols.pop(k)
+        
+        # plot:
+        for checker, viols in checker_viols.items():
+            for metric, v in viols.items():
+                fig_path = get_data_path() / "figs" / f"{metric}_separate" / f"{forecaster}_{metric}_{checker}.png"
+                if metric == "frequentist":
+                    plot(v, cap=1.0).save(fig_path)
+                else:
+                    plot(v, cap=0.1).save(fig_path)
+        for metric in metrics:
+            fig_path = get_data_path() / "figs" / f"{metric}_all" / f"{forecaster}_{metric}_all.png"
+            if metric == "frequentist":
+                plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(fig_path)
+            else:
+                plot_all(checker_viols, metric=metric, cap=0.1).save(fig_path)
+        
+        
+# Example usage:
+# python reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r
