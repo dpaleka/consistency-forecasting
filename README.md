@@ -49,6 +49,7 @@ As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not 
 The following tests are skipped by default. You can run them by enabling the corresponding flags:
 
 - [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
+- [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that the AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
 
 All other tests are enabled by default.
 

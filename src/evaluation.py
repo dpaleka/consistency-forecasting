@@ -1,5 +1,3 @@
-import sys
-import io
 import os
 import json
 import asyncio
@@ -24,6 +22,7 @@ from static_checks.Checker import (
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
+import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
@@ -32,8 +31,6 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -262,7 +259,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-2024-05-13",
+    default="gpt-4o-mini-2024-07-18",
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -491,3 +488,4 @@ if __name__ == "__main__":
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
