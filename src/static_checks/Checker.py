@@ -43,7 +43,6 @@ from .checker_prompts import (
     consequence_time_verification_prompt,
     paraphrase_verification_prompt,
 )
-from forecasters import Forecaster
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -53,6 +52,7 @@ from .MiniInstantiator import (
     Paraphrase,
     Consequence,
 )
+from forecasters import Forecaster
 
 load_dotenv()
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
@@ -348,7 +348,7 @@ class Checker(ABC):
                 because some will fail verification). If -1, will make as many as possible.
         """
         if overwrite:
-            with open(self.path, "w") as f:
+            with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 
         def _instantiate_and_write(
@@ -600,7 +600,13 @@ class Checker(ABC):
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
-        return self.max_min_arbitrage(answers, **kwargs)[1]
+        try:
+            return self.max_min_arbitrage(answers, **kwargs)[1]
+        except ZeroDivisionError:
+            return 123
+        except Exception as e:
+            print(f"Error in arbitrage_violation: {e}")
+            return 148
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
@@ -640,6 +646,16 @@ class Checker(ABC):
         self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
     ) -> bool:
         return self.check(forecaster.elicit(sentences, **kwargs))
+
+    async def elicit_and_violation_async(
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
+    ) -> float:
+        return self.violation(await forecaster.elicit_async(sentences, **kwargs))
+
+    async def elicit_and_check_async(
+        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
+    ) -> bool:
+        return self.check(await forecaster.elicit_async(sentences, **kwargs))
 
     def get_line_obj(self, line: dict[str, Any]) -> "Self.TupleFormat":
         metadata = line.pop("metadata", None)
@@ -702,7 +718,7 @@ class Checker(ABC):
 
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-            with open(self.path, "r") as file:
+            with open(self.path, "r", encoding="utf-8") as file:
                 data: list[dict[str, Any]] = [json.loads(line) for line in file]
             if line_end >= 0:
                 print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
@@ -757,7 +773,7 @@ class Checker(ABC):
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
-            with open(self.path, "r") as file:
+            with open(self.path, "r", encoding="utf-8") as file:
                 data = [json.loads(line) for line in file]
             if line_end >= 0:
                 print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")

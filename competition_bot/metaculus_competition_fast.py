@@ -47,6 +47,13 @@ import aiohttp
 from common.llm_utils import parallelized_call
 
 from read_logs import extract_element, submission_log_only_stats
+from email_me import send_email
+
+
+from pathlib import Path
+
+bot_path = Path(__file__).parent
+
 
 global VISITED_IDS
 VISITED_IDS = set()
@@ -74,8 +81,8 @@ API_BASE_URL = "https://www.metaculus.com/api2"
 TOURNAMENT_ID = 3349  # 3294 is WARMUP_TOURNAMENT_ID, 3349 is the REAL tournament id
 SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
-LOG_FILE_PATH = "metaculus_submissions.log"  # log file
-ERROR_LOG_FILE_PATH = "metaculus_submission_errors.log"  # error log file
+LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
+ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 3  # How many times we should sample the adv. forecasters to get the "best" average score.
@@ -151,7 +158,7 @@ REASONING_CONFIG = {
     "AGGREGATION_METHOD": "meta",
     "AGGREGATION_PROMPT_TEMPLATE": PROMPT_DICT["meta_reasoning"]["0"],
     "AGGREGATION_TEMPERATURE": 0.2,
-    "AGGREGATION_MODEL_NAME": "gpt-4",
+    "AGGREGATION_MODEL_NAME": "gpt-4o",
     "AGGREGATION_WEIGTHTS": None,
 }
 
@@ -308,9 +315,30 @@ async def gen_comments(q):
     )
 
     cleaned_text = re.sub(
-        r"\n4\. Output your prediction \(a number between 0 and 1\) with an asterisk at the beginning and end of the decimal\.\n.*",
+        r"(?s)4\. Output.*",
         "",
         ensemble_dict["meta_reasoning"],
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"(?s)4\. Final prediction.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"(?s)4\. \*\*Output.*",
+        "",
+        cleaned_text,
+        flags=re.DOTALL,
+    )
+
+    cleaned_text = re.sub(
+        r"\*\d+\.\d+\*",
+        "",
+        cleaned_text,
         flags=re.DOTALL,
     )
 
@@ -357,6 +385,7 @@ async def parallel_post(q):
         print("********************")
         print("")
         submission_log(ERROR_LOG_FILE_PATH, msg)
+        send_email("Competition bot error", msg, "acshen@umich.edu")
 
     comments, meta_prob = "Comment Generation Error", 1.00
 
@@ -367,7 +396,7 @@ async def parallel_post(q):
             msg = "id: {}, comment_generation_error: {}".format(id, e)
             print(msg, "\n********************\n")
             await submission_log(ERROR_LOG_FILE_PATH, msg)
-
+            send_email("Competition bot error", msg, "acshen@umich.edu")
     prediction_dict = {"adv": adv_prob, "basic": basic_prob, "meta": meta_prob}
     res = {
         "id": id,
@@ -403,6 +432,7 @@ async def parallel_post(q):
             print(msg, "\n********************\n")
 
             await submission_log(ERROR_LOG_FILE_PATH, msg)
+            send_email("Competition bot error", msg, "acshen@umich.edu")
 
     return res
 

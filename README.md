@@ -20,9 +20,10 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 - [Meeting and Agenda doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
 - [Datatypes and Pipeline doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit)
 - [Overleaf](https://www.overleaf.com/project/661ef8533d19f47ba8b0b3b6)
-
-## Apr 16 writeup
-[writeup doc](https://docs.google.com/document/d/1849L5P9JNZEjBp4s4TsivJOG2iS98Ru6conx9jE0wPE/edit)
+- [Key considerations doc](https://docs.google.com/document/d/1VR39XE--JPel8dMpwnFxPhoqiMxQDzC9sDdqsjH4IoI/edit)
+- [Poster for ICML workshops](https://docs.google.com/presentation/d/1lWDL7pZcyjFtwLM6Gd9tw2uOPRyJHHoM1FLpQVDMcq8/edit#slide=id.p)
+- [April 16 writeup](https://docs.google.com/document/d/1849L5P9JNZEjBp4s4TsivJOG2iS98Ru6conx9jE0wPE/edit)
+- [Instructor vs BAML](https://docs.google.com/document/d/1x4uwVMZ9Dgf0Y6OxtKID9W-txCN7ya18z2QXWGV3rsA/edit)
 
 ## Coding guidelines
 
@@ -44,9 +45,13 @@ NO_CACHE=True python -m pytest -s
 This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
 
-#### Notable tests
-`T_SKIP_VERIFICATION`
-- [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected.
+#### Skipping tests
+The following tests are skipped by default. You can run them by enabling the corresponding flags:
+
+- [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
+- [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that the AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
+
+All other tests are enabled by default.
 
 ### Paths
 Use [`src/common/path_utils.py`](/src/common/path_utils.py) to specify paths in code, Jupyter notebooks, etc.
@@ -67,8 +72,8 @@ src/data
 │  ├── real             # ForecastingQuestions made from real scraped data. Formatting validated upon commit.
 │  └── synthetic        # ForecastingQuestions made from synthetic data. Formatting validated upon commit.
 ├── feedback            # Feedback data on real and synhetic questions. TODO Validate upon commit.
-├── tuples              # Tuples of (question, answer) pairs. Formatting validated upon commit.
-├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated.
+├── tuples              # Tuples of (question, answer) pairs. Formatting validated upon commit. TODO we need to expand this section and clean up where tuples go.
+├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated. TODO move some stuff out of here to somewhere where it makes sense.
 ├── check_tuple_logs    # Where forecasting of the already instantiated consistency checks + violation is logged. In .gitignore, do not commit. 
 ├── forecasts           # Where forecast results on tuples are saved. Not validated. Commit only full-fledged experimental results.
 ├── verification        # Logging question verification. In .gitignore, do not commit.
@@ -78,6 +83,8 @@ src/data
 This scheme is not final. In particular:
 - We might add other directories, e.g. for forecasts, later. 
 - If we figure out a need for some data to be committed, we can remove the corresponding .gitignore entry.
+
+TODO we need to fix this schema, too many things are in `data/other`.
 
 Please install `pre-commit`, so the validation hooks in `hooks/` can check that all data in the validated directories is in the correct format.
 
@@ -101,11 +108,18 @@ It writes into `src/data/feedback/`.
 
 ## Bot for the Metaculus competition
 We run the forecasters on the Metaculus [AI Forecasting Benchmark Series (July 2024)](https://www.metaculus.com/notebooks/25525/announcing-the-ai-forecasting-benchmark-series--july-8-120k-in-prizes/) (contact @amaster97 for details).
-The bot to call the forecasters is developed in `src/metaculus_competition_fast.py`.
-It can be run as a daily job on [Modal](https://modal.com/) by doing:
+The bot to call the forecasters is developed in `src/metaculus_competition_fast.py`.  If that doesn't "work" due to issues with concurrency, a similar fallback script `src/metaculus_competition_slow.py`
+ can be substituted.  It can be run as a single job on [Modal](https://modal.com/) by doing:
 ```
 python competition_bot/modal_daily_job.py
 ```
+
+Furthermore, modal also allows the deployment of timed runs for the program (in this case daily).  To deploy a recurring job use:
+
+```
+modal deploy competition_bot/modal_daily_job.py
+```
+
 
 To set up, you need Modal credentials.
 Do not try to install `modal` in the main Python environment.
@@ -117,6 +131,12 @@ modal token new
 and follow the instructions.
 
 In addition to the LLM API costs, each daily run costs Modal credits for the CPU time occupied. Modal gives $30 in credits to new users, and it should be enough for this competition.
+
+### Logs
+We store logs of both the question - submissions as well as any potential errors.
+In the modal app we have these stored at:
+LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
+ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 
 ## Entry points to the code
 

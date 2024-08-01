@@ -1,6 +1,7 @@
 import pytest
 import os
 from common.datatypes import PlainText
+from common.perscache import register_model_for_cache
 from common.llm_utils import (
     answer,
     answer_sync,
@@ -13,10 +14,13 @@ class UserInfo(BaseModel):
     age: int
 
 
+register_model_for_cache(UserInfo)
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "model",
-    ["gpt-3.5-turbo", "meta-llama/llama-3-8b-instruct:nitro", "claude-3-opus-20240229"],
+    ["gpt-4o-mini", "meta-llama/llama-3-8b-instruct:nitro", "claude-3-opus-20240229"],
 )
 async def test_answer_real_api(model):
     prompt = "John Doe is 25 years old."
@@ -72,7 +76,7 @@ def test_answer_sync():
     result = answer_sync(
         prompt=example_prompt,
         preface=None,
-        model="gpt-4o-2024-05-13",
+        model="gpt-4o-mini-2024-07-18",
         response_model=PlainText,
     )
 
@@ -86,7 +90,7 @@ async def test_answer_sync_async():
     result = await answer(
         prompt=example_prompt,
         preface=None,
-        model="gpt-4o-2024-05-13",
+        model="gpt-4o-mini-2024-07-18",
         response_model=PlainText,
     )
     assert isinstance(result, PlainText) and len(result.text) > 0
