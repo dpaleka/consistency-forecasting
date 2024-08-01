@@ -375,8 +375,8 @@ if __name__ == "__main__":
         print(get_stats_from_paths(paths, metrics=metrics, write=f"stats_{forecaster}.json"))
         
         # neaten up before plotting
-        checker_viols.pop("AndChecker")
-        checker_viols.pop("ConsequenceChecker")
+        checker_viols.pop("AndChecker", None)
+        checker_viols.pop("ConsequenceChecker", None)
         keys_to_rename = [k for k in checker_viols.keys() if k.endswith("Checker")]
         for k in keys_to_rename:
             checker_viols[k.replace("Checker", "")] = checker_viols.pop(k)
@@ -384,11 +384,11 @@ if __name__ == "__main__":
         # plot:
         for checker, viols in checker_viols.items():
             for metric, v in viols.items():
-                plot(v, cap=0.1).save(f"figs/{forecaster}_{checker}_{metric}.png")
+                plot(v, cap=0.1).save(get_data_path() / "figs" / f"{forecaster}_{checker}_{metric}.png")
         for metric in metrics:
-            plot_all(checker_viols, metric=metric, cap=0.1).save(f"figs/{forecaster}_all_{metric}.png")
-            plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(f"figs/{forecaster}_all_{metric}_zoomed.png")
+            plot_all(checker_viols, metric=metric, cap=0.1).save(get_data_path() / "figs" / f"{forecaster}_all_{metric}.png")
+            plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(get_data_path() / "figs" / f"{forecaster}_all_{metric}_zoomed.png")
         
         
 # Example usage:
-# python src/reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r
+# python src/reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r        
