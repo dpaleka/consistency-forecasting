@@ -3,14 +3,14 @@
         "default": {
             "n": 3,
             "violated": 3,
-            "viol_avg": 0.1200917,
-            "viol_med": 0.1255397
+            "viol_avg": 0.1201,
+            "viol_med": 0.1255
         },
         "frequentist": {
             "n": 3,
             "violated": 3,
-            "viol_avg": 0.5038591,
-            "viol_med": 0.5158689
+            "viol_avg": 0.5039,
+            "viol_med": 0.5159
         }
     },
     "AndChecker": {
@@ -31,56 +31,56 @@
         "default": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0105452,
-            "viol_med": 0.0033604
+            "viol_avg": 0.0105,
+            "viol_med": 0.0034
         },
         "frequentist": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.1085829,
-            "viol_med": 0.081544
+            "viol_avg": 0.1086,
+            "viol_med": 0.0815
         }
     },
     "AndOrChecker": {
         "default": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0117313,
-            "viol_med": 0.0058864
+            "viol_avg": 0.0117,
+            "viol_med": 0.0059
         },
         "frequentist": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.1404083,
-            "viol_med": 0.1084003
+            "viol_avg": 0.1404,
+            "viol_med": 0.1084
         }
     },
     "ButChecker": {
         "default": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0108276,
-            "viol_med": 0.0052947
+            "viol_avg": 0.0108,
+            "viol_med": 0.0053
         },
         "frequentist": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.1192107,
-            "viol_med": 0.1021945
+            "viol_avg": 0.1192,
+            "viol_med": 0.1022
         }
     },
     "CondChecker": {
         "default": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0114014,
-            "viol_med": 0.0085415
+            "viol_avg": 0.0114,
+            "viol_med": 0.0085
         },
         "frequentist": {
             "n": 3,
             "violated": 3,
-            "viol_avg": 0.1434425,
-            "viol_med": 0.1406259
+            "viol_avg": 0.1434,
+            "viol_med": 0.1406
         }
     },
     "ConsequenceChecker": {
@@ -101,28 +101,28 @@
         "default": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0071532,
-            "viol_med": 0.0005964
+            "viol_avg": 0.0071,
+            "viol_med": 0.0006
         },
         "frequentist": {
             "n": 3,
             "violated": 1,
-            "viol_avg": 0.0863845,
-            "viol_med": 0.0345065
+            "viol_avg": 0.0864,
+            "viol_med": 0.0345
         }
     },
     "CondCondChecker": {
         "default": {
             "n": 3,
             "violated": 3,
-            "viol_avg": 0.0249769,
-            "viol_med": 0.0247839
+            "viol_avg": 0.025,
+            "viol_med": 0.0248
         },
         "frequentist": {
             "n": 3,
             "violated": 3,
-            "viol_avg": 0.1925699,
-            "viol_med": 0.1843975
+            "viol_avg": 0.1926,
+            "viol_med": 0.1844
         }
     }
 }
