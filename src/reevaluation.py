@@ -316,7 +316,7 @@ if __name__ == "__main__":
         nargs="*",
         help=(
             "Forecasters to calculate violations for; by default "
-            "['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini_sample']"
+            "['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini']"
         ),
     )
     parser.add_argument(
@@ -356,7 +356,10 @@ if __name__ == "__main__":
         metrics = ["default", "frequentist"]
     
     if args.forecasters:
-        paths = {k: v for k, v in paths.items() if k in args.forecasters}
+        forecasters = args.forecasters
+    else:
+        forecasters = ['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini']
+    paths = {k: v for k, v in paths.items() if k in forecasters}
     
     if args.checkers:
         checkers = {k: v for k, v in checkers.items() if k in args.checkers}
@@ -387,11 +390,18 @@ if __name__ == "__main__":
         # plot:
         for checker, viols in checker_viols.items():
             for metric, v in viols.items():
-                plot(v, cap=0.1).save(get_data_path() / "figs" / f"{forecaster}_{checker}_{metric}.png")
+                fig_path = get_data_path() / "figs" / f"{metric}_separate" / f"{forecaster}_{metric}_{checker}.png"
+                if metric == "frequentist":
+                    plot(v, cap=1.0).save(fig_path)
+                else:
+                    plot(v, cap=0.1).save(fig_path)
         for metric in metrics:
-            plot_all(checker_viols, metric=metric, cap=0.1).save(get_data_path() / "figs" / f"{forecaster}_all_{metric}.png")
-            plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(get_data_path() / "figs" / f"{forecaster}_all_{metric}_zoomed.png")
+            fig_path = get_data_path() / "figs" / f"{metric}_all" / f"{forecaster}_{metric}_all.png"
+            if metric == "frequentist":
+                plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(fig_path)
+            else:
+                plot_all(checker_viols, metric=metric, cap=0.1).save(fig_path)
         
         
 # Example usage:
-# python src/reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r        
+# python reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r
