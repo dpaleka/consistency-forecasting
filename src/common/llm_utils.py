@@ -267,7 +267,7 @@ def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
 def is_openai(model: str) -> bool:
     keywords = [
         "ft:gpt",
-        "gpt-4o",
+        "gpt-4o-mini",
         "gpt-4",
         "gpt-3.5",
         "babbage",
@@ -446,7 +446,7 @@ async def query_api_chat(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -484,7 +484,7 @@ async def query_api_chat_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -530,7 +530,7 @@ def query_api_chat_sync(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
     }
     options = default_options | kwargs
@@ -569,7 +569,7 @@ def query_api_chat_sync_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
@@ -675,7 +675,7 @@ async def answer(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
-        "model": "gpt-4o",
+        "model": "gpt-4o-mini-2024-07-18",
         "temperature": 0.5,
         "response_model": PlainText,
     }
@@ -699,7 +699,7 @@ def answer_sync(
     ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
@@ -777,7 +777,7 @@ async def parallelized_call(
 async def get_embedding(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=True)
@@ -789,7 +789,7 @@ async def get_embedding(
 def get_embeddings_sync(
     texts: list[str],
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[list[float]]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=False)
@@ -801,7 +801,7 @@ def get_embeddings_sync(
 def get_embedding_sync(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     return get_embeddings_sync([text], embedding_model, model)[0]
 
