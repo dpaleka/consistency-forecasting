@@ -9,10 +9,10 @@ from static_checks.Checker import (
     OrChecker,
     AndOrChecker,
     ButChecker,
-    CondChecker,
-    ConsequenceChecker,
     ParaphraseChecker,
+    CondChecker,
     CondCondChecker,
+    ConsequenceChecker,
 )
 from common.path_utils import get_data_path
 from common.utils import round_floats
@@ -42,19 +42,22 @@ checkers: dict[str, Checker] = {
 
 paths = {
     "adv": [
-        "AdvancedForecaster_05-30-02-55",  # real qs
-        "AdvancedForecaster_05-30-11-34",  # synthetic qs
+        "AdvancedForecaster_05-30-02-55",  # real qs, n = 50
+        "AdvancedForecaster_05-30-11-34",  # synthetic qs, n = 30
     ],
     "gpt_3_5": [
-        "BasicForecaster_05-31-12-24",  # real qs
-        "BasicForecaster_05-31-12-18",  # synthetic qs
+        "BasicForecaster_05-31-12-24",  # real qs, n = 50
+        "BasicForecaster_05-31-12-18",  # synthetic qs, n = 30
     ],
     "gpt_4o": [
-        "BasicForecaster_05-30-23-27",  # real qs
-        "BasicForecaster_05-30-23-26",  # synthetic qs
+        "BasicForecaster_05-30-23-27",  # real qs, n = 50
+        "BasicForecaster_05-30-23-26",  # synthetic qs, n = 30
     ],
     "cf_gpt_4omini_sample": [
         "ConsistentForecaster_07-19-18-59",  # real qs, n = 3
+    ],
+    "cf_gpt_4omini": [
+        "ConsistentForecaster_07-24-14-58",  # real qs, n = 50
     ],
 }
 
