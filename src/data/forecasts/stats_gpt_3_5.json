@@ -3,27 +3,27 @@
         "default": {
             "n": 80,
             "violated": 34,
-            "viol_avg": 0.1939898,
-            "viol_med": 0.0092723
+            "viol_avg": 0.1941,
+            "viol_med": 0.0093
         },
         "frequentist": {
             "n": 80,
             "violated": 42,
-            "viol_avg": 0.4475754,
-            "viol_med": 0.1343523
+            "viol_avg": 0.4476,
+            "viol_med": 0.1344
         }
     },
     "AndChecker": {
         "default": {
             "n": 80,
             "violated": 8,
-            "viol_avg": 0.0221151,
+            "viol_avg": 0.0221,
             "viol_med": 0.0
         },
         "frequentist": {
             "n": 80,
             "violated": 13,
-            "viol_avg": 0.0660973,
+            "viol_avg": 0.0661,
             "viol_med": 0
         }
     },
@@ -31,69 +31,69 @@
         "default": {
             "n": 80,
             "violated": 45,
-            "viol_avg": 0.2045482,
-            "viol_med": 0.0297613
+            "viol_avg": 0.2046,
+            "viol_med": 0.0298
         },
         "frequentist": {
             "n": 80,
             "violated": 48,
-            "viol_avg": 0.4938162,
-            "viol_med": 0.2383656
+            "viol_avg": 0.4938,
+            "viol_med": 0.2384
         }
     },
     "AndOrChecker": {
         "default": {
             "n": 80,
             "violated": 49,
-            "viol_avg": 0.1421891,
-            "viol_med": 0.0217142
+            "viol_avg": 0.1423,
+            "viol_med": 0.0218
         },
         "frequentist": {
             "n": 80,
             "violated": 50,
-            "viol_avg": 0.3922867,
-            "viol_med": 0.2067787
+            "viol_avg": 0.3923,
+            "viol_med": 0.2068
         }
     },
     "ButChecker": {
         "default": {
             "n": 80,
             "violated": 67,
-            "viol_avg": 0.3136676,
-            "viol_med": 0.10881
+            "viol_avg": 0.3137,
+            "viol_med": 0.1088
         },
         "frequentist": {
             "n": 80,
             "violated": 67,
-            "viol_avg": 0.6500762,
-            "viol_med": 0.4651303
+            "viol_avg": 0.6501,
+            "viol_med": 0.4651
         }
     },
     "CondChecker": {
         "default": {
             "n": 80,
             "violated": 37,
-            "viol_avg": 0.0518959,
-            "viol_med": 0.0086433
+            "viol_avg": 0.0519,
+            "viol_med": 0.0093
         },
         "frequentist": {
             "n": 80,
-            "violated": 21,
-            "viol_avg": 0.1321424,
-            "viol_med": 0.0761608
+            "violated": 43,
+            "viol_avg": 0.2138,
+            "viol_med": 0.1421
         }
     },
     "ConsequenceChecker": {
         "default": {
             "n": 80,
-            "violated": 9,
-            "viol_avg": 0.0210776,
+            "violated": 13,
+            "viol_avg": 0.0211,
             "viol_med": 0
         },
         "frequentist": {
             "n": 80,
             "violated": 11,
-            "viol_avg": 0.0660295,
+            "viol_avg": 0.066,
             "viol_med": 0
         }
     },
@@ -101,13 +101,13 @@
         "default": {
             "n": 80,
             "violated": 28,
-            "viol_avg": 0.070936,
-            "viol_med": 0.0
+            "viol_avg": 0.0709,
+            "viol_med": 0
         },
         "frequentist": {
             "n": 80,
             "violated": 32,
-            "viol_avg": 0.1995563,
+            "viol_avg": 0.1996,
             "viol_med": 0.0
         }
     },
@@ -115,14 +115,14 @@
         "default": {
             "n": 80,
             "violated": 36,
-            "viol_avg": 0.0322371,
-            "viol_med": 0.0089786
+            "viol_avg": 0.0322,
+            "viol_med": 0.009
         },
         "frequentist": {
             "n": 80,
-            "violated": 36,
-            "viol_avg": 0.1648685,
-            "viol_med": 0.0957826
+            "violated": 37,
+            "viol_avg": 0.1739,
+            "viol_med": 0.0958
         }
     }
 }

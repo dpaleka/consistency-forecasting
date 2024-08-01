@@ -7,7 +7,8 @@ from common.datatypes import (
     SyntheticTagQuestion,
     SyntheticRelQuestion,
 )
-from question_generators import question_formatter
+import fq_verification.question_verifier as question_verifier
+import fq_generation.fq_body_generator as fq_body_generator
 from common.utils import write_jsonl_async
 from common.llm_utils import parallelized_call
 from common.path_utils import get_data_path, get_scripts_path
@@ -38,11 +39,11 @@ def read_json_or_jsonl(file_path: Path):
 async def validate_and_format_question(
     question: dict,
     verify: bool = True,
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
 ) -> Optional[ForecastingQuestion]:
     for i in range(2):
-        forecasting_question = await question_formatter.from_string(
+        forecasting_question = await fq_body_generator.from_string(
             question["title"],
             data_source=question["data_source"],
             question_type=question.get("question_type"),
@@ -55,7 +56,7 @@ async def validate_and_format_question(
             fill_in_body=fill_in_body,
         )
         if verify:
-            verification = await question_formatter.verify_question(
+            verification = await question_verifier.verify_question(
                 forecasting_question, model=model
             )
             print(f"Verification: {verification}")
@@ -82,7 +83,7 @@ async def validate_and_format_synthetic_question(
     else:
         metadata = {"tags": question.tags, "category": question.category}
     for i in range(2):
-        forecasting_question = await question_formatter.from_string(
+        forecasting_question = await fq_body_generator.from_string(
             question.title,
             data_source="synthetic",
             question_type="binary",
@@ -91,9 +92,7 @@ async def validate_and_format_synthetic_question(
             **kwargs,
         )
         if verify:
-            verification = await question_formatter.verify_question(
-                forecasting_question
-            )
+            verification = await question_verifier.verify_question(forecasting_question)
             if verification.valid:
                 break
             else:
@@ -110,7 +109,7 @@ async def process_synthetic_questions_from_file(
     file_path: Path,
     output_path: Path,
     max_questions: Optional[int] = None,
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
     concurrent_queries=15,
 ) -> List[ForecastingQuestion]:
@@ -150,7 +149,7 @@ async def process_synthetic_questions_from_file(
 async def process_questions_from_file(
     file_path: Path,
     max_questions: Optional[int],
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
     concurrent_queries: int = 15,
 ) -> List[ForecastingQuestion]:
@@ -288,7 +287,7 @@ if __name__ == "__main__":
         "--model",
         "-M",
         type=str,
-        default="gpt-4o-2024-05-13",
+        default="gpt-4o-mini-2024-07-18",
         help="Model to use",
     )
     parser.add_argument(

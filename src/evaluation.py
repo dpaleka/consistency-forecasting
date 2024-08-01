@@ -1,5 +1,3 @@
-import sys
-import io
 import os
 import json
 import asyncio
@@ -12,12 +10,20 @@ import logging
 import functools
 import concurrent.futures
 
-from forecasters import Forecaster, AdvancedForecaster, BasicForecaster, COT_Forecaster
+from forecasters import (
+    Forecaster,
+    AdvancedForecaster,
+    BasicForecaster,
+    COT_Forecaster,
+)
+from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
+import common.llm_utils  # noqa
+from common.llm_utils import reset_global_semaphore
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
@@ -25,8 +31,6 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -97,11 +101,11 @@ def write_to_dirs(
 ):
     for dir in dirs_to_write:
         if overwrite:
-            with open(dir / filename, "w") as f:
+            with open(dir / filename, "w", encoding="utf-8") as f:
                 for result in results:
                     f.write(json.dumps(result) + "\n")
         else:
-            with open(dir / filename, "a") as f:
+            with open(dir / filename, "a", encoding="utf-8") as f:
                 for result in results:
                     f.write(json.dumps(result) + "\n")
 
@@ -120,7 +124,7 @@ def process_check(
     forecaster_class: str,
 ) -> dict:
     print("Checker: ", check_name)
-    with open(checkers[check_name].path, "r") as f:
+    with open(checkers[check_name].path, "r", encoding="utf-8") as f:
         print(f"Path: {checkers[check_name].path}")
         checker_tuples = [json.loads(line) for line in f.readlines()[:num_lines]]
 
@@ -148,8 +152,9 @@ def process_check(
         results = []
         for batch_idx, batch in enumerate(batches):
             match forecaster_class:
-                case "BasicForecaster" | "CoTForecaster":
+                case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster":
                     if is_async:
+                        reset_global_semaphore()
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
@@ -171,6 +176,7 @@ def process_check(
                 case "AdvancedForecaster":
                     # we don't pass model to the test function, it's specified in the config
                     if is_async:
+                        reset_global_semaphore()
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
@@ -199,7 +205,7 @@ def process_check(
             results.extend(results_batch)
 
     else:
-        with open(load_dir / f"{check_name}.jsonl", "r") as f:
+        with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
             results = [json.loads(line) for line in f.readlines()]
 
         assert (
@@ -241,7 +247,7 @@ def process_check(
     "-f",
     "--forecaster_class",
     default="AdvancedForecaster",
-    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, or AdvancedForecaster.",
+    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster.",
 )
 @click.option(
     "-c",
@@ -253,7 +259,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-2024-05-13",
+    default="gpt-4o-mini-2024-07-18",
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -321,8 +327,14 @@ def main(
             forecaster = BasicForecaster()
         case "COT_Forecaster":
             forecaster = COT_Forecaster()
+        case "ConsistentForecaster":
+            forecaster = ConsistentForecaster(
+                hypocrite=BasicForecaster(),
+                instantiation_kwargs={"model": model},
+                bq_func_kwargs={"model": model},
+            )
         case "AdvancedForecaster":
-            with open(config_path, "r") as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 config: dict[str, Any] = yaml.safe_load(f)
             forecaster = AdvancedForecaster(**config)
         case _:
@@ -390,6 +402,7 @@ def main(
     all_stats = {}
 
     if use_threads:
+        print("Using threads")
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=len(checkers.keys())
         ) as executor:
@@ -431,16 +444,25 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
-    with open(output_directory / "stats_summary.json", "a") as f:
+    with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
-    with open(most_recent_directory / "stats_summary.json", "a") as f2:
+    with open(
+        most_recent_directory / "stats_summary.json", "a", encoding="utf-8"
+    ) as f2:
         # TODO: this one append on old data if it exists in the dir
         json.dump(all_stats, f2, indent=4)
 
     for check_name, stats in all_stats.items():
-        with open(output_directory / f"stats_{check_name}.json", "w") as f, open(
-            most_recent_directory / f"stats_{check_name}.json", "w"
-        ) as f2:
+        with (
+            open(
+                output_directory / f"stats_{check_name}.json", "w", encoding="utf-8"
+            ) as f,
+            open(
+                most_recent_directory / f"stats_{check_name}.json",
+                "w",
+                encoding="utf-8",
+            ) as f2,
+        ):
             json.dump(stats, f, indent=4)
             json.dump(stats, f2, indent=4)
 
@@ -463,3 +485,7 @@ if __name__ == "__main__":
 
 # run the script with the following command:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt

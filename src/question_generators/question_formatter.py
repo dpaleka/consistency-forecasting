@@ -265,7 +265,7 @@ from common.datatypes import BodyAndDate, ResolutionDate
 
 
 async def get_criteria_and_date(
-    title: str, model: str = "gpt-4o-2024-05-13", **kwargs
+    title: str, model: str = "gpt-4o-mini-2024-07-18", **kwargs
 ) -> BodyAndDate:
     prompt = resolution_criteria_date_prompt.format(
         title=title, resolution_date_specification=resolution_date_specification
@@ -274,7 +274,7 @@ async def get_criteria_and_date(
 
 
 async def get_date(
-    title: str, model: str = "gpt-4o-2024-05-13", **kwargs
+    title: str, model: str = "gpt-4o-mini-2024-07-18", **kwargs
 ) -> ResolutionDate:
     prompt = resolution_date_prompt.format(
         title=title, resolution_date_specification=resolution_date_specification
@@ -291,7 +291,7 @@ async def from_string(
     body: Optional[str] = None,
     date: Optional[str] = None,
     resolution: Optional[bool] = None,
-    model: str = "gpt-4o-2024-05-13",
+    model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
     **kwargs,
 ) -> ForecastingQuestion:
