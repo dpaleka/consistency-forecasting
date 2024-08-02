@@ -280,6 +280,26 @@ class ConsistentForecaster(Forecaster):
             ans_P = cons_answers["P"]
         return ans_P
 
+    @classmethod
+    def recursive(
+        cls,
+        depth: int = 0,
+        hypocrite: Forecaster = None,
+        **kwargs,
+    ) -> "ConsistentForecaster":
+        assert isinstance(depth, int) and depth >= 0
+        if depth == 0:
+            return hypocrite or BasicForecaster()
+        else:
+            return cls(
+                hypocrite=cls.recursive(
+                    depth=depth - 1,
+                    hypocrite=hypocrite,
+                    **kwargs,
+                ),
+                **kwargs,
+            )
+
     def dump_config(self):
         return {
             "hypocrite": self.hypocrite.dump_config(),
