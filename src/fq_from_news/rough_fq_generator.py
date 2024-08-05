@@ -5,7 +5,7 @@ from common.llm_utils import answer_sync, answer
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution_list
 
 
-class RoughForecastingQuestionGenerator:
+class NewsApiRoughForecastingQuestionGenerator:
     """
     Class with functionality to generate "rough" forecasting questions which may required to be iterated over later
     to prune out questions that do not guidelines for forming FQs such as the Navalny Problem.
@@ -167,25 +167,25 @@ class RoughForecastingQuestionGenerator:
             "description": article["description"],
             "content": article["content"],
         }
-        forecasting_preface = RoughForecastingQuestionGenerator.preface.format(
+        forecasting_preface = NewsApiRoughForecastingQuestionGenerator.preface.format(
             current_date=start_date.strftime("%Y-%m-%d")
         )
-        forecasting_prompt = RoughForecastingQuestionGenerator.prompt.format(
+        forecasting_prompt = NewsApiRoughForecastingQuestionGenerator.prompt.format(
             source_article=json.dumps(formatted_article, indent=4),
             example_fq_1=json.dumps(
-                RoughForecastingQuestionGenerator.example_fq_1, indent=4
+                NewsApiRoughForecastingQuestionGenerator.example_fq_1, indent=4
             ),
             example_fq_2=json.dumps(
-                RoughForecastingQuestionGenerator.example_fq_2, indent=4
+                NewsApiRoughForecastingQuestionGenerator.example_fq_2, indent=4
             ),
             example_fq_3=json.dumps(
-                RoughForecastingQuestionGenerator.example_fq_3, indent=4
+                NewsApiRoughForecastingQuestionGenerator.example_fq_3, indent=4
             ),
             article_description=json.dumps(
-                RoughForecastingQuestionGenerator.article_description, indent=4
+                NewsApiRoughForecastingQuestionGenerator.article_description, indent=4
             ),
             example_rejected_fq=json.dumps(
-                RoughForecastingQuestionGenerator.example_rejected_fq, indent=4
+                NewsApiRoughForecastingQuestionGenerator.example_rejected_fq, indent=4
             ),
         )
 
@@ -242,7 +242,7 @@ class RoughForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = RoughForecastingQuestionGenerator._prompt_and_preface_formation(
+        ) = NewsApiRoughForecastingQuestionGenerator._prompt_and_preface_formation(
             article, start_date
         )
 
@@ -253,8 +253,10 @@ class RoughForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution_list,
         )
 
-        return RoughForecastingQuestionGenerator._form_rough_fq_from_llm_return_val(
-            article, generated_stripped_forecasting_questions
+        return (
+            NewsApiRoughForecastingQuestionGenerator._form_rough_fq_from_llm_return_val(
+                article, generated_stripped_forecasting_questions
+            )
         )
 
     @classmethod
@@ -272,7 +274,7 @@ class RoughForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = RoughForecastingQuestionGenerator._prompt_and_preface_formation(
+        ) = NewsApiRoughForecastingQuestionGenerator._prompt_and_preface_formation(
             article, start_date
         )
 
@@ -283,8 +285,10 @@ class RoughForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution_list,
         )
 
-        return RoughForecastingQuestionGenerator._form_rough_fq_from_llm_return_val(
-            article, generated_stripped_forecasting_questions
+        return (
+            NewsApiRoughForecastingQuestionGenerator._form_rough_fq_from_llm_return_val(
+                article, generated_stripped_forecasting_questions
+            )
         )
 
     def article_to_rough_forecasting_question_download_path(
@@ -313,6 +317,6 @@ class RoughForecastingQuestionGenerator:
         news_save_file_name = f"rough_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
-            RoughForecastingQuestionGenerator.news_api_rough_fq_save_dir,
+            NewsApiRoughForecastingQuestionGenerator.news_api_rough_fq_save_dir,
             news_save_file_name,
         )
