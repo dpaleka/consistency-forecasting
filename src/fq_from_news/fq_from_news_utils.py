@@ -74,7 +74,7 @@ def generate_rough_forecasting_data_sync(
 
             article = json.loads(line.strip())
             rough_forecasting_questions = NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question_sync(
-                article, rough_fq_gen_model_name, start_date
+                article, rough_fq_gen_model_name, end_date
             )
 
             num_articles_processed += 1
@@ -117,7 +117,7 @@ async def generate_rough_forecasting_data(
             article = json.loads(line.strip())
             tasks.append(
                 NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question(
-                    article, rough_fq_gen_model_name, start_date
+                    article, rough_fq_gen_model_name, end_date
                 )
             )
 
@@ -203,6 +203,7 @@ def generate_final_forecasting_questions_sync(
     num_articles: int,
     rough_fq_gen_model_name: str,
     final_fq_gen_model_name: str,
+    pose_date: datetime,
 ) -> None:
     """
     Wrapper for calling functionality to generate final forecasting questions in a sync manner.
@@ -232,7 +233,7 @@ def generate_final_forecasting_questions_sync(
             if "fqRejectionReason" not in rough_fq:
                 final_forecasting_question = (
                     NewsApiFinalForecastingQuestionGenerator.rough_fq_to_final_fq_sync(
-                        rough_fq, final_fq_gen_model_name, start_date
+                        rough_fq, final_fq_gen_model_name, end_date, pose_date
                     )
                 )
 
@@ -250,6 +251,7 @@ async def generate_final_forecasting_questions(
     num_articles: int,
     rough_fq_gen_model_name: str,
     final_fq_gen_model_name: str,
+    pose_date: datetime,
 ) -> None:
     """
     Wrapper for calling functionality to generate final forecasting questions in an async manner.
@@ -276,7 +278,7 @@ async def generate_final_forecasting_questions(
             if "fqRejectionReason" not in rough_fq:
                 tasks.append(
                     NewsApiFinalForecastingQuestionGenerator.rough_fq_to_final_fq(
-                        rough_fq, final_fq_gen_model_name, start_date
+                        rough_fq, final_fq_gen_model_name, end_date, pose_date
                     )
                 )
 
@@ -391,4 +393,6 @@ async def verify_final_forecasting_questions(
             verified_final_forecasting_question, verified_final_fq_save_path
         )
 
-    print(f"Final forecasting questions have been saved to {final_fq_save_path}")
+    print(
+        f"Final verified forecasting questions have been saved to {verified_final_fq_save_path}"
+    )

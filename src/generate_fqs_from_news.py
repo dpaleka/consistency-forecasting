@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 import argparse
 import os
 import asyncio
-from fq_from_news.download_from_news_api import parse_date, download_news_from_api
+from datetime import datetime
+from fq_from_news.download_from_news_api import download_news_from_api
 from fq_from_news.fq_from_news_utils import (
     generate_rough_forecasting_data,
     generate_final_forecasting_questions,
@@ -10,6 +11,7 @@ from fq_from_news.fq_from_news_utils import (
     generate_final_forecasting_questions_sync,
     verify_final_forecasting_questions,
 )
+from fq_from_news.date_utils import parse_date, get_month_date_range
 
 
 load_dotenv()
@@ -36,6 +38,7 @@ def generate_forecasting_questions_from_news_sync(articles_download_path, args):
             args.num_articles,
             args.rough_fq_gen_model_name,
             args.final_fq_gen_model_name,
+            args.pose_date,
         )
 
     if args.verify_fqs:
@@ -65,6 +68,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.num_articles,
             args.rough_fq_gen_model_name,
             args.final_fq_gen_model_name,
+            args.pose_date,
         )
 
     if args.verify_fqs:
@@ -181,6 +185,18 @@ def get_args() -> argparse.Namespace:
         default=False,
     )
 
+    # Pose Date of the forecaster
+    parser.add_argument(
+        "--pose-date",
+        type=parse_date,
+        help="""
+        Pose date for downloading news in YYYY-MM-DD format.
+
+        Between this date and the FQ's resolution date, we assume (as well as verify) that the question does not resolve. 
+        """,
+        default=datetime(2023, 10, 1),
+    )
+
     # Arguments to permit exclusive actions
     exclusive_pipeline_group = parser.add_mutually_exclusive_group()
     exclusive_pipeline_group.add_argument(
@@ -245,14 +261,21 @@ def get_args() -> argparse.Namespace:
         parser.add_argument(
             "--start-date",
             type=parse_date,
-            help="Start date for downloading news in YYYY-MM-DD format",
-            required=True,
+            help="Start date for downloading news in YYYY-MM-DD format. Do NOT use if using news month.",
         )
         parser.add_argument(
             "--end-date",
             type=parse_date,
-            help="End date for downloading news in YYYY-MM-DD format",
-            required=True,
+            help="End date for downloading news in YYYY-MM-DD format. Do NOT use if using news month.",
+        )
+        parser.add_argument(
+            "--news-month",
+            type=int,
+            choices=range(1, 13),
+            help="Month for downloading news (1-12)",
+        )
+        parser.add_argument(
+            "--news-year", type=int, help="Year for downloading news", default=2024
         )
     else:
         raise NotImplementedError("Sentinel scraping has not been implemented yet")
@@ -268,5 +291,21 @@ if __name__ == "__main__":
     assert (
         args.num_articles == -1 or args.num_articles > 0
     ), "Set a positive number or -1 for --num-articles!"
+
+    # Validate the arguments to ensure either start_date and end_date are provided, or news_month and year
+    if (args.start_date and args.end_date) and (args.news_month):
+        raise RuntimeError(
+            "You must provide either start and end dates or a news month and year, not both."
+        )
+    elif args.start_date and args.end_date:
+        pass
+    elif args.news_month and args.news_year:
+        args.start_date, args.end_date = get_month_date_range(
+            args.news_year, args.news_month
+        )
+    else:
+        raise RuntimeError(
+            "You must provide either start and end dates or a news month and year."
+        )
 
     main(args)
