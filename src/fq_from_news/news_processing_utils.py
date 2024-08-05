@@ -4,6 +4,8 @@ import math
 import json
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from tqdm import tqdm
+import spacy
 
 load_dotenv()
 
@@ -98,6 +100,28 @@ def _news_api_download_consolidation_path(
         news_save_file_name = f"consolidated_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_all.jsonl"
     else:
         news_save_file_name = f"consolidated_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}.jsonl"
+
+    return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
+
+
+def _news_api_processed_news_path(
+    start_date: datetime, end_date: datetime, num_pages: int
+) -> str:
+    """
+    File path where the processed form of the consolidated news will be saved.
+
+    Args:
+        start_date (datetime): Start date for downloading news.
+        end_date (datetime): End date for downloading news.
+        num_pages (int): Number of pages (each containing max 100 articles) to be downloaded.
+
+    Returns:
+        str: File path where the processed news will be saved.
+    """
+    if num_pages == -1:
+        news_save_file_name = f"processed_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_all.jsonl"
+    else:
+        news_save_file_name = f"processed_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}.jsonl"
 
     return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
 
@@ -215,5 +239,122 @@ def download_news_from_api(
                 for line in infile:
                     outfile.write(line)
 
-    print(f"Saved the news to {consolidated_news_path}.")
+    print(f"Saved the consolidated news to {consolidated_news_path}.")
     return consolidated_news_path
+
+
+def _ner_news_processing(sorted_news_articles: list[dict]) -> list[dict]:
+    """
+    Processes the downloaded news to remove repetitions using NER
+
+    Args:
+        sorted_news_articles (list): sorted news articles
+    Returns:
+        list: Processed news without duplicates
+    """
+    # Load the SpaCy model
+    ner_model = spacy.load("en_core_web_sm")
+
+    def extract_named_entities(text):
+        doc = ner_model(text)
+        entities = set()
+        for ent in doc.ents:
+            entities.add((ent.text, ent.label_))
+        return entities
+
+    def are_articles_duplicates(entities1, entities2, threshold=0.25):
+        intersection = entities1.intersection(entities2)
+        similarity = len(intersection) / (
+            len(entities1) + len(entities2) - len(intersection)
+        )
+        return similarity >= threshold
+
+    def get_entities(article):
+        entities_content = extract_named_entities(article.get("content"))
+        entities_description = extract_named_entities(article.get("description"))
+        return entities_content.union(entities_description)
+
+    entities_lst = []
+    for article in tqdm(sorted_news_articles):
+        entities_lst.append(get_entities(article))
+
+    duplicates = set()
+    n = len(sorted_news_articles)
+    for i in tqdm(range(n)):
+        if i in duplicates:
+            continue
+        entities_i = entities_lst[i]
+
+        for j in range(i + 1, n):
+            if j in duplicates:
+                continue
+            entities_j = entities_lst[j]
+            if are_articles_duplicates(entities_i, entities_j):
+                duplicates.add(j)
+
+    # Remove articles that are duplicates
+    unique_articles = [sorted_news_articles[i] for i in range(n) if i not in duplicates]
+    return unique_articles
+
+
+def process_news(start_date: datetime, end_date: datetime, num_pages: int) -> str:
+    """
+    Processes the downloaded news to remove repetitions
+        Fixes cases where the resolution changes with the advent of a more recent news.
+
+    Args:
+        start_date (datetime): Start date for downloading news.
+        end_date (datetime): End date for downloading news.
+        num_pages (int): Number of pages (each containing max 100 articles) to be downloaded.
+
+    Returns:
+        str: File path where the processed news is saved.
+    """
+    # Consolidated news articles need to have been downloaded
+    consolidated_news_path = _news_api_download_consolidation_path(
+        start_date, end_date, num_pages
+    )
+    if not os.path.exists(consolidated_news_path):
+        raise RuntimeError(
+            "Consolidated news does not exist at {consolidated_news_path}!"
+        )
+
+    processed_news_path = _news_api_processed_news_path(start_date, end_date, num_pages)
+    # if os.path.exists(processed_news_path):
+    #     print(
+    #         f"The processed news has already been saved to {processed_news_path}. "
+    #     )
+    #     return processed_news_path
+
+    def read_jsonl(file_path):
+        with open(file_path, "r") as file:
+            for line in file:
+                yield json.loads(line)
+
+    def sort_articles_by_date(articles):
+        return sorted(
+            articles,
+            key=lambda x: datetime.fromisoformat(
+                x["publishedAt"].replace("Z", "+00:00")
+            ),
+            reverse=True,
+        )
+
+    def load_and_sort_articles(file_path):
+        articles = list(read_jsonl(file_path))
+        sorted_articles = sort_articles_by_date(articles)
+        return sorted_articles
+
+    # Load and sort all articles in descending order of publish date
+    sorted_news_articles = load_and_sort_articles(consolidated_news_path)
+
+    ner_processed_news_articles = _ner_news_processing(sorted_news_articles)
+
+    # from pprint import pprint; pprint(ner_processed_news_articles)
+
+    with open(processed_news_path, "w") as outfile:
+        for news_article in ner_processed_news_articles:
+            outfile.write(json.dumps(news_article) + "\n")
+
+    print(f"Saved the processed news to {processed_news_path}.")
+    return processed_news_path
