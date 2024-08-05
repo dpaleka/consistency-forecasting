@@ -3,8 +3,7 @@ import os
 import math
 import json
 from dotenv import load_dotenv
-from simple_parsing import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timedelta
 
 load_dotenv()
 
@@ -71,7 +70,7 @@ def get_news_from_api(
         )
 
 
-def news_api_download_file_path(
+def _news_api_download_file_path(
     start_date: datetime, end_date: datetime, num_pages: int
 ) -> str:
     """
@@ -91,8 +90,8 @@ def news_api_download_file_path(
     return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
 
 
-def download_news_from_api(
-    start_date: datetime, end_date: datetime, num_pages: int, api_key: str
+def _download_news_from_api_per_day(
+    news_date: datetime, num_pages: int, api_key: str
 ) -> str:
     """
     Downloads popular news as response pages from News API from a set of curated domains
@@ -106,8 +105,8 @@ def download_news_from_api(
     """
     assert num_pages == -1 or num_pages > 0
 
-    articles_download_path = news_api_download_file_path(
-        start_date, end_date, num_pages
+    articles_download_path = _news_api_download_file_path(
+        news_date, news_date, num_pages
     )
 
     # Make the data dump directory
@@ -123,7 +122,7 @@ def download_news_from_api(
     if not os.getenv("NEWS_API_KEY"):
         raise RuntimeError("OS enviroment for NEWS_API_KEY either missing or None!")
 
-    first_page_news = get_news_from_api(start_date, end_date, 1, api_key)
+    first_page_news = get_news_from_api(news_date, news_date, 1, api_key)
 
     # Calculating number of pages requried
     total_number_of_pages = math.ceil(
@@ -151,7 +150,7 @@ def download_news_from_api(
             news_articles = first_page_news["articles"]
         else:
             news_articles = get_news_from_api(
-                start_date, end_date, page_number, api_key
+                news_date, news_date, page_number, api_key
             )["articles"]
         with open(articles_download_path, "a") as jsonl_file:
             for article in news_articles:
@@ -160,34 +159,15 @@ def download_news_from_api(
     return articles_download_path
 
 
-if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--start-date",
-        type=parse_date,
-        help="Start date for downloading news in YYYY-MM-DD format",
-        required=True,
-    )
-    parser.add_argument(
-        "--end-date",
-        type=parse_date,
-        help="End date for downloading news in YYYY-MM-DD format",
-        required=True,
-    )
-    parser.add_argument(
-        "--num-pages",
-        type=int,
-        help="""
-        News API returns data in a paginated form. We set the number of articles downloaded per page to a 100 (maximum),
-        By default, we only download the first page. 
+def download_news_from_api(
+    start_date: datetime, end_date: datetime, num_pages: int, api_key: str
+) -> str:
+    daily_article_download_paths = []
+    init_date = start_date
+    while init_date <= end_date:
+        # download the individual articles for each day and save their paths
+        daily_article_download_paths.append(
+            _download_news_from_api_per_day(init_date, num_pages, api_key)
+        )
 
-        Set to the number of pages to be downloaded. Set to -1 to download all pages.
-        """,
-        default=1,
-    )
-
-    args = parser.parse_args()
-
-    download_news_from_api(
-        args.start_date, args.end_date, args.num_pages, os.getenv("NEWS_API_KEY")
-    )
+        init_date += timedelta(days=1)

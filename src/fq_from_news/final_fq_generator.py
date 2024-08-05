@@ -7,13 +7,15 @@ from common.llm_utils import answer_sync, answer
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution
 
 
-class FinalForecastingQuestionGenerator:
+class NewsApiFinalForecastingQuestionGenerator:
     """
     Class with functionality to take the dicts formed by the RoughForecastingQuestionGenerator class
     and parse them to either accept, reject or improve them and then convert them into ForecastingQuestions
     """
 
-    news_api_final_fq_save_dir = "./data/fq/synthetic/news_api_generated_fqs"
+    news_api_final_fq_save_dir = (
+        "./data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions"
+    )
     # Create the save path directory
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
 
@@ -120,25 +122,25 @@ class FinalForecastingQuestionGenerator:
     def _prompt_and_preface_formation(
         rough_fq_data: dict, start_date: datetime
     ) -> tuple[str, str]:
-        forecasting_preface = FinalForecastingQuestionGenerator.preface.format(
+        forecasting_preface = NewsApiFinalForecastingQuestionGenerator.preface.format(
             current_date=start_date.strftime("%Y-%m-%d")
         )
-        forecasting_prompt = FinalForecastingQuestionGenerator.prompt.format(
+        forecasting_prompt = NewsApiFinalForecastingQuestionGenerator.prompt.format(
             source_rough_fq_data=rough_fq_data,
             example_fq_1=json.dumps(
-                FinalForecastingQuestionGenerator.example_fq_1, indent=4
+                NewsApiFinalForecastingQuestionGenerator.example_fq_1, indent=4
             ),
             example_fq_2=json.dumps(
-                FinalForecastingQuestionGenerator.example_fq_2, indent=4
+                NewsApiFinalForecastingQuestionGenerator.example_fq_2, indent=4
             ),
             example_rejected_fq=json.dumps(
-                FinalForecastingQuestionGenerator.example_rejected_fq, indent=4
+                NewsApiFinalForecastingQuestionGenerator.example_rejected_fq, indent=4
             ),
             rough_fq_data_desc=json.dumps(
-                FinalForecastingQuestionGenerator.rough_fq_data_desc, indent=4
+                NewsApiFinalForecastingQuestionGenerator.rough_fq_data_desc, indent=4
             ),
             final_fq_form=json.dumps(
-                FinalForecastingQuestionGenerator.final_fq_form, indent=4
+                NewsApiFinalForecastingQuestionGenerator.final_fq_form, indent=4
             ),
         )
         return forecasting_preface, forecasting_prompt
@@ -181,7 +183,7 @@ class FinalForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = FinalForecastingQuestionGenerator._prompt_and_preface_formation(
+        ) = NewsApiFinalForecastingQuestionGenerator._prompt_and_preface_formation(
             rough_fq_data, start_date
         )
 
@@ -192,8 +194,10 @@ class FinalForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution,
         )
 
-        return FinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
-            rough_fq_data, generated_stripped_final_forecasting_question
+        return (
+            NewsApiFinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
+                rough_fq_data, generated_stripped_final_forecasting_question
+            )
         )
 
     @classmethod
@@ -213,7 +217,7 @@ class FinalForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = FinalForecastingQuestionGenerator._prompt_and_preface_formation(
+        ) = NewsApiFinalForecastingQuestionGenerator._prompt_and_preface_formation(
             rough_fq_data, start_date
         )
 
@@ -224,8 +228,10 @@ class FinalForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution,
         )
 
-        return FinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
-            rough_fq_data, generated_stripped_final_forecasting_question
+        return (
+            NewsApiFinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
+                rough_fq_data, generated_stripped_final_forecasting_question
+            )
         )
 
     def rough_fq_to_final_fq_download_path(
@@ -254,6 +260,6 @@ class FinalForecastingQuestionGenerator:
         news_save_file_name = f"final_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
-            FinalForecastingQuestionGenerator.news_api_final_fq_save_dir,
+            NewsApiFinalForecastingQuestionGenerator.news_api_final_fq_save_dir,
             news_save_file_name,
         )
