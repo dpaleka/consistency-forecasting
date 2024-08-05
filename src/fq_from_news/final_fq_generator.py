@@ -5,6 +5,7 @@ from uuid import uuid4
 from common.datatypes import ForecastingQuestion
 from common.llm_utils import answer_sync, answer
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution
+from .date_utils import last_datetime_of_month
 
 
 class NewsApiFinalForecastingQuestionGenerator:
@@ -20,12 +21,34 @@ class NewsApiFinalForecastingQuestionGenerator:
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
 
     preface = """
-    You are an expert in validating forecasting (prediction) questions that cannot be answered by a simple or trivial forecasting algorithm leveraging biases 
-    and some other rules that will be given. The foreacsting questions have been made using News Articles.
-    Assume that today's date is {current_date} in %Y-%m-%d format. The resolution dates of all the questions must be on or after this. 
+    You are an expert in validating forecasting (prediction) questions that cannot be answered by a simple or trivial forecasting algorithms. 
+    Verify that each forecasting question's title, body, and resolution adhere to the guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date that should be set for the questions is {month_name}, {year}.
     """
 
     prompt = """
+    Here are the updated guidelines for validating forecasting questions:
+
+    1. **Definitive Answers**: Questions should definitively answer YES or NO based on concrete, factual information from recent news articles. The resolution should align with this information, treating True as "Yes" and False as "No". The resolution must be valid for all potential scenarios up to the resolution date, which must be the current month and year.
+
+    2. **Numeric Values**: For questions involving numeric values, frame the question to ask if the value will cross or fall below a threshold, using a rough threshold to avoid numerical biases.
+
+    3. **Objectivity and Clarity**: Avoid ambiguous or subjective terms such as "significant," "major," "substantial," etc., unless universally accepted values are provided. Questions must be objective and unambiguous, avoiding biases related to religion, culture, politics, or stereotypes.
+
+    4. **Question Body**: The body should prompt a clear YES or NO resolution, avoiding overly specific details or predictions that could be easily guessed by algorithms.
+
+    5. **Future Accuracy**: Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date (e.g., "by the end of July 2024"). Questions based on specific events from the article are allowed, but ensure they do not resolve between the forecaster's current date (a date in the previous year) and the resolution date’s month.
+
+    6. **Avoid Obvious Answers**: Questions should not be so obvious that they can be easily guessed using common sense or simple heuristics.
+
+    Based on these guidelines:
+
+    1. Validate the forecasting question and return its "Final Form".
+    2. If the question is invalid, attempt to modify it to meet the guidelines and return the modified version's "Final Form".
+    3. If modification fails, return a rejected "Final Form". The rejected form is: 
+        ```JSON
+        {example_rejected_fq}
+        ```
+
     Data will be given to you in the following form:
     ```JSON
     {rough_fq_data_desc}
@@ -44,42 +67,11 @@ class NewsApiFinalForecastingQuestionGenerator:
     ```JSON
     {example_fq_2}
     ```
+    ```JSON
+    {example_fq_3}
+    ```
 
-    Here are the guidelines for forecasting questions to be "valid".
-    1. Questions should definitively answer YES or NO based on factual information from recent news articles, confirming the outcome without room for speculation. Ensure the resolution aligns with the article's information, treating True as "Yes" and False as "No".
-
-    2. Questions must accurately forecast binary outcomes using recent news articles. The resolution should be valid for all potential scenarios up to the resolution date. For questions involving numeric values where uncertainty exists (e.g., terms like "over" or "at least"), frame the question inversely. For instance, if the article states a value is above 47, valid questions could ask if the value will be above 40 (resolving to Yes) or below 45 (resolving to No).
-
-    3. Questions must be objective and unambiguous, avoiding specificity that could allow simplistic algorithms to exploit biases. Ambiguous terms such as "significant," "major," "substantial," "many," or "few" should not be used without universally accepted values. Biases to avoid include those based on religion, cultural norms, political views, historical context, precise numerical thresholds, or stereotypes.
-
-    4. Forecasting question bodies must prompt a resolution of either "Yes" or "No".
-
-    5. Questions should not be overly specific, where a simple algorithm could guess the answer based on the information provided without requiring a nuanced understanding of current events. 
-       Overly specific questions have fallacies including:
-        a. They focus on niche, relatively unknown individuals or events that are not widely covered in mainstream news, making the outcome predictable to algorithms monitoring niche sources.
-        b. They involve specific outcomes which are personal and not widely reported unless the individual is highly publicized.
-        c. They pertain to future events that are too far out or specific in nature, which are less likely to be covered extensively in current news, thus making the outcome easier to predict for algorithms.
-       Examples of overly specific questions that are NOT valid include:
-        a. Will an appeals court reject Garth Drabinsky's antitrust lawsuit against Actors' Equity by the end of this month?
-        b. Will Pål Enger's death at age 57 be reported in major news outlets this month?
-        c. Will Tarmo Peltokoski start his term as music director of the Hong Kong Philharmonic in the 2026-27 season?
-
-    6. Questions must remain accurate for all foreseeable futures until the specified resolution date. To avoid simplistic forecasting algorithm exploitation, the resolution date should be slightly vague. For instance, use broader timeframes like "by the end of July 2024" or "by mid-2024" instead of precise dates like "by July 31, 2024." 
-       However, if the article forming the question references a statement or announcement from an entity, you may use specific dates relevant to the article's timing (day or week) at your discretion. This ensures the resolution remains correct even if the entity later retracts or negates their announcement.
-
-    7. Questions should not have obvious answers that can be guessed easily by using common sense. 
-       
-    If a forecasting question follows the above guidelines, it is said to be validated.
-
-    From this, you must do the following based on the guidelines given above: 
-    1. Validate the forecasting question and return its "Final Form". 
-    2. If the forecasting question is not valid, you must attempt to modify its data to make it valid and return the modified version's "Final Form"
-    3. If the attempt to modify fails for invalid forecasting questions, you must return a rejected "Final Form" which looks like
-        ```JSON
-        {example_rejected_fq}
-        ```
-    
-    Think carefully and aptly and do the above steps for the following forecasting question:
+    Think carefully & aptly and perform the aforementioned steps for the following forecasting question:
     ```JSON
     {source_rough_fq_data}
     ```
@@ -89,8 +81,6 @@ class NewsApiFinalForecastingQuestionGenerator:
         "articleTitle": "The title of the news article that was used to form the forecasting question",
         "articleDescription": "The description of the news article that was used to form the forecasting question",
         "articleContent": "The content of the news article that was used to form the forecasting question",
-        "articleUrl": "The URL of the news article that had been used to form the forecasting question",
-        "articlePulishedAt": "The date and time the news article was published such as 2024-07-05T01:10:56Z",
         "fqTitle": "The title of the forecasting question",
         "fqBody": "The Body of the forecasting question",
         "fqResolution": "A boolean representing the resolution of the forecasting question. True for 'Yes' and False for 'No'",
@@ -109,21 +99,54 @@ class NewsApiFinalForecastingQuestionGenerator:
     }
 
     example_fq_1 = {
-        "title": "Will a significant political figure publicly endorse a theory related to string theory's implications for the universe by 2030?",
-        "body": "This question will resolve as Yes if, by December 31, 2030, a significant political figure publicly endorses a theory related to string theory's implications for the universe. A \"significant political figure\" is defined as a current or former head of state, government, or a member of the executive cabinet of a G20 nation. The endorsement must be explicit, relating directly to string theory's implications for the universe, and must be made in a public forum, such as an official speech, published article, or a verified social media post. The endorsement must be reported by at least two reputable news organizations (BBC, The Guardian, New York Times, Washington Post). In the event of ambiguous statements, the resolution will be based on the consensus interpretation by these reporting news organizations. This question resolves as YES upon confirmation of such an endorsement.",
+        "title": "Will a significant political figure publicly endorse a theory related to string theory's implications for the universe by July 2024?",
+        "body": "This question will resolve as YES if, by July 31, 2024, a significant political figure publicly endorses a theory related to string theory's implications for the universe. A \"significant political figure\" is defined as a current or former head of state, government, or a member of the executive cabinet of a G20 nation. The endorsement must be explicit, relating directly to string theory's implications for the universe, and must be made in a public forum, such as an official speech, published article, or a verified social media post. The endorsement must be reported by at least two reputable news organizations (BBC, The Guardian, New York Times, Washington Post). In the event of ambiguous statements, the resolution will be based on the consensus interpretation by these reporting news organizations. This question resolves as YES upon confirmation of such an endorsement.",
         "resolution": True,
     }
+
     example_fq_2 = {
-        "title": "Will a First Crystal Tier Market be made in 2024?",
-        "body": 'Resolves YES immediately when someone creates a Crystal tier market in 2024 (which currently costs 1 million Mana to make).\n\nResolves NO if no such market is created before January 1, 2025 (UTC time) or Manifold entirely scraps the tier system for creating questions (minor modifications don\'t alter the outcome, see below).\n\nImportant edge cases:\n\nFor the purposes of this market if Manifold alters the tier system prices, any questions created with a tier that has a creation cost of between 500k Mana and 2M Mana, inclusive, will be considered equivalent to the "Crystal tier" market.\n\nAny changes to the tier name will not be considered consequential (only the creation cost).',
+        "title": "Will a First Crystal Tier Market be made by August 2024?",
+        "body": 'Resolves YES immediately when someone creates a Crystal tier market in 2024 (which currently costs 1 million Mana to make).\n\nResolves NO if no such market is created before September 1, 2024 (UTC time) or Manifold entirely scraps the tier system for creating questions (minor modifications don\'t alter the outcome, see below).\n\nImportant edge cases:\n\nFor the purposes of this market if Manifold alters the tier system prices, any questions created with a tier that has a creation cost of between 500k Mana and 2M Mana, inclusive, will be considered equivalent to the "Crystal tier" market.\n\nAny changes to the tier name will not be considered consequential (only the creation cost).',
         "resolution": False,
     }
 
+    example_fq_3 = {
+        "title": "Will the TIME 100 Most Influential Companies of 2024 list actually come out in May 2024 as promised?",
+        "body": 'This page has just said "2024 HONOREES ANNOUNCED IN MAY" for ages now. I\'ve been checking every day for my market, @/Joshua/what-will-be-time-magazines-100-mos-1ccb89e7e3a1 \n\nThe FAQ says:\n\n[image]This market closes at 11:59 PM PT on Friday, May 31, 2024. If the list is published before market close, resolves YES. If not, resolves NO.',
+        "resolution": True,
+    }
+
+    def _processed_rough_fq_data(rough_fq_date: dict) -> dict:
+        """
+        Processes rough forecasting question data by removing unwanted fields.
+
+        Args:
+            rough_fq_date (dict): Dictionary containing the rough forecasting question data.
+
+        Returns:
+            dict: Processed dictionary with specific keys removed.
+        """
+        return {
+            key: value
+            for key, value in rough_fq_date.items()
+            if key not in ["articleUrl", "articlePublishedAt"]
+        }
+
     def _prompt_and_preface_formation(
-        rough_fq_data: dict, start_date: datetime
+        rough_fq_data: dict, end_date: datetime
     ) -> tuple[str, str]:
+        """
+        Forms the forecasting prompt and preface from rough forecasting question data.
+
+        Args:
+            rough_fq_data (dict): Processed rough forecasting question data.
+            end_date (datetime): The end date used to set context for the forecasting question.
+
+        Returns:
+            tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
+        """
         forecasting_preface = NewsApiFinalForecastingQuestionGenerator.preface.format(
-            current_date=start_date.strftime("%Y-%m-%d")
+            month_name=end_date.strftime("%B"), year=end_date.strftime("%Y")
         )
         forecasting_prompt = NewsApiFinalForecastingQuestionGenerator.prompt.format(
             source_rough_fq_data=rough_fq_data,
@@ -132,6 +155,9 @@ class NewsApiFinalForecastingQuestionGenerator:
             ),
             example_fq_2=json.dumps(
                 NewsApiFinalForecastingQuestionGenerator.example_fq_2, indent=4
+            ),
+            example_fq_3=json.dumps(
+                NewsApiFinalForecastingQuestionGenerator.example_fq_3, indent=4
             ),
             example_rejected_fq=json.dumps(
                 NewsApiFinalForecastingQuestionGenerator.example_rejected_fq, indent=4
@@ -147,8 +173,22 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     def _form_final_fq_from_llm_return_val(
         rough_fq_data: dict,
-        generated_stripped_final_forecasting_question: ForecastingQuestion,
+        generated_stripped_final_forecasting_question: ForecastingQuestion_stripped_with_resolution,
+        end_date: datetime,
+        pose_date: datetime,
     ) -> ForecastingQuestion:
+        """
+        Forms the final ForecastingQuestion from the LLM-generated stripped forecasting question.
+
+        Args:
+            rough_fq_data (dict): Processed rough forecasting question data.
+            generated_stripped_final_forecasting_question (ForecastingQuestion_stripped_with_resolution): The LLM-generated stripped forecasting question.
+            end_date (datetime): The end date used for the forecasting question resolution.
+            pose_date (datetime): The assumed knowledge cutoff date for the forecaster.
+
+        Returns:
+            ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
+        """
         if generated_stripped_final_forecasting_question.title.strip() == "":
             return None
 
@@ -159,32 +199,47 @@ class NewsApiFinalForecastingQuestionGenerator:
             resolution=generated_stripped_final_forecasting_question.resolution,
             question_type="binary",
             data_source="synthetic",
-            url=rough_fq_data["articleUrl"],
-            resolution_date=datetime.strptime(
-                rough_fq_data["articlePulishedAt"], "%Y-%m-%dT%H:%M:%SZ"
-            ),
-            metadata={},
+            url=None,
+            resolution_date=last_datetime_of_month(end_date),
+            metadata={
+                "article_information": {
+                    "article_url": rough_fq_data["articleUrl"],
+                    "article_date": datetime.strptime(
+                        rough_fq_data["articlePulishedAt"], "%Y-%m-%dT%H:%M:%SZ"
+                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                    "article_description": rough_fq_data["articleDescription"],
+                    "article_title": rough_fq_data["articleTitle"],
+                    "article_content": rough_fq_data["articleContent"],
+                },
+                "pose_date": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
+            },
         )
 
     @classmethod
     def rough_fq_to_final_fq_sync(
-        cls, rough_fq_data: dict, model_name: str, start_date: datetime
+        cls,
+        rough_fq_data: dict,
+        model_name: str,
+        end_date: datetime,
+        pose_date: datetime,
     ) -> ForecastingQuestion:
         """
-        Classmethod to create the final ForecastingQuestion from the rough forecasting question data
-        in a sync manner.
+        Class method to create the final ForecastingQuestion from rough forecasting question data synchronously.
 
-        :rough_fq_data: The rough intermediate forecasting question data
-        :model_name: The model being used to create the rough forecasting question
-        :start_date: Used to set context of the current date for the model
+        Args:
+            rough_fq_data (dict): The rough intermediate forecasting question data.
+            model_name (str): The model being used to create the rough forecasting question.
+            end_date (datetime): Used to set context of the current date for the model.
+            pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
 
-        :returns: validated (and possibly modified) ForecastingQuestion, or None
+        Returns:
+            ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
         """
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = NewsApiFinalForecastingQuestionGenerator._prompt_and_preface_formation(
-            rough_fq_data, start_date
+        ) = cls._prompt_and_preface_formation(
+            cls._processed_rough_fq_data(rough_fq_data), end_date
         )
 
         generated_stripped_final_forecasting_question = answer_sync(
@@ -194,31 +249,38 @@ class NewsApiFinalForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution,
         )
 
-        return (
-            NewsApiFinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
-                rough_fq_data, generated_stripped_final_forecasting_question
-            )
+        return cls._form_final_fq_from_llm_return_val(
+            rough_fq_data,
+            generated_stripped_final_forecasting_question,
+            end_date,
+            pose_date,
         )
 
     @classmethod
     async def rough_fq_to_final_fq(
-        cls, rough_fq_data: dict, model_name: str, start_date: datetime
+        cls,
+        rough_fq_data: dict,
+        model_name: str,
+        end_date: datetime,
+        pose_date: datetime,
     ) -> ForecastingQuestion:
         """
-        Classmethod to create the final ForecastingQuestion from the rough forecasting question data
-        in an async manner.
+        Class method to create the final ForecastingQuestion from rough forecasting question data asynchronously.
 
-        :rough_fq_data: The rough intermediate forecasting question data
-        :model_name: The model being used to create the rough forecasting question
-        :start_date: Used to set context of the current date for the model
+        Args:
+            rough_fq_data (dict): The rough intermediate forecasting question data.
+            model_name (str): The model being used to create the rough forecasting question.
+            end_date (datetime): Used to set context of the current date for the model.
+            pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
 
-        :returns: validated (and possibly modified) ForecastingQuestion, or None
+        Returns:
+            ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
         """
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = NewsApiFinalForecastingQuestionGenerator._prompt_and_preface_formation(
-            rough_fq_data, start_date
+        ) = cls._prompt_and_preface_formation(
+            cls._processed_rough_fq_data(rough_fq_data), end_date
         )
 
         generated_stripped_final_forecasting_question = await answer(
@@ -228,10 +290,11 @@ class NewsApiFinalForecastingQuestionGenerator:
             response_model=ForecastingQuestion_stripped_with_resolution,
         )
 
-        return (
-            NewsApiFinalForecastingQuestionGenerator._form_final_fq_from_llm_return_val(
-                rough_fq_data, generated_stripped_final_forecasting_question
-            )
+        return cls._form_final_fq_from_llm_return_val(
+            rough_fq_data,
+            generated_stripped_final_forecasting_question,
+            end_date,
+            pose_date,
         )
 
     def rough_fq_to_final_fq_download_path(
@@ -242,15 +305,17 @@ class NewsApiFinalForecastingQuestionGenerator:
         model_name: str,
     ) -> str:
         """
-        File path to save the final forecasting questions
+        File path to save the final forecasting questions.
 
-        :start_date: Start date for downloading news
-        :end_date: End date for downloading news
-        :num_pages: Number of pages of news that were downloaded
-        :num_articles: Number of articles in use
-        :model_name: The model being used to create the final forecasting questions
+        Args:
+            start_date (datetime): Start date for downloading news.
+            end_date (datetime): End date for downloading news.
+            num_pages (int): Number of pages of news that were downloaded.
+            num_articles (int): Number of articles in use.
+            model_name (str): The model being used to create the final forecasting questions.
 
-        :returns: file path for saving
+        Returns:
+            str: File path for saving the final forecasting questions.
         """
         if num_pages == -1:
             num_pages = "all"
