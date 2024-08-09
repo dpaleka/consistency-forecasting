@@ -1594,11 +1594,12 @@ class ConsequenceChecker(Checker):
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
-            # _answers = {"P": answers["P"], "para_P": answers["cons_P"]}
-            answers["para_P"] = answers.pop("cons_P")
-            p, v = ParaphraseChecker().max_min_arbitrage(answers, **kwargs)
-            p["cons_P"] = p.pop("para_P")
-            return p, v
+            
+            A = np.sqrt(answers["P"] * answers["cons_P"])
+            B = np.sqrt((1 - answers["P"]) * (1 - answers["cons_P"]))
+            p = A / (A + B)
+            v = -2 * np.log(A + B)
+            return {"P": p, "cons_P": p}, v
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
