@@ -143,6 +143,86 @@ class ConsistentForecaster(Forecaster):
         tup = res[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
+    def instantiate_cons_tuples(
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
+        **kwargs,
+    ) -> list[dict[str, ForecastingQuestion]]:
+        """Instantiate tuples for arbitraging the given sentence.
+
+        Args:
+            sentence (ForecastingQuestion): Sentence to instantiate consistent tuples for.
+            bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        """
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+
+        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        max_tuple_size = max(check.num_base_questions for check in self.checks)
+        bq_tuple_max = self.bq_function(
+            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        )
+
+        cons_tuples = []
+        for check in self.checks:
+            bq_tuple = {
+                k: v
+                for k, v in bq_tuple_max.items()
+                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+            }
+            cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuples.append(cons_tuple)
+        return cons_tuples
+
+    async def instantiate_cons_tuples_async(
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
+        **kwargs,
+    ) -> list[dict[str, ForecastingQuestion]]:
+        """Instantiate tuples for arbitraging the given sentence.
+
+        Args:
+            sentence (ForecastingQuestion): Sentence to instantiate consistent tuples for.
+            bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        """
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+
+        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        max_tuple_size = max(check.num_base_questions for check in self.checks)
+        bq_tuple_max = await self.bq_function_async(
+            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        )
+
+        cons_tuples = []
+        for check in self.checks:
+            bq_tuple = {
+                k: v
+                for k, v in bq_tuple_max.items()
+                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+            }
+            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuples.append(cons_tuple)
+        return cons_tuples
+
     def call(
         self,
         sentence: ForecastingQuestion,
@@ -175,28 +255,16 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
-            sentence.question_type = "binary"
-        kwargs = self.kwargs | (kwargs or {})
-        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
-        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+
         ans_P = self.hypocrite.call(sentence, **kwargs)
-
-        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
-        max_tuple_size = max(check.num_base_questions for check in self.checks)
-        bq_tuple_max = self.bq_function(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        cons_tuples = self.instantiate_cons_tuples(
+            sentence,
+            bq_func_kwargs=bq_func_kwargs,
+            instantiation_kwargs=instantiation_kwargs,
+            **kwargs,
         )
-
-        for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
-            cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                cons_tuple = cons_tuple[0]
+        
+        for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
@@ -204,6 +272,7 @@ class ConsistentForecaster(Forecaster):
             cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
         return ans_P
+
 
     async def call_async(
         self,
@@ -237,35 +306,24 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
-            sentence.question_type = "binary"
-        kwargs = self.kwargs | (kwargs or {})
-        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
-        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
-        ans_P = await self.hypocrite.call_async(sentence, **kwargs)
-        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
-        max_tuple_size = max(check.num_base_questions for check in self.checks)
-        bq_tuple_max = await self.bq_function_async(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        
+        ans_P = self.hypocrite.call(sentence, **kwargs)
+        cons_tuples = await self.instantiate_cons_tuples_async(
+            sentence,
+            bq_func_kwargs=bq_func_kwargs,
+            instantiation_kwargs=instantiation_kwargs,
+            **kwargs,
         )
-
-        for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
-            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                cons_tuple = cons_tuple[0]
+        
+        for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
+            hypocrite_answers = await self.hypocrite.elicit(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
+            cons_answers, v = await check.max_min_arbitrage(hypocrite_answers)
             ans_P = cons_answers["P"]
         return ans_P
-
+        
     @classmethod
     def recursive(
         cls,
