@@ -393,19 +393,29 @@ class Checker(ABC):
         outcome: dict[str, bool | None],
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
     ) -> float:
         """Arbitrage earned given a particular outcome, forcaster answers and
         arbitrageur_answers.
         """
+
+        if isinstance(scoring, list):
+            scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
+        if not isinstance(scoring, dict):
+            scoring = {q: scoring for q in answers.keys()}
+        for key, scoring_func in scoring.items():
+            if isinstance(scoring_func, (float, int)):
+                scoring[key] = lambda x: scoring_func * np.log(x)
+    
         score = 0.0
         for qun, ans in answers.items():
+            print(scoring[qun])
             if outcome[qun] is None:
                 continue
             elif outcome[qun] == True:  # noqa
-                score += scoring(arbitrageur_answers[qun]) - scoring(ans)
+                score += scoring[qun](arbitrageur_answers[qun]) - scoring[qun](ans)
             elif outcome[qun] == False:  # noqa
-                score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
+                score += scoring[qun](1 - arbitrageur_answers[qun]) - scoring[qun](1 - ans)
         return score
 
     @property
@@ -426,7 +436,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
     ) -> float:
         """Minimum arbitrage earned regardless of outcome, given forcaster answers
         and arbitrageur_answers."""
@@ -455,7 +465,7 @@ class Checker(ABC):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
         initial_guess: list[float] | str | None = None,
         methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> float:
@@ -464,7 +474,7 @@ class Checker(ABC):
 
         Args:
             answers (dict[str, Prob]): Forecaster answers.
-            scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
+            scoring (dict[str, Callable[[Prob], float]], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
             methods (tuple[str], optional): Optimization method. Options:
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
