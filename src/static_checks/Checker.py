@@ -405,11 +405,10 @@ class Checker(ABC):
             scoring = {q: scoring for q in answers.keys()}
         for key, scoring_func in scoring.items():
             if isinstance(scoring_func, (float, int)):
-                scoring[key] = lambda x: scoring_func * np.log(x)
+                scoring[key] = lambda x, sf=scoring_func: sf * np.log(x) # stupid HACK
     
         score = 0.0
         for qun, ans in answers.items():
-            print(scoring[qun])
             if outcome[qun] is None:
                 continue
             elif outcome[qun] == True:  # noqa
