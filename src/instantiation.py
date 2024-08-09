@@ -14,20 +14,146 @@ from pathlib import Path
 from common.llm_utils import parallelized_call
 import functools
 import random
+import itertools
 
 # The following are defaults, but can be overriden in the script args
 MODEL = "gpt-4o-mini-2024-07-18"
 MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"
+# BASE_DATA_PATH: Path = (
+#     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
+# )
+
 BASE_DATA_PATH: Path = (
-    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
+    get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
 )
 # BASE_DATA_PATH: Path = (
-#    get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
+#     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "tuples_rel/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["ConsequenceChecker"]
+RELEVANT_CHECKS = ["AndChecker", "CondCondChecker", "NegChecker"]
+# RELEVANT_CHECKS = ["AndChecker"]
+
+
+async def instantiateRel(
+    BASE_DATA_PATH: Path,
+    checker_list: dict[str, Checker],
+    # n_relevance: int = 10,
+    n_write: int = -1,
+    model: str = "gpt-4o-mini-2024-07-18",
+    # model_relevance: str = MODEL_RELEVANCE,
+    seed: int = 42,
+    **kwargs,
+):
+    print(f"Loading questions from {BASE_DATA_PATH}...")
+    question_sets = {}
+    total_questions = 0
+    source_questions_count = 0
+    related_questions_count = 0
+    for line in jsonlines.open(BASE_DATA_PATH):
+        try:
+            bq = ForecastingQuestion(**line)
+            total_questions += 1
+            source_question = bq.metadata.get("source_question")
+            if source_question is None:
+                source_questions_count += 1
+                question_sets[bq.title] = {"source": bq, "related": []}
+            else:
+                related_questions_count += 1
+                if source_question not in question_sets:
+                    question_sets[source_question] = {"source": None, "related": []}
+                question_sets[source_question]["related"].append(bq)
+        except Exception as e:
+            print(f"Error processing question: {e}")
+            continue
+
+    print(f"\nLoaded {total_questions} questions in total.")
+    print(
+        f"Found {source_questions_count} source questions and {related_questions_count} related questions."
+    )
+    print(f"Created {len(question_sets)} question sets.")
+
+    print("\nDetails of all question sets:")
+    for key, value in question_sets.items():
+        if value["source"] is not None:
+            print(
+                f"Set with source '{key}' has {len(value['related'])} related questions"
+            )
+
+    valid_sets = {k: v for k, v in question_sets.items() if v["source"] is not None}
+    print(
+        f"\nFound {len(valid_sets)} valid question sets with both source and related questions."
+    )
+
+    random.seed(seed)
+
+    # Print details about all sets
+    print("\nDetails of all question sets:")
+    for key, value in question_sets.items():
+        if value["source"] is not None:
+            print(
+                f"Set with source '{key}' has {len(value['related'])} related questions"
+            )
+        else:
+            print(
+                f"Set with key '{key}' has no source question but {len(value['related'])} related questions"
+            )
+
+    possible_tuples = {}
+    i_set = {checker.num_base_questions for checker in checker_list.values()}
+    for i in i_set:
+        print(f"\nGenerating {i}-tuples...")
+        possible_ituples = []
+        for question_set in valid_sets.values():
+            if i == 1:
+                # For checkers that use 1 base question, just use the source question
+                possible_ituples.append({"P": question_set["source"]})
+            elif len(question_set["related"]) >= i - 1:
+                for related_combo in itertools.combinations(
+                    question_set["related"], i - 1
+                ):
+                    tuple_dict = {"P": question_set["source"]}
+                    tuple_dict.update(
+                        {chr(81 + j): q for j, q in enumerate(related_combo)}
+                    )
+                    possible_ituples.append(tuple_dict)
+
+        possible_tuples[i] = possible_ituples
+        print(f"Generated {len(possible_ituples)} possible {i}-tuples")
+
+    for checker in checker_list.values():
+        print(f"\nProcessing {checker.__class__.__name__}:")
+        num_base_questions = checker.num_base_questions
+        tuples_to_process = possible_tuples.get(num_base_questions, [])
+        print(f"Number of tuples to process: {len(tuples_to_process)}")
+
+        if tuples_to_process:
+            print("Sample tuple:")
+            sample_tuple = random.choice(tuples_to_process)
+            for key, question in sample_tuple.items():
+                print(f"    {key}: {question.title}")
+
+            try:
+                # results = await checker.instantiate_and_write_many(
+                #     tuples_to_process,
+                #     model=model,
+                #     n_write=n_write,
+                #     overwrite=True,
+                #     **kwargs,
+                # )
+                print(f"Completed processing for {checker.__class__.__name__}")
+            except Exception as e:
+                print(
+                    f"Error in instantiate_and_write_many for {checker.__class__.__name__}: {e}"
+                )
+                import traceback
+
+                traceback.print_exc()
+        else:
+            print("No tuples to process for this checker.")
+
+    return possible_tuples
 
 
 async def instantiate(
@@ -149,14 +275,24 @@ def main(
     seed,
 ):
     checkers = choose_checkers(relevant_checks, tuple_dir)
+    # asyncio.run(
+    #     instantiate(
+    #         BASE_DATA_PATH=data_path,
+    #         checker_list=checkers,
+    #         n_relevance=n_relevance,
+    #         n_write=n_write,
+    #         model=model_main,
+    #         model_relevance=model_relevance,
+    #         seed=seed,
+    #     )
+    # )
+
     asyncio.run(
-        instantiate(
+        instantiateRel(
             BASE_DATA_PATH=data_path,
             checker_list=checkers,
-            n_relevance=n_relevance,
             n_write=n_write,
             model=model_main,
-            model_relevance=model_relevance,
             seed=seed,
         )
     )

@@ -347,6 +347,11 @@ class Checker(ABC):
             n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
                 because some will fail verification). If -1, will make as many as possible.
         """
+        print(
+            f"instantiate_and_write_many called with {len(base_sentencess)} base sentences"
+        )
+        print(f"n_write: {n_write}, overwrite: {overwrite}")
+
         if overwrite:
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
@@ -365,21 +370,26 @@ class Checker(ABC):
                 base_sentences, supplied_metadata=supplied_metadata, **kwargs
             )
 
-        # Added print statement to log the base sentences being processed
-        # print(f"Base sentences: {base_sentencess}")
         bq_counter = 0  # number of base sentences processed
         while n_write == -1 or self.counter < n_write:
             counter_prev = self.counter
+            to_process = base_sentencess[
+                bq_counter : bq_counter
+                + (n_write - counter_prev if n_write != -1 else len(base_sentencess))
+            ]
+            if not to_process:
+                break  # No more sentences to process
             results = await parallelized_call(
                 _instantiate_and_write,
-                base_sentencess[bq_counter : bq_counter + n_write - counter_prev],
+                to_process,
                 max_concurrent_queries=10,
             )
-            bq_counter += n_write - counter_prev
+            bq_counter += len(to_process)
             print(f"Counter: {self.counter}")
             print(f"BQ Counter: {bq_counter}")
-        # # Added print statement to log the results of instantiation
-        # print(f"Results of instantiation: {results}")
+
+        print(f"Processed {bq_counter} out of {len(base_sentencess)} base sentences")
+        return results
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:

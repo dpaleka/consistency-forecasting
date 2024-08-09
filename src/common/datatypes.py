@@ -225,6 +225,8 @@ class SyntheticTagQuestion(BaseModel):
     tags: str
     feedback: Optional[str] = None
     fixed: Optional[bool] = False
+    body: Optional[str] = None
+    resolution_date: Optional[str] = None
 
 
 register_model_for_cache(SyntheticTagQuestion)
@@ -232,6 +234,8 @@ register_model_for_cache(SyntheticTagQuestion)
 
 class SyntheticRelQuestion(BaseModel):
     title: str
+    body: Optional[str] = None
+    resolution_date: Optional[str] = None
     source_question: Optional[str] = None
     feedback: Optional[str] = None
     fixed: Optional[bool] = False

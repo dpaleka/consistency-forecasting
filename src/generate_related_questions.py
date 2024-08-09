@@ -4,9 +4,10 @@ import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
 from common.datatypes import QuestionGenerationResponse
-from question_generators.utils import deduplicate
+from fq_generation.utils import deduplicate
 import json
 from common.llm_utils import answer
+from common.datatypes import SyntheticRelQuestion
 
 
 source_questions = [
@@ -181,8 +182,15 @@ def get_titles_from_fq(file_path, use_body=False):
             for line in file:
                 data = json.loads(line)
                 if "title" in data:
-                    if use_body:
-                        titles.append({"title": data["title"], "body": data["body"]})
+                    # get body and resolution date
+                    if "body" in data and "resolution_date" in data:
+                        titles.append(
+                            {
+                                "title": data["title"],
+                                "body": data["body"],
+                                "resolution_date": data["resolution_date"],
+                            }
+                        )
                     else:
                         titles.append({"title": data["title"]})
     except Exception as e:
@@ -239,34 +247,74 @@ async def generate_questions_from_question(
         question.source_question = source_question
 
     return generated_questions.questions
-    # question_prompt = prompt.format(source_question=source_question)
-    # generated_questions = await answer(
-    #     prompt=question_prompt,
-    #     preface=None,
-    #     response_model=QuestionGenerationResponse,
-    #     model=model,
-    # )
 
-    # # print(generated_questions)
 
-    # # Fill in the source_question manually if it's not provided by the LLM
-    # for field_name, synthetic_question in generated_questions.model_dump().items():
-    #     print(synthetic_question)
-    #     # Instantiate SyntheticRelQuestion from the dictionary
-    #     synthetic_question = SyntheticRelQuestion.model_validate(synthetic_question)
-    #     # Check if the field contains a SyntheticRelQuestion by re-instantiating it from the data
-    #     synthetic_question.source_question = source_question
-    #     # Set the updated SyntheticRelQuestion back to the original response object
-    #     setattr(generated_questions, field_name, synthetic_question)
+# async def generate_questions(
+#     input_file,
+#     output_file,
+#     model,
+#     max_questions,
+#     questions_per_source,
+#     use_body,
+#     resolve_by,
+#     similar,
+# ):
+#     questions = get_titles_from_fq(input_file, use_body)
 
-    # return [
-    #     q
-    #     for q in [
-    #         generated_questions.question_1,
-    #         generated_questions.question_2,
-    #         generated_questions.question_3,
-    #     ]
-    # ]
+#     print(f"len of questions: {len(questions)}")
+
+#     if len(questions) == 0:
+#         questions = source_questions
+
+#     questions = questions[:max_questions]
+
+#     all_questions = []
+
+#     for question in questions:
+#         # Add the source question as its own entry
+#         source_entry = SyntheticRelQuestion(
+#             title=question["title"], source_question=None, feedback=None, fixed=False
+#         )
+#         all_questions.append(source_entry)
+
+#         # Generate related questions
+#         generated_questions = await generate_questions_from_question(
+#             question["title"],
+#             source_body=question["body"] if use_body else None,
+#             model=model,
+#             num_questions=questions_per_source,
+#             resolve_by=resolve_by,
+#             similar=similar,
+#         )
+
+#         # Add generated questions to the list
+#         all_questions.extend(generated_questions)
+
+#     print(f"len of all questions (including source): {len(all_questions)}")
+
+#     # Deduplicate only the generated questions
+#     generated_questions = [q for q in all_questions if q.source_question is not None]
+#     deduplicated_questions = await deduplicate(generated_questions)
+#     print(
+#         f"len deduplicated questions: {len(deduplicated_questions)}, len of generated questions: {len(generated_questions)}"
+#     )
+
+#     # Prepare final output
+#     final_output = []
+#     for q in all_questions:
+#         if q.source_question is None:
+#             # This is a source question, add it as is
+#             final_output.append(q.model_dump_json())
+#         else:
+#             # This is a generated question, check if it's in the deduplicated list
+#             matching_deduped = next(
+#                 (dq for dq in deduplicated_questions if dq.title == q.title), None
+#             )
+#             if matching_deduped:
+#                 final_output.append(matching_deduped.model_dump_json())
+
+#     # Write to output file
+#     await write_jsonl_async_from_str(output_file, final_output, append=True)
 
 
 async def generate_questions(
@@ -288,8 +336,24 @@ async def generate_questions(
 
     questions = questions[:max_questions]
 
-    tasks = [
-        generate_questions_from_question(
+    all_questions = []
+
+    for question in questions:
+        # Add the source question as its own entry, including the body
+        source_entry = SyntheticRelQuestion(
+            title=question["title"],
+            source_question=None,
+            feedback=None,
+            fixed=False,
+            body=question.get("body", ""),  # Include the body field
+            resolution_date=question.get(
+                "resolution_date", ""
+            ),  # Include the resolution date field
+        )
+        all_questions.append(source_entry)
+
+        # Generate related questions
+        generated_questions = await generate_questions_from_question(
             question["title"],
             source_body=question["body"] if use_body else None,
             model=model,
@@ -297,21 +361,35 @@ async def generate_questions(
             resolve_by=resolve_by,
             similar=similar,
         )
-        for question in questions
-    ]
-    results = await asyncio.gather(*tasks)
-    generated_questions = [item for sublist in results for item in sublist]
 
-    print(f"len of generated questions: {len(generated_questions)}")
+        # Add generated questions to the list
+        all_questions.extend(generated_questions)
 
+    print(f"len of all questions (including source): {len(all_questions)}")
+
+    # Deduplicate only the generated questions
+    generated_questions = [q for q in all_questions if q.source_question is not None]
     deduplicated_questions = await deduplicate(generated_questions)
     print(
         f"len deduplicated questions: {len(deduplicated_questions)}, len of generated questions: {len(generated_questions)}"
     )
-    deduplicated_questions = [q.model_dump_json() for q in deduplicated_questions]
 
-    # add output parameter
-    await write_jsonl_async_from_str(output_file, deduplicated_questions, append=True)
+    # Prepare final output
+    final_output = []
+    for q in all_questions:
+        if q.source_question is None:
+            # This is a source question, add it as is
+            final_output.append(q.model_dump_json())
+        else:
+            # This is a generated question, check if it's in the deduplicated list
+            matching_deduped = next(
+                (dq for dq in deduplicated_questions if dq.title == q.title), None
+            )
+            if matching_deduped:
+                final_output.append(matching_deduped.model_dump_json())
+
+    # Write to output file
+    await write_jsonl_async_from_str(output_file, final_output, append=True)
 
 
 if __name__ == "__main__":
@@ -320,7 +398,8 @@ if __name__ == "__main__":
         "--input_file",
         "-i",
         type=str,
-        default=get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl",
+        default=get_data_path() / "fq" / "synthetic" / "synth-verified.jsonl",
+        # default=get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl",
     )
     parser.add_argument(
         "--output_file",
