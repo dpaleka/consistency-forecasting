@@ -20,22 +20,33 @@ register_model_for_cache(UserInfo)
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "model",
-    ["gpt-4o-mini", "meta-llama/llama-3-8b-instruct:nitro", "claude-3-opus-20240229"],
+    ["gpt-4o-mini", "meta-llama/llama-3-8b-instruct:nitro"],
 )
 async def test_answer_real_api(model):
+    print("Testing the OpenRouter API, + OpenAI API if key is set")
     prompt = "John Doe is 25 years old."
 
     # Save the original value of the environment variable
     original_use_openrouter = os.getenv("USE_OPENROUTER", "False")
 
     try:
-        # Set the environment variable based on the model
-        if "meta-llama" in model:
-            os.environ["USE_OPENROUTER"] = "True"
-        else:
-            os.environ["USE_OPENROUTER"] = "False"
-
         print(f"Testing model: {model}")
+        # Set the environment variable based on the model
+        if model.startswith("meta-llama"):
+            os.environ["USE_OPENROUTER"] = "True"
+        elif model.startswith("gpt"):
+            if (
+                os.getenv("OPENAI_API_KEY", None) is not None
+                and original_use_openrouter == "False"
+            ):
+                print(
+                    "OPENAI_API_KEY is set, OpenRouter API is not, setting USE_OPENROUTER to False"
+                )
+                os.environ["USE_OPENROUTER"] = "False"
+            else:
+                print("Using OpenRouter API for the OpenAI test call")
+                os.environ["USE_OPENROUTER"] = "True"
+
         response = await answer(prompt, model=model, response_model=UserInfo)
         print(response)
         assert response is not None
@@ -54,6 +65,8 @@ async def test_answer_real_api(model):
     "model",
     [
         "anthropic/claude-3-haiku",
+        "anthropic/claude-3-opus",
+        "anthropic/claude-3.5-sonnet",
         "mistralai/mistral-7b-instruct",
         "microsoft/wizardlm-2-8x22b",
     ],
