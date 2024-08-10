@@ -400,6 +400,8 @@ class Checker(ABC):
         """
 
         if isinstance(scoring, list):
+            if len(scoring) < len(answers):
+                scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
             scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
         if not isinstance(scoring, dict):
             scoring = {q: scoring for q in answers.keys()}

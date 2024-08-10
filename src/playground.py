@@ -32,7 +32,7 @@ checkers = {
 
 for k, v in checkers.items():
     checker = v["checker"]
-    if k != "cons":
+    if k != "but":
         continue
     answers = v["answers"]
     print("Checker:", k)
