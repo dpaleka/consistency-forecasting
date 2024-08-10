@@ -264,6 +264,13 @@ async def instantiate(
     default=42,
     help="Seed for reproducibility. Controls random sampling, not necessarily any randomness in external model calls.",
 )
+@click.option(
+    "--use-instantiate-rel",
+    "-r",
+    is_flag=True,
+    default=False,
+    help="Use instantiateRel instead of instantiate",
+)
 def main(
     data_path,
     n_relevance,
@@ -273,29 +280,33 @@ def main(
     relevant_checks,
     tuple_dir,
     seed,
+    use_instantiate_rel,
 ):
     checkers = choose_checkers(relevant_checks, tuple_dir)
-    # asyncio.run(
-    #     instantiate(
-    #         BASE_DATA_PATH=data_path,
-    #         checker_list=checkers,
-    #         n_relevance=n_relevance,
-    #         n_write=n_write,
-    #         model=model_main,
-    #         model_relevance=model_relevance,
-    #         seed=seed,
-    #     )
-    # )
 
-    asyncio.run(
-        instantiateRel(
-            BASE_DATA_PATH=data_path,
-            checker_list=checkers,
-            n_write=n_write,
-            model=model_main,
-            seed=seed,
+    if use_instantiate_rel:
+        asyncio.run(
+            instantiateRel(
+                BASE_DATA_PATH=data_path,
+                checker_list=checkers,
+                n_write=n_write,
+                model=model_main,
+                seed=seed,
+            )
         )
-    )
+
+    else:
+        asyncio.run(
+            instantiate(
+                BASE_DATA_PATH=data_path,
+                checker_list=checkers,
+                n_relevance=n_relevance,
+                n_write=n_write,
+                model=model_main,
+                model_relevance=model_relevance,
+                seed=seed,
+            )
+        )
 
 
 if __name__ == "__main__":
