@@ -324,11 +324,10 @@ class ConsistentForecaster(Forecaster):
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
-            other = len(cons_tuple) - 1
             cons_answers, v = await check.max_min_arbitrage(
-                hypocrite_answers, scoring=[P_weight] + [1.0] * other
+                hypocrite_answers, scoring=[P_weight, 1.0]
             )
-            P_weight += 1.0 * other
+            P_weight += 1.0 * (len(cons_tuple) - 1)
             ans_P = cons_answers["P"]
         return ans_P
 
