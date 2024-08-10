@@ -135,13 +135,13 @@ async def instantiateRel(
                 print(f"    {key}: {question.title}")
 
             try:
-                # results = await checker.instantiate_and_write_many(
-                #     tuples_to_process,
-                #     model=model,
-                #     n_write=n_write,
-                #     overwrite=True,
-                #     **kwargs,
-                # )
+                results = await checker.instantiate_and_write_many(
+                    tuples_to_process,
+                    model=model,
+                    n_write=n_write,
+                    overwrite=True,
+                    **kwargs,
+                )
                 print(f"Completed processing for {checker.__class__.__name__}")
             except Exception as e:
                 print(
