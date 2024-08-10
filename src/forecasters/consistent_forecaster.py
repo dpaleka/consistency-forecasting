@@ -263,16 +263,19 @@ class ConsistentForecaster(Forecaster):
             instantiation_kwargs=instantiation_kwargs,
             **kwargs,
         )
-        
+        P_weight = 1.0
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
+            other = len(cons_tuple) - 1
+            cons_answers, v = check.max_min_arbitrage(
+                hypocrite_answers, scoring=[P_weight] + [1.0] * other
+            )
+            P_weight += 1.0 * other
             ans_P = cons_answers["P"]
         return ans_P
-
 
     async def call_async(
         self,
@@ -306,7 +309,7 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        
+
         ans_P = self.hypocrite.call(sentence, **kwargs)
         cons_tuples = await self.instantiate_cons_tuples_async(
             sentence,
@@ -314,16 +317,21 @@ class ConsistentForecaster(Forecaster):
             instantiation_kwargs=instantiation_kwargs,
             **kwargs,
         )
-        
+
+        P_weight = 1.0
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit(cons_tuple, **kwargs)
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = await check.max_min_arbitrage(hypocrite_answers)
+            other = len(cons_tuple) - 1
+            cons_answers, v = await check.max_min_arbitrage(
+                hypocrite_answers, scoring=[P_weight] + [1.0] * other
+            )
+            P_weight += 1.0 * other
             ans_P = cons_answers["P"]
         return ans_P
-        
+
     @classmethod
     def recursive(
         cls,
