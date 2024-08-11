@@ -16,6 +16,10 @@ pre-commit install
 
 Then, create your `.env` based on [`.env.example`](.env.example). By default, use `NO_CACHE=True`.
 
+### VS Code / Cursor settings
+Copy the settings in [`.vscode/settings.example.json`](.vscode/settings.example.json) to your workspace `settings.json`,
+or just do `cp .vscode/settings.example.json .vscode/settings.json` if you have no other settings nor an existing workspace.
+
 ## docs
 - [Meeting and Agenda doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
 - [Datatypes and Pipeline doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit)
@@ -30,6 +34,7 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 ### Utils
 **Please read [LLM call utils](/src/common/README.md).**
 Feel free to add more utils in `utils.py`, `llm_utils.py`, or other files, as you need them.
+
 
 ### Running code
 The preferred way to test anything is either from `playground.py`, or creating a new file / Jupyter notebook in the `src` directory.
