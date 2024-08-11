@@ -399,15 +399,7 @@ class Checker(ABC):
         arbitrageur_answers.
         """
 
-        if isinstance(scoring, list):
-            if len(scoring) < len(answers):
-                scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
-            scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
-        if not isinstance(scoring, dict):
-            scoring = {q: scoring for q in answers.keys()}
-        for key, scoring_func in scoring.items():
-            if isinstance(scoring_func, (float, int)):
-                scoring[key] = lambda x, sf=scoring_func: sf * np.log(x)  # stupid HACK
+        scoring = self.get_scoring(answers, scoring)
 
         score = 0.0
         for qun, ans in answers.items():
@@ -825,9 +817,7 @@ class Checker(ABC):
 
     @classmethod
     def get_scoring(
-        cls,
-        answers: dict[str, Prob],
-        scoring: Any, return_just_log_weights=False
+        cls, answers: dict[str, Prob], scoring: Any, return_just_log_weights=False
     ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
         if isinstance(scoring, list):
             if len(scoring) < len(answers):
@@ -840,7 +830,9 @@ class Checker(ABC):
         for key, scoring_item in scoring.items():
             if isinstance(scoring_item, (float, int)):
                 scoring_weights[key] = scoring_item
-                scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(x)  # stupid HACK
+                scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(
+                    x
+                )  # stupid HACK
             elif callable(scoring_item):
                 scoring_functions[key] = scoring_item
                 scoring_weights = None
@@ -849,7 +841,22 @@ class Checker(ABC):
         if return_just_log_weights:
             return scoring_weights
         return scoring_functions
-                
+
+    @classmethod
+    def must_compute_arbitrage_numerically(
+        cls, answers: dict[str, Prob], **kwargs
+    ) -> bool:
+        if kwargs:
+            if len(kwargs) > 1 or "scoring" not in kwargs:
+                return True  # there are kwargs that aren't just scoring weights
+            else:
+                scoring = kwargs["scoring"]
+                scoring_weights = cls.get_scoring(
+                    answers, scoring, return_just_log_weights=True
+                )
+                if scoring_weights is None:
+                    return True
+        return False
 
 
 class NegChecker(Checker):
@@ -920,14 +927,28 @@ class NegChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
-            return super().max_min_arbitrage(answers, **kwargs)
-        A = np.sqrt(answers["P"] * (1 - answers["not_P"]))
-        B = np.sqrt((1 - answers["P"]) * answers["not_P"])
-        p = A / (A + B)
-        v = -2 * np.log(A + B)
-        return {"P": p, "not_P": 1 - p}, v
 
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
+            return super().max_min_arbitrage(answers, **kwargs)
+        weights = self.get_scoring(
+            answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
+        )
+        W = sum(weights.values())
+        
+        answers_ = {"P": answers["P"], "implied_P": 1 - answers["not_P"]}
+        weights_ = {"P": weights["P"], "implied_P": weights["not_P"]}
+        
+        logodds = sum(
+            [
+                weights_[q] * np.log(answers_[q] / (1 - answers_[q]))
+                for q in ["P", "implied_P"]
+            ]
+        ) / W
+        p = 1 / (1 + np.exp(-logodds))
+        v = W * np.log(p) - sum([weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]])
+
+        return {"P": p, "not_P": 1 - p}, v
+        
     def frequentist_violation(
         self,
         answers: dict[str, Any],
@@ -1715,12 +1736,21 @@ class ParaphraseChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
-        A = np.sqrt(answers["P"] * answers["para_P"])
-        B = np.sqrt((1 - answers["P"]) * (1 - answers["para_P"]))
-        p = A / (A + B)
-        v = -2 * np.log(A + B)
+        weights = self.get_scoring(
+            answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
+        )
+        W = sum(weights.values())
+        logodds = sum(
+            [
+                weights[q] * np.log(answers[q] / (1 - answers[q]))
+                for q in ["P", "para_P"]
+            ]
+        ) / W
+        p = 1 / (1 + np.exp(-logodds))
+        v = W * np.log(p) - sum([weights[q] * np.log(answers[q]) for q in ["P", "para_P"]])
+
         return {"P": p, "para_P": p}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:

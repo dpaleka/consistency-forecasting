@@ -5,7 +5,7 @@ from time import time
 
 checkers = {
     "para": {"answers": {"P": 0.4, "para_P": 0.8}, "checker": ParaphraseChecker()},
-    "neg": {"answers": {"P": 0.6, "not_P": 0.57}, "checker": NegChecker()},
+    "neg": {"answers": {"P": 0.6, "not_P": 0.8}, "checker": NegChecker()},
     "cond": {
         "answers": {"P": 0.15, "Q_given_P": 0.6, "P_and_Q": 0.15},
         "checker": CondChecker(),
@@ -32,7 +32,7 @@ checkers = {
 
 for k, v in checkers.items():
     checker = v["checker"]
-    if k != "but":
+    if k != "neg":
         continue
     answers = v["answers"]
     print("Checker:", k)
