@@ -274,7 +274,8 @@ class ConsistentForecaster(Forecaster):
                 hypocrite_answers, scoring=[P_weight] + [1.0] * other
             )
             P_weight += 1.0 * other
-            ans_P = cons_answers["P"]
+            if v > check.default_tolerance:
+                ans_P = cons_answers["P"]
         return ans_P
 
     async def call_async(
@@ -328,7 +329,8 @@ class ConsistentForecaster(Forecaster):
                 hypocrite_answers, scoring=[P_weight, 1.0]
             )
             P_weight += 1.0 * (len(cons_tuple) - 1)
-            ans_P = cons_answers["P"]
+            if v > check.default_tolerance:
+                ans_P = cons_answers["P"]
         return ans_P
 
     @classmethod
