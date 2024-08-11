@@ -32,7 +32,7 @@ class COT_Forecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    def call(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -42,7 +42,7 @@ class COT_Forecaster(Forecaster):
         )
         return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    async def call_async(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
