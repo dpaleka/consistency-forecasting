@@ -748,7 +748,8 @@ class Checker(ABC):
 
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
-                    line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
+                    if isinstance(answers_[question], tuple):
+                        line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
 
                 result = {"line": line, **result_without_line}
                 results.append(result)
@@ -820,7 +821,8 @@ class Checker(ABC):
             ):
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
-                    line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
+                    if isinstance(answers_[question], tuple):
+                        line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
 
                 result = {"line": line, **result_without_line}
 
