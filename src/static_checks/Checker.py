@@ -407,8 +407,8 @@ class Checker(ABC):
             scoring = {q: scoring for q in answers.keys()}
         for key, scoring_func in scoring.items():
             if isinstance(scoring_func, (float, int)):
-                scoring[key] = lambda x, sf=scoring_func: sf * np.log(x) # stupid HACK
-    
+                scoring[key] = lambda x, sf=scoring_func: sf * np.log(x)  # stupid HACK
+
         score = 0.0
         for qun, ans in answers.items():
             if outcome[qun] is None:
@@ -416,7 +416,9 @@ class Checker(ABC):
             elif outcome[qun] == True:  # noqa
                 score += scoring[qun](arbitrageur_answers[qun]) - scoring[qun](ans)
             elif outcome[qun] == False:  # noqa
-                score += scoring[qun](1 - arbitrageur_answers[qun]) - scoring[qun](1 - ans)
+                score += scoring[qun](1 - arbitrageur_answers[qun]) - scoring[qun](
+                    1 - ans
+                )
         return score
 
     @property
@@ -740,9 +742,9 @@ class Checker(ABC):
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
                 answers: dict[str, Prob | None] = forecaster.elicit(line_obj, **kwargs)
                 if do_check:
-                    result_without_line: dict[
-                        str, Any
-                    ] = self.check_from_elicited_probs(line_obj, answers)
+                    result_without_line: dict[str, Any] = (
+                        self.check_from_elicited_probs(line_obj, answers)
+                    )
                 else:
                     result_without_line = {}
 
@@ -820,6 +822,34 @@ class Checker(ABC):
                 writer.write(result)
 
         return results
+
+    @classmethod
+    def get_scoring(
+        cls,
+        answers: dict[str, Prob],
+        scoring: Any, return_just_log_weights=False
+    ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
+        if isinstance(scoring, list):
+            if len(scoring) < len(answers):
+                scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
+            scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
+        if not isinstance(scoring, dict):
+            scoring = {q: scoring for q in answers.keys()}
+        scoring_weights = {}
+        scoring_functions = {}
+        for key, scoring_item in scoring.items():
+            if isinstance(scoring_item, (float, int)):
+                scoring_weights[key] = scoring_item
+                scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(x)  # stupid HACK
+            elif callable(scoring_item):
+                scoring_functions[key] = scoring_item
+                scoring_weights = None
+            else:
+                raise ValueError(f"Scoring function {scoring_item} not recognized")
+        if return_just_log_weights:
+            return scoring_weights
+        return scoring_functions
+                
 
 
 class NegChecker(Checker):
@@ -1596,7 +1626,7 @@ class ConsequenceChecker(Checker):
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
-            
+
             A = np.sqrt(answers["P"] * answers["cons_P"])
             B = np.sqrt((1 - answers["P"]) * (1 - answers["cons_P"]))
             p = A / (A + B)
