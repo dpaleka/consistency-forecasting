@@ -1,5 +1,5 @@
-# import sys
-# import io
+import sys
+import io
 import os
 import json
 import asyncio
@@ -36,7 +36,7 @@ CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
-# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -505,4 +505,3 @@ if __name__ == "__main__":
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 -k ParaphraseChecker -k CondChecker -k CondCondChecker -k ConsequenceChecker | tee see_eval.txt

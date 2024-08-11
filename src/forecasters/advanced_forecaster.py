@@ -121,6 +121,7 @@ class AdvancedForecaster(Forecaster):
         sentence: ForecastingQuestion,
         today_date: Optional[str] = None,
         retrieval_interval_length: int = 30,
+        include_metadata=False,
         **kwargs,
     ) -> float:
         question = sentence.title
@@ -194,6 +195,7 @@ class AdvancedForecaster(Forecaster):
         sentence: ForecastingQuestion,
         today_date: Optional[str] = None,
         retrieval_interval_length: int = 30,
+        include_metadata=False,
         **kwargs,
     ) -> float:
         # This won't work inside a Jupyter notebook or similar; but there you can use await

@@ -29,6 +29,7 @@ from common.utils import (
     write_jsonl_async_from_str,
     update_recursive,
     write_jsonl_from_str,
+    make_json_serializable
 )
 from common.path_utils import get_data_path
 from common.llm_utils import parallelized_call, answer, answer_sync
@@ -732,7 +733,12 @@ class Checker(ABC):
             for line in data:
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
-                answers: dict[str, Prob | None] = forecaster.elicit(line_obj, **kwargs)
+                answers_: dict[str, tuple[Prob, dict] | Prob | None] = (
+                    forecaster.elicit(line_obj, include_metadata=True, **kwargs)
+                )
+                answers = {
+                    q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()
+                }
                 if do_check:
                     result_without_line: dict[str, Any] = (
                         self.check_from_elicited_probs(line_obj, answers)
@@ -742,6 +748,7 @@ class Checker(ABC):
 
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
 
                 result = {"line": line, **result_without_line}
                 results.append(result)
@@ -789,12 +796,18 @@ class Checker(ABC):
             ]
             print(validated_lines)
             print("Starting async elicitation")
-            elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
-            all_answers = await parallelized_call(
+            elicit_func = functools.partial(
+                forecaster.elicit_async, include_metadata=True, **kwargs
+            )
+            all_answers_ = await parallelized_call(
                 elicit_func,
                 validated_lines,
                 max_concurrent_queries=10,
             )
+            all_answers = [
+                {q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()}
+                for answers_ in all_answers_
+            ]
 
             if do_check:
                 print("Starting checking")
@@ -802,11 +815,12 @@ class Checker(ABC):
             else:
                 results_without_line = [{} for _ in data]
 
-            for line, answers, result_without_line in zip(
-                data, all_answers, results_without_line
+            for line, answers_, answers, result_without_line in zip(
+                data, all_answers_, all_answers, results_without_line
             ):
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
 
                 result = {"line": line, **result_without_line}
 
@@ -934,21 +948,26 @@ class NegChecker(Checker):
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
         W = sum(weights.values())
-        
+
         answers_ = {"P": answers["P"], "implied_P": 1 - answers["not_P"]}
         weights_ = {"P": weights["P"], "implied_P": weights["not_P"]}
-        
-        logodds = sum(
-            [
-                weights_[q] * np.log(answers_[q] / (1 - answers_[q]))
-                for q in ["P", "implied_P"]
-            ]
-        ) / W
+
+        logodds = (
+            sum(
+                [
+                    weights_[q] * np.log(answers_[q] / (1 - answers_[q]))
+                    for q in ["P", "implied_P"]
+                ]
+            )
+            / W
+        )
         p = 1 / (1 + np.exp(-logodds))
-        v = W * np.log(p) - sum([weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]])
+        v = W * np.log(p) - sum(
+            [weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]]
+        )
 
         return {"P": p, "not_P": 1 - p}, v
-        
+
     def frequentist_violation(
         self,
         answers: dict[str, Any],
@@ -1742,14 +1761,19 @@ class ParaphraseChecker(Checker):
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
         W = sum(weights.values())
-        logodds = sum(
-            [
-                weights[q] * np.log(answers[q] / (1 - answers[q]))
-                for q in ["P", "para_P"]
-            ]
-        ) / W
+        logodds = (
+            sum(
+                [
+                    weights[q] * np.log(answers[q] / (1 - answers[q]))
+                    for q in ["P", "para_P"]
+                ]
+            )
+            / W
+        )
         p = 1 / (1 + np.exp(-logodds))
-        v = W * np.log(p) - sum([weights[q] * np.log(answers[q]) for q in ["P", "para_P"]])
+        v = W * np.log(p) - sum(
+            [weights[q] * np.log(answers[q]) for q in ["P", "para_P"]]
+        )
 
         return {"P": p, "para_P": p}, v
 

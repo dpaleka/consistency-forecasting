@@ -258,7 +258,7 @@ class ConsistentForecaster(Forecaster):
         """
         metadata = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
-        metadata["P"] = sentence | {"elicited_prob": ans_P}
+        metadata["P"] = sentence.model_dump() | {"elicited_prob": ans_P}
         cons_tuples = self.instantiate_cons_tuples(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
@@ -271,7 +271,7 @@ class ConsistentForecaster(Forecaster):
             del cons_tuple["P"]
             hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
             metadata[check.__class__.__name__] = {
-                cons_tuple[k] | {"elicited_prob": hypocrite_answers[k]}
+                k: cons_tuple[k].model_dump() | {"elicited_prob": hypocrite_answers[k]}
                 for k in cons_tuple
             }
             hypocrite_answers["P"] = ans_P
@@ -321,7 +321,7 @@ class ConsistentForecaster(Forecaster):
         """
         metadata = {}
         ans_P = self.hypocrite.call(sentence, **kwargs)
-        metadata["P"] = sentence | {"elicited_prob": ans_P}
+        metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
         cons_tuples = await self.instantiate_cons_tuples_async(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
@@ -335,7 +335,7 @@ class ConsistentForecaster(Forecaster):
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit(cons_tuple, **kwargs)
             metadata[check.__class__.__name__] = {
-                cons_tuple[k] | {"elicited_prob": hypocrite_answers[k]}
+                k: cons_tuple[k].model_dump() | {"elicited_prob": hypocrite_answers[k]}
                 for k in cons_tuple
             }
             hypocrite_answers["P"] = ans_P
