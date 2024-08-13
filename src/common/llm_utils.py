@@ -3,6 +3,7 @@
 
 # %%
 import os
+from contextlib import contextmanager
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
@@ -34,6 +35,124 @@ from .perscache import (
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
+
+
+class CostEstimator:
+
+    class APIItem:
+
+        # input_tokens: dollar per input token
+        # output_tokens: dollar per output token
+        # time: seconds per output token
+        prices = {
+            "gpt-4o": {
+                "input_tokens": 5.0e-6,
+                "output_tokens": 15.0e-6,
+                "time": 18e-3,
+            },
+            "gpt-4o-mini": {
+                "input_tokens": 0.15e-6,
+                "output_tokens": 0.6e-6,
+                "time": 9e-3,
+            },
+        }
+
+        def __init__(
+            self,
+            model: str,
+            input_tokens: int,
+            output_tokens: list[int],
+            description: str = "",
+        ):
+            self.model = model
+            self.input_tokens = input_tokens
+            self.output_tokens = output_tokens
+            self.description = description
+
+        @property
+        def cost(self) -> list[float]:
+            return [
+                self.input_tokens * self.prices[self.model]["input_tokens"]
+                + output_tokens_bound * self.prices[self.model]["output_tokens"]
+                for output_tokens_bound in self.output_tokens
+            ]
+
+        @property
+        def time(self) -> list[float]:
+            return [
+                output_tokens_bound * self.prices[self.model]["time"]
+                for output_tokens_bound in self.output_tokens
+            ]
+
+    class ManualItem:
+
+        def __init__(self, cost: list[float], time: list[float], description: str = ""):
+            self.cost = cost
+            self.time = time
+            self.description = description
+
+    def __init__(self):
+        self.log = []
+        self.calls = 0
+        self.cost = [0.0, 0.0]
+        self.time = [0.0, 0.0]
+
+    @contextmanager
+    def add_api_item(
+        self,
+        model: str,
+        input_tokens: int,
+        output_tokens: list[int],
+        description: str = "",
+    ):
+        item = self.APIItem(
+            model=model,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            description=description,
+        )
+        self.log.append(item)
+        self.calls += 1
+        self.cost[0] += item.cost[0]
+        self.cost[1] += item.cost[1]
+        self.time[0] += item.time[0]
+        self.time[1] += item.time[1]
+        yield
+
+    @contextmanager
+    def add_manual_item(
+        self, cost: list[float], time: list[float], description: str = ""
+    ):
+        item = self.ManualItem(cost=cost, time=time, description=description)
+        self.log.append(item)
+        self.cost[0] += item.cost[0]
+        self.cost[1] += item.cost[1]
+        self.time[0] += item.time[0]
+        self.time[1] += item.time[1]
+        yield
+
+    def report(self):
+        print(f"Total cost in range: {self.cost[0]:.2f} - {self.cost[1]:.2f} USD")
+        print(f"Total time in range: {self.time[0]:.2f} - {self.time[1]:.2f} sec")
+        print(f"Total calls: {self.calls}")
+        print("Breakdown:")
+        for item in self.log:
+            if isinstance(item, self.APIItem):
+                print(
+                    f"API call to {item.model}:\n"
+                    f"Input tokens: {item.input_tokens}, "
+                    f"Output tokens in range: {item.output_tokens}\n"
+                    f"Cost in range: {item.cost[0]:.2f} - {item.cost[1]:.2f} USD, "
+                    f"Time in range: {self.time[0]:.2f} - {self.time[1]:.2f} sec\n"
+                    f"Description: {item.description}\n"
+                )
+            else:
+                print(
+                    f"Manual item:\n"
+                    f"Cost in range: {item.cost[0]:.2f} - {item.cost[1]:.2f} USD\n"
+                    f"Time in range: {item.time[0]:.2f} - {item.time[1]:.2f} USD\n"
+                    f"Description: {item.description}\n"
+                )
 
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
@@ -428,8 +547,10 @@ def _mistral_message_transform(messages):
 @pydantic_cache
 async def query_api_chat(
     messages: list[dict[str, str]],
-    verbose=False,
+    verbose: bool = False,
     model: str | None = None,
+    simulate: bool | int = False,
+    cost_estimator: CostEstimator = None,
     **kwargs,
 ) -> BaseModel:
     """
@@ -439,6 +560,9 @@ async def query_api_chat(
     1. `model` argument
     2. `model` in `kwargs`
     3. Default model
+
+    simulate: bool | int: Whether to simulate the response. If int, number of tokens to return
+        in output. Defaults to False.
     """
     if not os.getenv("NO_CACHE"):
         assert (
@@ -461,6 +585,15 @@ async def query_api_chat(
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
+
+    if simulate and cost_estimator:
+        with cost_estimator.add_api_item(
+            model=options["model"],
+            input_tokens=len("".join([m["content"] for m in messages])) // 3,
+            output_tokens=[1, options.get("max_tokens", 2048)],
+        ):
+            simstr = "This is a test output."
+            return simstr * (simulate // (len(simstr) // 3))
 
     print(
         options,
@@ -522,6 +655,8 @@ def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
+    simulate: bool | int = False,
+    cost_estimator: CostEstimator = None,
     **kwargs,
 ) -> BaseModel:
     if not os.getenv("NO_CACHE"):
@@ -545,6 +680,15 @@ def query_api_chat_sync(
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
+
+    if simulate and cost_estimator:
+        with cost_estimator.add_api_item(
+            model=options["model"],
+            input_tokens=len("".join([m["content"] for m in messages])) // 3,
+            output_tokens=[1, options.get("max_tokens", 2048)],
+        ):
+            simstr = "This is a test output."
+            return simstr * (simulate // (len(simstr) // 3))
 
     print(
         options,
