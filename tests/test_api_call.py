@@ -20,7 +20,11 @@ register_model_for_cache(UserInfo)
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "model",
-    ["gpt-4o-mini", "meta-llama/llama-3-8b-instruct:nitro"],
+    [
+        "gpt-4o-mini",
+        "meta-llama/llama-3-8b-instruct:nitro",
+        "anthropic/claude-3.5-sonnet",
+    ],
 )
 async def test_answer_real_api(model):
     print("Testing the OpenRouter API, + OpenAI API if key is set")
@@ -64,9 +68,6 @@ async def test_answer_real_api(model):
 @pytest.mark.parametrize(
     "model",
     [
-        "anthropic/claude-3-haiku",
-        "anthropic/claude-3-opus",
-        "anthropic/claude-3.5-sonnet",
         "mistralai/mistral-7b-instruct",
         "microsoft/wizardlm-2-8x22b",
     ],
@@ -76,7 +77,7 @@ async def test_answer_fails_openrouter(model):
     original_use_openrouter = os.getenv("USE_OPENROUTER", "False")
     try:
         os.environ["USE_OPENROUTER"] = "True"
-        # we want an error here. if we get an error, it's ok. otherwise, fail
+        # we want an error here. if we get an error, it's ok. if the request goes through, fail
         with pytest.raises(Exception):
             response = await answer(prompt, model=model, response_model=UserInfo)
     finally:
