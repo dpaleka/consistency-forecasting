@@ -21,6 +21,8 @@ register_model_for_cache(UserInfo)
 @pytest.mark.parametrize(
     "model",
     [
+        "mistralai/mistral-large",
+        "microsoft/wizardlm-2-8x22b",
         "gpt-4o-mini",
         "meta-llama/llama-3-8b-instruct:nitro",
         "anthropic/claude-3.5-sonnet",
@@ -36,9 +38,7 @@ async def test_answer_real_api(model):
     try:
         print(f"Testing model: {model}")
         # Set the environment variable based on the model
-        if model.startswith("meta-llama"):
-            os.environ["USE_OPENROUTER"] = "True"
-        elif model.startswith("gpt"):
+        if model.startswith("gpt"):
             if (
                 os.getenv("OPENAI_API_KEY", None) is not None
                 and original_use_openrouter == "False"
@@ -50,6 +50,20 @@ async def test_answer_real_api(model):
             else:
                 print("Using OpenRouter API for the OpenAI test call")
                 os.environ["USE_OPENROUTER"] = "True"
+        elif model.startswith("anthropic"):
+            if (
+                os.getenv("ANTHROPIC_API_KEY", None) is not None
+                and original_use_openrouter == "False"
+            ):
+                print(
+                    "ANTHROPIC_API_KEY is set, OpenRouter API is not, setting USE_OPENROUTER to False"
+                )
+                os.environ["USE_OPENROUTER"] = "False"
+            else:
+                print("Using OpenRouter API for the Anthropic test call")
+                os.environ["USE_OPENROUTER"] = "True"
+        else:
+            os.environ["USE_OPENROUTER"] = "True"
 
         response = await answer(prompt, model=model, response_model=UserInfo)
         print(response)
@@ -63,13 +77,11 @@ async def test_answer_real_api(model):
 
 
 # for other models and OpenRouter, we assert it fails
-# so we know if it changes
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "model",
     [
-        "mistralai/mistral-7b-instruct",
-        "microsoft/wizardlm-2-8x22b",
+        # this is empty now until we find some model we know doesn't work
     ],
 )
 async def test_answer_fails_openrouter(model):

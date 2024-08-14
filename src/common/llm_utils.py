@@ -5,8 +5,6 @@
 import os
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
-from mistralai.async_client import MistralAsyncClient
-from mistralai.client import MistralClient
 import instructor
 from instructor.client import Instructor
 from instructor.mode import Mode
@@ -17,8 +15,6 @@ from dataclasses_json import dataclass_json
 from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
-from huggingface_hub import snapshot_download
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import transformers
 
 from .datatypes import PlainText
@@ -153,7 +149,7 @@ def get_openai_client_native() -> OpenAI:
 @singleton_constructor
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
     print(
-        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+        "Only some OpenRouter endpoints will work. If you encounter errors, please check on the OpenRouter website."
     )
     api_key = os.getenv("OPENROUTER_API_KEY")
     print(f"OPENROUTER_API_KEY: {api_key}")
@@ -192,32 +188,6 @@ def get_openrouter_client_native() -> OpenAI:
 
 
 @singleton_constructor
-def get_mistral_async_client_pydantic() -> Instructor:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    _client = MistralAsyncClient(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.MISTRAL_TOOLS)
-
-
-@singleton_constructor
-def get_mistral_async_client_native() -> MistralAsyncClient:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralAsyncClient(api_key=api_key)
-
-
-@singleton_constructor
-def get_mistral_client_pydantic() -> Instructor:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    _client = MistralClient(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.MISTRAL_TOOLS)
-
-
-@singleton_constructor
-def get_mistral_client_native() -> MistralClient:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralClient(api_key=api_key)
-
-
-@singleton_constructor
 def get_anthropic_async_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
@@ -252,16 +222,7 @@ def get_togetherai_client_native() -> OpenAI:
 
 @singleton_constructor
 def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
-    hf_model_path = os.path.join(os.getenv("HF_MODELS_DIR"), hf_repo)
-    if not os.path.exists(hf_model_path):
-        snapshot_download(hf_repo, local_dir=hf_model_path)
-
-    tokenizer = AutoTokenizer.from_pretrained(hf_model_path, legacy=False)
-    model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_path)
-    pipeline = transformers.pipeline(
-        "text2text-generation", model=model, tokenizer=tokenizer, max_new_tokens=2048
-    )
-    return pipeline
+    raise NotImplementedError("HuggingFace local client not implemented")
 
 
 def is_openai(model: str) -> bool:
@@ -278,18 +239,13 @@ def is_openai(model: str) -> bool:
     return any(keyword in model for keyword in keywords)
 
 
-def is_mistral(model: str) -> bool:
-    if model.startswith("mistral"):
-        return True
+def is_togetherai(model: str) -> bool:
+    keywords = ["together", "llama", "phi", "orca", "Hermes", "Yi"]
+    return any(keyword in model for keyword in keywords)
 
 
 def is_anthropic(model: str) -> bool:
     keywords = ["anthropic", "claude"]
-    return any(keyword in model for keyword in keywords)
-
-
-def is_togetherai(model: str) -> bool:
-    keywords = ["together", "llama", "phi", "orca", "Hermes", "Yi"]
     return any(keyword in model for keyword in keywords)
 
 
@@ -299,10 +255,10 @@ def is_huggingface_local(model: str) -> bool:
 
 
 def get_provider(model: str) -> str:
-    if is_openai(model):
+    if os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False":
+        return "openrouter"
+    elif is_openai(model):
         return "openai"
-    elif is_mistral(model):
-        return "mistral"
     elif is_anthropic(model):
         return "anthropic"
     elif is_togetherai(model):
@@ -310,104 +266,78 @@ def get_provider(model: str) -> str:
     elif is_huggingface_local(model):
         return "huggingface_local"
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
-
-
-def is_model_name_valid(model: str) -> bool:
-    if len(model) > 40:
-        return False  # Model name is too long, probably a mistake
-    try:
-        return get_provider(model) is not None
-    except NotImplementedError:
-        return False
+        print(
+            f"Model {model} is not supported with a provider; USE_OPENROUTER should be True"
+        )
+        assert False
 
 
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     provider = get_provider(model)
-    if provider == "togetherai" and "nitro" not in model:
-        raise NotImplementedError(
-            "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
-        )
 
-    use_openrouter = (
-        os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
-    )
-    if use_openrouter:
+    print(f"Using {provider} provider for model {model}")
+    if provider == "openrouter":
         kwargs = {}
-        if provider == "mistral":
-            # https://python.useinstructor.com/hub/mistral/
-            print(
-                "Only some Mistral endpoints have `response_format` on OpenRouter. If you encounter errors, please check on the OpenRouter website."
-            )
-            kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
-        if provider == "anthropic":
-            print(
-                "Anthropic does not have response_format on OpenRouter; it works due to Instructor magic nevertheless. This cannot be true without potential downsides. If there are weird failed requests happening, check if it might be due to this by testing a single API call with the required Pydantic model."
-            )
         client = (
             get_async_openrouter_client_pydantic(**kwargs)
             if use_async
             else get_openrouter_client_pydantic(**kwargs)
         )
-    elif provider == "openai":
-        client = (
-            get_async_openai_client_pydantic()
-            if use_async
-            else get_openai_client_pydantic()
-        )
-    elif provider == "mistral":
-        client = (
-            get_mistral_async_client_pydantic()
-            if use_async
-            else get_mistral_client_pydantic()
-        )
-    elif provider == "anthropic":
-        client = (
-            get_anthropic_async_client_pydantic()
-            if use_async
-            else get_anthropic_client_pydantic()
-        )
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
+        print(f"Using {provider} provider for model {model}")
+        if provider == "openai":
+            client = (
+                get_async_openai_client_pydantic()
+                if use_async
+                else get_openai_client_pydantic()
+            )
+        elif provider == "anthropic":
+            client = (
+                get_anthropic_async_client_pydantic()
+                if use_async
+                else get_anthropic_client_pydantic()
+            )
+        else:
+            raise NotImplementedError(
+                f"Model {model} Pydantic client is not supported for now outside of OpenRouter"
+            )
 
     return client, provider
 
 
 def get_client_native(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
+) -> tuple[AsyncOpenAI | OpenAI | AsyncAnthropic | Anthropic, str]:
     provider = get_provider(model)
 
-    if os.getenv("USE_OPENROUTER"):
+    if provider == "openrouter":
         client = (
             get_async_openrouter_client_native()
             if use_async
             else get_openrouter_client_native()
         )
-    elif provider == "openai":
-        client = (
-            get_async_openai_client_native()
-            if use_async
-            else get_openai_client_native()
-        )
-    elif provider == "mistral":
-        client = (
-            get_mistral_async_client_native()
-            if use_async
-            else get_mistral_client_native()
-        )
-    elif provider == "togetherai":
-        if use_async:
-            raise NotImplementedError(
-                "Only synchronous calls are supported for TogetherAI"
-            )
-        client = get_togetherai_client_native()
-    elif provider == "huggingface_local":
-        assert model.startswith("hf:")
-        model = model.split("hf:")[1]
-        client = get_huggingface_local_client(model)
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
+        print(f"Using {provider} provider for model {model}")
+        if provider == "openai":
+            client = (
+                get_async_openai_client_native()
+                if use_async
+                else get_openai_client_native()
+            )
+        elif provider == "anthropic":
+            client = (
+                get_anthropic_async_client_native()
+                if use_async
+                else get_anthropic_client_native()
+            )
+        elif provider == "togetherai":
+            if use_async:
+                raise NotImplementedError(
+                    "Only synchronous calls are supported for TogetherAI"
+                )
+            client = get_togetherai_client_native()
+        else:
+            raise NotImplementedError(f"Model {model} is not supported for now")
 
     return client, provider
 
@@ -464,7 +394,6 @@ async def query_api_chat(
 
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
     )
 
     response = await client.chat.completions.create(
@@ -496,7 +425,6 @@ async def query_api_chat_native(
 
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
     )
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
@@ -548,7 +476,6 @@ def query_api_chat_sync(
 
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
     )
 
     response = client.chat.completions.create(
@@ -580,7 +507,6 @@ def query_api_chat_sync_native(
 
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
     )
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
@@ -670,9 +596,6 @@ async def answer(
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
-    assert not is_model_name_valid(
-        str(prompt)
-    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
         "model": "gpt-4o-mini-2024-07-18",
@@ -694,9 +617,6 @@ def answer_sync(
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
-    assert not is_model_name_valid(
-        str(prompt)
-    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
         "model": "gpt-4o-mini-2024-07-18",
