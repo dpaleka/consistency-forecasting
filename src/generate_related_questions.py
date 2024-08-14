@@ -1,10 +1,7 @@
 import os
-import asyncio
-import argparse
-from common.path_utils import get_data_path
-from common.utils import write_jsonl_async_from_str
 from common.datatypes import QuestionGenerationResponse
-from question_generators.utils import deduplicate
+
+# from question_generators.utils import deduplicate
 import json
 from common.llm_utils import answer
 
@@ -269,6 +266,7 @@ async def generate_questions_from_question(
     # ]
 
 
+"""
 async def generate_questions(
     input_file,
     output_file,
@@ -361,3 +359,5 @@ if __name__ == "__main__":
             similar=args.similar_questions,
         )
     )
+
+"""
