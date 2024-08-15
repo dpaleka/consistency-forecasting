@@ -1,3 +1,48 @@
+"""          ***
+                        Checking consistency
+                        neg: P = 1 - not_P: 0.30 + 0.70 = 1 is true | NO violation 
+                        andor: P = P_or_Q + P_and_Q - Q | 0.30 = 0.39 + 0.11 0.20 is true: NO violation
+                        and: max(P + Q - 1, 0) <= P_and_Q <= min(P, Q) | max(0.30 + 0.20 - 1, 0) <= 0.11 <= min(0.30, 0.20) is true: NO violation
+                        or: max(P, Q) <= P_or_Q <= min(1, P + Q) | max(0.30, 0.20) <= 0.39 <= min(1, 0.30 + 0.20) is true: NO violation
+                        but: P = P_or_Q - Q_and_not_P | 0.30 = 0.39 - 0.09 is true: NO violation 
+                        cond: P = P_and_Q / Q_given_P | 0.30 = 0.11 / 0.37 is true: NO violation
+                        para: P = para_P | 0.30 = 0.30 is true: NO violation
+                        ***
+                        Revised estimates
+                        P: 0.30
+                        not_P: 0.70
+                        Q: 0.20
+                        P_or_Q: 0.39
+                        P_and_Q: 0.11
+                        Q_and_not_P: 0.09
+                        Q_given_P: 0.37
+                        para_P: 0.30
+
+
+
+
+
+                                                    ***
+                            Checking consistency
+                            neg: P = 1 - not_P: 0.30 + 0.55 = 1 is false | YES violation
+                            andor: P = P_or_Q + P_and_Q - Q | 0.30 = 0.45 + 0.11 0.20 is false: YES violation
+                            and: max(P + Q - 1, 0) <= P_and_Q <= min(P, Q) | max(0.30 + 0.20 - 1, 0) <= 0.11 <= min(0.30, 0.20) is true: NO violation
+                            or: max(P, Q) <= P_or_Q <= min(1, P + Q) | max(0.30, 0.20) <= 0.45 <= min(1, 0.30 + 0.20) is true: NO violation
+                            but: P = P_or_Q - Q_and_not_P | 0.45 = 0.39 - 0.09 is False: YES violation
+                            cond: P = P_and_Q / Q_given_P | 0.30 = 0.11 / 0.69 is false: YES violation
+                            para: P = para_P | 0.30 = 0.45 is false: YES violation
+                            ***
+                            Revised estimates
+                            P: 0.30
+                            not_P: 0.70
+                            Q: 0.20
+                            P_or_Q: 0.39
+                            P_and_Q: 0.11
+                            Q_and_not_P: 0.09
+                            Q_given_P: 0.37
+                            para_P: 0.30
+"""
+
 import os
 import sys
 
@@ -7,7 +52,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # from forecaster import Forecaster
 # from basic_forecaster import BasicForecaster
 
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Prob_cot
 
 from common.utils import shallow_dict
 
@@ -96,6 +141,27 @@ TEST_2 = {
     "resolution": None,
 }
 TEST_2 = ForecastingQuestion(**TEST_2)
+
+TEST_3 = {
+    "id": "c196006b-8e35-4c5b-a0d8-a577d0aa4ce2",
+    "title": "Will exactly 3 Starship launches reach low-Earth orbit by Sept 30, 2024?",
+    "body": "This question will resolve as the number of SpaceX Starship launches that reach low-Earth orbit, defined as achieving an altitude of at least 160 kilometers (approximately 100 miles) above the Earth's surface, by Sept 30, 2024.\n\nThe resolution will be based on official mission reports from SpaceX, and may also consider data or reporting from aerospace monitoring organizations or authorities, as well as other credible sources such as international media outlets.",
+    "resolution_date": "2024-09-30 00:00:00",
+    "question_type": "binary",
+    "data_source": "metaculus",
+    "url": "https://www.metaculus.com/questions/25705",
+    "metadata": {
+        "topics": [],
+        "api_url": "https://www.metaculus.com/api2/questions/25705",
+        "market_prob": 0.5,
+        "resolve_time": "2024-09-30T00:00:00Z",
+        "close_time": "2024-07-02T00:00:00Z",
+        "effected_close_time": None,
+        "background_info": "SpaceX's Starship is at the forefront of the next generation of spacecrafts, designed with the ambitious goals of enabling human life on other planets, starting with Mars, and significantly reducing the cost of access to space. The fully reusable transportation system is envisioned to carry both crew and cargo to Earth orbit, the Moon, Mars, and beyond. Since its inception, the Starship program has been marked by rapid development and prototyping.\n\nIn 2024, SpaceX has continued its intensive testing and development schedule, aiming to perfect the Starship's capabilities for orbital flight, satellite deployment, and eventual deep space missions. As SpaceX gears up for future crewed missions, including NASA's Artemis program to return humans to the Moon and eventually to Mars, the ability of Starship to reach and operate in low-Earth orbit (LEO) is a critical step. Achieving LEO is essential not only for satellite deployments but also as a proving ground for the technologies and operational procedures that will enable longer-duration spaceflights.\n\nOn March 14, 2024, SpaceX's Integrated Test Flight 3 (IFT-3) saw Starship 28 briefly reach low-Earth orbit by achieving an altitude of 234 km before breaking up in the atmosphere upon re-entry.\n\nIn the days prior to IFT-3, SpaceX CEO Elon Musk tweeted \"Hopefully, at least 6 more flights this year\".",
+    },
+    "resolution": None,
+}
+TEST_3 = ForecastingQuestion(**TEST_3)
 
 
 ## consistency metrices by priority
@@ -271,12 +337,7 @@ class PromptedToCons_Forecaster(Forecaster):
                 if k in self.consistency_checks
             }
 
-        self.preface = preface or (
-            """You are an informed and well-calibrated forecaster. I need you to give me the best probability estimate of the following events or questions resolving YES.\n\n
-            The questions can be labelled with "P", "Q", or logical combination of such events, for example "Q_given_P", "not_P", Q_and_P" etc.\n\n
-            I will also provide you a list of consistency rules that your probability estimates must obey.\n\n
-            The consistency rules ar as follows:\n
-            {}\n
+        """
             Output your answer in the following way.\n
             For each question label output the corresponding probability rounded to two decimal places.\n
             "P": 0.42\n
@@ -288,10 +349,9 @@ class PromptedToCons_Forecaster(Forecaster):
             And so on and so forth. Note there can be more or less labels than the example I provided.\n
             After that, I will again ask you to verify that the probabilities you provided are consistent with the rules I give you. I want you to explicitly go through each rule and evaluate whether your response is consistent with that. If it is not, then you should correct that mistake. Note that changing the probability of one label may affect the consistency of other, so you need to be sure that the probabilities you give are consistent across all of the rules.\n\n
             Exxample 1:\n
-            rule: P = 1- not_P.\n
-            Your logic: P = 0.42, not_P = 0.58. P + not_P = 1. Therefore, this consistency check passes\n\n
+            rule: neg: P = 1 - not_P : P = 0.42, not_P = 0.58 | 0.42 + 0.58 = 1 is true : NO violation\n\n
             Example 2:\n
-            P= 0.11, not_P = 0.58.\n
+            rule: neg: P = 1 - not_P : P = 0.11, not_P = 0.34 | 0.11 + 0.34 = 1 is false : YES violation\n\n
             In this case, the consistency check fails. Therefore, you should correct either P, not_P, or both such that it passes.\n
             Note that your correction needs to ENSURE that it still passes other consistency checks too.\n\n
             At the end, I want you to output a final line with your prediction just for P again separated by ***.\n\n
@@ -306,32 +366,145 @@ class PromptedToCons_Forecaster(Forecaster):
             - ***
             - Outputs of probability estimates given your evaluation of the consistency of your previous estimates.  If there are no consistency violations, you may simply repeat your previous response.  If there are, the new probabilities should obey ALL the consistency measurements (keeping in mind that chanding one probability might have to change another to ensure other consistency rules are also obeyed)
             - ***
-            - Output of your probability estimate of P.  This should just be a number and matches the P estimate you just gave.
+        """
+
+        self.preface = preface or (
+            """You are an informed and well-calibrated forecaster. I need you to give me the best probability estimate of the following events or questions resolving YES rounded to two decimals.
+            The questions can be labelled with "P", "Q", or logical combination of such events, for example "Q_given_P", "not_P", Q_and_P" etc.
+            I will also provide you a list of consistency rules that your probability estimates must obey.
+            The consistency rules are as follows:
+            {}
+            Again to emphasize, the probabilities you output MUST OBEY the above rules.  However the accuracy of the predictions is the most important.  Therefore your predictions should both accurately reflect your belief of these events occuring as well as obey the given consistency rules.
+
+            Your response MUST be in the following format:
+            - Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you should also make a comment on whether the events are independent and if not to what degree. 
+            - Output '***' to denote a new section
+            - Output your probability estimates of each of the variables (P, Q, not_P etc) in the dict like format that was provided to you in the input.  Here, only output the labels and its associated predictions and NOTHING ELSE.  Any reasoning or clarifications should already have been outputted above.  Again for this section only output the labels and probabilities, without any additional detail.  It is OK for information to be repeated here.  For example,
+            P: 0.xx
+            not_P: 0.xx
+            Q: 0.xx
+            P_or_Q: 0.xx
+            ...
+            - Output '***' to denote a new section
+            - Output your probability estimate of P.  This should just be a number and matches the P estimate you just gave.  Output NOTHING else in this section.
 
             """.format(str(self.consistency_checks))
         )
-        self.examples = examples or []
-        """
+
         self.examples = examples or [
             Example(
-                user=ForecastingQuestion_stripped(
-                    title="Will Manhattan have a skyscraper a mile tall by 2030?",
-                    body=(
-                        "Resolves YES if at any point before 2030, there is at least "
-                        "one building in the NYC Borough of Manhattan (based on current "
-                        "geographic boundaries) that is at least a mile tall."
-                    ),
-                ),
+                user=""""{
+                            'P': ForecastingQuestion(
+                            id=UUID('0451eb5a-5557-4fd2-a770-bb19e9b1daa5'),
+                            title='Will USA top the Olympic Medal Table at Paris 2024?',
+                            body='This question will resolve positively if the United States Olympic Team are the (unique) highest ranked team at the 2024 Paris Olympics. It will resolve ambiguously if the Paris Olympics do not take place before 2027. It will resolve negatively if any team achieves a higher or equal ranking to the US team.\n\nThe medal table is calculated by taking all the medals won by each participating country and ordering by:\n\n1. Number of Gold Medals\n2. (Where 1 is tied) Number of Silver Medals\n3. (Where 2 is tied) Number of Bronze Medals',
+                            resolution_date=datetime.datetime(2024, 12, 31, 0, 0, tzinfo=tzutc()),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'not_P': ForecastingQuestion(
+                            id=UUID('12fba820-f21f-4e35-8258-dffde82de265'),
+                            title='Will USA not top the Olympic Medal Table at Paris 2024?',
+                            body='This question will resolve positively if the United States Olympic Team are not the (unique) highest ranked team at the 2024 Paris Olympics. It will resolve ambiguously if the Paris Olympics do not take place before 2027. It will resolve negatively if no team achieves a higher or equal ranking to the US team.\n\nThe medal table is calculated by taking all the medals won by each participating country and ordering by:\n\n1. Number of Gold Medals\n2. (Where 1 is tied) Number of Silver Medals\n3. (Where 2 is tied) Number of Bronze Medals',
+                            resolution_date=datetime.datetime(2024, 12, 31, 0, 0, tzinfo=tzutc()),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'para_P': ForecastingQuestion(
+                            id=UUID('d5451066-5f23-4ad6-94af-c2e566961d90'),
+                            title='Will the United States lead the Olympic Medal Standings at the 2024 Paris Games?',
+                            body='This inquiry will be deemed affirmative if the United States Olympic Team is the sole highest ranked team at the Paris Olympics in 2024. It will be considered unclear if the Paris Olympics do not occur before the year 2027. It will be judged as negative if any other team ranks higher or equal to the US team.\n\nThe medal standings are determined by tallying all the medals earned by each participating nation and ranking them based on:\n\n1. Total Gold Medals\n2. (In case of a tie for 1) Total Silver Medals\n3. (In case of a tie for 2) Total Bronze Medals.',
+                            resolution_date=datetime.datetime(2024, 12, 31, 0, 0, tzinfo=tzutc()),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'Q': ForecastingQuestion(
+                            id=UUID('3b8d6b4f-2d70-4685-908f-7ce05cfe1fa7'),
+                            title="Will armed conflicts between the United States and the People's Republic of China lead to at least 100 deaths before 2050?",
+                            body="Resolution Criteria\nThis question will resolve as Yes if, at any time between January 1, 2021 to January 1, 2050, either of the following occur:\nThere are at least three credible government sources reporting at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths.\nThere are at least three credible news reports that at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths.\nThese 100 deaths do not have to occur in the same conflict or the same year; it is sufficient for multiple separate events to reach a total of 100 deaths in this period.\nThis question will resolves as No otherwise.\nIn the context of this question, an armed conflict will be defined as a dispute that concerns a government and/or territory where the use of armed force between two parties, of which at least one is the government of a state, results in an exchange of weapon fire or detonations\n",
+                            resolution_date=datetime.datetime(2049, 12, 31, 0, 0, tzinfo=TzInfo(UTC)),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'P_and_Q': ForecastingQuestion(
+                            id=UUID('5c55713a-80c0-4dfa-b89c-e678e59b557c'),
+                            title="Will both of the following occur: (1) The United States Olympic Team is the unique highest ranked team at the 2024 Paris Olympics, and (2) armed conflicts between the United States and the People's Republic of China lead to at least 100 deaths before 2050?",
+                            body="This question will resolve positively if both of the following conditions are met: (1) The United States Olympic Team is the (unique) highest ranked team at the 2024 Paris Olympics, which will be determined by the total number of medals won, ordered by the number of Gold Medals, then Silver Medals, then Bronze Medals. This will resolve ambiguously if the Paris Olympics do not take place before 2027. (2) At any time between January 1, 2021 to January 1, 2050, either of the following occurs: (a) there are at least three credible government sources reporting at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths, or (b) there are at least three credible news reports that at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths. These 100 deaths do not have to occur in the same conflict or the same year; it is sufficient for multiple separate events to reach a total of 100 deaths in this period.",
+                            resolution_date=datetime.datetime(2049, 12, 31, 0, 0, tzinfo=TzInfo(UTC)),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'P_or_Q': ForecastingQuestion(
+                            id=UUID('2be2fd6d-acb3-4ca4-812a-45c5c3cb92cb'),
+                            title="Will either of the following occur: (a) Will the USA top the Olympic Medal Table at Paris 2024? (b) Will armed conflicts between the United States and the People's Republic of China lead to at least 100 deaths before 2050?",
+                            body="This question will resolve positively if either of the following occurs: (a) The United States Olympic Team is the (unique) highest ranked team at the 2024 Paris Olympics, which will resolve ambiguously if the Paris Olympics do not take place before 2027, and will resolve negatively if any team achieves a higher or equal ranking to the US team. (b) At any time between January 1, 2021 to January 1, 2050, either there are at least three credible government sources reporting at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths, or there are at least three credible news reports that at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths. These 100 deaths do not have to occur in the same conflict or the same year; it is sufficient for multiple separate events to reach a total of 100 deaths in this period.",
+                            resolution_date=datetime.datetime(2049, 12, 31, 0, 0, tzinfo=TzInfo(UTC)),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=False
+                            ),
+                            'Q_and_not_P': ForecastingQuestion(
+                            id=UUID('5759e1dd-e9bc-464a-98d6-271d542b55a3'),
+                            title="Will both of the following occur: (1) Armed conflicts between the United States and the People's Republic of China lead to at least 100 deaths before 2050, and (2) the United States Olympic Team does not top the Olympic Medal Table at Paris 2024?",
+                            body="Resolution Criteria\nThis question will resolve as Yes if both of the following conditions are met:\n1. At any time between January 1, 2021 to January 1, 2050, either there are at least three credible government sources reporting at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths, or there are at least three credible news reports that at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths.\n2. The United States Olympic Team is not the (unique) highest ranked team at the 2024 Paris Olympics, meaning no team achieves a higher or equal ranking to the US team.\nThis question will resolve as No if either of the conditions is not met.",
+                            resolution_date=datetime.datetime(2049, 12, 31, 0, 0, tzinfo=TzInfo(UTC)),
+                            question_type='binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            ),
+                            'Q_given_P': ForecastingQuestion(
+                            id=UUID('3f8f4abc-4ca8-44bf-b12e-77ac21f10c08'),
+                            title="Given the USA tops the Olympic Medal Table at Paris 2024, will armed conflicts between the United States and the People's Republic of China lead to at least 100 deaths before 2050?",
+                            body="This question will resolve positively if the United States Olympic Team are the (unique) highest ranked team at the 2024 Paris Olympics. It will resolve ambiguously if the Paris Olympics do not take place before 2027. It will resolve negatively if any team achieves a higher or equal ranking to the US team.\n\nAdditionally, this question will resolve as Yes if, at any time between January 1, 2021 to January 1, 2050, either of the following occur:\n1. There are at least three credible government sources reporting at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths.\n2. There are at least three credible news reports that at least one exchange of weapon fire between the national military forces or law enforcement personnel of the United States and the People's Republic of China causing a total of at least 100 deaths.\nThese 100 deaths do not have to occur in the same conflict or the same year; it is sufficient for multiple separate events to reach a total of 100 deaths in this period.\nThis question will resolve as No otherwise.\nIn the context of this question, an armed conflict will be defined as a dispute that concerns a government and/or territory where the use of armed force between two parties, of which at least one is the government of a state, results in an exchange of weapon fire or detonations.",
+                            resolution_date=datetime.datetime(2049, 12, 31, 0, 0, tzinfo=TzInfo(UTC)),
+                            question_type='conditional_binary',
+                            data_source='synthetic_inst',
+                            url=None,
+                            metadata=None,
+                            resolution=None
+                            )
+                        }
+                        """,
                 assistant=Prob_cot(
                     chain_of_thought=(
-                        "As of 2021, there are no skyscrapers a mile tall. There are also "
-                        "no plans to build any mile tall skyscraper in new york. The probability "
-                        "is: 0.03"
+                        """
+                        Give your reasoning here
+                        ***
+                        P: 0.30
+                        not_P: 0.70
+                        Q: 0.20
+                        P_or_Q: 0.39
+                        P_and_Q: 0.11
+                        Q_and_not_P: 0.09
+                        Q_given_P: 0.37
+                        para_P: 0.30
+                        ***
+                        0.30
+                        """
                     ),
-                    prob=0.03,
+                    prob=0.30,
                 ),
             )
-        ]"""
+        ]
 
     def generate_all_questions(self, sentence: ForecastingQuestion):
         """# alternate way to gen questions
@@ -383,8 +556,8 @@ class PromptedToCons_Forecaster(Forecaster):
             "preface": self.preface,
             "examples": [
                 {
-                    "user": e.user.model_dump_json(),
-                    "assistant": e.assistant.model_dump_json(),
+                    "user": e.user,
+                    "assistant": e.assistant,
                 }
                 for e in self.examples
             ],
@@ -396,8 +569,5 @@ class PromptedToCons_Forecaster(Forecaster):
 test_for = PromptedToCons_Forecaster()
 
 
-print("1")
-print(test_for.call(TEST_1))
-
-print("XXXXXXXXXX")
-print(test_for.dump_config())
+print("2")
+print(test_for.call(TEST_3))
