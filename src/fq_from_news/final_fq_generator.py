@@ -22,7 +22,8 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     preface = """
     You are an expert in validating forecasting (prediction) questions that cannot be answered by a simple or trivial forecasting algorithms. 
-    Verify that each forecasting question's title, body, and resolution adhere to the guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date that should be set for the questions is {month_name}, {year}.
+    Verify that each forecasting question's title, body, and resolution adhere to the guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date that should be set for the questions is {month_name}, {year}. 
+    The forecaster will assume the current date is the `pose_date` which is {pose_date}, so use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, sufficient context should be provided within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data. 
     """
 
     prompt = """
@@ -133,7 +134,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         }
 
     def _prompt_and_preface_formation(
-        rough_fq_data: dict, end_date: datetime
+        rough_fq_data: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
         Forms the forecasting prompt and preface from rough forecasting question data.
@@ -141,12 +142,15 @@ class NewsApiFinalForecastingQuestionGenerator:
         Args:
             rough_fq_data (dict): Processed rough forecasting question data.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
 
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
         """
         forecasting_preface = NewsApiFinalForecastingQuestionGenerator.preface.format(
-            month_name=end_date.strftime("%B"), year=end_date.strftime("%Y")
+            month_name=end_date.strftime("%B"),
+            year=end_date.strftime("%Y"),
+            pose_date=pose_date.strftime("%B %d, %Y"),
         )
         forecasting_prompt = NewsApiFinalForecastingQuestionGenerator.prompt.format(
             source_rough_fq_data=rough_fq_data,
@@ -239,7 +243,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             forecasting_preface,
             forecasting_prompt,
         ) = cls._prompt_and_preface_formation(
-            cls._processed_rough_fq_data(rough_fq_data), end_date
+            cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
         )
 
         generated_stripped_final_forecasting_question = answer_sync(
@@ -280,7 +284,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             forecasting_preface,
             forecasting_prompt,
         ) = cls._prompt_and_preface_formation(
-            cls._processed_rough_fq_data(rough_fq_data), end_date
+            cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
         )
 
         generated_stripped_final_forecasting_question = await answer(

@@ -30,6 +30,7 @@ def generate_forecasting_questions_from_news_sync(articles_download_path, args):
             args.num_pages,
             args.num_articles,
             args.rough_fq_gen_model_name,
+            args.pose_date,
         )
 
     # Generating the final forecasting questions
@@ -60,6 +61,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.num_pages,
             args.num_articles,
             args.rough_fq_gen_model_name,
+            args.pose_date,
         )
 
     # Generating the final forecasting questions

@@ -52,6 +52,7 @@ def generate_rough_forecasting_data_sync(
     num_pages: int,
     num_articles: int,
     rough_fq_gen_model_name: str,
+    pose_date: datetime,
 ) -> None:
     """
     Wrapper for calling functionality to generate rough forecasting questions data in a sync manner.
@@ -74,7 +75,7 @@ def generate_rough_forecasting_data_sync(
 
             article = json.loads(line.strip())
             rough_forecasting_questions = NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question_sync(
-                article, rough_fq_gen_model_name, end_date
+                article, rough_fq_gen_model_name, end_date, pose_date
             )
 
             num_articles_processed += 1
@@ -94,6 +95,7 @@ async def generate_rough_forecasting_data(
     num_pages: int,
     num_articles: int,
     rough_fq_gen_model_name: str,
+    pose_date: datetime,
 ) -> None:
     """
     Wrapper for calling functionality to generate rough forecasting questions data in an async manner.
@@ -117,7 +119,7 @@ async def generate_rough_forecasting_data(
             article = json.loads(line.strip())
             tasks.append(
                 NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question(
-                    article, rough_fq_gen_model_name, end_date
+                    article, rough_fq_gen_model_name, end_date, pose_date
                 )
             )
 
