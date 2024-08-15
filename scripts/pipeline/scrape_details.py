@@ -8,11 +8,10 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 
 import sys
 import os
-import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 import re
-from playwright.async_api import async_playwright
+# from playwright.async_api import async_playwright
 
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../../src"))
 
@@ -52,6 +51,7 @@ async def fetch_question_details_metaculus(question):
     return question
 
 
+"""
 async def fetch_question_details_metaculus_slow(question):
     url = question["url"]
     print(url)
@@ -126,6 +126,7 @@ async def fetch_question_details_metaculus_slow(question):
         "background_info": background_info_text,
     }
     return question
+"""
 
 
 async def fetch_question_details_manifold(question):
