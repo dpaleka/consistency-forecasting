@@ -1,12 +1,10 @@
-from dotenv import load_dotenv
 from common.datatypes import ForecastingQuestion
 import asyncio
 import uuid
 from common.llm_utils import answer
 from typing import Optional
-from datetime import datetime
+from common.utils import normalize_date_format
 
-load_dotenv()
 
 resolution_date_specification = """\
 The resolution date is the date when the outcome of the question will be decided. 
@@ -172,10 +170,7 @@ async def from_string(
         question_type = "binary"
 
     if date is not None:
-        try:
-            date = datetime.strptime(date, "%d/%m/%Y")
-        except ValueError:
-            date = None
+        date = normalize_date_format(date)
 
     if not fill_in_body and body is None:
         raise ValueError("No question body provided and fill_in_body is False")
