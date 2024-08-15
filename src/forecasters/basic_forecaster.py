@@ -1,4 +1,9 @@
-from .forecaster import Forecaster
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from forecaster import Forecaster
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import answer, answer_sync, Example
 
@@ -25,7 +30,9 @@ class BasicForecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         # Log the request details being sent to the OpenAI API
         print("Sending the following request to the LLM API:")
         print(f"Prompt: {sentence.__str__()}")
@@ -43,7 +50,9 @@ class BasicForecaster(Forecaster):
         print(f"Received the following response from OpenAI API: {response}")
         return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         # Log the request details being sent to the OpenAI API
         print("Sending the following request to the LLM API:")
         print(f"Prompt: {sentence.__str__()}")
