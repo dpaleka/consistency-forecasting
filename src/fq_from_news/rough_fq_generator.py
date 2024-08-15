@@ -18,11 +18,13 @@ class NewsApiRoughForecastingQuestionGenerator:
     os.makedirs(news_api_rough_fq_save_dir, exist_ok=True)
 
     preface = """
-    You are tasked with generating forecasting (prediction) questions that must have a definitive YES or NO answer based on past events. These questions should be crafted to avoid biases (recency, confirmation, anchoring, availability) and must be clear, unbiased, and free from any trivial or misleading elements. Ensure the questions are not influenced by sensitive matters such as religion, politics, gender, or race. Avoid using subjective terms like "significant" and reject questions that do not meet these criteria.
+    You are tasked with generating forecasting (prediction) questions that have a definitive YES or NO answer based on past events. These questions must be clear, unbiased, and free from trivial or misleading elements. Avoid influences from sensitive matters such as religion, politics, gender, or race, and refrain from using subjective terms like "significant."
 
-    The resolution for each question should be definitive and unchanging from the current date until the specified resolution date in the month of {month_name}, {year}. Given that the forecaster will assume the current date is set in the past, prefer to use concrete events from the articles to form your questions.
+    Each question's resolution must remain definitive and unchanged from the current date until the specified resolution date in the month of {month_name}, {year}. 
+    
+    The forecaster will assume the current date is the `pose_date` which is {pose_date}, so use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data. 
 
-    Questions that are too specific or biased, such as those referencing politically charged scenarios or highly detailed contexts, should be avoided. Make reasonable approximations when necessary to ensure that questions remain robust and unbiased.
+    Avoid overly specific or politically charged scenarios, and make reasonable approximations to ensure robustness and neutrality in your questions.
     """
 
     prompt = """
@@ -35,23 +37,24 @@ class NewsApiRoughForecastingQuestionGenerator:
     - **Clarity and Precision**: The title should be straightforward and precise, avoiding any ambiguity or clues that could lead to obvious answers through pattern recognition or simplistic heuristics. Avoid subjective terms like "significant."
     - **Resolution Date**: The resolution date must be the month and year as "by {month_name}, {year}?". Ensure that the resolution remains accurate for all foreseeable futures up to this date.
     - **Definitiveness**: The resolution must be definitive, meaning that it can be confirmed as either YES or NO based on the news feed. Ensure the answer is not subject to interpretation or speculation.
-    - **Scope**: The scope of the question must be exactly verified by the exact words given in the source article. Do not make any questions that are derivatory. 
+    - **Scope**: The scope of the question must be exactly verified by the exact words given in the source article. Do not make any questions that are derivatory.
 
     2. **Body**:
-    - **Disambiguation**: The body of the question must be articulated with the highest degree of precision. Avoid any unnecessary details that could influence the resolution, and ensure that there is no detectable link between the "resolution" and the "news".
+    - **Disambiguation**: The body of the question must be articulated with the highest degree of precision. Avoid any unnecessary details that could influence the resolution, and ensure that there is no detectable link between the "resolution" and the "news."
     - **Avoid Specific Knowledge**: The body should not rely on specific knowledge that could disadvantage certain models or participants. Avoid overly specific details that simple forecasters could exploit. Make reasonable approximations if necessary.
     - **Context**: Ensure that the body of the question does not provide contextual information that could lead to a predictable or simplistic resolution. The body can only expand on the date given in the forecasting question's title and does not have any additional information from the article. Moreover, the resolution date given in the body should use the resolution date given in the question title.
+    - **Pose Date Context**: If the context or names of the events being used in the forecasting question wouldn't be apparent or logical at the time of the `pose_date`, add sufficient context to ensure the forecaster does not understand that the question was formed at a time after the `pose_date`. Additionally, if the event would not be known based solely on the training data without the provided article, use generalizable terms instead of specific names.
 
     3. **Resolution**:
     - **Binary**: The resolution of the question is marked as `True` if the question resolves to Yes and is marked as `False` if it resolves to No.
     - **No Intermediate Changes**: The resolution should not have changed by the end of the resolution date. The resolution must remain correct for all foreseeable futures until the resolution date of the month and year.
-    - **Concrete Events**: Form questions only from concrete events that have occurred and not from opinions or proclamations. Ensure no possibility of the question resolving between the current date and the resolution date’s month.
+    - **Concrete Events**: Form questions only from concrete events that have occurred and not from opinions or proclamations. Ensure no possibility of the question resolving between the current date and the resolution date's month.
 
     **Additional Guidelines**:
     - **Quantity**: Create as many high-quality forecasting questions as possible while adhering to the above criteria.
     - **Numerical Values**: If the question refers to a numerical value, ask for resolutions of that value either crossing or being under a threshold. Use a rough threshold that does not invoke numerical biases.
     - **Avoiding Predictability**: The specificity of details should not make the question predictable. Make reasonable approximations to avoid such issues.
-    - **Avoid Subjective Terms**: Ensure that the title and body do not use subjective terms like "significant" which can lead to ambiguity.
+    - **Avoid Subjective Terms**: Ensure that the title and body do not use subjective terms like "significant," which can lead to ambiguity.
     - **Avoid Politically Biased Scenarios**: Avoid questions related to politically biased scenarios, such as indictments or actions of former presidents for political reasons. Use concrete events and avoid politically sensitive topics.
 
     **Examples of Questions That Should NOT Be Used**:
@@ -104,6 +107,9 @@ class NewsApiRoughForecastingQuestionGenerator:
     16. **Rejected Question**: Will Archbishop Carlo Maria Vigano be excommunicated by the Vatican this month?
         - **Reason**: The specificity of the Archbishop makes it too detailed. Alternative questions could be: "Will an Archbishop be excommunicated by the Vatican by July 2024?"
 
+    17. **Rejected Question**: "Will the number of fatalities from the propane tank explosion in Izmir, Turkey, increase to more than 5 by July 2024?"
+        - *Reason**: The question refers to "the" propane tank explosion which lets the forecaster understand that the event has already taken place.  
+        
     **Create as many high-quality forecasting questions as possible, ensuring they meet all criteria outlined. The goal is to generate questions that are objective, challenging, and free from biases while remaining clear and definitive in their expected outcomes.**
 
 
@@ -171,7 +177,7 @@ class NewsApiRoughForecastingQuestionGenerator:
     }
 
     def _prompt_and_preface_formation(
-        article: dict, end_date: datetime
+        article: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
         Forms the forecasting prompt and preface based on the given article and end date.
@@ -179,6 +185,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         Args:
             article (dict): Dictionary containing article information with keys 'title', 'description', and 'content'.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
@@ -189,7 +196,9 @@ class NewsApiRoughForecastingQuestionGenerator:
             "content": article["content"],
         }
         forecasting_preface = NewsApiRoughForecastingQuestionGenerator.preface.format(
-            month_name=end_date.strftime("%B"), year=end_date.strftime("%Y")
+            month_name=end_date.strftime("%B"),
+            year=end_date.strftime("%Y"),
+            pose_date=pose_date.strftime("%B %d, %Y"),
         )
         forecasting_prompt = NewsApiRoughForecastingQuestionGenerator.prompt.format(
             source_article=json.dumps(formatted_article, indent=4),
@@ -262,7 +271,7 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     @classmethod
     async def article_to_rough_forecasting_question(
-        cls, article: dict, model_name: str, end_date: datetime
+        cls, article: dict, model_name: str, end_date: datetime, pose_date: datetime
     ) -> list[dict]:
         """
         Class method to create rough forecasting question data from a given article asynchronously.
@@ -271,6 +280,7 @@ class NewsApiRoughForecastingQuestionGenerator:
             article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
             model_name (str): The model used to generate the rough forecasting question.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             list[dict]: A list of dictionaries containing either rejected or accepted rough forecasting questions.
@@ -278,7 +288,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(article, end_date)
+        ) = cls._prompt_and_preface_formation(article, end_date, pose_date)
 
         generated_stripped_forecasting_questions = await answer(
             prompt=forecasting_prompt,
@@ -293,7 +303,7 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     @classmethod
     def article_to_rough_forecasting_question_sync(
-        cls, article: dict, model_name: str, end_date: datetime
+        cls, article: dict, model_name: str, end_date: datetime, pose_date: datetime
     ) -> list[dict]:
         """
         Class method to create rough forecasting question data from a given article synchronously.
@@ -302,6 +312,7 @@ class NewsApiRoughForecastingQuestionGenerator:
             article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
             model_name (str): The model used to generate the rough forecasting question.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             list[dict]: A list of dictionaries containing either rejected or accepted rough forecasting questions.
@@ -309,7 +320,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(article, end_date)
+        ) = cls._prompt_and_preface_formation(article, end_date, pose_date)
 
         generated_stripped_forecasting_questions = answer_sync(
             prompt=forecasting_prompt,
