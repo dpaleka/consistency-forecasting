@@ -1,6 +1,12 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+
 from common.utils import shallow_dict
-from .forecaster import Forecaster
-from .basic_forecaster import BasicForecaster
+from forecaster import Forecaster
+from basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion
 from static_checks import (
     Checker,
