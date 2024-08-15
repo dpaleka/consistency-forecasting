@@ -76,7 +76,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/5712",
-            "market_prob": 0.01,
+            "market_prob": 0.005,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -140,11 +140,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/7664",
             "market_prob": 0.82,
-            "resolve_time": "2024-08-10T23:00:00Z",
+            "resolve_time": "2024-08-11T16:00:00Z",
             "close_time": "2024-07-25T23:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-25T23:00:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 7669,
@@ -161,11 +161,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/7669",
             "market_prob": 0.5,
-            "resolve_time": "2024-08-10T23:00:00Z",
+            "resolve_time": "2024-08-11T16:05:00Z",
             "close_time": "2024-07-25T23:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-25T23:00:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 11699,
@@ -244,7 +244,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11703",
-            "market_prob": 0.005,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -286,7 +286,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11705",
-            "market_prob": 0.005,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -307,7 +307,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11706",
-            "market_prob": 0.01,
+            "market_prob": 0.002,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -328,7 +328,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11707",
-            "market_prob": 0.01,
+            "market_prob": 0.002,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -370,7 +370,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11709",
-            "market_prob": 0.002,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -412,7 +412,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11711",
-            "market_prob": 0.003,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -433,7 +433,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/11712",
-            "market_prob": 0.002,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -496,7 +496,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/13539",
-            "market_prob": 0.01,
+            "market_prob": 0.002,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -769,7 +769,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/16526",
-            "market_prob": 0.005,
+            "market_prob": 0.002,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -874,7 +874,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/18362",
-            "market_prob": 0.004,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-02T04:00:00Z",
             "close_time": "2024-09-01T04:00:00Z",
             "effected_close_time": null
@@ -1147,7 +1147,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/20254",
-            "market_prob": 0.01,
+            "market_prob": 0.005,
             "resolve_time": "2024-09-01T11:00:00Z",
             "close_time": "2024-09-01T11:00:00Z",
             "effected_close_time": null
@@ -1189,12 +1189,12 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21354",
-            "market_prob": 0.14,
-            "resolve_time": "2024-08-11T22:00:00Z",
+            "market_prob": 0.05,
+            "resolve_time": "2024-08-11T23:00:00Z",
             "close_time": "2024-08-11T21:59:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-11T21:59:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 21486,
@@ -1211,11 +1211,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/21486",
             "market_prob": 0.001,
-            "resolve_time": "2024-08-18T23:00:00Z",
+            "resolve_time": "2024-08-12T13:52:00Z",
             "close_time": "2024-08-11T23:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-11T23:00:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 24034,
@@ -1946,11 +1946,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25981",
             "market_prob": 0.49,
-            "resolve_time": "2024-08-11T12:00:00Z",
+            "resolve_time": "2024-08-11T10:13:00Z",
             "close_time": "2024-08-10T06:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-10T06:00:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 25982,
@@ -1988,11 +1988,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25983",
             "market_prob": 0.99,
-            "resolve_time": "2024-08-11T17:00:00Z",
+            "resolve_time": "2024-08-11T16:16:00Z",
             "close_time": "2024-08-11T06:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-11T06:00:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 25984,
@@ -2030,11 +2030,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25988",
             "market_prob": 0.8,
-            "resolve_time": "2024-08-11T17:00:00Z",
+            "resolve_time": "2024-08-11T15:30:00Z",
             "close_time": "2024-08-04T13:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-04T13:00:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 25989,
@@ -2071,12 +2071,12 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25992",
-            "market_prob": 0.29,
-            "resolve_time": "2024-08-11T17:00:00Z",
+            "market_prob": 0.06,
+            "resolve_time": "2024-08-11T17:24:00Z",
             "close_time": "2024-08-11T11:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-11T11:00:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 25993,
@@ -2086,18 +2086,18 @@
             "background_info": "[Medal wins at the Summer Olympics](https://en.wikipedia.org/wiki/All-time_Olympic_Games_medal_table) are concentrated in a fairly small number of countries; the United States alone has won about 1 out of every 6 medals ever awarded, and a total of ten countries account for the majority of medalists.\n\nConversely, prior to the opening of the 2024 Summer Olympics in Paris, there are about 60 National Olympic Committees that have never won a gold medal; the most recent countries to win their first medal, in the Tokyo 2020 Games, were Burkina Faso, San Marino and Turkmenistan.\n\nWill at least 5 new countries win their first medal at the current Games?"
         },
         "question_type": "binary",
-        "resolution_date": "2024-08-11T11:00:00Z",
+        "resolution_date": "2024-08-11T06:22:00Z",
         "url": "https://www.metaculus.com/questions/25993",
         "data_source": "metaculus",
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/25993",
-            "market_prob": 0.19,
-            "resolve_time": "2024-08-11T17:00:00Z",
+            "market_prob": 0.18,
+            "resolve_time": "2024-08-11T06:22:00Z",
             "close_time": "2024-08-11T11:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-11T06:22:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 26004,
@@ -2324,11 +2324,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26095",
             "market_prob": 0.26,
-            "resolve_time": "2024-08-18T14:30:00Z",
+            "resolve_time": "2024-08-11T16:32:00Z",
             "close_time": "2024-07-13T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-13T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26096,
@@ -2512,7 +2512,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26116",
-            "market_prob": 0.16,
+            "market_prob": 0.13,
             "resolve_time": "2024-09-01T23:00:00Z",
             "close_time": "2024-08-25T22:59:00Z",
             "effected_close_time": null
@@ -2555,11 +2555,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26139",
             "market_prob": 0.65,
-            "resolve_time": "2024-08-11T14:30:00Z",
+            "resolve_time": "2024-08-11T11:12:00Z",
             "close_time": "2024-07-16T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-16T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26140,
@@ -2659,7 +2659,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26170",
-            "market_prob": 0.61,
+            "market_prob": 0.622,
             "resolve_time": "2024-09-01T13:00:00Z",
             "close_time": "2024-08-16T22:00:00Z",
             "effected_close_time": null
@@ -2702,11 +2702,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26189",
             "market_prob": 0.7,
-            "resolve_time": "2024-08-11T14:30:00Z",
+            "resolve_time": "2024-08-11T16:36:00Z",
             "close_time": "2024-07-17T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-17T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 26190,
@@ -3017,11 +3017,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26236",
             "market_prob": 0.733,
-            "resolve_time": "2024-08-11T14:30:00Z",
+            "resolve_time": "2024-08-11T16:45:00Z",
             "close_time": "2024-07-19T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-19T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26305,
@@ -3038,11 +3038,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26305",
             "market_prob": 0.65,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-11T15:35:00Z",
             "close_time": "2024-07-20T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-20T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 26306,
@@ -3458,11 +3458,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26555",
             "market_prob": 0.78,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-11T16:34:00Z",
             "close_time": "2024-07-25T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-25T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26570,
@@ -3479,11 +3479,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26570",
             "market_prob": 0.2,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-12T00:11:00Z",
             "close_time": "2024-07-26T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-26T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26571,
@@ -3500,11 +3500,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26571",
             "market_prob": 0.2,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-12T00:11:00Z",
             "close_time": "2024-07-26T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-26T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26572,
@@ -3521,11 +3521,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26572",
             "market_prob": 0.57,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-12T00:12:00Z",
             "close_time": "2024-07-26T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-26T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 1.0
     },
     {
         "id": 26573,
@@ -3542,11 +3542,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26573",
             "market_prob": 0.2,
-            "resolve_time": "2024-08-12T14:30:00Z",
+            "resolve_time": "2024-08-12T00:12:00Z",
             "close_time": "2024-07-26T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-26T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26645,
@@ -3710,11 +3710,11 @@
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26683",
             "market_prob": 0.45,
-            "resolve_time": "2024-08-11T14:30:00Z",
+            "resolve_time": "2024-08-11T18:20:00Z",
             "close_time": "2024-07-30T14:30:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-07-30T14:30:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26700,
@@ -3835,7 +3835,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26751",
-            "market_prob": 0.005,
+            "market_prob": 0.001,
             "resolve_time": "2024-09-01T04:00:00Z",
             "close_time": "2024-09-01T03:59:00Z",
             "effected_close_time": null
@@ -4003,7 +4003,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26859",
-            "market_prob": 0.26,
+            "market_prob": 0.25,
             "resolve_time": "2024-09-01T10:00:42.272000Z",
             "close_time": "2024-09-01T03:59:42.272000Z",
             "effected_close_time": null
@@ -4024,12 +4024,12 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26898",
-            "market_prob": 0.15,
-            "resolve_time": "2024-08-12T22:00:00Z",
+            "market_prob": 0.01,
+            "resolve_time": "2024-08-12T07:00:00Z",
             "close_time": "2024-08-12T04:00:00Z",
-            "effected_close_time": null
+            "effected_close_time": "2024-08-12T04:00:00Z"
         },
-        "resolution": null
+        "resolution": 0.0
     },
     {
         "id": 26913,
@@ -4108,7 +4108,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26960",
-            "market_prob": null,
+            "market_prob": 0.02,
             "resolve_time": "2024-09-17T18:00:00Z",
             "close_time": "2024-09-16T18:00:00Z",
             "effected_close_time": null
@@ -4129,7 +4129,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26975",
-            "market_prob": null,
+            "market_prob": 0.22,
             "resolve_time": "2024-09-17T14:30:00Z",
             "close_time": "2024-08-09T14:30:00Z",
             "effected_close_time": null
@@ -4150,7 +4150,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26981",
-            "market_prob": null,
+            "market_prob": 0.8,
             "resolve_time": "2024-09-16T14:30:00Z",
             "close_time": "2024-08-09T14:30:00Z",
             "effected_close_time": null
@@ -4171,7 +4171,7 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26982",
-            "market_prob": null,
+            "market_prob": 0.67,
             "resolve_time": "2024-09-16T14:30:00Z",
             "close_time": "2024-08-09T14:30:00Z",
             "effected_close_time": null
@@ -4192,9 +4192,555 @@
         "metadata": {
             "topics": [],
             "api_url": "https://www.metaculus.com/api2/questions/26983",
-            "market_prob": null,
+            "market_prob": 0.617,
             "resolve_time": "2024-09-16T14:30:00Z",
             "close_time": "2024-08-09T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 26984,
+        "title": "Will more than 40 Chinese aircraft violate Taiwan's air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves **Yes** if Taiwan reports more than 40 aircraft violated its air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024, inclusive. Resolution will be determined according to the [PLATracker's](https://www.platracker.com/trackers) spreadsheet, [Taiwan ADIZ Violations](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing).",
+            "background_info": "The number of aircraft that China has sent near Taiwan has trended upwards in recent years, and is commonly seen as an [intimidation tactic](https://apnews.com/article/china-taiwan-aircraft-ships-harassment-5dd5c16577e33b7cf464a7de00e54092). Taiwan's Ministry of National Defense (MND) [tracks nearby Chinese aircraft activity](https://www.mnd.gov.tw/PublishTable.aspx?Types=%E5%8D%B3%E6%99%82%E8%BB%8D%E4%BA%8B%E5%8B%95%E6%85%8B&title=%E5%9C%8B%E9%98%B2%E6%B6%88%E6%81%AF), especially aircraft entering into its [air defense identification zone](https://en.wikipedia.org/wiki/Air_defense_identification_zone) (ADIZ).\n\nFollowing Lai Ching-te's inauguration as Taiwan's new president on May 20, 2024, China responded with an increase in military pressure. Following the inauguration, China launched two days of \"[punishment](https://www.cnn.com/2024/05/22/asia/china-military-drills-taiwan-punishment-intl-hnk/index.html)\" military drills around Taiwan's main island. In the 30 days since the inauguration, the average number of violations per day rose to 10, compared to an average of 6 per day in the 30 days leading up to the inauguration and 2 per day in the 30 days up to the January election. It is also the highest 30-day average since the previous peak in August-September 2022. In the 2-day period June 20-21, China [sent](https://simpleflying.com/china-66-military-taiwan-2-days/) 66 aircraft. \n\nAccording to the [Institute for the Study of War](https://www.understandingwar.org/backgrounder/china-taiwan-weekly-update-june-6-2024):\n\n>PRC officials signaled after Taiwan’s presidential election in January that it views the incoming DPP administration as hostile separatists who instigate cross-strait tensions. The PRC escalated its military and economic lines of coercion against Taiwan after Lai’s inauguration on May 20. PRC officials have maintained fierce rhetoric accusing Lai and the DPP of antagonism to justify the PRC’s actions since the inauguration. \n\n[PLATracker](https://www.platracker.com/trackers) maintains a [spreadsheet](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing) tracking the number of ADIZ violations reported by Taiwan each day. According to the spreadsheet:\n\n>Taiwan's ADIZ was originally established by the United States during the period of the Sino-American Mutual Defense Treaty and covers large portions of mainland China. Today, Taiwan's MND uses a de facto ADIZ that ends at the median line, this means that aircraft tracked on the Chinese side of the median line are not included on the maps showing activity inside the ADIZ. The term \"ADIZ violation\" in this database is used exclusively to describe aircraft that enter the de facto ADIZ[.] While the MND has never officially designated a new ADIZ, they have included the \"median line extension\" that forms the Western border of the de facto ADIZ in some maps.\n\nTo control-c numbers out of the spreadsheet for your forecasting purposes, please see Youtube [How to Copy Data From View Only Google Sheets](https://www.youtube.com/watch?v=Mo-KE0Y-lYw)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-09T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/26984",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/26984",
+            "market_prob": 0.55,
+            "resolve_time": "2024-09-16T14:30:00Z",
+            "close_time": "2024-08-09T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 26985,
+        "title": "Will more than 50 Chinese aircraft violate Taiwan's air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves **Yes** if Taiwan reports more than 50 aircraft violated its air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024, inclusive. Resolution will be determined according to the [PLATracker's](https://www.platracker.com/trackers) spreadsheet, [Taiwan ADIZ Violations](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing).",
+            "background_info": "The number of aircraft that China has sent near Taiwan has trended upwards in recent years, and is commonly seen as an [intimidation tactic](https://apnews.com/article/china-taiwan-aircraft-ships-harassment-5dd5c16577e33b7cf464a7de00e54092). Taiwan's Ministry of National Defense (MND) [tracks nearby Chinese aircraft activity](https://www.mnd.gov.tw/PublishTable.aspx?Types=%E5%8D%B3%E6%99%82%E8%BB%8D%E4%BA%8B%E5%8B%95%E6%85%8B&title=%E5%9C%8B%E9%98%B2%E6%B6%88%E6%81%AF), especially aircraft entering into its [air defense identification zone](https://en.wikipedia.org/wiki/Air_defense_identification_zone) (ADIZ).\n\nFollowing Lai Ching-te's inauguration as Taiwan's new president on May 20, 2024, China responded with an increase in military pressure. Following the inauguration, China launched two days of \"[punishment](https://www.cnn.com/2024/05/22/asia/china-military-drills-taiwan-punishment-intl-hnk/index.html)\" military drills around Taiwan's main island. In the 30 days since the inauguration, the average number of violations per day rose to 10, compared to an average of 6 per day in the 30 days leading up to the inauguration and 2 per day in the 30 days up to the January election. It is also the highest 30-day average since the previous peak in August-September 2022. In the 2-day period June 20-21, China [sent](https://simpleflying.com/china-66-military-taiwan-2-days/) 66 aircraft. \n\nAccording to the [Institute for the Study of War](https://www.understandingwar.org/backgrounder/china-taiwan-weekly-update-june-6-2024):\n\n>PRC officials signaled after Taiwan’s presidential election in January that it views the incoming DPP administration as hostile separatists who instigate cross-strait tensions. The PRC escalated its military and economic lines of coercion against Taiwan after Lai’s inauguration on May 20. PRC officials have maintained fierce rhetoric accusing Lai and the DPP of antagonism to justify the PRC’s actions since the inauguration. \n\n[PLATracker](https://www.platracker.com/trackers) maintains a [spreadsheet](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing) tracking the number of ADIZ violations reported by Taiwan each day. According to the spreadsheet:\n\n>Taiwan's ADIZ was originally established by the United States during the period of the Sino-American Mutual Defense Treaty and covers large portions of mainland China. Today, Taiwan's MND uses a de facto ADIZ that ends at the median line, this means that aircraft tracked on the Chinese side of the median line are not included on the maps showing activity inside the ADIZ. The term \"ADIZ violation\" in this database is used exclusively to describe aircraft that enter the de facto ADIZ[.] While the MND has never officially designated a new ADIZ, they have included the \"median line extension\" that forms the Western border of the de facto ADIZ in some maps.\n\nTo control-c numbers out of the spreadsheet for your forecasting purposes, please see Youtube [How to Copy Data From View Only Google Sheets](https://www.youtube.com/watch?v=Mo-KE0Y-lYw)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-09T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/26985",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/26985",
+            "market_prob": 0.443,
+            "resolve_time": "2024-09-16T14:30:00Z",
+            "close_time": "2024-08-09T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 26986,
+        "title": "Will more than 60 Chinese aircraft violate Taiwan's air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves **Yes** if Taiwan reports more than 60 aircraft violated its air defense identification zone (ADIZ) in a single day between August 15 and September 15, 2024, inclusive. Resolution will be determined according to the [PLATracker's](https://www.platracker.com/trackers) spreadsheet, [Taiwan ADIZ Violations](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing).",
+            "background_info": "The number of aircraft that China has sent near Taiwan has trended upwards in recent years, and is commonly seen as an [intimidation tactic](https://apnews.com/article/china-taiwan-aircraft-ships-harassment-5dd5c16577e33b7cf464a7de00e54092). Taiwan's Ministry of National Defense (MND) [tracks nearby Chinese aircraft activity](https://www.mnd.gov.tw/PublishTable.aspx?Types=%E5%8D%B3%E6%99%82%E8%BB%8D%E4%BA%8B%E5%8B%95%E6%85%8B&title=%E5%9C%8B%E9%98%B2%E6%B6%88%E6%81%AF), especially aircraft entering into its [air defense identification zone](https://en.wikipedia.org/wiki/Air_defense_identification_zone) (ADIZ).\n\nFollowing Lai Ching-te's inauguration as Taiwan's new president on May 20, 2024, China responded with an increase in military pressure. Following the inauguration, China launched two days of \"[punishment](https://www.cnn.com/2024/05/22/asia/china-military-drills-taiwan-punishment-intl-hnk/index.html)\" military drills around Taiwan's main island. In the 30 days since the inauguration, the average number of violations per day rose to 10, compared to an average of 6 per day in the 30 days leading up to the inauguration and 2 per day in the 30 days up to the January election. It is also the highest 30-day average since the previous peak in August-September 2022. In the 2-day period June 20-21, China [sent](https://simpleflying.com/china-66-military-taiwan-2-days/) 66 aircraft. \n\nAccording to the [Institute for the Study of War](https://www.understandingwar.org/backgrounder/china-taiwan-weekly-update-june-6-2024):\n\n>PRC officials signaled after Taiwan’s presidential election in January that it views the incoming DPP administration as hostile separatists who instigate cross-strait tensions. The PRC escalated its military and economic lines of coercion against Taiwan after Lai’s inauguration on May 20. PRC officials have maintained fierce rhetoric accusing Lai and the DPP of antagonism to justify the PRC’s actions since the inauguration. \n\n[PLATracker](https://www.platracker.com/trackers) maintains a [spreadsheet](https://docs.google.com/spreadsheets/d/1qbfYF0VgDBJoFZN5elpZwNTiKZ4nvCUcs5a7oYwm52g/edit?usp=sharing) tracking the number of ADIZ violations reported by Taiwan each day. According to the spreadsheet:\n\n>Taiwan's ADIZ was originally established by the United States during the period of the Sino-American Mutual Defense Treaty and covers large portions of mainland China. Today, Taiwan's MND uses a de facto ADIZ that ends at the median line, this means that aircraft tracked on the Chinese side of the median line are not included on the maps showing activity inside the ADIZ. The term \"ADIZ violation\" in this database is used exclusively to describe aircraft that enter the de facto ADIZ[.] While the MND has never officially designated a new ADIZ, they have included the \"median line extension\" that forms the Western border of the de facto ADIZ in some maps.\n\nTo control-c numbers out of the spreadsheet for your forecasting purposes, please see Youtube [How to Copy Data From View Only Google Sheets](https://www.youtube.com/watch?v=Mo-KE0Y-lYw)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-09T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/26986",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/26986",
+            "market_prob": 0.3,
+            "resolve_time": "2024-09-16T14:30:00Z",
+            "close_time": "2024-08-09T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27019,
+        "title": "Will there be a debate between Kamala Harris and Donald Trump on September 4, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if on September 4, 2024, there is a one formal, live debate held between Kamala Harris and Donald Trump.",
+            "background_info": "On August 2, 2024, Donald Trump posted on social media that he was terminating his agreement to appear at a September 10, 2024 debate hosted by ABC News, which had previously been agreed to between his campaign and Joe Biden. He claimed instead that he was going to debate Kamala Harris on September 4, 2024, in a debate hosted by Fox News. In response, Harris campaign spokesman Michael Tyler said that there had been no such agreement to move the debate and that Harris would attend the September 10th debate whether Trump was in attendance or not."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-07T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27019",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27019",
+            "market_prob": 0.15,
+            "resolve_time": "2024-09-05T14:30:00Z",
+            "close_time": "2024-08-07T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27021,
+        "title": "Will the USA win more Gold than Silver medals at the Paris 2024 Olympics?",
+        "body": {
+            "resolution_criteria": "This question resolves Yes if the United States Olympic Team wins more Gold medals than Silver medals at the Paris 2024 Olympics.",
+            "background_info": "The 2024 Olympic Games is a sporting competition which takes place every four years. It involves a range of different events across multiple sports.\n\nAt the Olympic Games, Gold, Silver and Bronze medals are awarded to 1st, 2nd and 3rd place in each event. (In some events two Bronze medals are awarded mostly combat sports)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-07T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27021",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27021",
+            "market_prob": 0.6,
+            "resolve_time": "2024-08-11T16:35:00Z",
+            "close_time": "2024-08-07T14:30:00Z",
+            "effected_close_time": "2024-08-07T14:30:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 27022,
+        "title": "Will astronauts Suni Williams and Butch Wilmore be on Earth on September 15, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as Yes if both Sunita (Suni) Williams and Butch Wilmore are on Earth's surface as of 12 noon on September 15, 2024 Eastern time, based on credible sources such as reporting from NASA, SpaceX, Boeing, or Roscosmos.",
+            "background_info": "On June 5, 2024, NASA astronauts Suni Williams and Butch Wilmore launched to the International Space Station (ISS) on a Boeing Starliner crew capsule, which docked at the ISS. They were originally scheduled to return to Earth on June 13, 2024 on the same Starliner capsule. However, according to the NY Post, due to an unusable thruster and multiple helium leaks (one of which was known by Boeing officials but was not disclosed), the astronauts' return trip has been delayed \"indefinitely\" until at least July 2nd.\n\nOn June 24, 2024, Live Science reported that there were 45 days to return Williams and Wilmore on the Starliner due to limited fuel on the ISS.\n\nWill they be Earthside on September 15?\n\n"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-07T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27022",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27022",
+            "market_prob": 0.68,
+            "resolve_time": "2024-09-15T14:30:00Z",
+            "close_time": "2024-08-07T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27085,
+        "title": "Before Sept 30, 2024, will the International Criminal Court issue an arrest warrant for Benjamin Netanyahu?",
+        "body": {
+            "resolution_criteria": "This question will resolve as Yes if before Sept 30, 2024, the International Criminal Court (ICC) issues a warrant of arrest for Benjamin Netanyahu. ",
+            "background_info": "In April 29, 2024, Axios [reported](https://www.axios.com/2024/04/29/netanyahu-biden-icc-arrest-warrants-war-crimes) that Israeli Prime Minister Benjamin Netanyahu asked US President Joe Biden to help prevent the International Criminal Court (ICC) in The Hague from issuing arrest warrants for Israeli cabinet officials stemming from possible allegations of war crimes in Gaza. NBC [reported](https://www.nbcnews.com/news/world/israel-fears-icc-issue-arrest-warrants-netanyahu-gaza-war-hamas-rcna149739) that these arrest warrants could come as early as this week, and Israel is working through back channels to try to prevent them from being issued. The US and other G7 countries are [reportedly](https://www.timesofisrael.com/report-several-nations-urging-icc-not-to-issue-arrest-warrants-for-israelis/) campaigning to dissuade the ICC from issuing the warrants so as to avoid jeopardizing a peace deal between Israel and Hamas.\n\nAs the ICC [explains](https://www.icc-cpi.int/about/how-the-court-works) on its official website, an arrest warrant is requested by the Prosecutor as part of the investigative stage before trial, especially in cases in which suspects do not appear voluntarily.\n\nThe ICC [was founded](https://en.wikipedia.org/wiki/International_Criminal_Court) in 2002 following the wars in Rwanda and the former Yugoslavia, and it is [intended](https://www.washingtonpost.com/world/2024/04/29/icc-israel-warrants-gaza/) as a permanent court to investigate war crimes, genocide and crimes against humanity done by individuals. It issued its first arrest warrants in 2005, and according to the AP [has issued](https://apnews.com/article/israel-hamas-gaza-international-criminal-court-hague-palestinians-1f683a6e2e150d91c415eb1d0a19a44d) a total of 42 arrest warrants. Last year the ICC issued arrest warrants for [Vladimir Putin](https://www.icc-cpi.int/news/situation-ukraine-icc-judges-issue-arrest-warrants-against-vladimir-vladimirovich-putin-and) and one of his government officials stemming from the ICC's investigation into the deportation of Ukrainian children to Russia.\n\nSee Also\n\nBase rate information at Wikipedia: [International Criminal Court investigations](https://en.wikipedia.org/wiki/International_Criminal_Court_investigations)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-10T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27085",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27085",
+            "market_prob": 0.525,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-10T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27105,
+        "title": "Will the CDC confirm a case of Clade I mpox in a US resident before August 23, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if the U.S. Centers for Disease Control and Prevention (CDC) publicly confirms at least one case of Clade I mpox (also referred to by CDC as monkeypox virus or MPXV) in a resident of the United States on or before August 23, 2024. The confirmation must be made through an official CDC announcement, such as a press release, health alert, or update on their website.\n\nThe question resolves as **No** if the CDC does not confirm any cases of Clade I mpox in U.S. residents before 11:59 PM EDT on August 23, 2024.",
+            "background_info": "According to [NBC News](https://www.nbcnews.com/health/health-news/cdc-alerts-doctors-watch-strain-mpox-spreading-africa-rcna165424):\n\n>The Centers for Disease Control and Prevention issued an [alert](https://emergency.cdc.gov/han/2024/han00513.asp) Wednesday for doctors to watch for signs of a more severe [strain of mpox](https://www.nbcnews.com/health/health-news/mpox-strain-spreads-cdc-who-stronger-warnings-rcna165155) that's currently spreading widely in parts of Africa.\n\n>The agency's alert came hours after the World Health Organization's Director-General Dr. Tedros Adhanom Ghebreyesu [tweeted](https://x.com/DrTedros/status/1821199556647764234) that he will be convening a group of advisers to determine whether the mpox outbreak should be declared a public health emergency of international concern. The committee will meet as soon as possible, Tedros said.\n\n>Cases of the strain, called clade 1, haven't been reported outside of central and eastern Africa at this time, the CDC said in its alert. However, due to the risk of additional spread, the agency is recommending clinicians in the U.S. consider mpox in patients who have recently been in the Democratic Republic of Congo or to any neighboring country (Angola, Burundi, Central Africa Republic, Republic of Congo, Rwanda, South Sudan, Uganda or Zambia) and have symptoms of mpox.\n\nThe [2022-2023 outbreak](https://www.cdc.gov/poxvirus/Mpox/response/2022/world-map.html) of mpox (monkeypox) was the Clade II variant and had 207 confirmed fatalities out of 99,518 confirmed cases, which was a fatality rate of 0.2%. The Clade I variant is considered [significantly more severe](https://emergency.cdc.gov/han/2024/han00513.asp), with a fatality rate of nearly 4%."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-24T03:59:00Z",
+        "url": "https://www.metaculus.com/questions/27105",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27105",
+            "market_prob": 0.05,
+            "resolve_time": "2024-08-24T16:00:00Z",
+            "close_time": "2024-08-24T03:59:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27136,
+        "title": "Will Robert F. Kennedy Jr. suspend his 2024 presidential campaign before September 24, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as Yes if before September 24, 2024, Robert F. Kennedy Jr. or his campaign officially announces that he has suspended, terminated, or otherwise ended his 2024 campaign for the office of President of the United States.",
+            "background_info": "[The 2024 United States presidential election](https://en.wikipedia.org/wiki/2024_United_States_presidential_election?useskin=vector) is scheduled to be held on Tuesday, November 5, 2024.\n\nAs of July 10 2024, incumbent Democratic president Joe Biden is seeking re-election and is the [presumptive nominee of his party.](https://apnews.com/article/biden-presumptive-nominee-election-president-democrat-63b66006d4bc45354343228e323e3baa) April five-candidate [polls](https://www.realclearpolling.com/polls/president/general/2024/trump-vs-biden-vs-kennedy-vs-west-vs-stein) have found him winning about 40% of the national popular vote.\n\nRepublican former president Donald Trump is seeking election to a second, non-consecutive term, and is the [presumptive nominee of his party.](https://www.politico.com/news/2024/03/12/donald-trump-clinches-republican-presidential-nomination-00146675) April five-candidate [polls](https://www.realclearpolling.com/polls/president/general/2024/trump-vs-biden-vs-kennedy-vs-west-vs-stein) have found him winning about 42% of the national popular vote.\n\nAttorney and political activist [Robert F. Kennedy Jr.](https://en.wikipedia.org/wiki/Robert_F._Kennedy_Jr.?useskin=vector) sought the Democratic nomination in the 2024 cycle, but in October 2023, switched to [running as an independent](https://apnews.com/article/rfk-jr-presidential-campaign-independent-2024-30d940109c4956de9c81f332ec418463) candidate. In March 2024, [Kennedy named his running mate](https://apnews.com/article/rfk-bobby-kennedy-vp-running-mate-6be6d7e04ba7d9e74190b8c01a1bf075), attorney Nicole Shanahan. Recent five-candidate [polls](https://www.realclearpolling.com/polls/president/general/2024/trump-vs-biden-vs-kennedy-vs-west-vs-stein) have found Kennedy winning about 9.5% of the national popular vote, an unusually high figure for a third-party or independent candidate. Kennedy has also reportedly raised, together with outside groups, [over $98 million](https://www.opensecrets.org/2024-presidential-race) in support of his presidential run, an unusually high figure for a third-party or independent candidate.  \n\nGiven Kennedy's unusually high polling and fundraising figures, he may be in a position to significantly influence the outcome of an otherwise close election, particularly if he were to drop out of the race and encourage his supporters to lend their support to one of the major party candidates."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-13T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27136",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27136",
+            "market_prob": 0.2,
+            "resolve_time": "2024-09-24T14:30:00Z",
+            "close_time": "2024-08-13T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27138,
+        "title": "On September 17, 2024, will Nvidia's market capitalization be larger than Apple's?",
+        "body": {
+            "resolution_criteria": "This question resolves **Yes** if, on September 17, 2024, the market cap of Nvidia is greater than that of Apple, according to [Companies Market Cap](https://companiesmarketcap.com/), when checked by Metaculus at approximately 4 PM EDT (8 PM UTC).",
+            "background_info": "Since late 2022, Nvidia Corporation has experienced nearly 10x growth in market capitalization, driven by its [dominance in the AI chip market](https://finance.yahoo.com/news/nvidias-ai-chip-dominance-continue-210200974.html). Nvidia's GPUs are critical in the development of large language models, and are highly sought after by major tech companies like OpenAI, Microsoft, Amazon, and Alphabet.\n\nOn May 22nd, Nvidia released [impressive Q1 financial results](https://nvidianews.nvidia.com/news/nvidia-announces-financial-results-for-first-quarter-fiscal-2025#:~:text=NVIDIA%20(NASDAQ%3A%20NVDA)%20today,262%25%20from%20a%20year%20ago.) and simultaneously announced a 10:1 stock split and increase to its dividend, sending its stock price to new all-time highs."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-14T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27138",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27138",
+            "market_prob": 0.4,
+            "resolve_time": "2024-09-18T14:30:00Z",
+            "close_time": "2024-08-14T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27140,
+        "title": "Will the  CBOE S&P 500 3-Month Volatility Index (VXVCLS)        \n be higher Year-over-Year on September 20, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve based on reporting by the St. Louis Fed here: https://fred.stlouisfed.org/series/VXVCLS. The reported number for September 20, 2024 must be greater than the reported number on September 20, 2023.",
+            "background_info": "According to [FRED](https://fred.stlouisfed.org/series/VXVCLS): > Chicago Board Options Exchange, CBOE S&P 500 3-Month Volatility Index [VXVCLS], retrieved from FRED, Federal Reserve Bank of St. Louis"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-14T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27140",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27140",
+            "market_prob": 0.612,
+            "resolve_time": "2024-09-21T14:30:00Z",
+            "close_time": "2024-08-14T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27141,
+        "title": "Will the Crimean Bridge be hit with an attack before Sept 30, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as Yes if, after May 2, 2024, and before Sept 30, 2024, credible sources report that the Crimean Bridge has been struck with weapons fire, explosives, or projectiles that could pose a credible threat to the integrity of the bridge.",
+            "background_info": "The [Crimean Bridge](https://en.wikipedia.org/wiki/Crimean_Bridge) crosses the [Kerch Strait](https://en.wikipedia.org/wiki/Kerch_Strait) between the Crimean peninsula and the Russian mainland. The bridge is [approximately 12 miles long](https://www.theguardian.com/world/2018/may/15/putin-opens-bridge-between-crimea-and-russian-mainland) and consists of a separated four-lane road bridge and a two-track rail bridge. Since the Russian invasion of Ukraine the Crimean Bridge has been [attacked three times](https://en.wikipedia.org/wiki/Crimean_Bridge#Attacks_during_the_Russian_invasion_of_Ukraine), with attacks successfully damaging the bridge in October of 2022 and July of 2023, and the third attack failing to strike the bridge in August of 2023.\n\nIn April of 2024 there were reports that Ukraine is planning another attack on the Crimean Bridge. On April 4, 2024, [The Guardian reported](https://www.theguardian.com/world/2024/apr/03/ukraine-eyes-kerch-bridge-crimea-drone-attack):\n\n>The HUR [[Defense Intelligence of Ukraine](https://en.wikipedia.org/wiki/Main_Directorate_of_Intelligence_(Ukraine))] thinks it can disable the bridge soon. “We will do it in the first half of 2024,” one official told the Guardian, adding that Kyrylo Budanov, the head of the main directorate of intelligence, already had “most of the means to carry out this goal”. He was following a plan approved by Ukraine’s president, Volodymyr Zelenskiy, to “minimise” Russia’s naval presence in the Black Sea.\n\nOn April 26, 2024, [Newsweek reported](https://www.newsweek.com/ukraine-decoy-missiles-crimea-bridge-attack-rybar-1894639) that an attack could coincide with Russian President Vladimir Putin's [May 7 inauguration](https://en.wikipedia.org/wiki/2024_Russian_presidential_election#:~:text=He%20is%20scheduled%20to%20be%20inaugurated%20on%207%20May%202024.):\n\n>[Telegram channel] Rybar said an attack on the Kerch Bridge could happen before the inauguration of Putin on May 7. The Russian leader last month secured his fifth term in office.\n>\n>\"Considering the love of the Ukrainian authorities and their curators for symbolism, the target once again may be the Crimean Bridge, the attention to which is very high,\" Rybar said.\n>\n>The analysis comes after Russian military expert Vladislav Shurygin said on state TV that he believes Ukraine will attack the Kerch Strait Bridge on May 7."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-14T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27141",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27141",
+            "market_prob": 0.65,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-14T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27158,
+        "title": "Will Democrats have a brokered convention in 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if the Democratic Party requires more than one round of voting in its roll call ballot to formally nominate its candidate for the 2024 US presidential election. If only one ballot is required, then this question resolves as **No**.",
+            "background_info": "In US politics a brokered convention is [defined as](https://www.brookings.edu/articles/what-is-a-brokered-convention-what-is-a-contested-convention/) a nominating convention in which no candidate has won a majority of the votes in the first round of voting by the delegates. In the 19th Century, brokered conventions were quite common. However, in the 31 presidential elections since the turn of the 20th Century, the Democratic Party has had 5 brokered conventions: \n\n| Year | Number of ballots | Nominee |\n|------|-------------------|--------------------------------|\n| 1952 | 3                 | Adlai Stevenson                 |\n| 1932 | 4                 | Franklin D. Roosevelt           |\n| 1924 | 103               | John Davis                      |\n| 1920 | 44                | James Cox                       |\n| 1912 | 46                | Woodrow Wilson                  |\n\nOn paper, one might argue that President Joe Biden should be able to fairly easily avoid a brokered convention due to winning 99% of [pledged delegates](https://www.usatoday.com/elections/results/2024/presidential-delegates). Additionally, the Democratic Party's [current plan](https://sourcenm.com/2024/06/24/dnc-moves-ahead-on-all-virtual-roll-call-for-biden-presidential-nomination/) is to hold its roll call virtually, before the in-person Convention and before Ohio's August 7th ballot deadline. \n\nHowever, following Biden's debate with Donald Trump on June 28, 2024, which the New York Times described as \"[disastrous](https://www.nytimes.com/2024/06/30/us/politics/biden-debate-anxious-democrats.html),\" there was a widespread \"freak out\" among Democrats [according to Politico](https://archive.ph/mhK7S), which reported that \"One prominent operative texted, 'Time for an open convention.'\" There were calls for Biden to bow out of the race, for example the NY Times [Editorial Board](https://www.nytimes.com/2024/06/28/opinion/biden-election-debate-trump.html) and influential columnist [Thomas Friedman](https://www.nytimes.com/2024/06/28/opinion/joe-biden-tom-friedman.html). However, as of June 30, 2024, prominent Democrats continued to publicly stand behind Biden, such as former President [Barack Obama](https://www.axios.com/2024/06/28/obama-rescue-biden-calm-nervous-democrats-2024-election) and Congressman  [James E. Clyburn](https://thehill.com/homenews/house/4746240-clyburn-biden-debate/).   \n\nInitial polling after the debate [found](https://www.forbes.com/sites/brianbushard/2024/06/29/warning-signs-for-biden-post-debate-polls-show-more-voters-worried-about-bidens-fitness-but-race-still-virtually-tied/) that increasing numbers of voters believe Biden should drop out. On June 26, 2024 , the day before the debate, Biden was behind Trump by 0.1 in the [538 polling averages](https://projects.fivethirtyeight.com/polls/president-general/2024/national/). On June 30th, following several post-debate polls, Biden's deficit swelled to 1.3 points.\n\nSee Also\n\nPew Research: [Contested presidential conventions, and why parties try to avoid them](https://www.pewresearch.org/short-reads/2016/02/04/contested-presidential-conventions-and-why-parties-try-to-avoid-them/)<br>\nUS News & World Report: [What Is an Open Convention and Why Do Some Democrats Want One?](https://www.usnews.com/news/national-news/articles/2024-06-28/what-is-an-open-convention-and-why-do-some-democrats-want-one)<br>\nWikipedia: [Brokered convention](https://en.wikipedia.org/wiki/Brokered_convention)<br>\nThe Atlantic: [The Biden-Replacement Operation](https://www.theatlantic.com/politics/archive/2024/06/great-democratic-conundrum-biden/678830/)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-15T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27158",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27158",
+            "market_prob": 0.2,
+            "resolve_time": "2024-08-22T14:30:00Z",
+            "close_time": "2024-08-15T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27159,
+        "title": "Will there be any reported human-to-human transmission of highly pathogenic avian influenza H5N1 globally before Sept 30, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as Yes if, after April 11, 2024, and before Sept 30, 2024, the US Centers for Disease Control and Prevention (CDC) reports that at least one case of human-to-human spread of highly pathogenic avian influenza H5N1 has occurred globally.",
+            "background_info": "On April 1, 2024, the US Centers for Disease Control and Prevention (CDC) [reported](https://www.cdc.gov/media/releases/2024/p0401-avian-flu.html) that an individual in Texas had been infected with [highly pathogenic avian influenza (HPAI) type A subtype H5N1](https://en.wikipedia.org/wiki/Influenza_A_virus_subtype_H5N1). The individual had been infected after exposure to dairy cattle that were presumed to be infected. The infection marks the first reported case in humans the United States since an infection in Colorado in 2022.\n\n[CDC describes](https://www.cdc.gov/flu/avianflu/reported-human-infections.htm) H5N1 infections in humans as follows:\n\n>HPAI A(H5N1) virus infections have been reported in more than 890 people with approximately 50% case fatality proportion since 1997, including 20 cases and 7 deaths in Hong Kong during 1997-2003, and more than 870  cases reported in 22 countries since November 2003. Mild upper respiratory tract symptoms, lower respiratory tract disease, severe pneumonia with respiratory failure, encephalitis, and multi-organ failure have been reported. One case of asymptomatic infection was reported in Vietnam in 2011, and another asymptomatic case was reported in the United Kingdom that occurred in late 2021. The spectrum of illness caused by human infection with current H5N1 bird flu viruses is unknown. Since 2016, a small number of sporadic infections have been reported each year globally. Illness in humans from all bird flu virus infections has ranged in severity from no symptoms or mild illness to severe disease that resulted in death. [Total case counts reported](https://www.cdc.gov/flu/avianflu/chart-epi-curve-ah5n1.html) since 1997 are available.\n\nCDC maintains a [Current Situation Summary](https://www.cdc.gov/flu/avianflu/avian-flu-summary.htm) for H5N1 influenza, where as of April 11, 2024, detections in the US are listed as widespread for wild birds, sporadic for poultry flocks and mammals, and a total of two cases in humans in the US. It also describes person-to-person spread as \"None\" and a low current public health risk.\n\nIn its [Current U.S. Bird Flu Situation in Humans](https://www.cdc.gov/flu/avianflu/inhumans.htm#:~:text=No%20known%20human%2Dto%2Dhuman,the%20United%20States%20and%20globally.) publication, CDC states:\n\n>No known human-to-human spread has occurred with the contemporary A(H5N1) viruses that are currently circulating in birds in the United States and globally."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-15T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27159",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27159",
+            "market_prob": 0.095,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-15T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27161,
+        "title": "Will Bo Nix be the starting quarterback for the Denver Broncos in their Week 4 game against the New York Jets?",
+        "body": {
+            "resolution_criteria": "This question resolves as Yes if Bo Nix enters the field as the Denver Broncos are about to start their first offensive drive of their game against the New York Jets.",
+            "background_info": "After their 8-win 2023 season, the Denver Broncos cut Russell Wilson and drafted Oregon quarterback Bo Nix with the 12th draft pick. They also have QBs Jarrett Stidham and Zach Wilson on their roster. Will the rookie start against the New York Jets on September 29?"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-15T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27161",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27161",
+            "market_prob": 0.65,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-15T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27200,
+        "title": "Will the CDC confirm a case of Clade I mpox in a US resident before August 23, 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if the U.S. Centers for Disease Control and Prevention (CDC) publicly confirms at least one case of Clade I mpox (also referred to by CDC as monkeypox virus or MPXV) in a resident of the United States on or before August 23, 2024. The confirmation must be made through an official CDC announcement, such as a press release, health alert, or update on their website.\n\nThe question resolves as **No** if the CDC does not confirm any cases of Clade I mpox in U.S. residents before 11:59 PM EDT on August 23, 2024.",
+            "background_info": "According to [NBC News](https://www.nbcnews.com/health/health-news/cdc-alerts-doctors-watch-strain-mpox-spreading-africa-rcna165424):\n\n>The Centers for Disease Control and Prevention issued an [alert](https://emergency.cdc.gov/han/2024/han00513.asp) Wednesday for doctors to watch for signs of a more severe [strain of mpox](https://www.nbcnews.com/health/health-news/mpox-strain-spreads-cdc-who-stronger-warnings-rcna165155) that's currently spreading widely in parts of Africa.\n\n>The agency's alert came hours after the World Health Organization's Director-General Dr. Tedros Adhanom Ghebreyesu [tweeted](https://x.com/DrTedros/status/1821199556647764234) that he will be convening a group of advisers to determine whether the mpox outbreak should be declared a public health emergency of international concern. The committee will meet as soon as possible, Tedros said.\n\n>Cases of the strain, called clade 1, haven't been reported outside of central and eastern Africa at this time, the CDC said in its alert. However, due to the risk of additional spread, the agency is recommending clinicians in the U.S. consider mpox in patients who have recently been in the Democratic Republic of Congo or to any neighboring country (Angola, Burundi, Central Africa Republic, Republic of Congo, Rwanda, South Sudan, Uganda or Zambia) and have symptoms of mpox.\n\nThe [2022-2023 outbreak](https://www.cdc.gov/poxvirus/Mpox/response/2022/world-map.html) of mpox (monkeypox) was the Clade II variant and had 207 confirmed fatalities out of 99,518 confirmed cases, which was a fatality rate of 0.2%. The Clade I variant is considered [significantly more severe](https://emergency.cdc.gov/han/2024/han00513.asp), with a fatality rate of nearly 4%."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-15T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27200",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27200",
+            "market_prob": 0.15,
+            "resolve_time": "2024-08-24T14:30:00Z",
+            "close_time": "2024-08-15T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27261,
+        "title": "Between August 21 and Sept 11, 2024, will the strongest geomagnetic storm have a K-index (\"Kp\") greater than 6 and less than or equal to 8?",
+        "body": {
+            "resolution_criteria": "This question resolves Yes if the highest Planetary K-index (\"Kp\") between August 21 and Sept 11, 2024 (inclusive) is greater than 6 and less than or equal to 8, according to the German Research Center for Geosciences in their [running 30-day history](https://kp.gfz-potsdam.de/app/files/Kp_ap_nowcast.txt) data product.",
+            "background_info": "In May 2024, sunspot region AR3664, now designated as AR3697, returned to face Earth after merging with another active sunspot region, resulting in numerous M- and X-class solar flares that caused intense [geomagnetic storms and auroras](https://earthsky.org/earth/auroras-last-night-extreme-solar-storm-wow-millions-may-10-11-12-2024/) visible at unusually low latitudes. \n\nAs AR3697 [returns to face Earth](https://www.space.com/return-aurora-causing-sunspot-june-solar-storm-prospects) in early June 2024, space weather forecasters anticipate ongoing geomagnetic activity and are closely monitoring the region's continued potential to produce extreme space weather. \n\n[Sunspots](https://en.wikipedia.org/wiki/Sunspot) are areas of intense magnetic activity that often give rise to solar flares and coronal mass ejections (CMEs), which can disturb Earth's magnetosphere and impact satellite operations, power grids, and navigation systems.\n\nThe [K-index](https://en.wikipedia.org/wiki/K-index), which measures fluctuations in Earth's magnetic field, ranges from from 0 to 9. The NOAA Space Weather Scales uses the Kp values to classify the severity of geomagnetic storms from G1 (minor) to G5 (extreme), equating to Kp values of 5 to 9, respectively."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-20T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27261",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27261",
+            "market_prob": null,
+            "resolve_time": "2024-09-12T14:30:00Z",
+            "close_time": "2024-08-20T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27262,
+        "title": "Between August 21 and Sept 11, 2024, will the strongest geomagnetic storm have a K-index (\"Kp\") greater than 7 and less than or equal to 8?",
+        "body": {
+            "resolution_criteria": "This question resolves Yes if the highest Planetary K-index (\"Kp\") between August 21 and Sept 11, 2024 (inclusive) is greater than 7 and less than or equal to 8, according to the German Research Center for Geosciences in their [running 30-day history](https://kp.gfz-potsdam.de/app/files/Kp_ap_nowcast.txt) data product.",
+            "background_info": "In May 2024, sunspot region AR3664, now designated as AR3697, returned to face Earth after merging with another active sunspot region, resulting in numerous M- and X-class solar flares that caused intense [geomagnetic storms and auroras](https://earthsky.org/earth/auroras-last-night-extreme-solar-storm-wow-millions-may-10-11-12-2024/) visible at unusually low latitudes. \n\nAs AR3697 [returns to face Earth](https://www.space.com/return-aurora-causing-sunspot-june-solar-storm-prospects) in early June 2024, space weather forecasters anticipate ongoing geomagnetic activity and are closely monitoring the region's continued potential to produce extreme space weather. \n\n[Sunspots](https://en.wikipedia.org/wiki/Sunspot) are areas of intense magnetic activity that often give rise to solar flares and coronal mass ejections (CMEs), which can disturb Earth's magnetosphere and impact satellite operations, power grids, and navigation systems.\n\nThe [K-index](https://en.wikipedia.org/wiki/K-index), which measures fluctuations in Earth's magnetic field, ranges from from 0 to 9. The NOAA Space Weather Scales uses the Kp values to classify the severity of geomagnetic storms from G1 (minor) to G5 (extreme), equating to Kp values of 5 to 9, respectively."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-20T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27262",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27262",
+            "market_prob": null,
+            "resolve_time": "2024-09-12T14:30:00Z",
+            "close_time": "2024-08-20T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27263,
+        "title": "Between August 21 and Sept 11, 2024, will the strongest geomagnetic storm have a K-index (\"Kp\") greater than 6 and less than or equal to 7?",
+        "body": {
+            "resolution_criteria": "This question resolves Yes if the highest Planetary K-index (\"Kp\") between August 21 and Sept 11, 2024 (inclusive) is greater than 6 and less than or equal to 7, according to the German Research Center for Geosciences in their [running 30-day history](https://kp.gfz-potsdam.de/app/files/Kp_ap_nowcast.txt) data product.",
+            "background_info": "In May 2024, sunspot region AR3664, now designated as AR3697, returned to face Earth after merging with another active sunspot region, resulting in numerous M- and X-class solar flares that caused intense [geomagnetic storms and auroras](https://earthsky.org/earth/auroras-last-night-extreme-solar-storm-wow-millions-may-10-11-12-2024/) visible at unusually low latitudes. \n\nAs AR3697 [returns to face Earth](https://www.space.com/return-aurora-causing-sunspot-june-solar-storm-prospects) in early June 2024, space weather forecasters anticipate ongoing geomagnetic activity and are closely monitoring the region's continued potential to produce extreme space weather. \n\n[Sunspots](https://en.wikipedia.org/wiki/Sunspot) are areas of intense magnetic activity that often give rise to solar flares and coronal mass ejections (CMEs), which can disturb Earth's magnetosphere and impact satellite operations, power grids, and navigation systems.\n\nThe [K-index](https://en.wikipedia.org/wiki/K-index), which measures fluctuations in Earth's magnetic field, ranges from from 0 to 9. The NOAA Space Weather Scales uses the Kp values to classify the severity of geomagnetic storms from G1 (minor) to G5 (extreme), equating to Kp values of 5 to 9, respectively."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-20T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27263",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27263",
+            "market_prob": null,
+            "resolve_time": "2024-09-12T14:30:00Z",
+            "close_time": "2024-08-20T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27277,
+        "title": "On Sept 30, 2024 will more than 400 measles cases have been reported in the United States in 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve Yes if the number of measles cases reported to the CDC on Sept 30, 2024 is more than 400, according to the CDC's cases and outbreaks page here: https://www.cdc.gov/measles/data-research/?CDC_AAref_Val=https://www.cdc.gov/measles/cases-outbreaks.html",
+            "background_info": "The latest cases and outbreaks update from the CDC reported a total of 167 cases reported in 2024 as of July 15. The page currently states that it it is updated biweekly."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-21T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27277",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27277",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-21T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27278,
+        "title": "On Sept 30, 2024 will more than 300 measles cases have been reported in the United States in 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve Yes if the number of measles cases reported to the CDC on Sept 30, 2024 is more than 300, according to the CDC's cases and outbreaks page here: https://www.cdc.gov/measles/data-research/?CDC_AAref_Val=https://www.cdc.gov/measles/cases-outbreaks.html",
+            "background_info": "The latest cases and outbreaks update from the CDC reported a total of 167 cases reported in 2024 as of July 15. The page currently states that it it is updated biweekly."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-21T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27278",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27278",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-21T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27279,
+        "title": "On Sept 30, 2024 will more than 300 and less than or equal to 400 measles cases have been reported in the United States in 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve Yes if the number of measles cases reported to the CDC on Sept 30, 2024 is more than 300 and less than or equal to 400, according to the CDC's cases and outbreaks page here: https://www.cdc.gov/measles/data-research/?CDC_AAref_Val=https://www.cdc.gov/measles/cases-outbreaks.html",
+            "background_info": "The latest cases and outbreaks update from the CDC reported a total of 167 cases reported in 2024 as of July 15. The page currently states that it it is updated biweekly."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-21T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27279",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27279",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-21T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27280,
+        "title": "Will Israel invade Lebanon before October 1, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as \"Yes\" if, after July 15, 2024, and before October 1, 2024, either the Government of Israel or any two [Permanent Members of the United Nations Security Council](https://en.wikipedia.org/wiki/Permanent_members_of_the_United_Nations_Security_Council) announce or acknowledge that Israeli ground troops have entered Lebanese territory, and reporting from credible sources indicates that the number of troops entering is more than 100. From the credible sources, it must be clear that the troops are acting deliberately on orders of the Government of Israel and without permission of the currently recognized Government of Lebanon or the assent of the United Nations.\n\nThe announcements must describe events that take place (at least in part) between the launch of this question and October 1, 2024.\n\nFor the purpose of this question, Lebanese territory is determined by the 2000 Blue Line.",
+            "background_info": "Tensions between Israel and Hezbollah, a Lebanese militant group, have escalated dramatically. Recently, Hezbollah launched over [200 rockets](https://apnews.com/article/lebanon-hezbollah-israel-rocket-5358640d72d7bbbe59b1a0f21dc713ba) into Israel in retaliation for the killing of one of its senior commanders by an Israeli strike. This attack represents one of the largest confrontations in the ongoing conflict along the Lebanon-Israel border, with significant military actions taken by both sides. Israel responded with strikes on various towns in southern Lebanon, targeting Hezbollah's military structures.\n\nThe conflict, which intensified following the outbreak of war in Gaza, has displaced tens of thousands of people on both sides of the border and resulted in numerous casualties. Israel considers Hezbollah its most direct threat, estimating the group possesses an arsenal of 150,000 rockets and missiles, including precision-guided ones. The international community, including the U.S. and France, is actively working to prevent these skirmishes from escalating into an all-out war that could impact the broader region. Despite diplomatic efforts, Israeli officials have indicated that they might decide to go to war in Lebanon if a diplomatic solution cannot be achieved."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-21T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27280",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27280",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T14:30:00Z",
+            "close_time": "2024-08-21T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27281,
+        "title": "Will the Warren Buffett Indicator exceed 200% before September 17, 2024?\n",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if before September 17, 2024 the Warren Buffett Indicator exceeds 200%, as reported at the [Longtermtrends website](https://www.longtermtrends.net/market-cap-to-gdp-the-buffett-indicator/), specifically the *Wilshire 5000 to GDP Ratio* on that page. If before that date the Warren Buffett Indicator has not exceeded 200%, this question resolves as No.\n\nThe figures can be viewed either on the chart itself or by viewing the CSV, XLX, or data table. As of July 10, 2024, the most recent figure displayed in the data table was 196.20375072862052 for July 8, 2024. ",
+            "background_info": "In a 2001 article co-written with Fortune Magazine's Carol Loomis, Warren Buffett [said](https://web.archive.org/web/20141013162215/https://archive.fortune.com/magazines/fortune/fortune_archive/2001/12/10/314691/index.htm):\n\n>The chart shows the market value of all publicly traded securities as a percentage of the country's business--that is, as a percentage of GNP. The ratio has certain limitations in telling you what you need to know. Still, it is probably the best single measure of where valuations stand at any given moment. And as you can see, nearly two years ago the ratio rose to an unprecedented level. That should have been a very strong warning signal.\n\n>For investors to gain wealth at a rate that exceeds the growth of U.S. business, the percentage relationship line on the chart must keep going up and up. If GNP is going to grow 5% a year and you want market values to go up 10%, then you need to have the line go straight off the top of the chart. That won't happen.\n\n>For me, the message of that chart is this: If the percentage relationship falls to the 70% or 80% area, buying stocks is likely to work very well for you. If the ratio approaches 200%--as it did in 1999 and a part of 2000--you are playing with fire. As you can see, the ratio was recently 133%.\n\nAstute forecasters will note that Buffett's methodology slightly differs from the Longtermtrends website in that Buffett has the GNP as his denominator, while has Longtermtrends has GDP as its denominator."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-21T14:30:00Z",
+        "url": "https://www.metaculus.com/questions/27281",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27281",
+            "market_prob": null,
+            "resolve_time": "2024-09-18T14:30:00Z",
+            "close_time": "2024-08-21T14:30:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27310,
+        "title": "Will Hurricane Ernesto cause major damage in Bermuda, exceeding $200 million (USD)?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if, according to the catastrophe modeling company [Core Logic](https://www.corelogic.com/intelligence/blogs/hazard-hq/),  total estimated insurable losses to Bermuda from Hurricane Ernesto exceed $200 million, in US dollars. If damages are reported as less than $200 million, this question resolves as **No**.",
+            "background_info": "Hurricane Ernesto (05L) is being monitored as it approaches Bermuda, with potential for significant financial damage. This question seeks to determine whether total damages, including infrastructure, property, and utility costs, will exceed $200 million.\n\nPlease see also: \n\n- [Hurricane Ernesto churns toward Bermuda as Category 1 storm](https://abcnews.go.com/US/hurricane-ernesto-churns-bermuda-category-1-storm/story?id=112854289)\n\n- Accuweather: [Bermuda's resiliency to hurricanes dates back 300 years](https://www.accuweather.com/en/weather-news/bermudas-resiliency-to-hurricanes-dates-back-300-years/1680270)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-08-19T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/27310",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27310",
+            "market_prob": null,
+            "resolve_time": "2024-08-31T16:00:00Z",
+            "close_time": "2024-08-19T16:00:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 27312,
+        "title": "Will the White Sox lose more than 120 games in the 2024 MLB season?",
+        "body": {
+            "resolution_criteria": "The Chicago White Sox's loss total will be determined by [credible sources](https://www.metaculus.com/help/faq/#definitions), in particular, accounts of the 2024 season provided by [Major League Baseball](https://www.mlb.com/standings/).",
+            "background_info": "The 2024 Chicago White Sox have a historical losing season where as of August 14, 2024, they are 29-93 (23.8 percent). They suffered a 21 game losing streak in 2024, starting from the final game of a double-header against the Minnesota Twins in July 10 and ending on August 6 with a win against the Oakland Athletics. \n\nThe 1962 Mets have the most losses in the \"Modern Era\" (1901 to present) with a record of 40-120. The 2003 Detroit Tigers have the most losses in a 162 game season with a record of 43-119. \n\nThe 1916 Philadelphia Athletics have the worst winning percentage of 23.5 percent with a record of 36-117. A 42-120 record to satisfy this question's resolution results in a winning percentage of 25.9 percent.\n\nSee [this Wikipedia article](https://en.wikipedia.org/wiki/List_of_worst_Major_League_Baseball_season_win%E2%80%93loss_records) on worst MLB seasons for historical context."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-09-29T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/27312",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/27312",
+            "market_prob": null,
+            "resolve_time": "2024-09-30T19:00:00Z",
+            "close_time": "2024-09-29T19:00:00Z",
             "effected_close_time": null
         },
         "resolution": null
