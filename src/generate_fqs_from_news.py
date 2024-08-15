@@ -3,7 +3,10 @@ import argparse
 import os
 import asyncio
 from datetime import datetime
-from fq_from_news.download_from_news_api import download_news_from_api
+from fq_from_news.news_processing_utils import (
+    download_news_from_api,
+    process_news,
+)
 from fq_from_news.fq_from_news_utils import (
     generate_rough_forecasting_data,
     generate_final_forecasting_questions,
@@ -105,8 +108,13 @@ def main(args: argparse.Namespace) -> None:
         args.verify_fqs = args.only_verify_fq
 
     # Download the articles (skips if already downloaded)
-    articles_download_path = download_news_from_api(
+    _ = download_news_from_api(
         args.start_date, args.end_date, args.num_pages, os.getenv("NEWS_API_KEY")
+    )
+
+    # Process the articles
+    processed_news_articles_path = process_news(
+        args.start_date, args.end_date, args.num_pages, args.news_new_threshold
     )
 
     # If asked to only download news, return here
@@ -126,9 +134,11 @@ def main(args: argparse.Namespace) -> None:
         args.final_fq_verification_model_name = args.model_name
 
     if args.sync:
-        generate_forecasting_questions_from_news_sync(articles_download_path, args)
+        generate_forecasting_questions_from_news_sync(
+            processed_news_articles_path, args
+        )
     else:
-        asyncio.run(generate_forecasting_questions(articles_download_path, args))
+        asyncio.run(generate_forecasting_questions(processed_news_articles_path, args))
 
 
 def get_args() -> argparse.Namespace:
@@ -276,6 +286,12 @@ def get_args() -> argparse.Namespace:
         )
         parser.add_argument(
             "--news-year", type=int, help="Year for downloading news", default=2024
+        )
+        parser.add_argument(
+            "--news-new-threshold",
+            type=float,
+            help="The threshold used to designate an article as a duplicate while processing",
+            default=0.25,
         )
     else:
         raise NotImplementedError("Sentinel scraping has not been implemented yet")
