@@ -243,12 +243,15 @@ def download_news_from_api(
     return consolidated_news_path
 
 
-def _ner_news_processing(sorted_news_articles: list[dict]) -> list[dict]:
+def _ner_news_processing(
+    sorted_news_articles: list[dict], ner_threshold: float
+) -> list[dict]:
     """
     Processes the downloaded news to remove repetitions using NER
 
     Args:
         sorted_news_articles (list): sorted news articles
+        ner_threshold (float): The threshold used to designate an article as a duplicate
     Returns:
         list: Processed news without duplicates
     """
@@ -262,7 +265,7 @@ def _ner_news_processing(sorted_news_articles: list[dict]) -> list[dict]:
             entities.add((ent.text, ent.label_))
         return entities
 
-    def are_articles_duplicates(entities1, entities2, threshold=0.25):
+    def are_articles_duplicates(entities1, entities2, threshold):
         intersection = entities1.intersection(entities2)
         similarity = len(intersection) / (
             len(entities1) + len(entities2) - len(intersection)
@@ -289,7 +292,7 @@ def _ner_news_processing(sorted_news_articles: list[dict]) -> list[dict]:
             if j in duplicates:
                 continue
             entities_j = entities_lst[j]
-            if are_articles_duplicates(entities_i, entities_j):
+            if are_articles_duplicates(entities_i, entities_j, ner_threshold):
                 duplicates.add(j)
 
     # Remove articles that are duplicates
@@ -297,7 +300,9 @@ def _ner_news_processing(sorted_news_articles: list[dict]) -> list[dict]:
     return unique_articles
 
 
-def process_news(start_date: datetime, end_date: datetime, num_pages: int) -> str:
+def process_news(
+    start_date: datetime, end_date: datetime, num_pages: int, news_new_threshold: float
+) -> str:
     """
     Processes the downloaded news to remove repetitions
         Fixes cases where the resolution changes with the advent of a more recent news.
@@ -306,6 +311,7 @@ def process_news(start_date: datetime, end_date: datetime, num_pages: int) -> st
         start_date (datetime): Start date for downloading news.
         end_date (datetime): End date for downloading news.
         num_pages (int): Number of pages (each containing max 100 articles) to be downloaded.
+        news_new_threshold (float): The threshold used to designate an article as a duplicate
 
     Returns:
         str: File path where the processed news is saved.
@@ -348,7 +354,9 @@ def process_news(start_date: datetime, end_date: datetime, num_pages: int) -> st
     # Load and sort all articles in descending order of publish date
     sorted_news_articles = load_and_sort_articles(consolidated_news_path)
 
-    ner_processed_news_articles = _ner_news_processing(sorted_news_articles)
+    ner_processed_news_articles = _ner_news_processing(
+        sorted_news_articles, news_new_threshold
+    )
 
     # from pprint import pprint; pprint(ner_processed_news_articles)
 
