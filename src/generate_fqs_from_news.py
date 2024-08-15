@@ -108,13 +108,13 @@ def main(args: argparse.Namespace) -> None:
         args.verify_fqs = args.only_verify_fq
 
     # Download the articles (skips if already downloaded)
-    articles_download_path = download_news_from_api(
+    _ = download_news_from_api(
         args.start_date, args.end_date, args.num_pages, os.getenv("NEWS_API_KEY")
     )
 
     # Process the articles
     processed_news_articles_path = process_news(
-        args.start_date, args.end_date, args.num_pages
+        args.start_date, args.end_date, args.num_pages, args.news_new_threshold
     )
 
     # If asked to only download news, return here
@@ -286,6 +286,12 @@ def get_args() -> argparse.Namespace:
         )
         parser.add_argument(
             "--news-year", type=int, help="Year for downloading news", default=2024
+        )
+        parser.add_argument(
+            "--news-new-threshold",
+            type=float,
+            help="The threshold used to designate an article as a duplicate while processing",
+            default=0.25,
         )
     else:
         raise NotImplementedError("Sentinel scraping has not been implemented yet")
