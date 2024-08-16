@@ -28,7 +28,7 @@ from common.llm_utils import reset_global_semaphore
 
 # BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples_rel/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
@@ -52,17 +52,28 @@ def get_stats(results: dict, label: str = "") -> dict:
         num_failed = sum(1 for c in checks if not c)
 
         # Calculate the average violation
-        avg_violation = sum(v for v in violations) / len(violations)
+        if violations:
+            avg_violation = sum(violations) / len(violations)
+        else:
+            avg_violation = 0  # resolve division by zero error
 
         # Calculate the median violation
-        sorted_violations = sorted(violations, key=abs)
-        n = len(sorted_violations)
-        median_violation = (sorted_violations[n // 2] + sorted_violations[~n // 2]) / 2
+        if violations:
+            sorted_violations = sorted(violations, key=abs)
+            n = len(sorted_violations)
+            median_violation = (
+                sorted_violations[n // 2] + sorted_violations[~n // 2]
+            ) / 2
+        else:
+            median_violation = 0
 
         outlier_tail: int = 1
-        avg_violation_no_outliers = sum(
-            sorted_violations[outlier_tail:-outlier_tail]
-        ) / (len(sorted_violations) - 2 * outlier_tail)
+        if len(violations) > 2 * outlier_tail:
+            avg_violation_no_outliers = sum(
+                sorted(violations)[outlier_tail:-outlier_tail]
+            ) / (len(violations) - 2 * outlier_tail)
+        else:
+            avg_violation_no_outliers = avg_violation
 
         print(f"Number of violations: {num_failed}/{len(checks)}")
         print(f"Average violation: {avg_violation:.3f}")
@@ -113,12 +124,55 @@ def write_to_dirs(
                     f.write(json.dumps(result) + "\n")
 
 
+def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
+    source_aggregated_stats = {}
+
+    for checker_name, checker_stats in all_stats.items():
+        if "by_source" in checker_stats:
+            for source, source_stats in checker_stats["by_source"].items():
+                if source not in source_aggregated_stats:
+                    source_aggregated_stats[source] = {"overall": {}, "by_checker": {}}
+
+                # Aggregate overall stats
+                for metric, metric_stats in source_stats.items():
+                    if metric not in source_aggregated_stats[source]["overall"]:
+                        source_aggregated_stats[source]["overall"][metric] = []
+                    source_aggregated_stats[source]["overall"][metric].append(
+                        metric_stats
+                    )
+
+                # Store individual checker stats
+                source_aggregated_stats[source]["by_checker"][
+                    checker_name
+                ] = source_stats
+
+    # Calculate averages for overall stats
+    for source, stats in source_aggregated_stats.items():
+        for metric, metric_stats_list in stats["overall"].items():
+            if isinstance(metric_stats_list[0], (int, float)):
+                stats["overall"][metric] = sum(metric_stats_list) / len(
+                    metric_stats_list
+                )
+            else:
+                stats["overall"][metric] = metric_stats_list[
+                    0
+                ]  # For non-numeric data, just take the first value
+
+    # Write the aggregated stats to a file
+    output_file = output_directory / "stats_by_source_question.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(source_aggregated_stats, f, indent=4)
+
+    print(f"Aggregated stats by source question written to {output_file}")
+
+
 def process_check(
     check_name: str,
     checkers: dict[str, Checker],
     forecaster: Forecaster,
     model: str,
     num_lines: int,
+    tuples_per_source: int,
     is_async: bool,
     output_directory: Path,
     most_recent_directory: Path,
@@ -128,15 +182,33 @@ def process_check(
     eval_by_source: bool,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
-
     try:
         print("Checker: ", check_name)
         with open(checkers[check_name].path, "r", encoding="utf-8") as f:
             print(f"Path: {checkers[check_name].path}")
-            checker_tuples = [json.loads(line) for line in f.readlines()[:num_lines]]
+            all_tuples = [json.loads(line) for line in f]
+
+        if eval_by_source:
+            source_questions = {}
+            for tuple_data in all_tuples:
+                source_question = (
+                    tuple_data["P"]["metadata"].get("source_question")
+                    or tuple_data["P"]["title"]
+                )
+                if source_question not in source_questions:
+                    source_questions[source_question] = []
+                if len(source_questions[source_question]) < tuples_per_source:
+                    source_questions[source_question].append(tuple_data)
+
+            checker_tuples = [
+                tuple for tuples in source_questions.values() for tuple in tuples
+            ]
+        else:
+            checker_tuples = all_tuples[:num_lines]
 
         keys = [key for key in checker_tuples[0].keys() if key not in ["metadata"]]
         print(f"Debug: keys: {keys}")
+        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
 
         dirs_to_write = [output_directory, most_recent_directory]
 
@@ -147,17 +219,11 @@ def process_check(
                 if Path(dir / f"{check_name}.jsonl").exists():
                     os.remove(dir / f"{check_name}.jsonl")
 
-            if is_async:
-                batch_of_qs_size = 5
-                batches = [
-                    (i, min(i + batch_of_qs_size, num_lines))
-                    for i in range(0, num_lines, batch_of_qs_size)
-                ]
-            else:
-                batches = [(i, i + 1) for i in range(0, num_lines)]
-
             results = []
-            for batch_idx, batch in enumerate(batches):
+            for start in range(0, len(checker_tuples), 5):
+                end = min(start + 5, len(checker_tuples))
+                batch_tuples = checker_tuples[start:end]
+
                 match forecaster_class:
                     case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster":
                         if is_async:
@@ -166,8 +232,7 @@ def process_check(
                                 checkers[check_name].test(
                                     forecaster,
                                     do_check=False,
-                                    line_begin=batch[0],
-                                    line_end=batch[1],
+                                    tuples=batch_tuples,
                                     model=model,
                                 )
                             )
@@ -175,61 +240,72 @@ def process_check(
                             results_batch = checkers[check_name].test_sync(
                                 forecaster,
                                 do_check=False,
-                                line_begin=batch[0],
-                                line_end=batch[1],
+                                tuples=batch_tuples,
                                 model=model,
                             )
-
                     case "AdvancedForecaster":
-                        # we don't pass model to the test function, it's specified in the config
                         if is_async:
                             reset_global_semaphore()
                             results_batch = asyncio.run(
                                 checkers[check_name].test(
                                     forecaster,
                                     do_check=False,
-                                    line_begin=batch[0],
-                                    line_end=batch[1],
+                                    tuples=batch_tuples,
                                 )
                             )
                         else:
                             results_batch = checkers[check_name].test_sync(
                                 forecaster,
                                 do_check=False,
-                                line_begin=batch[0],
-                                line_end=batch[1],
+                                tuples=batch_tuples,
                             )
 
                 print(f"results_batch: {results_batch}")
                 print(f"len(results_batch): {len(results_batch)}")
-                print(f"len(batch): {batch[1] - batch[0]}")
-                assert (
-                    len(results_batch) == batch[1] - batch[0]
+                print(f"len(batch_tuples): {len(batch_tuples)}")
+                assert len(results_batch) == len(
+                    batch_tuples
                 ), "results must be of the same length as the batch"
                 assert all(validate_result(result, keys) for result in results_batch)
 
                 write_to_dirs(results_batch, f"{check_name}.jsonl", dirs_to_write)
                 results.extend(results_batch)
-            print(f"Debug: Number of results: {len(results)}")
+
+            print(f"Debug: Number of results after run: {len(results)}")
         else:
             with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
-                results = [json.loads(line) for line in f.readlines()]
+                results = [json.loads(line) for line in f]
 
-            assert (
-                len(results) >= num_lines
-            ), "results must contain at least num_lines elements"
-            results = results[:num_lines]
+            results = results[: len(checker_tuples)]
             assert all(validate_result(result, keys) for result in results)
-            print(f"Debug: Number of results: {len(results)}")
+            print(f"Debug: Number of results loaded: {len(results)}")
 
-        for result, checker_tuple in zip(results, checker_tuples):
+        print(f"Debug: Number of results: {len(results)}")
+        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
+
+        if len(results) != len(checker_tuples):
+            print("Warning: Number of results does not match number of checker_tuples")
+            print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
+
+        # Ensure results match checker_tuples
+        for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
             for key in keys:
-                assert (
-                    result["line"][key]["id"] == checker_tuple[key]["id"]
-                ), f"result['line'][{key}]['id'] must match checker_tuple[{key}]['id']"
-                assert (
-                    result["line"][key]["title"] == checker_tuple[key]["title"]
-                ), f"result['line'][{key}]['title'] must match checker_tuple[{key}]['title']"
+                try:
+                    assert result["line"][key]["id"] == checker_tuple[key]["id"], (
+                        f"ID mismatch for key {key} at index {i}: "
+                        f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                    )
+                    assert (
+                        result["line"][key]["title"] == checker_tuple[key]["title"]
+                    ), (
+                        f"Title mismatch for key {key} at index {i}: "
+                        f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+                    )
+                except AssertionError as e:
+                    print(f"Assertion failed: {str(e)}")
+                    print(f"Result: {result}")
+                    print(f"Checker tuple: {checker_tuple}")
+                    raise
 
         data = [result["line"] for result in results]
         all_answers = [
@@ -237,13 +313,11 @@ def process_check(
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
-            # print(f"answers: {answers}")
             violation_data = {}
             for metric in metrics:
                 violation_data[metric] = checkers[check_name].check_from_elicited_probs(
                     answers, metric
                 )
-            # print(f"violation_data: {violation_data}")
             result.update(violation_data)
 
         print(f"Debug: Calculating stats for {check_name}")
@@ -320,6 +394,12 @@ def process_check(
     help="Number of lines to process in each of the files",
 )
 @click.option(
+    "-t",
+    "--tuples_per_source",
+    default=5,
+    help="Max number of tuples to use for each source question",
+)
+@click.option(
     "-k",
     "--relevant_checks",
     multiple=True,
@@ -361,6 +441,7 @@ def main(
     run: bool,
     load_dir: str,
     num_lines: int,
+    tuples_per_source: int,
     relevant_checks: list[str],
     is_async: bool,
     use_threads: bool,
@@ -462,6 +543,7 @@ def main(
                 forecaster=forecaster,
                 model=model,
                 num_lines=num_lines,
+                tuples_per_source=tuples_per_source,
                 is_async=is_async,
                 output_directory=output_directory,
                 most_recent_directory=most_recent_directory,
@@ -484,6 +566,7 @@ def main(
                 forecaster=forecaster,
                 model=model,
                 num_lines=num_lines,
+                tuples_per_source=tuples_per_source,
                 is_async=is_async,
                 output_directory=output_directory,
                 most_recent_directory=most_recent_directory,
@@ -517,6 +600,11 @@ def main(
         ):
             json.dump(stats, f, indent=4)
             json.dump(stats, f2, indent=4)
+
+    # Aggregate and write stats by source question
+    if eval_by_source:
+        aggregate_stats_by_source(all_stats, output_directory)
+        aggregate_stats_by_source(all_stats, most_recent_directory)
 
     # Print summary
     for metric in metrics:

@@ -30,16 +30,27 @@ BASE_DATA_PATH: Path = (
 #     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "tuples_rel/"
+TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
 RELEVANT_CHECKS = ["AndChecker", "CondCondChecker", "NegChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]
 
 
+def select_tuples(possible_ituples, max_tuples):
+    """
+    Randomly select up to max_tuples from possible_ituples.
+    Maybe make this more sophisticated in future
+    """
+    if len(possible_ituples) <= max_tuples:
+        return possible_ituples
+    return random.sample(possible_ituples, max_tuples)
+
+
 async def instantiateRel(
     BASE_DATA_PATH: Path,
     checker_list: dict[str, Checker],
-    n_write: int = -1,
+    n_source_questions: int = 10,
+    max_tuples_per_source: int = 10,
     model: str = "gpt-4o-mini-2024-07-18",
     seed: int = 42,
     **kwargs,
@@ -78,36 +89,49 @@ async def instantiateRel(
     )
 
     random.seed(seed)
+    # If n_source_questions is -1 or greater than the number of valid sets, use all valid sets
+    if n_source_questions == -1 or n_source_questions > len(valid_sets):
+        n_source_questions = len(valid_sets)
 
-    possible_tuples = {}
+    # Randomly sample n_source_questions from valid_sets
+    selected_sets = random.sample(list(valid_sets.items()), n_source_questions)
+
     order_sensitive_checkers = ["ButChecker", "CondChecker", "CondCondChecker"]
 
     for checker_name, checker in checker_list.items():
         print(f"\nProcessing {checker_name}:")
         num_base_questions = checker.num_base_questions
 
-        if checker_name in order_sensitive_checkers:
-            possible_ituples = generate_order_sensitive_tuples(
-                question_sets, num_base_questions
-            )
-        else:
-            possible_ituples = generate_regular_tuples(
-                question_sets, num_base_questions
-            )
+        all_tuples = []
+        for source_question, question_set in selected_sets:
+            if checker_name in order_sensitive_checkers:
+                possible_ituples = generate_order_sensitive_tuples(
+                    {source_question: question_set}, num_base_questions
+                )
+            else:
+                possible_ituples = generate_regular_tuples(
+                    {source_question: question_set}, num_base_questions
+                )
 
-        print(f"Generated {len(possible_ituples)} possible {num_base_questions}-tuples")
+            # Randomly select tuples up to max_tuples_per_source
+            selected_ituples = select_tuples(possible_ituples, max_tuples_per_source)
+            all_tuples.extend(selected_ituples)
 
-        if possible_ituples:
+        print(
+            f"Generated {len(all_tuples)} possible {num_base_questions}-tuples from {n_source_questions} source questions"
+        )
+
+        if all_tuples:
             print("Sample tuple:")
-            sample_tuple = random.choice(possible_ituples)
+            sample_tuple = random.choice(all_tuples)
             for key, value in sample_tuple[0].items():
                 print(f"    {key}: {value.title}")
 
             try:
                 results = await checker.instantiate_and_write_many(
-                    possible_ituples,
+                    all_tuples,
                     model=model,
-                    n_write=n_write,
+                    n_write=-1,  # Write all generated tuples
                     overwrite=True,
                     **kwargs,
                 )
@@ -119,8 +143,7 @@ async def instantiateRel(
                 traceback.print_exc()
         else:
             print("No tuples to process for this checker.")
-
-    return possible_tuples
+    return all_tuples
 
 
 def generate_regular_tuples(question_sets, num_base_questions):
@@ -258,6 +281,16 @@ async def instantiate(
 @click.option("--n_relevance", default=1000, help="Number of relevance samples.")
 @click.option("--n_write", default=100, help="Number of writes.")
 @click.option(
+    "--n_source_questions",
+    default=-1,
+    help="Number of source questions to process for instantiateRel function.",
+)
+@click.option(
+    "--max_tuples_per_source",
+    default=10,
+    help="Maximum number of tuples per source question for instantiateRel function.",
+)
+@click.option(
     "--model_main",
     default=MODEL,
     help="Model to use for instantiation and verification.",
@@ -297,6 +330,8 @@ def main(
     data_path,
     n_relevance,
     n_write,
+    n_source_questions,
+    max_tuples_per_source,
     model_main,
     model_relevance,
     relevant_checks,
@@ -311,7 +346,8 @@ def main(
             instantiateRel(
                 BASE_DATA_PATH=data_path,
                 checker_list=checkers,
-                n_write=n_write,
+                n_source_questions=n_source_questions,
+                max_tuples_per_source=max_tuples_per_source,
                 model=model_main,
                 seed=seed,
             )

@@ -1,0 +1,112 @@
+{
+    "overall": {
+        "default": {
+            "label": "CondCondChecker",
+            "num_samples": 25,
+            "num_violations": 23,
+            "avg_violation": 0.049802,
+            "avg_violation_no_outliers": 0.048977,
+            "median_violation": 0.052539
+        },
+        "frequentist": {
+            "label": "CondCondChecker",
+            "num_samples": 25,
+            "num_violations": 23,
+            "avg_violation": 0.298442,
+            "avg_violation_no_outliers": 0.303792,
+            "median_violation": 0.31238
+        }
+    },
+    "by_source": {
+        "Will South Korea become the leader in global digital governance by 2030?": {
+            "default": {
+                "label": "CondCondChecker_Will South Korea become the leader in global digital governance by 2030?",
+                "num_samples": 5,
+                "num_violations": 4,
+                "avg_violation": 0.065484,
+                "avg_violation_no_outliers": 0.068541,
+                "median_violation": 0.067801
+            },
+            "frequentist": {
+                "label": "CondCondChecker_Will South Korea become the leader in global digital governance by 2030?",
+                "num_samples": 5,
+                "num_violations": 4,
+                "avg_violation": 0.322392,
+                "avg_violation_no_outliers": 0.349867,
+                "median_violation": 0.362096
+            }
+        },
+        "Will Ukraine join NATO before 2030?": {
+            "default": {
+                "label": "CondCondChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.043065,
+                "avg_violation_no_outliers": 0.044294,
+                "median_violation": 0.042368
+            },
+            "frequentist": {
+                "label": "CondCondChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.291075,
+                "avg_violation_no_outliers": 0.287172,
+                "median_violation": 0.283545
+            }
+        },
+        "Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?": {
+            "default": {
+                "label": "CondCondChecker_Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.064077,
+                "avg_violation_no_outliers": 0.063824,
+                "median_violation": 0.061639
+            },
+            "frequentist": {
+                "label": "CondCondChecker_Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.354951,
+                "avg_violation_no_outliers": 0.354947,
+                "median_violation": 0.351323
+            }
+        },
+        "Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?": {
+            "default": {
+                "label": "CondCondChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.044251,
+                "avg_violation_no_outliers": 0.046389,
+                "median_violation": 0.038812
+            },
+            "frequentist": {
+                "label": "CondCondChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
+                "num_samples": 5,
+                "num_violations": 5,
+                "avg_violation": 0.290032,
+                "avg_violation_no_outliers": 0.309506,
+                "median_violation": 0.301285
+            }
+        },
+        "Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?": {
+            "default": {
+                "label": "CondCondChecker_Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?",
+                "num_samples": 5,
+                "num_violations": 4,
+                "avg_violation": 0.032132,
+                "avg_violation_no_outliers": 0.02803,
+                "median_violation": 0.027754
+            },
+            "frequentist": {
+                "label": "CondCondChecker_Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?",
+                "num_samples": 5,
+                "num_violations": 4,
+                "avg_violation": 0.23376,
+                "avg_violation_no_outliers": 0.260108,
+                "median_violation": 0.264914
+            }
+        }
+    }
+}
