@@ -333,13 +333,13 @@ class ConsistentForecaster(Forecaster):
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit(cons_tuple, **kwargs)
+            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
             metadata[check.__class__.__name__] = {
                 k: cons_tuple[k].model_dump() | {"elicited_prob": hypocrite_answers[k]}
                 for k in cons_tuple
             }
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = await check.max_min_arbitrage(
+            cons_answers, v = check.max_min_arbitrage(
                 hypocrite_answers, scoring=[P_weight, 1.0]
             )
             P_weight += 1.0 * (len(cons_tuple) - 1)
