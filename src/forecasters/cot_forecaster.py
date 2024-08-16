@@ -1,6 +1,13 @@
-from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob_cot
-from common.llm_utils import answer, answer_sync, Example
 from .forecaster import Forecaster
+from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob_cot
+from common.llm_utils import (
+    answer,
+    answer_sync,
+    answer_messages,
+    answer_messages_sync,
+    Example,
+)
+from datetime import datetime
 
 
 class COT_Forecaster(Forecaster):
@@ -32,7 +39,9 @@ class COT_Forecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -42,7 +51,9 @@ class COT_Forecaster(Forecaster):
         )
         return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -51,6 +62,108 @@ class COT_Forecaster(Forecaster):
             **kwargs,
         )
         return response.prob
+
+    def dump_config(self):
+        return {
+            "preface": self.preface,
+            "examples": [
+                {
+                    "user": e.user.model_dump_json(),
+                    "assistant": e.assistant.model_dump_json(),
+                }
+                for e in self.examples
+            ],
+        }
+
+
+class CoT_multistep_Forecaster:
+    def __init__(self, preface: str, examples: list[Example], steps: int = 3):
+        # TODO define nice preface and examples
+        self.preface = preface
+        self.examples = examples
+        self.steps = steps
+        self.first_user_suffix = "\n\nPlease provide a step-by-step analysis to arrive at a probability estimate. We will do this in {self.steps} steps."
+        self.intermezzos = [
+            "Thank you. Now, let's continue with step {step + 1} of our analysis."
+            for step in range(self.steps - 1)
+        ]
+
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
+        # TODO find a way to dump the messages
+        messages = [
+            {"role": "system", "content": self.preface},
+            {
+                "role": "user",
+                "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
+            },
+        ]
+        for step in range(1, self.steps + 1):
+            response = answer_messages_sync(
+                messages=messages,
+                examples=self.examples,
+                response_model=Prob_cot,
+                **kwargs,
+            )
+            messages.append({"role": "assistant", "content": response.chain_of_thought})
+            if step < self.steps:
+                messages.append({"role": "user", "content": self.intermezzos[step - 1]})
+
+        result = {
+            "chain_of_thought": "\n\n".join(
+                [m["content"] for m in messages if m["role"] == "assistant"]
+            ),
+            "prob": response.prob,
+        }
+
+        if include_metadata:
+            result["metadata"] = {
+                "model": kwargs.get("model", "default_model"),
+                "timestamp": datetime.now().isoformat(),
+                "steps": self.steps,
+            }
+
+        return result["prob"]
+
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
+        messages = [
+            {"role": "system", "content": self.preface},
+            {
+                "role": "user",
+                "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
+            },
+        ]
+
+        for step in range(1, self.steps + 1):
+            response = await answer_messages(
+                messages=messages,
+                examples=self.examples,
+                response_model=Prob_cot,
+                **kwargs,
+            )
+            messages.append({"role": "assistant", "content": response.chain_of_thought})
+
+            if step < self.steps:
+                messages.append({"role": "user", "content": self.intermezzos[step - 1]})
+
+        result = {
+            "chain_of_thought": "\n\n".join(
+                [m["content"] for m in messages if m["role"] == "assistant"]
+            ),
+            "prob": response.prob,
+        }
+
+        if include_metadata:
+            result["metadata"] = {
+                "model": kwargs.get("model", "default_model"),
+                "timestamp": datetime.now().isoformat(),
+                "steps": self.steps,
+            }
+
+        return result["prob"]
 
     def dump_config(self):
         return {
