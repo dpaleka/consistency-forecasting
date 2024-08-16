@@ -273,9 +273,6 @@ class Checker(ABC):
         supplied_metadata=None,
         **kwargs,
     ) -> List["Self.TupleFormat_with_metadata"]:
-        """Instantiate with a metadata field that can store the base questions and other things.
-        supplied_metadata is used to *recursively* update the metadata so you can surgically
-        update nested fields."""
         if supplied_metadata is None:
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
@@ -289,7 +286,18 @@ class Checker(ABC):
                 more_metadata = {"verification_result": verification_result.dict()}
                 update_recursive(metadata, more_metadata)
             else:
-                instantiated_object = result
+                instantiated_object = result[0] if isinstance(result, tuple) else result
+
+            # Ensure source_question is included in metadata for each question
+            for field, value in instantiated_object.__dict__.items():
+                if isinstance(value, ForecastingQuestion):
+                    value.metadata = value.metadata or {}
+                    source_question = supplied_metadata.get(field, {}).get(
+                        "source_question"
+                    )
+                    if source_question:
+                        value.metadata["source_question"] = source_question
+
             instantiated_with_metadata.append(
                 self.TupleFormat_with_metadata(
                     **instantiated_object.dict(), metadata=metadata
@@ -324,6 +332,8 @@ class Checker(ABC):
         supplied_metadata=None,
         **kwargs,
     ):
+        if supplied_metadata is None:
+            supplied_metadata = {}
         results = await self.instantiate_with_metadata(
             base_sentences, supplied_metadata=supplied_metadata, **kwargs
         )
@@ -341,12 +351,6 @@ class Checker(ABC):
         overwrite=False,
         **kwargs,
     ):
-        """
-        Args:
-            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
-            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
-                because some will fail verification). If -1, will make as many as possible.
-        """
         print(
             f"instantiate_and_write_many called with {len(base_sentencess)} base sentences"
         )
@@ -356,19 +360,18 @@ class Checker(ABC):
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 
-        def _instantiate_and_write(
-            base_sentences: (
-                dict[str, ForecastingQuestion]
-                | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
-            ),
-        ):
-            if isinstance(base_sentences, tuple):
-                base_sentences, supplied_metadata = base_sentences
+        def _instantiate_and_write(base_sentences):
+            if isinstance(base_sentences, dict):
+                # Old structure
+                return self.instantiate_and_write(base_sentences, **kwargs)
+            elif isinstance(base_sentences, tuple):
+                # Structure with metadata
+                questions, metadata = base_sentences
+                return self.instantiate_and_write(
+                    questions, supplied_metadata=metadata, **kwargs
+                )
             else:
-                supplied_metadata = None
-            return self.instantiate_and_write(
-                base_sentences, supplied_metadata=supplied_metadata, **kwargs
-            )
+                raise ValueError("Unrecognized input format for base_sentences")
 
         bq_counter = 0  # number of base sentences processed
         while n_write == -1 or self.counter < n_write:

@@ -39,10 +39,8 @@ RELEVANT_CHECKS = ["AndChecker", "CondCondChecker", "NegChecker"]
 async def instantiateRel(
     BASE_DATA_PATH: Path,
     checker_list: dict[str, Checker],
-    # n_relevance: int = 10,
     n_write: int = -1,
     model: str = "gpt-4o-mini-2024-07-18",
-    # model_relevance: str = MODEL_RELEVANCE,
     seed: int = 42,
     **kwargs,
 ):
@@ -74,13 +72,6 @@ async def instantiateRel(
     )
     print(f"Created {len(question_sets)} question sets.")
 
-    print("\nDetails of all question sets:")
-    for key, value in question_sets.items():
-        if value["source"] is not None:
-            print(
-                f"Set with source '{key}' has {len(value['related'])} related questions"
-            )
-
     valid_sets = {k: v for k, v in question_sets.items() if v["source"] is not None}
     print(
         f"\nFound {len(valid_sets)} valid question sets with both source and related questions."
@@ -88,65 +79,41 @@ async def instantiateRel(
 
     random.seed(seed)
 
-    # Print details about all sets
-    print("\nDetails of all question sets:")
-    for key, value in question_sets.items():
-        if value["source"] is not None:
-            print(
-                f"Set with source '{key}' has {len(value['related'])} related questions"
+    possible_tuples = {}
+    order_sensitive_checkers = ["ButChecker", "CondChecker", "CondCondChecker"]
+
+    for checker_name, checker in checker_list.items():
+        print(f"\nProcessing {checker_name}:")
+        num_base_questions = checker.num_base_questions
+
+        if checker_name in order_sensitive_checkers:
+            possible_ituples = generate_order_sensitive_tuples(
+                question_sets, num_base_questions
             )
         else:
-            print(
-                f"Set with key '{key}' has no source question but {len(value['related'])} related questions"
+            possible_ituples = generate_regular_tuples(
+                question_sets, num_base_questions
             )
 
-    possible_tuples = {}
-    i_set = {checker.num_base_questions for checker in checker_list.values()}
-    for i in i_set:
-        print(f"\nGenerating {i}-tuples...")
-        possible_ituples = []
-        for question_set in valid_sets.values():
-            if i == 1:
-                # For checkers that use 1 base question, just use the source question
-                possible_ituples.append({"P": question_set["source"]})
-            elif len(question_set["related"]) >= i - 1:
-                for related_combo in itertools.combinations(
-                    question_set["related"], i - 1
-                ):
-                    tuple_dict = {"P": question_set["source"]}
-                    tuple_dict.update(
-                        {chr(81 + j): q for j, q in enumerate(related_combo)}
-                    )
-                    possible_ituples.append(tuple_dict)
+        print(f"Generated {len(possible_ituples)} possible {num_base_questions}-tuples")
 
-        possible_tuples[i] = possible_ituples
-        print(f"Generated {len(possible_ituples)} possible {i}-tuples")
-
-    for checker in checker_list.values():
-        print(f"\nProcessing {checker.__class__.__name__}:")
-        num_base_questions = checker.num_base_questions
-        tuples_to_process = possible_tuples.get(num_base_questions, [])
-        print(f"Number of tuples to process: {len(tuples_to_process)}")
-
-        if tuples_to_process:
+        if possible_ituples:
             print("Sample tuple:")
-            sample_tuple = random.choice(tuples_to_process)
-            for key, question in sample_tuple.items():
-                print(f"    {key}: {question.title}")
+            sample_tuple = random.choice(possible_ituples)
+            for key, value in sample_tuple[0].items():
+                print(f"    {key}: {value.title}")
 
             try:
                 results = await checker.instantiate_and_write_many(
-                    tuples_to_process,
+                    possible_ituples,
                     model=model,
                     n_write=n_write,
                     overwrite=True,
                     **kwargs,
                 )
-                print(f"Completed processing for {checker.__class__.__name__}")
+                print(f"Completed processing for {checker_name}")
             except Exception as e:
-                print(
-                    f"Error in instantiate_and_write_many for {checker.__class__.__name__}: {e}"
-                )
+                print(f"Error in instantiate_and_write_many for {checker_name}: {e}")
                 import traceback
 
                 traceback.print_exc()
@@ -154,6 +121,61 @@ async def instantiateRel(
             print("No tuples to process for this checker.")
 
     return possible_tuples
+
+
+def generate_regular_tuples(question_sets, num_base_questions):
+    possible_ituples = []
+    for source_question, question_set in question_sets.items():
+        if question_set["source"] is None:
+            continue
+        if num_base_questions == 1:
+            possible_ituples.append(
+                (
+                    {"P": question_set["source"]},
+                    {"P": {"source_question": source_question}},
+                )
+            )
+        elif len(question_set["related"]) >= num_base_questions - 1:
+            for related_combo in itertools.combinations(
+                question_set["related"], num_base_questions - 1
+            ):
+                questions = {
+                    "P": question_set["source"],
+                    **{chr(81 + j): q for j, q in enumerate(related_combo)},
+                }
+                metadata = {
+                    key: {"source_question": source_question}
+                    for key in questions.keys()
+                }
+                possible_ituples.append((questions, metadata))
+    return possible_ituples
+
+
+def generate_order_sensitive_tuples(question_sets, num_base_questions):
+    possible_ituples = []
+    for source_question, question_set in question_sets.items():
+        if (
+            question_set["source"] is None
+            or len(question_set["related"]) < num_base_questions - 1
+        ):
+            continue
+
+        source_question_obj = question_set["source"]
+
+        for related_combo in itertools.combinations(
+            question_set["related"], num_base_questions - 1
+        ):
+            all_questions = [source_question_obj] + list(related_combo)
+
+            for perm in itertools.permutations(all_questions):
+                questions = {chr(80 + i): q for i, q in enumerate(perm)}
+                metadata = {
+                    key: {"source_question": source_question}
+                    for key in questions.keys()
+                }
+                possible_ituples.append((questions, metadata))
+
+    return possible_ituples
 
 
 async def instantiate(
