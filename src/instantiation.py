@@ -27,7 +27,7 @@ BASE_DATA_PATH: Path = (
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
 TUPLES_PATH: Path = get_data_path() / "tuples/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["ConsequenceChecker"]
+RELEVANT_CHECKS = ["NegChecker"]
 
 
 async def instantiate(
@@ -108,7 +108,7 @@ async def instantiate(
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
 @click.option("--n_relevance", default=1000, help="Number of relevance samples.")
-@click.option("--n_write", default=100, help="Number of writes.")
+@click.option("--n_write", default=2, help="Number of writes.")
 @click.option(
     "--model_main",
     default=MODEL,
