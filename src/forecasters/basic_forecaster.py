@@ -1,9 +1,4 @@
-import os
-import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from forecaster import Forecaster
+from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
 from common.llm_utils import answer, answer_sync, Example
 
