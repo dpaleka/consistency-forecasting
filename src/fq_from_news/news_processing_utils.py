@@ -273,8 +273,11 @@ def _ner_news_processing(
         return similarity >= threshold
 
     def get_entities(article):
-        entities_content = extract_named_entities(article.get("content"))
-        entities_description = extract_named_entities(article.get("description"))
+        entities_content, entities_description = [], []
+        if article.get("content") is not None:
+            entities_content = extract_named_entities(article.get("content"))
+        if article.get("description") is not None:
+            entities_description = extract_named_entities(article.get("description"))
         return entities_content.union(entities_description)
 
     entities_lst = []
@@ -326,11 +329,9 @@ def process_news(
         )
 
     processed_news_path = _news_api_processed_news_path(start_date, end_date, num_pages)
-    # if os.path.exists(processed_news_path):
-    #     print(
-    #         f"The processed news has already been saved to {processed_news_path}. "
-    #     )
-    #     return processed_news_path
+    if os.path.exists(processed_news_path):
+        print(f"The processed news has already been saved to {processed_news_path}. ")
+        return processed_news_path
 
     def read_jsonl(file_path):
         with open(file_path, "r") as file:
