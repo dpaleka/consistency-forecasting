@@ -54,8 +54,8 @@ def fetch_live_questions_with_dates(
             * page_size,  # or 'offset': (page-1) * page_size if the API uses offset
             "resolve_time__gt": start_date,
             "resolve_time__lt": end_date,
-            "close_time__gt": start_date,
-            "close_time__lt": end_date,
+            # "close_time__gt": start_date,
+            # "close_time__lt": end_date,
         }
         response = requests.get(f"{api_url}/questions", headers=headers, params=params)
 
@@ -92,16 +92,17 @@ def fetch_live_questions_with_dates(
                     min_value(r, c), "%Y-%m-%dT%H:%M:%SZ"
                 ) 
             """
-            if question.get("resolve_time") or question.get("close_time"):
-                r = question.get("resolve_time")
-                c = question.get("close_time")
+            if question.get("close_time"):
+                resolution_date_str = question.get("close_time")
+            else:
+                resolution_date_str = question.get("resolve_time")
 
                 def min_value(a, b):
                     return min(x for x in (a, b) if x is not None)
 
-                resolution_date_str = min_value(r, c)
                 if "." in resolution_date_str:
                     resolution_date_str = resolution_date_str.split(".")[0] + "Z"
+
                 resolution_date = dt.datetime.strptime(
                     resolution_date_str, "%Y-%m-%dT%H:%M:%SZ"
                 )
