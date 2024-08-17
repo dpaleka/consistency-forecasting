@@ -88,19 +88,10 @@ ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want to submit, defaults to adv.  I am not sure what is the difference between advanced forecaster and ensemble.meta_reason
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 3  # How many times we should sample the adv. forecasters to get the "best" average score.
-IGNORE_VISITED = False
-# If true, will not update / predict a market already submitted to.
+IGNORE_VISITED = (
+    False  # If true, will not update / predict a market already submitted to.
+)
 
-
-print(IGNORE_VISITED)
-
-if IGNORE_VISITED:
-    print("fail")
-
-quit()
-
-
-###
 
 ##Coroutine parameters.  Note that these are multiplicative. So the "total threads" will be QUESTION_THREADS * SAMPLING_THREADS * {threads for running the forecasters which I think is already maxed}
 QUESTION_THREADS = 4  # How many concurrency operations to run for questions.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
