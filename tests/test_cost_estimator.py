@@ -11,7 +11,7 @@ PROMPT = [
     {
         "role": "user",
         "content": "Give an example of a USER in the specification provided.",
-    }
+    },
 ]
 
 
@@ -31,7 +31,7 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("params", PARAMS)
-def test_estimate_contains_exact(params, request):
+def test_estimate_contains_exact(params):
 
     prompt, model, response_model = (
         params["prompt"],
@@ -56,11 +56,47 @@ def test_estimate_contains_exact(params, request):
         cost_estimation={"cost_estimator": ce_real},
     )
     print("\n---")
+    print("Estimated input tokens:", ce_sim.input_tokens)
+    print("Real input tokens:", ce_real.input_tokens)
+    print("Estimated output tokens:", ce_sim.output_tokens_range)
+    print("Real output tokens:", ce_real.output_tokens_range)
     print("Estimated cost:", ce_sim.cost_range)
     print("Real cost:", ce_real.cost_range)
     print("Estimated time:", ce_sim.time_range)
     print("Real time:", ce_real.time_range)
-    assert ce_sim.cost_range[0] <= ce_real.cost_range[0]
-    assert ce_sim.cost_range[1] >= ce_real.cost_range[1]
-    assert ce_sim.time_range[0] <= ce_real.time_range[0]
-    assert ce_sim.time_range[1] >= ce_real.time_range[1]
+
+    checks = [
+        {
+            "check": ce_sim.input_tokens * 0.8
+            <= ce_real.input_tokens
+            <= ce_sim.input_tokens * 1.2,
+            "error": "input tokens estimate not in range",
+        },
+        {
+            "check": ce_sim.output_tokens_range[0] <= ce_real.output_tokens_range[0],
+            "error": "output tokens estimate too high",
+        },
+        {
+            "check": ce_sim.output_tokens_range[1] >= ce_real.output_tokens_range[1],
+            "error": "output tokens estimate too low",
+        },
+        {
+            "check": ce_sim.cost_range[0] <= ce_real.cost_range[0],
+            "error": "cost estimate too high",
+        },
+        {
+            "check": ce_sim.cost_range[1] >= ce_real.cost_range[1],
+            "error": "cost estimate too low",
+        },
+        {
+            "check": ce_sim.time_range[0] <= ce_real.time_range[0],
+            "error": "time estimate too high",
+        },
+        {
+            "check": ce_sim.time_range[1] >= ce_real.time_range[1],
+            "error": "time estimate too low",
+        },
+    ]
+
+    failures = [c for c in checks if not c["check"]]
+    assert not failures, [f["error"] for f in failures]

@@ -124,6 +124,8 @@ class CostEstimator:
     def __init__(self):
         self.log: list[CostItem] = []
         self.num_calls = 0
+        self.input_tokens = 0
+        self.output_tokens_range = [0, 0]
         self.cost_range = [0.0, 0.0]
         self.time_range = [0.0, 0.0]
 
@@ -132,6 +134,9 @@ class CostEstimator:
         item.calc()
         self.log.append(item)
         self.num_calls += 1
+        self.input_tokens += item.input_tokens
+        self.output_tokens_range[0] += item.output_tokens_range[0]
+        self.output_tokens_range[1] += item.output_tokens_range[1]
         self.cost_range[0] += item.cost_range[0]
         self.cost_range[1] += item.cost_range[1]
         self.time_range[0] += item.time_range[0]
