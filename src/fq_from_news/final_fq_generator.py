@@ -21,31 +21,54 @@ class NewsApiFinalForecastingQuestionGenerator:
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
 
     preface = """
-    You are an expert in validating forecasting (prediction) questions that cannot be answered by a simple or trivial forecasting algorithms. 
-    Verify that each forecasting question's title, body, and resolution adhere to the guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date that should be set for the questions is {month_name}, {year}. 
-    The forecaster will assume the current date is the `pose_date` which is {pose_date}, so use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, sufficient context should be provided within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data. 
+    You are an expert in validating forecasting (prediction) questions that require nuanced understanding and cannot be answered by simple or trivial forecasting algorithms. Verify that each forecasting question's title, body, and resolution adhere to the established guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date for the questions should be set as {month_name}, {year}.
+
+    The forecaster will assume the current date is the `pose_date`, which is {pose_date}. Therefore, use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
     """
 
     prompt = """
-    Here are the updated guidelines for validating forecasting questions:
+    Guidelines for Validating Forecasting Questions
 
-    1. **Definitive Answers**: Questions should definitively answer YES or NO based on concrete, factual information from recent news articles. The resolution should align with this information, treating True as "Yes" and False as "No". The resolution must be valid for all potential scenarios up to the resolution date, which must be the current month and year.
+    1. Definitive Answers:
+    - Questions must yield a clear YES or NO answer based on concrete, factual information from past news articles.
+    - The resolution should align with this information, treating True as "Yes" and False as "No."
+    - Ensure the resolution remains valid for all potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
 
-    2. **Numeric Values**: For questions involving numeric values, frame the question to ask if the value will cross or fall below a threshold, using a rough threshold to avoid numerical biases.
+    2. Numeric Values:
+    - For questions involving numeric values, frame the inquiry to determine whether the value will cross or fall below a specified threshold.
+    - Utilize rough thresholds to minimize numerical biases.
 
-    3. **Objectivity and Clarity**: Avoid ambiguous or subjective terms such as "significant," "major," "substantial," etc., unless universally accepted values are provided. Questions must be objective and unambiguous, avoiding biases related to religion, culture, politics, or stereotypes.
+    3. Objectivity and Clarity:
+    - Avoid ambiguous or subjective terms such as "significant," "major," or "substantial," unless universally accepted values are provided.
+    - Questions must be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes.
 
-    4. **Question Body**: The body should prompt a clear YES or NO resolution, avoiding overly specific details or predictions that could be easily guessed by algorithms.
+    4. Question Body:
+    - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or predictions that could be easily inferred by algorithms.
+    - Provide adequate context without leading to predictable answers.
 
-    5. **Future Accuracy**: Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date (e.g., "by the end of July 2024"). Questions based on specific events from the article are allowed, but ensure they do not resolve between the forecaster's current date (a date in the previous year) and the resolution date’s month.
+    5. Future Accuracy:
+    - Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date.
+    - Questions based on specific events are permissible, but they must not resolve between the forecaster's current date (a date in the previous year) and the resolution date's month.
 
-    6. **Avoid Obvious Answers**: Questions should not be so obvious that they can be easily guessed using common sense or simple heuristics.
+    6. Avoid Obvious Answers:
+    - Questions should not be so obvious that they can be easily guessed using common sense or simple heuristics.
+    - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
 
-    Based on these guidelines:
+    7. No Reference to Articles:
+    - The title and body of the question must not reference any articles or indicate that the question was formed using news content.
+    - Ensure there is no discernible knowledge of the `pose_date`.
+    - Directly reject questions that fail this test without attempting modifications.
 
-    1. Validate the forecasting question and return its "Final Form".
-    2. If the question is invalid, attempt to modify it to meet the guidelines and return the modified version's "Final Form".
-    3. If modification fails, return a rejected "Final Form". The rejected form is: 
+    Validation Process:
+
+    1. Validation:
+    - Validate the forecasting question and return its "Final Form."
+
+    2. Modification:
+    - If the question is invalid, attempt to modify it to meet the guidelines and return the modified version's "Final Form."
+
+    3. Rejection:
+    - If modification fails, return a rejected "Final Form." The rejected form is: 
         ```JSON
         {example_rejected_fq}
         ```
@@ -326,6 +349,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         if num_articles == -1 or num_articles == float("inf"):
             num_articles = "all"
 
+        model_name = model_name.replace("/", "__").replace("\\", "__")
         news_save_file_name = f"final_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(

@@ -324,6 +324,9 @@ def _final_verified_forecasting_questions_save_path(
     if num_articles == -1 or num_articles == float("inf"):
         num_articles = "all"
 
+    final_fq_verification_model_name = final_fq_verification_model_name.replace(
+        "/", "__"
+    ).replace("\\", "__")
     news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
     # TODO - refactor for non News API things

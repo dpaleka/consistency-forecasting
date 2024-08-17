@@ -18,13 +18,17 @@ class NewsApiRoughForecastingQuestionGenerator:
     os.makedirs(news_api_rough_fq_save_dir, exist_ok=True)
 
     preface = """
-    You are tasked with generating forecasting (prediction) questions that have a definitive YES or NO answer based on past events. These questions must be clear, unbiased, and free from trivial or misleading elements. Avoid influences from sensitive matters such as religion, politics, gender, or race, and refrain from using subjective terms like "significant."
+    You are tasked with generating forecasting (prediction) questions that have a definitive YES or NO answer based on past events. These questions must be clear, unambiguous, and free from trivial or misleading elements. Avoid influences from sensitive matters such as religion, politics, gender, or race, and refrain from using subjective terms like "significant."
 
-    Each question's resolution must remain definitive and unchanged from the current date until the specified resolution date in the month of {month_name}, {year}. 
-    
-    The forecaster will assume the current date is the `pose_date` which is {pose_date}, so use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data. 
+    Each question's resolution must remain definitive and unchanged from the current date until the specified resolution date in the month of {month_name}, {year}.
 
-    Avoid overly specific or politically charged scenarios, and make reasonable approximations to ensure robustness and neutrality in your questions.
+    The forecaster will assume the current date is the `pose_date` which is {pose_date}, so use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
+
+    Avoid overly specific or politically charged scenarios, and make reasonable approximations to ensure robustness and neutrality in your questions. Use generalizable terms instead of specific names if the event would not be known based solely on the training data without the provided article.
+
+    When creating numerical questions, use clear thresholds and avoid complex calculations that could lead to misinterpretation. Keep the numerical aspects straightforward and easy to understand.
+
+    Aim to create a diverse set of questions covering various topics and events. Regularly review and revise to ensure a robust set of forecasting questions.
     """
 
     prompt = """
@@ -52,11 +56,11 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     **Additional Guidelines**:
     - **Quantity**: Create as many high-quality forecasting questions as possible while adhering to the above criteria.
-    - **Numerical Values**: If the question refers to a numerical value, ask for resolutions of that value either crossing or being under a threshold. Use a rough threshold that does not invoke numerical biases.
+    - **Numerical Values**: When creating numerical questions, use clear thresholds and avoid complex calculations that could lead to misinterpretation. Keep the numerical aspects straightforward and easy to understand. However, do not use numerical values if the article does not include any such values. 
     - **Avoiding Predictability**: The specificity of details should not make the question predictable. Make reasonable approximations to avoid such issues.
     - **Avoid Subjective Terms**: Ensure that the title and body do not use subjective terms like "significant," which can lead to ambiguity.
     - **Avoid Politically Biased Scenarios**: Avoid questions related to politically biased scenarios, such as indictments or actions of former presidents for political reasons. Use concrete events and avoid politically sensitive topics.
-
+        
     **Examples of Questions That Should NOT Be Used**:
 
     1. **Rejected Question**: Will the next United Nations Climate Change Conference result in an agreement on carbon emissions?
@@ -358,6 +362,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         if num_articles == -1 or num_articles == float("inf"):
             num_articles = "all"
 
+        model_name = model_name.replace("/", "__").replace("\\", "__")
         news_save_file_name = f"rough_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
