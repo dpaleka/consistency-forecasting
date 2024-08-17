@@ -3,7 +3,7 @@
 
 # %%
 import os
-from contextlib import contextmanager
+from time import time
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
@@ -24,7 +24,7 @@ import transformers
 
 from .datatypes import PlainText
 from .path_utils import get_src_path, get_root_path
-
+from .cost_estimator import CostEstimator, CostItem
 
 from .perscache import (
     Cache,
@@ -35,125 +35,6 @@ from .perscache import (
     LocalFileStorage,
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
-
-
-class CostEstimator:
-
-    class APIItem:
-
-        # input_tokens: dollar per input token
-        # output_tokens: dollar per output token
-        # time: seconds per output token
-        prices = {
-            "gpt-4o": {
-                "input_tokens": 5.0e-6,
-                "output_tokens": 15.0e-6,
-                "time": 18e-3,
-            },
-            "gpt-4o-mini": {
-                "input_tokens": 0.15e-6,
-                "output_tokens": 0.6e-6,
-                "time": 9e-3,
-            },
-        }
-
-        def __init__(
-            self,
-            model: str,
-            input_tokens: int,
-            output_tokens: list[int],
-            description: str = "",
-        ):
-            self.model = model
-            self.input_tokens = input_tokens
-            self.output_tokens = output_tokens
-            self.description = description
-
-        @property
-        def cost(self) -> list[float]:
-            return [
-                self.input_tokens * self.prices[self.model]["input_tokens"]
-                + output_tokens_bound * self.prices[self.model]["output_tokens"]
-                for output_tokens_bound in self.output_tokens
-            ]
-
-        @property
-        def time(self) -> list[float]:
-            return [
-                output_tokens_bound * self.prices[self.model]["time"]
-                for output_tokens_bound in self.output_tokens
-            ]
-
-    class ManualItem:
-
-        def __init__(self, cost: list[float], time: list[float], description: str = ""):
-            self.cost = cost
-            self.time = time
-            self.description = description
-
-    def __init__(self):
-        self.log = []
-        self.calls = 0
-        self.cost = [0.0, 0.0]
-        self.time = [0.0, 0.0]
-
-    @contextmanager
-    def add_api_item(
-        self,
-        model: str,
-        input_tokens: int,
-        output_tokens: list[int],
-        description: str = "",
-    ):
-        item = self.APIItem(
-            model=model,
-            input_tokens=input_tokens,
-            output_tokens=output_tokens,
-            description=description,
-        )
-        self.log.append(item)
-        self.calls += 1
-        self.cost[0] += item.cost[0]
-        self.cost[1] += item.cost[1]
-        self.time[0] += item.time[0]
-        self.time[1] += item.time[1]
-        yield
-
-    @contextmanager
-    def add_manual_item(
-        self, cost: list[float], time: list[float], description: str = ""
-    ):
-        item = self.ManualItem(cost=cost, time=time, description=description)
-        self.log.append(item)
-        self.cost[0] += item.cost[0]
-        self.cost[1] += item.cost[1]
-        self.time[0] += item.time[0]
-        self.time[1] += item.time[1]
-        yield
-
-    def report(self):
-        print(f"Total cost in range: {self.cost[0]:.2f} - {self.cost[1]:.2f} USD")
-        print(f"Total time in range: {self.time[0]:.2f} - {self.time[1]:.2f} sec")
-        print(f"Total calls: {self.calls}")
-        print("Breakdown:")
-        for item in self.log:
-            if isinstance(item, self.APIItem):
-                print(
-                    f"API call to {item.model}:\n"
-                    f"Input tokens: {item.input_tokens}, "
-                    f"Output tokens in range: {item.output_tokens}\n"
-                    f"Cost in range: {item.cost[0]:.2f} - {item.cost[1]:.2f} USD, "
-                    f"Time in range: {self.time[0]:.2f} - {self.time[1]:.2f} sec\n"
-                    f"Description: {item.description}\n"
-                )
-            else:
-                print(
-                    f"Manual item:\n"
-                    f"Cost in range: {item.cost[0]:.2f} - {item.cost[1]:.2f} USD\n"
-                    f"Time in range: {item.time[0]:.2f} - {item.time[1]:.2f} USD\n"
-                    f"Description: {item.description}\n"
-                )
-
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
@@ -549,8 +430,8 @@ async def query_api_chat(
     messages: list[dict[str, str]],
     verbose: bool = False,
     model: str | None = None,
-    simulate: bool | int = False,
-    cost_estimator: CostEstimator = None,
+    simulate:bool=False,
+    cost_estimation: dict | None = None,
     **kwargs,
 ) -> BaseModel:
     """
@@ -561,14 +442,21 @@ async def query_api_chat(
     2. `model` in `kwargs`
     3. Default model
 
-    simulate: bool | int: Whether to simulate the response. If int, number of tokens to return
-        in output. Defaults to False.
+    simulate: bool: Whether to simulate the cost of the call.
+    cost_estimation: dict | None: Cost estimation and simulation config. If given, give as dict with keys:
+        {
+            "cost_estimator": CostEstimator, (if not given, will not estimate cost)
+            "description": str, (optional, helpful for tracking and breakdown)
+            "input_tokens_estimator": Callable[[str], int], (optional, defaults to len(input_string) // 4.5)
+            "output_tokens_estimator": Callable[[str, int], list[int]], (optional, defaults to [1, 2048])
+            "simstr_len": int, (optional, defaults to 1024)
+        }
     """
     if not os.getenv("NO_CACHE"):
         assert (
             kwargs.get("response_model", -1) is not None
         ), "Cannot pass response_model=None if caching is enabled"
-
+  
     default_options = {
         "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
@@ -585,25 +473,70 @@ async def query_api_chat(
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
+    max_tokens = options.get("max_tokens", None)
 
-    if simulate and cost_estimator:
-        with cost_estimator.add_api_item(
-            model=options["model"],
-            input_tokens=len("".join([m["content"] for m in messages])) // 3,
-            output_tokens=[1, options.get("max_tokens", 2048)],
-        ):
-            simstr = "This is a test output."
-            return simstr * (simulate // (len(simstr) // 3))
+    if cost_estimation is None:
+        cost_estimation = {}
+    cost_estimation = {
+        "cost_estimator": None,
+        "description": None,
+        "input_tokens_estimator": None,
+        "output_tokens_estimator": (
+            (lambda i, j: [1, max_tokens]) if max_tokens is not None else None
+        ),
+        "simstr_len": 1024,
+    } | cost_estimation
 
+
+    if simulate:
+        if cost_estimation["cost_estimator"]:
+            ci = CostItem(
+                model=model,
+                input_string="".join([m["content"] for m in messages]),
+                description=cost_estimation["description"],
+                token_estimator=cost_estimation["input_tokens_estimator"],
+                output_tokens_estimator=cost_estimation["output_tokens_estimator"],
+                exact=False,
+            )
+            with cost_estimation["cost_estimator"].append(ci):
+                ...
+        simstr = "This is a test output."
+        return simstr * int(
+            cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
+        )
+    
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
-
-    response = await client.chat.completions.create(
+    
+    t0 = time() 
+    response, info = await client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    t = time() - t0
+
+    input_tokens, output_tokens = (
+        info.usage.prompt_tokens,
+        info.usage.completion_tokens,
+    )
+
+    if cost_estimation["cost_estimator"]:
+
+        ci = CostItem(
+            time_range=[t, t],
+            model=model,
+            input_tokens=input_tokens,
+            output_tokens_range=[output_tokens, output_tokens],
+            input_string="".join([m["content"] for m in messages]),
+            output_string=response.dict(),
+            description=cost_estimation["description"],
+            exact=True,
+        )
+        with cost_estimation["cost_estimator"].append(ci):
+            ...
+    
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
@@ -656,14 +589,32 @@ def query_api_chat_sync(
     verbose=False,
     model: str | None = None,
     simulate: bool | int = False,
-    cost_estimator: CostEstimator = None,
+    cost_estimation: CostEstimator = None,
     **kwargs,
 ) -> BaseModel:
+    """
+    Query the API (through instructor.Instructor) with the given messages.
+
+    Order of precedence for model:
+    1. `model` argument
+    2. `model` in `kwargs`
+    3. Default model
+
+    simulate: bool: Whether to simulate the cost of the call.
+    cost_estimation: dict | None: Cost estimation and simulation config. If given, give as dict with keys:
+        {
+            "cost_estimator": CostEstimator, (if not given, will not estimate cost)
+            "description": str, (optional, helpful for tracking and breakdown)
+            "input_tokens_estimator": Callable[[str], int], (optional, defaults to len(input_string) // 4.5)
+            "output_tokens_estimator": Callable[[str, int], list[int]], (optional, defaults to [1, 2048])
+            "simstr_len": int, (optional, defaults to 1024)
+        }
+    """
     if not os.getenv("NO_CACHE"):
         assert (
             kwargs.get("response_model", -1) is not None
         ), "Cannot pass response_model=None if caching is enabled"
-
+  
     default_options = {
         "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
@@ -672,7 +623,7 @@ def query_api_chat_sync(
     options["model"] = model or options["model"]
     client, client_name = get_client_pydantic(options["model"], use_async=False)
     if options.get("n", 1) != 1:
-        raise NotImplementedError("Multiple structured queries not supported yet")
+        raise NotImplementedError("Multiple queries not supported yet")
 
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
@@ -680,29 +631,72 @@ def query_api_chat_sync(
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
+    max_tokens = options.get("max_tokens", None)
 
-    if simulate and cost_estimator:
-        with cost_estimator.add_api_item(
-            model=options["model"],
-            input_tokens=len("".join([m["content"] for m in messages])) // 3,
-            output_tokens=[1, options.get("max_tokens", 2048)],
-        ):
-            simstr = "This is a test output."
-            return simstr * (simulate // (len(simstr) // 3))
+    if cost_estimation is None:
+        cost_estimation = {}
+    cost_estimation = {
+        "cost_estimator": None,
+        "description": None,
+        "input_tokens_estimator": None,
+        "output_tokens_estimator": (
+            (lambda i, j: [1, max_tokens]) if max_tokens is not None else None
+        ),
+        "simstr_len": 1024,
+    } | cost_estimation
 
+
+    if simulate:
+        if cost_estimation["cost_estimator"]:
+            ci = CostItem(
+                model=model,
+                input_string="".join([m["content"] for m in messages]),
+                description=cost_estimation["description"],
+                token_estimator=cost_estimation["input_tokens_estimator"],
+                output_tokens_estimator=cost_estimation["output_tokens_estimator"],
+                exact=False,
+            )
+            with cost_estimation["cost_estimator"].append(ci):
+                ...
+        simstr = "This is a test output."
+        return simstr * int(
+            cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
+        )
+    
     print(
         options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
+        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
-
-    response = client.chat.completions.create(
+    
+    t0 = time() 
+    response, info = client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    t = time() - t0
 
+    input_tokens, output_tokens = (
+        info.usage.prompt_tokens,
+        info.usage.completion_tokens,
+    )
+    if cost_estimation["cost_estimator"]:
+        ci = CostItem(
+            time_range=[t, t],
+            model=model,
+            input_tokens=input_tokens,
+            output_tokens_range=[output_tokens, output_tokens],
+            input_string="".join([m["content"] for m in messages]),
+            output_string=response.dict(),
+            description=cost_estimation["description"],
+            exact=True,
+        )
+        with cost_estimation["cost_estimator"].append(ci):
+            ...
+    
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
+
 
 
 @text_cache
