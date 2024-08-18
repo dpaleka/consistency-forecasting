@@ -47,6 +47,7 @@ def test_estimate_contains_exact(params):
         response_model=response_model,
         simulate=True,
         cost_estimation={"cost_estimator": ce_sim},
+        verbose=True,
     )
     y = query_api_chat_sync(
         prompt,
@@ -54,6 +55,7 @@ def test_estimate_contains_exact(params):
         response_model=response_model,
         simulate=False,
         cost_estimation={"cost_estimator": ce_real},
+        verbose=True,
     )
     print("\n---")
     print("Estimated input tokens:", ce_sim.input_tokens)

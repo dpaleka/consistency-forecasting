@@ -12,6 +12,10 @@ import instructor
 from instructor.client import Instructor
 from instructor.mode import Mode
 import asyncio
+import logging
+import warnings
+from unittest.mock import patch
+from io import StringIO
 from pydantic import BaseModel
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
@@ -425,12 +429,55 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
+def get_raw_prompt(
+    messages: list[dict[str, str]],
+    client: Instructor,
+    model: str,
+    response_model: BaseModel,
+    verbose: bool = False,
+):
+    log_stream = StringIO()
+    logger = logging.getLogger("instructor")
+    logger.setLevel(logging.DEBUG)
+    stream_handler = logging.StreamHandler(log_stream)
+    logger.addHandler(stream_handler)
+
+    with patch("httpx.Client.send") as mock_send:
+        mock_send.return_value = None  # prevent actual API calls
+
+        try:
+            bla = client.chat.completions.create(
+                messages=messages,
+                response_model=response_model,
+                model=model,
+            )
+        except Exception:
+            # there WILL be an error
+            # there's nothing you can do about it
+            pass  # cope and seethe
+
+    log_contents = log_stream.getvalue()
+    if verbose:
+        print("\n---\n LOG \n---\n", log_contents, "\n---\n")
+    for line in log_contents.splitlines():
+        if "Instructor Request" in line:
+            if verbose:
+                print("\n---\n RAW PROMPT \n---\n", line, "\n---\n")
+            return line.split("Instructor Request: ")[1]
+
+    warnings.warn(
+        "No raw prompt found in logs. Maybe anthropic "
+        "isn't supported or something idk"
+    )
+    return ""
+
+
 @pydantic_cache
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose: bool = False,
     model: str | None = None,
-    simulate:bool=False,
+    simulate: bool = False,
     cost_estimation: dict | None = None,
     **kwargs,
 ) -> BaseModel:
@@ -456,7 +503,7 @@ async def query_api_chat(
         assert (
             kwargs.get("response_model", -1) is not None
         ), "Cannot pass response_model=None if caching is enabled"
-  
+
     default_options = {
         "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
@@ -487,12 +534,20 @@ async def query_api_chat(
         "simstr_len": 1024,
     } | cost_estimation
 
-
     if simulate:
+
+        raw_prompt = get_raw_prompt(
+            messages=messages,
+            client=client,
+            model=model,
+            response_model=options["response_model"],
+            verbose=verbose,
+        )
+
         if cost_estimation["cost_estimator"]:
             ci = CostItem(
                 model=model,
-                input_string="".join([m["content"] for m in messages]),
+                input_string=raw_prompt,
                 description=cost_estimation["description"],
                 token_estimator=cost_estimation["input_tokens_estimator"],
                 output_tokens_estimator=cost_estimation["output_tokens_estimator"],
@@ -504,13 +559,13 @@ async def query_api_chat(
         return simstr * int(
             cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
         )
-    
+
     print(
         options,
         f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
-    
-    t0 = time() 
+
+    t0 = time()
     response, info = await client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
@@ -536,7 +591,7 @@ async def query_api_chat(
         )
         with cost_estimation["cost_estimator"].append(ci):
             ...
-    
+
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
@@ -614,7 +669,7 @@ def query_api_chat_sync(
         assert (
             kwargs.get("response_model", -1) is not None
         ), "Cannot pass response_model=None if caching is enabled"
-  
+
     default_options = {
         "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
@@ -645,12 +700,20 @@ def query_api_chat_sync(
         "simstr_len": 1024,
     } | cost_estimation
 
-
     if simulate:
+        
+        raw_prompt = get_raw_prompt(
+            messages=messages,
+            client=client,
+            model=model,
+            response_model=options["response_model"],
+            verbose=verbose,
+        )
+        
         if cost_estimation["cost_estimator"]:
             ci = CostItem(
                 model=model,
-                input_string="".join([m["content"] for m in messages]),
+                input_string=raw_prompt,
                 description=cost_estimation["description"],
                 token_estimator=cost_estimation["input_tokens_estimator"],
                 output_tokens_estimator=cost_estimation["output_tokens_estimator"],
@@ -662,13 +725,13 @@ def query_api_chat_sync(
         return simstr * int(
             cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
         )
-    
+
     print(
         options,
         f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
-    
-    t0 = time() 
+
+    t0 = time()
     response, info = client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
@@ -692,11 +755,10 @@ def query_api_chat_sync(
         )
         with cost_estimation["cost_estimator"].append(ci):
             ...
-    
+
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
-
 
 
 @text_cache
