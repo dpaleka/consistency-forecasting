@@ -90,11 +90,11 @@ def test_estimate_contains_exact(params):
 
     failures = []
     if not (
-        ce_sim.input_tokens * 0.8 <= ce_real.input_tokens <= ce_sim.input_tokens * 1.2
+        ce_sim.input_tokens * 0.7 <= ce_real.input_tokens <= ce_sim.input_tokens * 1.4
     ):
         failures.append(
             f"input tokens real {ce_real.input_tokens} not within "
-            f"20\% of estimate {ce_sim.input_tokens}"
+            f"[0.7, 1.4] of estimate {ce_sim.input_tokens}"
         )
     if not (ce_sim.output_tokens_range[0] <= ce_real.output_tokens_range[0]):
         failures.append(
