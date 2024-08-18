@@ -3,6 +3,7 @@
 
 # %%
 import os
+import json
 from time import time
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
@@ -429,6 +430,90 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
+def process_raw_prompt(input_string: str) -> str:
+
+    try:
+        # Step 1: Split at 'new_kwargs='
+        split_parts = input_string.split("new_kwargs=", 1)
+        if len(split_parts) < 2:
+            warnings.warn(
+                "Failed to split the string at 'new_kwargs='. Returning the original string."
+            )
+            return input_string
+
+        json_string = split_parts[1].strip()
+
+        # Step 2: Attempt to load the remaining part as JSON
+        try:
+            translation_table = str.maketrans({"'": '"', '"': "'"})
+            json_string_trans = json_string.translate(translation_table)
+            json_data = json.loads(json_string_trans)
+        except json.JSONDecodeError:
+            warnings.warn(
+                "Failed to decode JSON with the translated string. "
+                "Will try the original string."
+            )
+            try:
+                json_data = json.loads(json_string)
+            except json.JSONDecodeError:
+                warnings.warn(
+                    "Failed to decode JSON with the original string. "
+                    "Returning the original string."
+                )
+                return input_string
+
+        # Step 3: Try to get actual useful stuff in life
+        if isinstance(json_data, dict):
+            try:
+                messages, tools, tool_choice = (
+                    json_data.get("messages", []),
+                    json_data.get("tools", []),
+                    json_data.get("tool_choice", []),
+                )
+                str_messages = "".join([m["content"] for m in messages])
+                funcs = [t["function"] for t in tools if "function" in t]
+                func_names = [f.get("name", "") for f in funcs]
+                func_descs = [f.get("description", "") for f in funcs]
+                func_paras = [
+                    f.get("parameters", {}).get("properties", {}).values()
+                    for f in funcs
+                ]  # list of lists of dicts
+                func_para_values = [[p.values() for p in ps] for ps in func_paras]
+                str_func_names = "".join(func_names)
+                str_func_descs = "".join(func_descs)
+                str_func_para_values = "".join(
+                    ["".join([str(i) for i in v]) for v in func_para_values]
+                )
+                
+                print("SUCCESSFULLY EXTRACTED RAW PROMPT")
+                
+                return (
+                    str_messages
+                    + str_func_names
+                    + str_func_descs
+                    + str_func_para_values
+                )
+
+            except KeyError:
+                warnings.warn(
+                    "Failed to extract relevant keys from decoded JSON."
+                )
+                return json_data
+        else:
+            warnings.warn(
+                "Decoded JSON is not a dictionary. Returning the original JSON."
+            )
+            return json_data
+
+        return json_data
+
+    except Exception as e:
+        warnings.warn(
+            f"An unexpected error occurred: {e}. Returning the original string."
+        )
+        return input_string
+
+
 def get_raw_prompt(
     messages: list[dict[str, str]],
     client: Instructor,
@@ -463,7 +548,8 @@ def get_raw_prompt(
         if "Instructor Request" in line:
             if verbose:
                 print("\n---\n RAW PROMPT \n---\n", line, "\n---\n")
-            return line.split("Instructor Request: ")[1]
+            line = line.split("Instructor Request: ")[1]
+            return process_raw_prompt(line)
 
     warnings.warn(
         "No raw prompt found in logs. Maybe anthropic "
@@ -701,7 +787,7 @@ def query_api_chat_sync(
     } | cost_estimation
 
     if simulate:
-        
+
         raw_prompt = get_raw_prompt(
             messages=messages,
             client=client,
@@ -709,7 +795,7 @@ def query_api_chat_sync(
             response_model=options["response_model"],
             verbose=verbose,
         )
-        
+
         if cost_estimation["cost_estimator"]:
             ci = CostItem(
                 model=model,
