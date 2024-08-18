@@ -11,13 +11,14 @@ from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
 from common.path_utils import get_data_path
 from pathlib import Path
+from common.cost_estimator import CostEstimator
 from common.llm_utils import parallelized_call
 import functools
 import random
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"
+MODEL = "gpt-4o-mini" #"gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o-mini" #"gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
@@ -38,6 +39,8 @@ async def instantiate(
     model: str = MODEL,
     model_relevance: str = MODEL_RELEVANCE,
     seed: int = 42,
+    cost_estimation: dict | None = None,
+    simulate: bool = False,
     **kwargs,
 ):
     """
@@ -81,7 +84,7 @@ async def instantiate(
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")
-            func = functools.partial(relevance, model=model_relevance)
+            func = functools.partial(relevance, model=model_relevance, simulate=simulate, cost_estimation=cost_estimation)
             relevances = await parallelized_call(
                 func=func, data=possible_ituples, max_concurrent_queries=25
             )
@@ -101,6 +104,8 @@ async def instantiate(
             n_write=n_write,
             overwrite=True,
             n_verification=3,
+            simulate=simulate,
+            cost_estimation=cost_estimation,
             **kwargs,
         )
 
@@ -138,6 +143,11 @@ async def instantiate(
     default=42,
     help="Seed for reproducibility. Controls random sampling, not necessarily any randomness in external model calls.",
 )
+@click.option(
+    "--simulate",
+    is_flag=True,
+    help="Simulate the instantiation process without actually writing tuples.",
+)
 def main(
     data_path,
     n_relevance,
@@ -147,7 +157,9 @@ def main(
     relevant_checks,
     tuple_dir,
     seed,
+    simulate,
 ):
+    ce = CostEstimator()
     checkers = choose_checkers(relevant_checks, tuple_dir)
     asyncio.run(
         instantiate(
@@ -158,8 +170,12 @@ def main(
             model=model_main,
             model_relevance=model_relevance,
             seed=seed,
+            simulate=simulate,
+            cost_estimation={"cost_estimator": ce},
         )
     )
+    print("COST ESTIMATE:\n-------\n")
+    print(ce)
 
 
 if __name__ == "__main__":
