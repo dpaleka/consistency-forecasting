@@ -1177,17 +1177,17 @@ class Consequence(MiniInstantiator):
         **kwargs,
     ) -> "Self.OutputFormat":
         p = base_sentences["P"]
-        consequence_types = await self._classify_consequence(p)
+        consequence_types = await self._classify_consequence(p, **kwargs)
         instantiation_results = []
         if self.ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
             if consequence_type == self.ConsequenceType.quantity:
-                instantiation_results.append(await self._instantiate(p, "quantity"))
+                instantiation_results.append(await self._instantiate(p, "quantity", **kwargs))
             elif consequence_type == self.ConsequenceType.time:
-                instantiation_results.append(await self._instantiate(p, "time"))
+                instantiation_results.append(await self._instantiate(p, "time", **kwargs))
             else:
-                instantiation_results.append(await self._instantiate(p, "misc"))
+                instantiation_results.append(await self._instantiate(p, "misc", **kwargs))
         return instantiation_results
 
     def instantiate_sync(
@@ -1197,41 +1197,41 @@ class Consequence(MiniInstantiator):
         **kwargs,
     ) -> "Self.OutputFormat":
         p = base_sentences["P"]
-        consequence_types = self._classify_consequence_sync(p)
+        consequence_types = self._classify_consequence_sync(p, **kwargs)
         instantiation_results = []
         if self.ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
             if consequence_type == self.ConsequenceType.quantity:
-                instantiation_results.append(self._instantiate_sync(p, "quantity"))
+                instantiation_results.append(self._instantiate_sync(p, "quantity", **kwargs))
             elif consequence_type == self.ConsequenceType.time:
-                instantiation_results.append(self._instantiate_sync(p, "time"))
+                instantiation_results.append(self._instantiate_sync(p, "time", **kwargs))
             else:
-                instantiation_results.append(self._instantiate_sync(p, "misc"))
+                instantiation_results.append(self._instantiate_sync(p, "misc", **kwargs))
         return instantiation_results
 
     async def _classify_consequence(
-        self, p: ForecastingQuestion
+        self, p: ForecastingQuestion, **kwargs
     ) -> "Self.ClassifyOutput":
         prompt = self.consequence_type_prompt.format(
             title=p.title,
             body=p.body,
         )
-        consequence_types = await answer(prompt, response_model=self.ClassifyOutput)
+        consequence_types = await answer(prompt, response_model=self.ClassifyOutput, **kwargs)
         return consequence_types
 
     def _classify_consequence_sync(
-        self, p: ForecastingQuestion
+        self, p: ForecastingQuestion, **kwargs
     ) -> "Self.ClassifyOutput":
         prompt = self.consequence_type_prompt.format(
             title=p.title,
             body=p.body,
         )
-        consequence_types = answer_sync(prompt, response_model=self.ClassifyOutput)
+        consequence_types = answer_sync(prompt, response_model=self.ClassifyOutput, **kwargs)
         return consequence_types
 
     async def _instantiate(
-        self, p: ForecastingQuestion, consequence_type: str
+        self, p: ForecastingQuestion, consequence_type: str, **kwargs
     ) -> "Self.OutputFormat":
         if consequence_type == "quantity":
             prompt = self.quantity_instantiator_prompt.format(
@@ -1252,11 +1252,11 @@ class Consequence(MiniInstantiator):
                 resolution_date=p.resolution_date,
             )
         return self._get_output_format(
-            p, await answer(prompt, response_model=self.InstantiateOutput)
+            p, await answer(prompt, response_model=self.InstantiateOutput, **kwargs)
         )
 
     def _instantiate_sync(
-        self, p: ForecastingQuestion, consequence_type: str
+        self, p: ForecastingQuestion, consequence_type: str, **kwargs
     ) -> "Self.OutputFormat":
         if consequence_type == "quantity":
             prompt = self.quantity_instantiator_prompt.format(
@@ -1277,7 +1277,7 @@ class Consequence(MiniInstantiator):
                 resolution_date=p.resolution_date,
             )
         return self._get_output_format(
-            p, answer_sync(prompt, response_model=self.InstantiateOutput)
+            p, answer_sync(prompt, response_model=self.InstantiateOutput, **kwargs)
         )
 
     def _get_output_format(
