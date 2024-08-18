@@ -4,17 +4,17 @@
             "label": "CondCondChecker",
             "num_samples": 25,
             "num_violations": 23,
-            "avg_violation": 0.049802,
-            "avg_violation_no_outliers": 0.048977,
-            "median_violation": 0.052539
+            "avg_violation": 0.044909,
+            "avg_violation_no_outliers": 0.042876,
+            "median_violation": 0.038641
         },
         "frequentist": {
             "label": "CondCondChecker",
             "num_samples": 25,
             "num_violations": 23,
-            "avg_violation": 0.298442,
-            "avg_violation_no_outliers": 0.303792,
-            "median_violation": 0.31238
+            "avg_violation": 0.285721,
+            "avg_violation_no_outliers": 0.286358,
+            "median_violation": 0.289109
         }
     },
     "by_source": {
@@ -23,16 +23,16 @@
                 "label": "CondCondChecker_Will South Korea become the leader in global digital governance by 2030?",
                 "num_samples": 5,
                 "num_violations": 4,
-                "avg_violation": 0.065484,
-                "avg_violation_no_outliers": 0.068541,
-                "median_violation": 0.067801
+                "avg_violation": 0.055692,
+                "avg_violation_no_outliers": 0.056396,
+                "median_violation": 0.067776
             },
             "frequentist": {
                 "label": "CondCondChecker_Will South Korea become the leader in global digital governance by 2030?",
                 "num_samples": 5,
                 "num_violations": 4,
-                "avg_violation": 0.322392,
-                "avg_violation_no_outliers": 0.349867,
+                "avg_violation": 0.301981,
+                "avg_violation_no_outliers": 0.334147,
                 "median_violation": 0.362096
             }
         },
@@ -41,16 +41,16 @@
                 "label": "CondCondChecker_Will Ukraine join NATO before 2030?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.043065,
-                "avg_violation_no_outliers": 0.044294,
-                "median_violation": 0.042368
+                "avg_violation": 0.038869,
+                "avg_violation_no_outliers": 0.040267,
+                "median_violation": 0.039776
             },
             "frequentist": {
                 "label": "CondCondChecker_Will Ukraine join NATO before 2030?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.291075,
-                "avg_violation_no_outliers": 0.287172,
+                "avg_violation": 0.280216,
+                "avg_violation_no_outliers": 0.287877,
                 "median_violation": 0.283545
             }
         },
@@ -59,17 +59,17 @@
                 "label": "CondCondChecker_Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.064077,
-                "avg_violation_no_outliers": 0.063824,
-                "median_violation": 0.061639
+                "avg_violation": 0.055542,
+                "avg_violation_no_outliers": 0.061696,
+                "median_violation": 0.057483
             },
             "frequentist": {
                 "label": "CondCondChecker_Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.354951,
-                "avg_violation_no_outliers": 0.354947,
-                "median_violation": 0.351323
+                "avg_violation": 0.325832,
+                "avg_violation_no_outliers": 0.351115,
+                "median_violation": 0.344951
             }
         },
         "Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?": {
@@ -77,17 +77,17 @@
                 "label": "CondCondChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.044251,
-                "avg_violation_no_outliers": 0.046389,
-                "median_violation": 0.038812
+                "avg_violation": 0.029484,
+                "avg_violation_no_outliers": 0.029121,
+                "median_violation": 0.034007
             },
             "frequentist": {
                 "label": "CondCondChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
                 "num_samples": 5,
                 "num_violations": 5,
-                "avg_violation": 0.290032,
-                "avg_violation_no_outliers": 0.309506,
-                "median_violation": 0.301285
+                "avg_violation": 0.249697,
+                "avg_violation_no_outliers": 0.250062,
+                "median_violation": 0.271894
             }
         },
         "Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?": {
@@ -95,17 +95,17 @@
                 "label": "CondCondChecker_Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?",
                 "num_samples": 5,
                 "num_violations": 4,
-                "avg_violation": 0.032132,
-                "avg_violation_no_outliers": 0.02803,
-                "median_violation": 0.027754
+                "avg_violation": 0.044958,
+                "avg_violation_no_outliers": 0.029407,
+                "median_violation": 0.035047
             },
             "frequentist": {
                 "label": "CondCondChecker_Will the FIFA World Cup's expansion to 48 teams lead to a significant increase in global soccer viewership by 2030?",
                 "num_samples": 5,
                 "num_violations": 4,
-                "avg_violation": 0.23376,
-                "avg_violation_no_outliers": 0.260108,
-                "median_violation": 0.264914
+                "avg_violation": 0.270879,
+                "avg_violation_no_outliers": 0.265871,
+                "median_violation": 0.289109
             }
         }
     }

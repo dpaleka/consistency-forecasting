@@ -133,30 +133,48 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
                 if source not in source_aggregated_stats:
                     source_aggregated_stats[source] = {"overall": {}, "by_checker": {}}
 
-                # Aggregate overall stats
-                for metric, metric_stats in source_stats.items():
-                    if metric not in source_aggregated_stats[source]["overall"]:
-                        source_aggregated_stats[source]["overall"][metric] = []
-                    source_aggregated_stats[source]["overall"][metric].append(
-                        metric_stats
-                    )
-
                 # Store individual checker stats
                 source_aggregated_stats[source]["by_checker"][
                     checker_name
                 ] = source_stats
 
-    # Calculate averages for overall stats
+    # Calculate overall stats
     for source, stats in source_aggregated_stats.items():
-        for metric, metric_stats_list in stats["overall"].items():
-            if isinstance(metric_stats_list[0], (int, float)):
-                stats["overall"][metric] = sum(metric_stats_list) / len(
-                    metric_stats_list
-                )
-            else:
-                stats["overall"][metric] = metric_stats_list[
-                    0
-                ]  # For non-numeric data, just take the first value
+        overall = {"default": {}, "frequentist": {}}
+        checker_count = len(stats["by_checker"])
+
+        for metric in ["default", "frequentist"]:
+            overall[metric] = {
+                "num_samples": 0,
+                "num_violations": 0,
+                "avg_violation": 0,
+                "avg_violation_no_outliers": 0,
+                "median_violation": 0,
+            }
+
+            for checker_stats in stats["by_checker"].values():
+                checker_metric = checker_stats[metric]
+                overall[metric]["num_samples"] += checker_metric["num_samples"]
+                overall[metric]["num_violations"] += checker_metric["num_violations"]
+                overall[metric]["avg_violation"] += checker_metric["avg_violation"]
+                overall[metric]["avg_violation_no_outliers"] += checker_metric[
+                    "avg_violation_no_outliers"
+                ]
+                overall[metric]["median_violation"] += checker_metric[
+                    "median_violation"
+                ]
+
+            # Calculate averages
+            for key in [
+                "avg_violation",
+                "avg_violation_no_outliers",
+                "median_violation",
+            ]:
+                overall[metric][key] /= checker_count
+
+            overall[metric]["label"] = f"Overall_{source}"
+
+        stats["overall"] = overall
 
     # Write the aggregated stats to a file
     output_file = output_directory / "stats_by_source_question.json"

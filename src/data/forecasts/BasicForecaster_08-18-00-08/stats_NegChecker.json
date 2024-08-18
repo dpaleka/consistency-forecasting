@@ -3,18 +3,18 @@
         "default": {
             "label": "NegChecker",
             "num_samples": 5,
-            "num_violations": 3,
-            "avg_violation": 0.082307,
-            "avg_violation_no_outliers": 0.053444,
-            "median_violation": 0.022816
+            "num_violations": 5,
+            "avg_violation": 0.088476,
+            "avg_violation_no_outliers": 0.061087,
+            "median_violation": 0.026073
         },
         "frequentist": {
             "label": "NegChecker",
             "num_samples": 5,
-            "num_violations": 3,
-            "avg_violation": 0.328267,
-            "avg_violation_no_outliers": 0.276166,
-            "median_violation": 0.214614
+            "num_violations": 5,
+            "avg_violation": 0.372937,
+            "avg_violation_no_outliers": 0.326147,
+            "median_violation": 0.229148
         }
     },
     "by_source": {
@@ -22,18 +22,18 @@
             "default": {
                 "label": "NegChecker_Will Ukraine join NATO before 2030?",
                 "num_samples": 1,
-                "num_violations": 0,
-                "avg_violation": 0.003142,
-                "avg_violation_no_outliers": 0.003142,
-                "median_violation": 0.003142
+                "num_violations": 1,
+                "avg_violation": 0.026073,
+                "avg_violation_no_outliers": 0.026073,
+                "median_violation": 0.026073
             },
             "frequentist": {
                 "label": "NegChecker_Will Ukraine join NATO before 2030?",
                 "num_samples": 1,
-                "num_violations": 0,
-                "avg_violation": 0.079206,
-                "avg_violation_no_outliers": 0.079206,
-                "median_violation": 0.079206
+                "num_violations": 1,
+                "avg_violation": 0.229148,
+                "avg_violation_no_outliers": 0.229148,
+                "median_violation": 0.229148
             }
         },
         "Will South Korea become the leader in global digital governance by 2030?": {
@@ -76,18 +76,18 @@
             "default": {
                 "label": "NegChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
                 "num_samples": 1,
-                "num_violations": 0,
-                "avg_violation": 0.002561,
-                "avg_violation_no_outliers": 0.002561,
-                "median_violation": 0.002561
+                "num_violations": 1,
+                "avg_violation": 0.010476,
+                "avg_violation_no_outliers": 0.010476,
+                "median_violation": 0.010476
             },
             "frequentist": {
                 "label": "NegChecker_Will the US Senate pass significant legislation regarding nuclear safety standards by 2025?",
                 "num_samples": 1,
-                "num_violations": 0,
-                "avg_violation": 0.071538,
-                "avg_violation_no_outliers": 0.071538,
-                "median_violation": 0.071538
+                "num_violations": 1,
+                "avg_violation": 0.144943,
+                "avg_violation_no_outliers": 0.144943,
+                "median_violation": 0.144943
             }
         },
         "Will Microsoft's carbon negative pledge significantly impact global CO2 levels by 2030?": {
