@@ -97,17 +97,19 @@ def fetch_live_questions_with_dates(
             else:
                 resolution_date_str = question.get("resolve_time")
 
-                def min_value(a, b):
-                    return min(x for x in (a, b) if x is not None)
+            """
+            def min_value(a, b):
+                return min(x for x in (a, b) if x is not None)
+            """
 
-                if "." in resolution_date_str:
-                    resolution_date_str = resolution_date_str.split(".")[0] + "Z"
+            if "." in resolution_date_str:
+                resolution_date_str = resolution_date_str.split(".")[0] + "Z"
 
-                resolution_date = dt.datetime.strptime(
-                    resolution_date_str, "%Y-%m-%dT%H:%M:%SZ"
-                )
+            resolution_date = dt.datetime.strptime(
+                resolution_date_str, "%Y-%m-%dT%H:%M:%SZ"
+            )
 
-                # Check if resolution_date is between 30 days and 10 years from now
+            # Check if resolution_date is between 30 days and 10 years from now
             if (not start_date) and (not end_date) and (resolution_date):
                 now = dt.datetime.now()
                 if (
