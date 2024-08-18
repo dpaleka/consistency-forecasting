@@ -61,7 +61,7 @@ class CostItem:
         self.description = description
         self.exact = exact
         if token_estimator is None:
-            token_estimator = lambda input_string: int(len(input_string) // 4.5)
+            token_estimator = lambda input_string: int(len(input_string) // 3)
         if output_tokens_estimator is None:
             output_tokens_estimator = lambda input_string, input_tokens: [1, 2048]
         self.token_estimator = token_estimator

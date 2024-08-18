@@ -67,38 +67,42 @@ def test_estimate_contains_exact(params):
     print("Estimated time:", ce_sim.time_range)
     print("Real time:", ce_real.time_range)
 
-    checks = [
-        {
-            "check": ce_sim.input_tokens * 0.8
-            <= ce_real.input_tokens
-            <= ce_sim.input_tokens * 1.2,
-            "error": "input tokens estimate not in range",
-        },
-        {
-            "check": ce_sim.output_tokens_range[0] <= ce_real.output_tokens_range[0],
-            "error": "output tokens estimate too high",
-        },
-        {
-            "check": ce_sim.output_tokens_range[1] >= ce_real.output_tokens_range[1],
-            "error": "output tokens estimate too low",
-        },
-        {
-            "check": ce_sim.cost_range[0] <= ce_real.cost_range[0],
-            "error": "cost estimate too high",
-        },
-        {
-            "check": ce_sim.cost_range[1] >= ce_real.cost_range[1],
-            "error": "cost estimate too low",
-        },
-        {
-            "check": ce_sim.time_range[0] <= ce_real.time_range[0],
-            "error": "time estimate too high",
-        },
-        {
-            "check": ce_sim.time_range[1] >= ce_real.time_range[1],
-            "error": "time estimate too low",
-        },
-    ]
-
-    failures = [c for c in checks if not c["check"]]
-    assert not failures, [f["error"] for f in failures]
+    failures = []
+    if not (
+        ce_sim.input_tokens * 0.8 <= ce_real.input_tokens <= ce_sim.input_tokens * 1.2
+    ):
+        failures.append(
+            "input tokens real {ce_real.input_tokens} not within "
+            "20\% of estimate {ce_sim.input_tokens}"
+        )
+    if not (ce_sim.output_tokens_range[0] <= ce_real.output_tokens_range[0]):
+        failures.append(
+            "output tokens estimate {ce_sim.output_tokens_range} too "
+            "high; real is {ce_real.output_tokens_range}"
+        )
+    if not (ce_sim.output_tokens_range[1] >= ce_real.output_tokens_range[1]):
+        failures.append(
+            "output tokens estimate {ce_sim.output_tokens_range} too "
+            "low; real is {ce_real.output_tokens_range}"
+        )
+    if not (ce_sim.cost_range[0] <= ce_real.cost_range[0]):
+        failures.append(
+            "cost estimate {ce_sim.cost_range} too high; real is "
+            "{ce_real.cost_range}"
+        )
+    if not (ce_sim.cost_range[1] >= ce_real.cost_range[1]):
+        failures.append(
+            "cost estimate {ce_sim.cost_range} too low; real is "
+            "{ce_real.cost_range}"
+        )
+    if not (ce_sim.time_range[0] <= ce_real.time_range[0]):
+        failures.append(
+            "time estimate {ce_sim.time_range} too high; real is "
+            "{ce_real.time_range}"
+        )
+    if not (ce_sim.time_range[1] >= ce_real.time_range[1]):
+        failures.append(
+            "time estimate {ce_sim.time_range} too low; real is "
+            "{ce_real.time_range}"
+        )
+    assert not failures, "\n".join(failures)
