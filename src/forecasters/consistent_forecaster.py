@@ -71,6 +71,17 @@ class ConsistentForecaster(Forecaster):
         self.instantiation_kwargs = instantiation_kwargs or {}
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
+        
+        self.bq_func_kwargs, self.instantiation_kwargs = self._kwargs_flow(
+            self.kwargs, self.bq_func_kwargs, self.instantiation_kwargs
+        )
+    
+    def _kwargs_flow(self, kwargs, bq_func_kwargs, instantiation_kwargs):
+        bq_func_kwargs["simulate"] = kwargs.get("simulate", False)
+        bq_func_kwargs["cost_estimation"] = kwargs.get("cost_estimation", None)
+        instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
+        instantiation_kwargs["cost_estimation"] = kwargs.get("cost_estimation", None)
+        return bq_func_kwargs, instantiation_kwargs
 
     def bq_function(
         self,
@@ -182,6 +193,11 @@ class ConsistentForecaster(Forecaster):
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+        
+        bq_func_kwargs, instantiation_kwargs = self._kwargs_flow(
+            kwargs, bq_func_kwargs, instantiation_kwargs
+        )
+        
         ans_P = self.hypocrite.call(sentence, **kwargs)
 
         if self.pregenerate:
@@ -250,6 +266,11 @@ class ConsistentForecaster(Forecaster):
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+        
+        bq_func_kwargs, instantiation_kwargs = self._kwargs_flow(
+            kwargs, bq_func_kwargs, instantiation_kwargs
+        )
+        
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         if self.pregenerate:
             # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
