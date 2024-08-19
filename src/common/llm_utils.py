@@ -620,7 +620,7 @@ def serialize_if_pydantic(obj: str | BaseModel) -> str:
 
 
 def prepare_messages(
-    prompt: str | BaseModel,
+    prompt: str | BaseModel | None,
     preface: str | None = None,
     examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
@@ -638,13 +638,14 @@ def prepare_messages(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    prompt = serialize_if_pydantic(prompt)
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
 def prepare_messages_alt(
-    prompt: str | BaseModel,
+    prompt: str | BaseModel | None,
     preface: str | None = None,
     examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
@@ -665,9 +666,10 @@ def prepare_messages_alt(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    prompt = serialize_if_pydantic(prompt)
-    prompt = preface + "\n\n" + prompt
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        prompt = preface + "\n\n" + prompt
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
