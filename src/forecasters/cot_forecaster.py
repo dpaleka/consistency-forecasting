@@ -77,38 +77,56 @@ class COT_Forecaster(Forecaster):
 
 
 class CoT_multistep_Forecaster:
-    def __init__(self, preface: str, examples: list[Example], steps: int = 3):
+    def __init__(
+        self, preface: str = "You are a helpful assistant", examples: list[str] = []
+    ):
         # TODO define nice preface and examples
         self.preface = preface
         self.examples = examples
-        self.steps = steps
+
+        """
         self.first_user_suffix = "\n\nPlease provide a step-by-step analysis to arrive at a probability estimate. We will do this in {self.steps} steps."
         self.intermezzos = [
             "Thank you. Now, let's continue with step {step + 1} of our analysis."
             for step in range(self.steps - 1)
         ]
+        """
 
     def call(
-        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+        self,
+        user_prompts_lists: list[str],
+        examples=None,
+        include_metadata=False,
+        **kwargs,
     ) -> float:
-        # TODO find a way to dump the messages
+        self.steps = len(user_prompts_lists)
+
         messages = [
             {"role": "system", "content": self.preface},
-            {
-                "role": "user",
-                "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
-            },
+            # {
+            #    "role": "user",
+            #    "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
+            # },
         ]
-        for step in range(1, self.steps + 1):
+
+        if examples:
+            for e in examples:
+                messages.extend(e)
+
+        for s in range(self.steps):
+            new_msg = {"role": "user", "content": user_prompts_lists[s]}
+            ##ad new user input
+            messages.append(new_msg)
+
+            # response = await answer_messages(
             response = answer_messages_sync(
                 messages=messages,
-                examples=self.examples,
+                # examples=self.examples,
                 response_model=Prob_cot,
                 **kwargs,
             )
+            ## add llm output to stream
             messages.append({"role": "assistant", "content": response.chain_of_thought})
-            if step < self.steps:
-                messages.append({"role": "user", "content": self.intermezzos[step - 1]})
 
         result = {
             "chain_of_thought": "\n\n".join(
@@ -121,33 +139,47 @@ class CoT_multistep_Forecaster:
             result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),
                 "timestamp": datetime.now().isoformat(),
+                "user_prompts": user_prompts_lists,
                 "steps": self.steps,
             }
+
+        self.result = result
 
         return result["prob"]
 
     async def call_async(
-        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+        self,
+        user_prompts_lists: list[str],
+        examples=None,
+        include_metadata=False,
+        **kwargs,
     ) -> float:
         messages = [
             {"role": "system", "content": self.preface},
-            {
-                "role": "user",
-                "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
-            },
+            # {
+            #    "role": "user",
+            #    "content": f"Question: {sentence.__str__()}{self.first_user_suffix}",
+            # },
         ]
 
-        for step in range(1, self.steps + 1):
+        if examples:
+            for e in examples:
+                messages.extend(e)
+
+        for s in range(self.steps):
+            new_msg = {"role": "user", "content": user_prompts_lists[s]}
+            ##ad new user input
+            messages.append(new_msg)
+
             response = await answer_messages(
+                # response = answer_messages_sync(
                 messages=messages,
-                examples=self.examples,
+                # examples=self.examples,
                 response_model=Prob_cot,
                 **kwargs,
             )
+            ## add llm output to stream
             messages.append({"role": "assistant", "content": response.chain_of_thought})
-
-            if step < self.steps:
-                messages.append({"role": "user", "content": self.intermezzos[step - 1]})
 
         result = {
             "chain_of_thought": "\n\n".join(
@@ -160,9 +192,11 @@ class CoT_multistep_Forecaster:
             result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),
                 "timestamp": datetime.now().isoformat(),
+                "user_prompts": user_prompts_lists,
                 "steps": self.steps,
             }
 
+        self.result = result
         return result["prob"]
 
     def dump_config(self):
