@@ -6,8 +6,8 @@ import os
 import json
 import random
 from time import time
-from typing import Coroutine, Optional, List, Type
-from polyfactory.factories.pydantic_factory import ModelFactory
+from typing import Coroutine, Optional, List, Type, Any
+from polyfactory.factories.pydantic_factory import ModelFactory, PydanticFieldMeta
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
@@ -567,9 +567,10 @@ def pick_random_fq(file_path: str, strip=False):
     fq = ForecastingQuestion.model_validate_json(random_line)
     if strip:
         fq = fq.cast_stripped()
+    print("I INDEED AM PICKING A RANDOM FQ")
     return fq
 
-
+# Function to dynamically create a Polyfactory factory class for any Pydantic model
 def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
     type_based_overrides = {
         ForecastingQuestion: lambda: pick_random_fq(
@@ -580,21 +581,19 @@ def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
         ),
     }
 
-    field_overrides = {
-        field_name: type_based_overrides.get(field.annotation, lambda: None)
-        for field_name, field in model.model_fields.items()
-        if field.annotation in type_based_overrides
-    }
-    
-    return type(
-        f"{model.__name__}Factory",  # Name of the factory class
-        (ModelFactory,),  # Base class
-        {
-            "__model__": model,  # Class attribute specifying the model
-            "__fields__": field_overrides,
-        },
-    )
+    # Define the dynamic factory class
+    class DynamicFactory(ModelFactory[model]):
+        __model__ = model
 
+        @classmethod
+        def get_field_value(cls, field_meta: PydanticFieldMeta, *args: Any, **kwargs: Any):
+            field_name = field_meta.name
+            field = model.model_fields[field_name]
+            if field.annotation in type_based_overrides:
+                return type_based_overrides[field.annotation]()
+            return super().get_field_value(field_meta, *args, **kwargs)
+
+    return DynamicFactory
 
 @pydantic_cache
 async def query_api_chat(
