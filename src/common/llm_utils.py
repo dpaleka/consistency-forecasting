@@ -4,8 +4,10 @@
 # %%
 import os
 import json
+import random
 from time import time
-from typing import Coroutine, Optional, List
+from typing import Coroutine, Optional, List, Type
+from polyfactory.factories.pydantic_factory import ModelFactory
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
@@ -30,6 +32,8 @@ import transformers
 from .datatypes import PlainText
 from .path_utils import get_src_path, get_root_path
 from .cost_estimator import CostEstimator, CostItem
+from common.path_utils import get_data_path
+from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped
 
 from .perscache import (
     Cache,
@@ -484,9 +488,9 @@ def process_raw_prompt(input_string: str) -> str:
                 str_func_para_values = "".join(
                     ["".join([str(i) for i in v]) for v in func_para_values]
                 )
-                
+
                 print("SUCCESSFULLY EXTRACTED RAW PROMPT")
-                
+
                 return (
                     str_messages
                     + str_func_names
@@ -495,9 +499,7 @@ def process_raw_prompt(input_string: str) -> str:
                 )
 
             except KeyError:
-                warnings.warn(
-                    "Failed to extract relevant keys from decoded JSON."
-                )
+                warnings.warn("Failed to extract relevant keys from decoded JSON.")
                 return json_data
         else:
             warnings.warn(
@@ -558,6 +560,42 @@ def get_raw_prompt(
     return ""
 
 
+def pick_random_fq(file_path: str, strip=False):
+    with open(file_path, "r") as file:
+        lines = file.readlines()
+    random_line = random.choice(lines)
+    fq = ForecastingQuestion.model_validate_json(random_line)
+    if strip:
+        fq = fq.cast_stripped()
+    return fq
+
+
+def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
+    type_based_overrides = {
+        ForecastingQuestion: lambda: pick_random_fq(
+            get_data_path() / "fq" / "real" / "test_formatted.jsonl"
+        ),
+        ForecastingQuestion_stripped: lambda: pick_random_fq(
+            get_data_path() / "fq" / "real" / "test_formatted.jsonl", strip=True
+        ),
+    }
+
+    field_overrides = {
+        field_name: type_based_overrides.get(field.annotation, lambda: None)
+        for field_name, field in model.model_fields.items()
+        if field.annotation in type_based_overrides
+    }
+    
+    return type(
+        f"{model.__name__}Factory",  # Name of the factory class
+        (ModelFactory,),  # Base class
+        {
+            "__model__": model,  # Class attribute specifying the model
+            "__fields__": field_overrides,
+        },
+    )
+
+
 @pydantic_cache
 async def query_api_chat(
     messages: list[dict[str, str]],
@@ -582,7 +620,6 @@ async def query_api_chat(
             "description": str, (optional, helpful for tracking and breakdown)
             "input_tokens_estimator": Callable[[str], int], (optional, defaults to len(input_string) // 4.5)
             "output_tokens_estimator": Callable[[str, int], list[int]], (optional, defaults to [1, 2048])
-            "simstr_len": int, (optional, defaults to 1024)
         }
     """
     if not os.getenv("NO_CACHE"):
@@ -641,13 +678,14 @@ async def query_api_chat(
             )
             with cost_estimation["cost_estimator"].append(ci):
                 ...
-        simstr = "This is a test output."
-        return simstr * int(
-            cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
-        )
+
+        factory = create_factory_for_model(options["response_model"])
+        return factory.build()
+
+    warnings.warn("You're BVRNing money.")
 
     print(
-        options,
+        {k: v for k, v in options.items() if k != "cost_estimator"},
         f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
 
@@ -807,13 +845,12 @@ def query_api_chat_sync(
             )
             with cost_estimation["cost_estimator"].append(ci):
                 ...
-        simstr = "This is a test output."
-        return simstr * int(
-            cost_estimation.get("simstr_len", 1024) // (len(simstr) // 4.5)
-        )
+        factory = create_factory_for_model(options["response_model"])
+        return factory.build()
 
+    warnings.warn("You're BVRNing money.")
     print(
-        options,
+        {k: v for k, v in options.items() if k != "cost_estimator"},
         f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 4.5}",
     )
 
@@ -967,8 +1004,8 @@ async def answer(
     }
     options = default_options | kwargs  # override defaults with kwargs
 
-    print(f"options: {options}")
-    print(f"messages: {messages}")
+    # print(f"options: {options}")
+    # print(f"messages: {messages}")
     async with global_llm_semaphore:
         return await query_api_chat(messages=messages, **options)
 
