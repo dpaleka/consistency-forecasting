@@ -17,8 +17,8 @@ import functools
 import random
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o-mini" #"gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o-mini" #"gpt-4o-mini-2024-07-18"
+MODEL = "gpt-4-turbo"  # "gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
@@ -28,7 +28,17 @@ BASE_DATA_PATH: Path = (
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
 TUPLES_PATH: Path = get_data_path() / "tuples/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["NegChecker"]
+RELEVANT_CHECKS = [
+    "NegChecker",
+    "AndChecker",
+    "OrChecker",
+    "AndOrChecker",
+    # "ButChecker",
+    "CondChecker",
+    # "ConsequenceChecker",
+    "ParaphraseChecker",
+    "CondCondChecker",
+]
 
 
 async def instantiate(
@@ -84,7 +94,12 @@ async def instantiate(
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")
-            func = functools.partial(relevance, model=model_relevance, simulate=simulate, cost_estimation=cost_estimation)
+            func = functools.partial(
+                relevance,
+                model=model_relevance,
+                simulate=simulate,
+                cost_estimation=cost_estimation,
+            )
             relevances = await parallelized_call(
                 func=func, data=possible_ituples, max_concurrent_queries=25
             )

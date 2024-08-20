@@ -587,6 +587,10 @@ def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
 
         @classmethod
         def get_field_value(cls, field_meta: PydanticFieldMeta, *args: Any, **kwargs: Any):
+
+            if not field_meta.name:
+                return super().get_field_value(field_meta, *args, **kwargs)
+
             field_name = field_meta.name
             field = model.model_fields[field_name]
             if field.annotation in type_based_overrides:

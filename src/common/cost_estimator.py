@@ -20,6 +20,21 @@ class CostItem:
             "output_tokens": 0.6e-6,
             "time": 9e-3,
         },
+        "gpt-4-turbo": {
+            "input_tokens": 10.0e-6,
+            "output_tokens": 30.0e-6,
+            "time": 36e-3,
+        },
+        "gpt-4": {
+            "input_tokens": 30.0e-6,
+            "output_tokens": 60.0e-6,
+            "time": 36e-3,
+        },
+        "gpt-3.5-turbo": {
+            "input_tokens": 0.50e-6,
+            "output_tokens": 1.50e-6,
+            "time": 36e-3,
+        },
         "claude-3-5-sonnet": {
             "input_tokens": 3.0e-6,
             "output_tokens": 15.0e-6,
@@ -148,5 +163,5 @@ class CostEstimator:
             f"Total cost: {self.cost_range[0]:.2f} - {self.cost_range[1]:.2f} USD\n"
             f"Total time: {self.time_range[0]:.2f} - {self.time_range[1]:.2f} sec\n"
             f"Total calls: {self.num_calls}\n"
-            f"Breakdown:\n {self.log}"
+            # f"Breakdown:\n {self.log}" # just print the log if you want to see the breakdown
         )
