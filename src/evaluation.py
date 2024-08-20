@@ -28,13 +28,14 @@ from static_checks.Checker import (
 from common.path_utils import get_data_path, get_src_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
+from common.cost_estimator import CostEstimator
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
-logging.basicConfig()
-logging.getLogger().setLevel(logging.INFO)  # configure root logger
+# logging.basicConfig()
+# logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
@@ -128,6 +129,8 @@ def process_check(
     load_dir: Path,
     run: bool,
     forecaster_class: str,
+    cost_estimation: dict | None = None,
+    simulate: bool = False,
 ) -> dict:
     print("Checker: ", check_name)
     with open(checkers[check_name].path, "r", encoding="utf-8") as f:
@@ -168,6 +171,8 @@ def process_check(
                                 line_begin=batch[0],
                                 line_end=batch[1],
                                 model=model,
+                                cost_estimation=cost_estimation,
+                                simulate=simulate,
                             )
                         )
                     else:
@@ -177,6 +182,8 @@ def process_check(
                             line_begin=batch[0],
                             line_end=batch[1],
                             model=model,
+                            cost_estimation=cost_estimation,
+                            simulate=simulate,
                         )
 
                 case "AdvancedForecaster":
@@ -189,6 +196,8 @@ def process_check(
                                 do_check=False,
                                 line_begin=batch[0],
                                 line_end=batch[1],
+                                cost_estimation=cost_estimation,
+                                simulate=simulate,
                             )
                         )
                     else:
@@ -197,6 +206,8 @@ def process_check(
                             do_check=False,
                             line_begin=batch[0],
                             line_end=batch[1],
+                            cost_estimation=cost_estimation,
+                            simulate=simulate,
                         )
 
             print(f"results_batch: {results_batch}")
@@ -310,6 +321,11 @@ def process_check(
     required=False,
     help="Path to the tuple file",
 )
+@click.option(
+    "--simulate",
+    is_flag=True,
+    help="Simulate the instantiation process without actually writing tuples.",
+)
 def main(
     forecaster_class: str,
     config_path: str,
@@ -320,6 +336,7 @@ def main(
     relevant_checks: list[str],
     is_async: bool,
     use_threads: bool,
+    simulate: bool,
     tuple_dir: str | None = None,
 ):
     if tuple_dir is None:
@@ -328,6 +345,8 @@ def main(
 
     checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
+    ce = CostEstimator()
+    
     match forecaster_class:
         case "BasicForecaster":
             forecaster = BasicForecaster()
@@ -432,6 +451,8 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 forecaster_class=forecaster_class,
+                simulate=simulate,
+                cost_estimation={"cost_estimator": ce},
             )
             all_stats = {
                 check_name: stats
@@ -453,10 +474,19 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 forecaster_class=forecaster_class,
+                simulate=simulate,
+                cost_estimation={"cost_estimator": ce},
             )
             all_stats[check_name] = stats
 
     # TODO figure out how to write to the load_dir
+    
+    print("COST ESTIMATE:\n-------\n")
+    print(ce)
+    
+    if simulate:
+        print("Simulation mode, not writing to disk")
+        return
 
     with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
