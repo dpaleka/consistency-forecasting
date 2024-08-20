@@ -6,6 +6,8 @@ from copy import deepcopy
 import hashlib
 from pydantic import BaseModel
 from common.datatypes import ForecastingQuestion
+from datetime import datetime
+from typing import Optional
 
 
 def round_floats(x, precision: int = 3, convert_ints: bool = False) -> Any:
@@ -125,3 +127,21 @@ def update_recursive(source, overrides):
         else:
             source[key] = value
     return source
+
+
+def normalize_date_format(date: str) -> Optional[datetime]:
+    for fmt in (
+        "%Y-%m-%d %H:%M:%S",  # 2029-12-31 00:00:00
+        "%Y-%m-%d",  # 2029-12-31
+        "%Y-%m-%dT%H:%M:%SZ",  # 2029-12-31T00:00:00Z
+        "%d/%m/%Y",  # 31/12/2029
+    ):
+        try:
+            return datetime.strptime(date, fmt)
+        except ValueError:
+            pass
+
+    print(
+        f"\033[1mWARNING:\033[0m Date format invalid and cannot be normalized: {date=}"
+    )
+    return None

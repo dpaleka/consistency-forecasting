@@ -349,9 +349,9 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
                 "Only some Mistral endpoints have `response_format` on OpenRouter. If you encounter errors, please check on the OpenRouter website."
             )
             kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
-        elif provider == "anthropic":
-            raise NotImplementedError(
-                "Anthropic over OpenRouter does not work as of June 4 2024"
+        if provider == "anthropic":
+            print(
+                "Anthropic does not have response_format on OpenRouter; it works due to Instructor magic nevertheless. This cannot be true without potential downsides. If there are weird failed requests happening, check if it might be due to this by testing a single API call with the required Pydantic model."
             )
         client = (
             get_async_openrouter_client_pydantic(**kwargs)

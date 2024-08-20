@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Call metaculus.py script
-python ../metaculus.py -start 20240701 -end 20241001 -num 200
+python ../metaculus.py -start 20240701 -end 20241001 -num 500
 python ../count_entries.py -f metaculus_20240701_20241001.json
 python3 ../add_body.py metaculus_20240701_20241001.json
 python3 ../reshape_questions.py --filename metaculus_20240701_20241001.json
