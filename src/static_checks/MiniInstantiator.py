@@ -15,16 +15,60 @@ from common.llm_utils import (
     Example,
     prepare_messages_alt,
 )
+from common.utils import (
+    write_jsonl_async_from_str,
+    update_recursive,
+    write_jsonl_from_str,
+)
+from common.path_utils import get_data_path
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
+    VerificationResult,
 )
 from common.perscache import register_models_for_cache
 import fq_verification.question_verifier as question_verifier
+from .checker_prompts import (
+    neg_verification_prompt,
+    and_verification_prompt,
+    or_verification_prompt,
+    but_verification_prompt,
+    conditional_verification_prompt,
+    consequence_verification_prompt,
+    consequence_quantity_verification_prompt,
+    consequence_time_verification_prompt,
+    paraphrase_verification_prompt,
+)
+
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
+write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
+verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
+
+async def write_verification_result(tuple_type, generated_tuple, verification):
+    filename = get_data_path() / "verification/tuple_verifications.jsonl"
+    verification_jsonl = generated_tuple.model_dump_json()
+    verification_jsonl = (
+        verification_jsonl[:-1]
+        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
+        + f', "tuple_type":"{tuple_type}"'
+        + "}"
+    )
+    await write_jsonl_async_from_str(filename, [verification_jsonl], append=True)
+
+
+def write_verification_result_sync(tuple_type, generated_tuple, verification):
+    filename = get_data_path() / "verification/tuple.jsonl"
+    verification_jsonl = generated_tuple.model_dump_json()
+    verification_jsonl = (
+        verification_jsonl[:-1]
+        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
+        + f", tuple_type:{tuple_type}"
+        + "}"
+    )
+    write_jsonl_from_str(filename, [verification_jsonl], append=True)
 
 
 class MiniInstantiator(ABC):
@@ -154,6 +198,22 @@ class MiniInstantiator(ABC):
     def instantiate_sync(
         self,
         base_sentences: dict[str, ForecastingQuestion],
+        n_verify=3,
+        **kwargs,
+    ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
+        if verify_before_instantion:
+            for i in range(n_verify):
+                output = self._instantiate_sync(base_sentences, **kwargs)
+                if self.verify_sync(output, base_sentences).valid:
+                    return output
+            return []
+        else:
+            return self._instantiate_sync(base_sentences, **kwargs)    
+
+
+    def _instantiate_sync(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
         **kwargs,
     ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         title_body = self.title_body_sync(base_sentences, **kwargs)
@@ -177,25 +237,19 @@ class MiniInstantiator(ABC):
     ) -> "Self.OutputFormat" | List["Self.OutputFormat"]:
         if verify_before_instantion:
             for i in range(n_verify):
-                title_body = await self.title_body(base_sentences, **kwargs)
-                sd = shallow_dict(title_body)
-                fqs = {k: None for k in sd.keys()}
-                valid = {k: False for k in sd.keys()}
-                for k, v in sd.items():
-                    fqs[k] = v.cast_FQ(
-                        resolution_date=self.resolution_date(base_sentences),
-                        question_type=self.question_type(base_sentences),
-                        data_source=self.data_source(base_sentences),
-                        resolution=self.resolution(base_sentences)[k],
-                    )
-                    validate_result = await question_verifier.verify_question(
-                        fqs[k], **kwargs
-                    )
-                    valid[k] = validate_result.valid
-                if all([res is not None for res in fqs.values()]):
-                    break
-            return self.OutputFormat(**fqs)
+                output = await self._instantiate(base_sentences, **kwargs)
+                verification = await self.verify(output, base_sentences)
+                if verification.valid:
+                    return output
+            return []
         else:
+            return await self._instantiate(base_sentences, **kwargs)
+
+    async def _instantiate(
+        self,
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> "Self.OutputFormat":
             title_body = await self.title_body(base_sentences, **kwargs)
             return self.OutputFormat(
                 **{
@@ -209,6 +263,29 @@ class MiniInstantiator(ABC):
                 }
             )
 
+    def verify_length(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+        return VerificationResult(valid=True, reasoning="Verify length not implemented, valid by default")
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+        return ""
+
+    def verify_sync(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+        prompt = self._verification_prompt(output, base_sentences)
+        if verify_length and not self.verify_length(output, base_sentences):
+            return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
+        verification = answer_sync(prompt, response_model=VerificationResult)
+        if write_verification:
+            write_verification_result_sync("and", output, verification)
+        return verification
+
+    async def verify(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+        prompt = self._verification_prompt(output, base_sentences)
+        if verify_length and not self.verify_length(output, base_sentences):
+            return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
+        verification = await answer(prompt, response_model=VerificationResult)
+        if write_verification:
+            await write_verification_result("and", output, verification)
+        return verification
 
 class Trivial(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -235,6 +312,12 @@ class Trivial(MiniInstantiator):
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return resolutions
+
+    def verify_sync(self, output: "Self.OutputFormat", base_sentences, **kwargs) -> VerificationResult:
+        return VerificationResult(valid=True, reasoning="Trivial Instantiation always valid")
+
+    async def verify(self, output: "Self.OutputFormat", base_sentences, **kwargs) -> VerificationResult:
+        return VerificationResult(valid=True, reasoning="Trivial Instantiation always valid")
 
 
 class Neg(MiniInstantiator):
@@ -391,6 +474,16 @@ class Neg(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"not_P": not resolutions["P"]}
 
+    def verify_length(
+        self,
+        output: "Self.OutputFormat",
+        base_sentences: "Self.BaseSentenceFormat",
+        **kwargs,
+    ) -> bool:
+        return len(output.not_P.body) > 0.8 * len(base_sentences.P.body)
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        return neg_verification_prompt.format(P_title=base_sentences.P.title, P_body=base_sentences.P.body, not_P_title=output.not_P.title, not_P_body=output.not_P.body)
 
 class And(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -598,6 +691,23 @@ class And(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"P_and_Q": resolutions["P"] and resolutions["Q"]}
 
+    def verify_length(
+        self,
+        output: "Self.OutputFormat",
+        base_sentences: "Self.BaseSentenceFormat",
+        **kwargs,
+    ) -> bool:
+        return len(output.P_and_Q.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        return and_verification_prompt.format(
+            P_title=base_sentences.P.title,
+            P_body=base_sentences.P.body,
+            Q_title=base_sentences.Q.title,
+            Q_body=base_sentences.Q.body,
+            R_title=output.P_and_Q.title,
+            R_body=output.P_and_Q.body
+        )
 
 class Or(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -740,6 +850,24 @@ class Or(MiniInstantiator):
             ),
         ]
 
+    def verify_length(
+        self,
+        output: "Self.OutputFormat",
+        base_sentences: "Self.BaseSentenceFormat",
+        **kwargs,
+    ) -> bool:
+        return len(output.P_or_Q.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        return or_verification_prompt.format(
+            P_title=base_sentences.P.title,
+            P_body=base_sentences.P.body,
+            Q_title=base_sentences.Q.title,
+            Q_body=base_sentences.Q.body,
+            R_title=output.P_or_Q.title,
+            R_body=output.P_or_Q.body
+        )
+
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"P_or_Q": resolutions["P"] or resolutions["Q"]}
 
@@ -811,6 +939,21 @@ class Paraphrase(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"para_P": resolutions["P"]}
 
+    def verify_length(
+        self,
+        generated_tuple: "Self.TupleFormat",
+        base_sentences: dict[str, ForecastingQuestion],
+        **kwargs,
+    ) -> bool:
+        return len(generated_tuple.para_P.body) > 0.65 * len(base_sentences.P.body)
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        return paraphrase_verification_prompt.format(
+            P_title=base_sentences.P.title,
+            P_body=base_sentences.P.body,
+            para_P_title=output.para_P.title,
+            para_P_body=output.para_P.body,
+        )
 
 class Conditional(MiniInstantiator):
     use_examples_here = True
@@ -935,6 +1078,19 @@ class Conditional(MiniInstantiator):
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"Q_given_P": resolutions["Q"] if resolutions["P"] else None}
+
+    def verify_length(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat", **kwargs) -> bool:
+        return len(output.Q_given_P.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        return conditional_verification_prompt.format(
+            P_title=base_sentences.P.title,
+            P_body=base_sentences.P.body,
+            Q_title=base_sentences.Q.title,
+            Q_body=base_sentences.Q.body,
+            Q_given_P_title=output.Q_given_P.title,
+            Q_given_P_body=output.Q_given_P.body
+        )
 
 
 class Consequence(MiniInstantiator):
@@ -1293,6 +1449,30 @@ class Consequence(MiniInstantiator):
             ),
         )
         return self.OutputFormat(cons_P=forecasting_question)
+
+
+    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+        consequence_type = output.cons_P.metadata.get("consequence_type", "misc")
+
+        common_format_args = {
+            "P_title": base_sentences.P.title,
+            "P_body": base_sentences.P.body,
+            "Q_title": output.cons_P.title,
+            "Q_body": output.cons_P.body
+        }
+
+        if consequence_type == "quantity":
+            return consequence_quantity_verification_prompt.format(**common_format_args)
+        elif consequence_type == "time":
+            time_format_args = {
+                **common_format_args,
+                "P_resolution_date": base_sentences.P.resolution_date,
+                "Q_resolution_date": output.cons_P.resolution_date
+            }
+            return consequence_time_verification_prompt.format(**time_format_args)
+        else:
+            return consequence_verification_prompt.format(**common_format_args)
+
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
