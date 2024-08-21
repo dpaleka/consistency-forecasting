@@ -127,7 +127,7 @@ async def instantiate(
 
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
-@click.option("--n_relevance", default=1000, help="Number of relevance samples.")
+@click.option("--n_relevance", default=40, help="Number of relevance samples.")
 @click.option("--n_write", default=2, help="Number of writes.")
 @click.option(
     "--model_main",

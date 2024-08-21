@@ -249,6 +249,8 @@ def process_check(
         {key: result["line"][key]["elicited_prob"] for key in keys}
         for result in results
     ]
+    if simulate:
+        return {}
     for line, answers, result in zip(data, all_answers, results):
         print(f"answers: {answers}")
         violation_data = {}
@@ -364,7 +366,7 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth=2,
+                depth=4,
                 hypocrite=BasicForecaster(),
                 checks=[NegChecker(), ParaphraseChecker()],
                 instantiation_kwargs={"model": model},
