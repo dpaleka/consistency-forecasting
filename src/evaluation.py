@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any
 import click
 import yaml
-import logging
 import functools
 import concurrent.futures
 
@@ -161,7 +160,12 @@ def process_check(
         results = []
         for batch_idx, batch in enumerate(batches):
             match forecaster_class:
-                case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster" | "RecursiveConsistentForecaster":
+                case (
+                    "BasicForecaster"
+                    | "CoTForecaster"
+                    | "ConsistentForecaster"
+                    | "RecursiveConsistentForecaster"
+                ):
                     if is_async:
                         reset_global_semaphore()
                         results_batch = asyncio.run(
@@ -346,7 +350,7 @@ def main(
     checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
     ce = CostEstimator()
-    
+
     match forecaster_class:
         case "BasicForecaster":
             forecaster = BasicForecaster()
@@ -360,7 +364,7 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth = 2,
+                depth=2,
                 hypocrite=BasicForecaster(),
                 checks=[NegChecker(), ParaphraseChecker()],
                 instantiation_kwargs={"model": model},
@@ -480,10 +484,10 @@ def main(
             all_stats[check_name] = stats
 
     # TODO figure out how to write to the load_dir
-    
+
     print("COST ESTIMATE:\n-------\n")
     print(ce)
-    
+
     if simulate:
         print("Simulation mode, not writing to disk")
         return
@@ -535,3 +539,4 @@ if __name__ == "__main__":
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 3 -k NegChecker
