@@ -23,7 +23,7 @@ script = f"{get_src_path()}/validate_fq_jsonl.py"
 jsonl_files = []
 real_data_dir = get_data_path() / "fq" / "real"
 synthetic_data_dir = get_data_path() / "fq" / "synthetic"
-tuple_data_dir = get_data_path() / "tuples"
+tuple_data_dirs = [path for path in get_data_path().glob("tuple*") if path.is_dir()]
 
 
 for file in real_data_dir.rglob("*.jsonl"):
@@ -42,13 +42,14 @@ for file in synthetic_data_dir.rglob("*.jsonl"):
         }
     )
 
-for file in tuple_data_dir.rglob("*.jsonl"):
-    jsonl_files.append(
-        {
-            "file": str(file),
-            "tuple": True,
-        }
-    )
+for tuple_data_dir in tuple_data_dirs:
+    for file in tuple_data_dir.rglob("*.jsonl"):
+        jsonl_files.append(
+            {
+                "file": str(file),
+                "tuple": True,
+            }
+        )
 
 print(f"{len(jsonl_files)} jsonl files found")
 
