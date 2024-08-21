@@ -69,12 +69,15 @@ class ConsistentForecaster(Forecaster):
         self.instantiation_kwargs = instantiation_kwargs or {}
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
-        
+
         self.bq_func_kwargs, self.instantiation_kwargs = self._kwargs_flow(
             self.kwargs, self.bq_func_kwargs, self.instantiation_kwargs
         )
-    
+
     def _kwargs_flow(self, kwargs, bq_func_kwargs, instantiation_kwargs):
+        bq_func_kwargs = bq_func_kwargs or {}
+        instantiation_kwargs = instantiation_kwargs or {}
+        kwargs = kwargs or {}
         bq_func_kwargs["simulate"] = kwargs.get("simulate", False)
         bq_func_kwargs["cost_estimation"] = kwargs.get("cost_estimation", None)
         instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
@@ -336,7 +339,7 @@ class ConsistentForecaster(Forecaster):
         metadata = {}
         bq_func_kwargs, instantiation_kwargs = self._kwargs_flow(
             kwargs, bq_func_kwargs, instantiation_kwargs
-        )        
+        )
         ans_P = self.hypocrite.call(sentence, **kwargs)
         metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
         cons_tuples = await self.instantiate_cons_tuples_async(
