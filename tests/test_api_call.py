@@ -64,6 +64,12 @@ async def test_answer_real_api(model):
                 os.environ["USE_OPENROUTER"] = "True"
         else:
             os.environ["USE_OPENROUTER"] = "True"
+            # check if openrouter_api_key is set
+            if not os.getenv("OPENROUTER_API_KEY", None):
+                print(
+                    f"OPENROUTER_API_KEY is not available, the test on model {model} will not run"
+                )
+                return
 
         response = await answer(prompt, model=model, response_model=UserInfo)
         print(response)
