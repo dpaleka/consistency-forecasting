@@ -4,9 +4,10 @@ import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
 from common.datatypes import QuestionGenerationResponse
-from question_generators.utils import deduplicate
+from fq_generation.utils import deduplicate
 import json
 from common.llm_utils import answer
+from common.datatypes import SyntheticRelQuestion
 
 
 source_questions = [
@@ -41,8 +42,8 @@ Note: extraterrestrial life must be (a) living currently and (b) highly unlikely
 
 => Related questions:
 - Will we find life on Mars by 2050?
-- Will a sample-return mission from Europa confirm the presence of life by 2050?
-- Will life be discovered on Enceladus before 2045?
+- Will a sample-return mission from Europa confirm the presence of life by 2055?
+- Will life be discovered on Enceladus before 2040?
 ---
 
 
@@ -52,8 +53,8 @@ Source question: Will North Korea engage in a significant diplomatic negotiation
 
 => Related questions:
 - Will North Korea significantly reform its legal system by 2030?
-- Will North Korea join an international climate change agreement by 2030?
-- Will North Korea open its borders for international tourism by 2030?
+- Will North Korea join an international climate change agreement by 2028?
+- Will North Korea open its borders for international tourism by 2035?
 ---
 
 Now generate {num_questions} related questions for the source question:
@@ -93,11 +94,11 @@ Resolve by: September 2040
 Example 2 (without body):
 ---
 Source question: Will North Korea engage in a significant diplomatic negotiation with a Western country by 2030?
-Resolve by: January 2025
+Resolve by: June 2025
 => Related questions:
 - Will North Korea significantly reform its legal system by January 2025?
-- Will North Korea join an international climate change agreement by January 2025?
-- Will North Korea open its borders for international tourism by January 2025?
+- Will North Korea join an international climate change agreement by December 2024?
+- Will North Korea open its borders for international tourism by March 2025?
 ---
 
 Now generate {num_questions} related questions that must all resolve by {resolve_by} (or indicate if this is not possible):
@@ -111,44 +112,6 @@ Resolve by: {resolve_by}
 
 body_prompt = """
 Source question body: {source_body}
-"""
-
-prompt_similar_question = """
-Objective: Given a source question, generate a set of similar forecasting questions for a forecasting market site like Metaculus or PredictIt.
-Your task is to generate {num_questions} new similar questions that mirror the theme or subject matter of the source question but is tailored to resolve by {resolve_by}.. This means that the outcome of the question must be able to be answered by the specified date.
-
-
-Guidelines:
-- The generated question should closely resemble the source question in theme or content but should be distinctly framed to resolve at the new specified time.
-- The question must be binary, answerable with a probability between 0 and 1.
-- The outcome of the question should be able to be determined by the specified date. If such a question is not possible, indicate this in your response.
-
-The source question will optionally include a body (detailed resolution criteria). If the source question has a body, use it to inform the generation of similar questions.
-You still need to generate only single sentences, not detailed resolution criteria. 
-
-Example 1:
----
-Source question: Will the United States increase federal funding for renewable energy before 2025?
-Source question body: This question will resolve as 'Yes' if the total federal funding allocated specifically for renewable energy projects in the fiscal year 2030 is at least twice the total federal funding allocated for such projects in the fiscal year 2021. The determination of federal funding levels must be based on official budget documents released by the U.S. government. The question will resolve as 'No' if the 2030 funding is not at least double the 2021 funding, or if it is impossible to determine the funding levels due to lack of transparent and public official data.
-Resolve by: 2030
-
-=> Similar question:
-- Will the United States double federal funding for renewable energy by 2030?
----
-
-Example 2 (without body):
----
-Source question: Will France win Euro 2028?"
-Resolve by: 2024
-
-=> Similar question:
-- "Will Kylian Mbappe win Euro 2024?"
-Now generate {num_questions} similar questions that must all resolve by {resolve_by} (or indicate if this is not possible):
-
-Source question: {source_question}
-{body_prompt}
-Resolve by: {resolve_by}
-=> Similar questions:
 """
 
 
@@ -181,8 +144,15 @@ def get_titles_from_fq(file_path, use_body=False):
             for line in file:
                 data = json.loads(line)
                 if "title" in data:
-                    if use_body:
-                        titles.append({"title": data["title"], "body": data["body"]})
+                    # get body and resolution date
+                    if "body" in data and "resolution_date" in data:
+                        titles.append(
+                            {
+                                "title": data["title"],
+                                "body": data["body"],
+                                "resolution_date": data["resolution_date"],
+                            }
+                        )
                     else:
                         titles.append({"title": data["title"]})
     except Exception as e:
@@ -191,23 +161,9 @@ def get_titles_from_fq(file_path, use_body=False):
 
 
 async def generate_questions_from_question(
-    source_question,
-    model,
-    num_questions,
-    source_body=None,
-    resolve_by=None,
-    similar=None,
+    source_question, model, num_questions, source_body=None, resolve_by=None
 ):
-    if similar:
-        question_prompt = prompt_similar_question.format(
-            source_question=source_question,
-            num_questions=num_questions,
-            resolve_by=resolve_by,
-            body_prompt=body_prompt.format(source_body=source_body)
-            if source_body
-            else "",
-        )
-    elif resolve_by:
+    if resolve_by:
         question_prompt = prompt_with_date.format(
             source_question=source_question,
             num_questions=num_questions,
@@ -239,34 +195,6 @@ async def generate_questions_from_question(
         question.source_question = source_question
 
     return generated_questions.questions
-    # question_prompt = prompt.format(source_question=source_question)
-    # generated_questions = await answer(
-    #     prompt=question_prompt,
-    #     preface=None,
-    #     response_model=QuestionGenerationResponse,
-    #     model=model,
-    # )
-
-    # # print(generated_questions)
-
-    # # Fill in the source_question manually if it's not provided by the LLM
-    # for field_name, synthetic_question in generated_questions.model_dump().items():
-    #     print(synthetic_question)
-    #     # Instantiate SyntheticRelQuestion from the dictionary
-    #     synthetic_question = SyntheticRelQuestion.model_validate(synthetic_question)
-    #     # Check if the field contains a SyntheticRelQuestion by re-instantiating it from the data
-    #     synthetic_question.source_question = source_question
-    #     # Set the updated SyntheticRelQuestion back to the original response object
-    #     setattr(generated_questions, field_name, synthetic_question)
-
-    # return [
-    #     q
-    #     for q in [
-    #         generated_questions.question_1,
-    #         generated_questions.question_2,
-    #         generated_questions.question_3,
-    #     ]
-    # ]
 
 
 async def generate_questions(
@@ -277,7 +205,6 @@ async def generate_questions(
     questions_per_source,
     use_body,
     resolve_by,
-    similar,
 ):
     questions = get_titles_from_fq(input_file, use_body)
 
@@ -288,30 +215,59 @@ async def generate_questions(
 
     questions = questions[:max_questions]
 
-    tasks = [
-        generate_questions_from_question(
+    all_questions = []
+
+    for question in questions:
+        # Add the source question as its own entry, including the body
+        source_entry = SyntheticRelQuestion(
+            title=question["title"],
+            source_question=None,
+            feedback=None,
+            fixed=False,
+            body=question.get("body", ""),  # Include the body field
+            resolution_date=question.get(
+                "resolution_date", ""
+            ),  # Include the resolution date field
+        )
+        all_questions.append(source_entry)
+
+        # Generate related questions
+        generated_questions = await generate_questions_from_question(
             question["title"],
             source_body=question["body"] if use_body else None,
             model=model,
             num_questions=questions_per_source,
             resolve_by=resolve_by,
-            similar=similar,
         )
-        for question in questions
-    ]
-    results = await asyncio.gather(*tasks)
-    generated_questions = [item for sublist in results for item in sublist]
 
-    print(f"len of generated questions: {len(generated_questions)}")
+        # Add generated questions to the list
+        all_questions.extend(generated_questions)
 
+    print(f"len of all questions (including source): {len(all_questions)}")
+
+    # Deduplicate only the generated questions
+    generated_questions = [q for q in all_questions if q.source_question is not None]
     deduplicated_questions = await deduplicate(generated_questions)
     print(
         f"len deduplicated questions: {len(deduplicated_questions)}, len of generated questions: {len(generated_questions)}"
     )
-    deduplicated_questions = [q.model_dump_json() for q in deduplicated_questions]
 
-    # add output parameter
-    await write_jsonl_async_from_str(output_file, deduplicated_questions, append=True)
+    # Prepare final output
+    final_output = []
+    for q in all_questions:
+        if q.source_question is None:
+            # This is a source question, add it as is
+            final_output.append(q.model_dump_json())
+        else:
+            # This is a generated question, check if it's in the deduplicated list
+            matching_deduped = next(
+                (dq for dq in deduplicated_questions if dq.title == q.title), None
+            )
+            if matching_deduped:
+                final_output.append(matching_deduped.model_dump_json())
+
+    # Write to output file
+    await write_jsonl_async_from_str(output_file, final_output, append=True)
 
 
 if __name__ == "__main__":
@@ -320,7 +276,8 @@ if __name__ == "__main__":
         "--input_file",
         "-i",
         type=str,
-        default=get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl",
+        default=get_data_path() / "fq" / "synthetic" / "synth-verified.jsonl",
+        # default=get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl",
     )
     parser.add_argument(
         "--output_file",
@@ -342,12 +299,6 @@ if __name__ == "__main__":
         help="Date by which the questions should resolve, e.g., 'September 2024'",
     )
 
-    parser.add_argument(
-        "--similar_questions",
-        action="store_true",
-        help="Generate similar questions instead of related questions",
-    )
-
     args = parser.parse_args()
     asyncio.run(
         generate_questions(
@@ -358,6 +309,5 @@ if __name__ == "__main__":
             questions_per_source=args.questions_per_source,
             use_body=args.use_body,
             resolve_by=args.resolve_by,
-            similar=args.similar_questions,
         )
     )
