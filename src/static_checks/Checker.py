@@ -725,11 +725,11 @@ class Checker(ABC):
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
             with open(self.path, "r", encoding="utf-8") as file:
-                # data: list[dict[str, Any]] = [json.loads(line) for line in file]
-                data = []
-                for line in file:
-                    print(line)
-                    data.append(json.loads(line))
+                data: list[dict[str, Any]] = [json.loads(line) for line in file]
+                # data = []
+                # for line in file:
+                #     print(line)
+                #     data.append(json.loads(line))
             if line_end >= 0:
                 print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
                 data = data[line_begin:line_end]

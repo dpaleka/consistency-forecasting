@@ -7,7 +7,7 @@ import json
 import random
 from time import time
 from typing import Coroutine, Optional, List, Type, Any
-from polyfactory.factories.pydantic_factory import ModelFactory, PydanticFieldMeta
+from polyfactory.factories.pydantic_factory import ModelFactory
 from openai import AsyncOpenAI, OpenAI
 from mistralai.async_client import MistralAsyncClient
 from mistralai.client import MistralClient
@@ -33,7 +33,12 @@ from .datatypes import PlainText
 from .path_utils import get_src_path, get_root_path
 from .cost_estimator import CostEstimator, CostItem
 from common.path_utils import get_data_path
-from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped
+from common.datatypes import (
+    ForecastingQuestion,
+    ForecastingQuestion_stripped,
+    Prob,
+    Prob_cot,
+)
 
 from .perscache import (
     Cache,
@@ -435,7 +440,6 @@ def _mistral_message_transform(messages):
 
 
 def process_raw_prompt(input_string: str) -> str:
-
     try:
         # Step 1: Split at 'new_kwargs='
         split_parts = input_string.split("new_kwargs=", 1)
@@ -570,6 +574,7 @@ def pick_random_fq(file_path: str, strip=False):
     print("I INDEED AM PICKING A RANDOM FQ")
     return fq
 
+
 # Function to dynamically create a Polyfactory factory class for any Pydantic model
 def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
     type_based_overrides = {
@@ -579,25 +584,52 @@ def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
         ForecastingQuestion_stripped: lambda: pick_random_fq(
             get_data_path() / "fq" / "real" / "test_formatted.jsonl", strip=True
         ),
+        Prob: lambda: Prob(prob=random.uniform(0.01, 0.99)),
+        Prob_cot: lambda: Prob_cot(
+            chain_of_thought="I'm thinking about this with a lot of attention and have come to the conclusion",
+            prob=random.uniform(0.01, 0.99),
+        ),
+        # float: lambda: random.uniform(0.01, 0.99),
     }
 
     # Define the dynamic factory class
     class DynamicFactory(ModelFactory[model]):
         __model__ = model
 
+        # @classmethod
+        # def get_field_value(
+        #     cls, field_meta: PydanticFieldMeta, *args: Any, **kwargs: Any
+        # ):
+
+        #     # if not field_meta.name:
+        #     #     return super().get_field_value(field_meta, *args, **kwargs)
+
+        #     # field_name = field_meta.name
+        #     # field = model.model_fields[field_name]
+        #     # if field.annotation in type_based_overrides:
+        #     #     return type_based_overrides[field.annotation]()
+        #     # return super().get_field_value(field_meta, *args, **kwargs)
+
+        #     if field_meta.annotation in type_based_overrides:
+        #         # Return the pre-generated instance to prevent recursion
+        #         return type_based_overrides[field_meta.annotation]()
+
+        #     # For other fields, use the default generation logic
+        #     return super().get_field_value(field_meta, *args, **kwargs)
+
         @classmethod
-        def get_field_value(cls, field_meta: PydanticFieldMeta, *args: Any, **kwargs: Any):
+        def build(cls, *args: Any, **kwargs: Any) -> BaseModel:
+            # If the model has a type-based override, return it directly
+            if cls.__model__ in type_based_overrides:
+                return type_based_overrides[cls.__model__]()
 
-            if not field_meta.name:
-                return super().get_field_value(field_meta, *args, **kwargs)
-
-            field_name = field_meta.name
-            field = model.model_fields[field_name]
-            if field.annotation in type_based_overrides:
-                return type_based_overrides[field.annotation]()
-            return super().get_field_value(field_meta, *args, **kwargs)
+            # Otherwise, proceed with default behavior
+            return super().build(*args, **kwargs)
 
     return DynamicFactory
+
+    return DynamicFactory
+
 
 @pydantic_cache
 async def query_api_chat(
@@ -661,7 +693,6 @@ async def query_api_chat(
     } | cost_estimation
 
     if simulate:
-
         raw_prompt = get_raw_prompt(
             messages=messages,
             client=client,
@@ -705,7 +736,6 @@ async def query_api_chat(
     )
 
     if cost_estimation["cost_estimator"]:
-
         ci = CostItem(
             time_range=[t, t],
             model=model,
@@ -828,7 +858,6 @@ def query_api_chat_sync(
     } | cost_estimation
 
     if simulate:
-
         raw_prompt = get_raw_prompt(
             messages=messages,
             client=client,
