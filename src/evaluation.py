@@ -130,13 +130,18 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     for checker_name, checker_stats in all_stats.items():
         if "by_source" in checker_stats:
             for source, source_stats in checker_stats["by_source"].items():
+                source_id = source_stats.get("source_id")
                 if source not in source_aggregated_stats:
-                    source_aggregated_stats[source] = {"overall": {}, "by_checker": {}}
+                    source_aggregated_stats[source] = {
+                        "source_id": source_id,
+                        "overall": {},
+                        "by_checker": {},
+                    }
 
                 # Store individual checker stats
-                source_aggregated_stats[source]["by_checker"][
-                    checker_name
-                ] = source_stats
+                source_aggregated_stats[source]["by_checker"][checker_name] = {
+                    k: v for k, v in source_stats.items() if k != "source_id"
+                }
 
     # Calculate overall stats
     for source, stats in source_aggregated_stats.items():
@@ -213,13 +218,19 @@ def process_check(
                     tuple_data["P"]["metadata"].get("source_question")
                     or tuple_data["P"]["title"]
                 )
+                source_id = tuple_data["P"]["metadata"].get("source_id")
                 if source_question not in source_questions:
-                    source_questions[source_question] = []
-                if len(source_questions[source_question]) < tuples_per_source:
-                    source_questions[source_question].append(tuple_data)
+                    source_questions[source_question] = {
+                        "tuples": [],
+                        "source_id": source_id,
+                    }
+                if len(source_questions[source_question]["tuples"]) < tuples_per_source:
+                    source_questions[source_question]["tuples"].append(tuple_data)
 
             checker_tuples = [
-                tuple for tuples in source_questions.values() for tuple in tuples
+                tuple
+                for source_data in source_questions.values()
+                for tuple in source_data["tuples"]
             ]
         else:
             checker_tuples = all_tuples[:num_lines]
@@ -340,30 +351,18 @@ def process_check(
 
         print(f"Debug: Calculating stats for {check_name}")
         if eval_by_source:
-            source_questions = {}
-            for result in results:
-                try:
-                    source_question = result["line"]["P"]["metadata"].get(
-                        "source_question"
-                    )
-                    if source_question is None:
-                        # If there's no source_question, this is likely the source question itself
-                        source_question = result["line"]["P"]["title"]
-
-                    if source_question not in source_questions:
-                        source_questions[source_question] = []
-                    source_questions[source_question].append(result)
-                except Exception as e:
-                    print(f"Debug: Error processing result in {check_name}: {str(e)}")
-                    print(f"Debug: Problematic result: {result}")
-
-            print(f"Debug: Source questions found: {list(source_questions.keys())}")
-
             stats = {"overall": get_stats(results, label=check_name), "by_source": {}}
-            for source, source_results in source_questions.items():
+            for source, source_data in source_questions.items():
+                source_results = [
+                    r
+                    for r in results
+                    if r["line"]["P"]["metadata"].get("source_question") == source
+                    or r["line"]["P"]["title"] == source
+                ]
                 stats["by_source"][source] = get_stats(
                     source_results, label=f"{check_name}_{source}"
                 )
+                stats["by_source"][source]["source_id"] = source_data["source_id"]
         else:
             stats = {"overall": get_stats(results, label=check_name)}
 

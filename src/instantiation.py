@@ -155,7 +155,12 @@ def generate_regular_tuples(question_sets, num_base_questions):
             possible_ituples.append(
                 (
                     {"P": question_set["source"]},
-                    {"P": {"source_question": source_question}},
+                    {
+                        "P": {
+                            "source_question": source_question,
+                            "source_id": question_set["source"].id,
+                        }
+                    },
                 )
             )
         elif len(question_set["related"]) >= num_base_questions - 1:
@@ -167,7 +172,10 @@ def generate_regular_tuples(question_sets, num_base_questions):
                     **{chr(81 + j): q for j, q in enumerate(related_combo)},
                 }
                 metadata = {
-                    key: {"source_question": source_question}
+                    key: {
+                        "source_question": source_question,
+                        "source_id": question_set["source"].id,
+                    }
                     for key in questions.keys()
                 }
                 possible_ituples.append((questions, metadata))
@@ -193,7 +201,10 @@ def generate_order_sensitive_tuples(question_sets, num_base_questions):
             for perm in itertools.permutations(all_questions):
                 questions = {chr(80 + i): q for i, q in enumerate(perm)}
                 metadata = {
-                    key: {"source_question": source_question}
+                    key: {
+                        "source_question": source_question,
+                        "source_id": source_question_obj.id,
+                    }
                     for key in questions.keys()
                 }
                 possible_ituples.append((questions, metadata))

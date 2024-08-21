@@ -288,15 +288,17 @@ class Checker(ABC):
             else:
                 instantiated_object = result[0] if isinstance(result, tuple) else result
 
-            # Ensure source_question is included in metadata for each question
+            # Ensure source_question and source_id are included in metadata for each question
             for field, value in instantiated_object.__dict__.items():
                 if isinstance(value, ForecastingQuestion):
                     value.metadata = value.metadata or {}
-                    source_question = supplied_metadata.get(field, {}).get(
-                        "source_question"
-                    )
+                    question_metadata = supplied_metadata.get(field, {})
+                    source_question = question_metadata.get("source_question")
+                    source_id = question_metadata.get("source_id")
                     if source_question:
                         value.metadata["source_question"] = source_question
+                    if source_id:
+                        value.metadata["source_id"] = source_id
 
             instantiated_with_metadata.append(
                 self.TupleFormat_with_metadata(
