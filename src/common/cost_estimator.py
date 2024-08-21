@@ -120,18 +120,7 @@ class CostItem:
             ]
 
     def __repr__(self):
-        return (
-            f"CostItem("
-            f"cost_range={self.cost_range}, "
-            f"time_range={self.time_range}, "
-            f"model={self.model}, "
-            f"input_tokens={self.input_tokens}, "
-            f"output_tokens_range={self.output_tokens_range}, "
-            f"input_string={self.input_string}, "
-            f"description={self.description}, "
-            f"exact={self.exact}, "
-            ")"
-        )
+        return str(self.__dict__)
 
 
 class CostEstimator:

@@ -17,8 +17,8 @@ import functools
 import random
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4-turbo"  # "gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
+MODEL = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o-mini"  # "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
@@ -30,14 +30,14 @@ TUPLES_PATH: Path = get_data_path() / "tuples/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
 RELEVANT_CHECKS = [
     "NegChecker",
-    "AndChecker",
-    "OrChecker",
-    "AndOrChecker",
-    # "ButChecker",
-    "CondChecker",
-    # "ConsequenceChecker",
-    "ParaphraseChecker",
-    "CondCondChecker",
+    # "AndChecker",
+    # "OrChecker",
+    # "AndOrChecker",
+    # # "ButChecker",
+    # "CondChecker",
+    # # "ConsequenceChecker",
+    # "ParaphraseChecker",
+    # "CondCondChecker",
 ]
 
 
@@ -128,7 +128,7 @@ async def instantiate(
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
 @click.option("--n_relevance", default=1000, help="Number of relevance samples.")
-@click.option("--n_write", default=50, help="Number of writes.")
+@click.option("--n_write", default=2, help="Number of writes.")
 @click.option(
     "--model_main",
     default=MODEL,
@@ -191,6 +191,7 @@ def main(
     )
     print("COST ESTIMATE:\n-------\n")
     print(ce)
+    print(ce.log)
 
 
 if __name__ == "__main__":
