@@ -21,7 +21,7 @@ from forecasters import (
 from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
-    NegChecker,
+    ParaphraseChecker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -348,7 +348,7 @@ def main(
                 depth=1,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    NegChecker()
+                    ParaphraseChecker()
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
