@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 from uuid import uuid4
+import pytz
 from common.datatypes import ForecastingQuestion
 from common.llm_utils import answer_sync, answer
 from .fq_from_news_datatypes import (
@@ -288,6 +289,9 @@ class NewsApiFinalForecastingQuestionGenerator:
         if cls.check_if_fq_was_rejected(generated_stripped_final_forecasting_question):
             return None
 
+        cet_timezone = pytz.timezone("CET")
+        scraped_date = datetime.now(cet_timezone).strftime("%Y-%m-%d %H:%M:%S")
+
         return ForecastingQuestion(
             id=uuid4(),
             title=generated_stripped_final_forecasting_question.title,
@@ -308,6 +312,7 @@ class NewsApiFinalForecastingQuestionGenerator:
                     "article_content": rough_fq_data["articleContent"],
                 },
                 "pose_date": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
+                "scraped_date": scraped_date,
             },
         )
 
