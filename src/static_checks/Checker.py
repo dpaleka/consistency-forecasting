@@ -108,6 +108,14 @@ class Checker(ABC):
             "path": str(self.path),
         }
 
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            default_tolerance=config["default_tolerance"],
+            frequentist_hparams=config["frequentist_hparams"],
+            path=config["path"],
+        )
+
     @property
     @abstractmethod
     def TupleFormat(self) -> Type[BaseModel]:

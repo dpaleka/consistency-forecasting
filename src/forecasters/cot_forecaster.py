@@ -32,7 +32,9 @@ class COT_Forecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -42,7 +44,9 @@ class COT_Forecaster(Forecaster):
         )
         return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, include_metadata=False, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -63,3 +67,16 @@ class COT_Forecaster(Forecaster):
                 for e in self.examples
             ],
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            preface=config["preface"],
+            examples=[
+                Example(
+                    user=ForecastingQuestion_stripped.load_json(config_example["user"]),
+                    assistant=Prob_cot.load_json(config_example["assistant"]),
+                )
+                for config_example in config["examples"]
+            ],
+        )
