@@ -378,3 +378,14 @@ class ConsistentForecaster(Forecaster):
             "bq_func_kwargs": self.bq_func_kwargs,
             "call_kwargs": self.kwargs,
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            hypocrite=Forecaster.load_config(config["hypocrite"]),
+            checks=[Checker.load_config(c) for c in config["checks"]],
+            base_data_path=config["base_data_path"],
+            instantiation_kwargs=config["instantiation_kwargs"],
+            bq_func_kwargs=config["bq_func_kwargs"],
+            **config["call_kwargs"],
+        )
