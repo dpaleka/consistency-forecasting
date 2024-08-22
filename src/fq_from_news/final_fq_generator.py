@@ -35,55 +35,55 @@ class NewsApiFinalForecastingQuestionGenerator:
 
         **Guidelines for Validating Forecasting Questions**
 
-        1. **Definitive, Correct Answers**:
-        - Questions must yield a clear YES or NO answer based on concrete, factual information from past news articles.
-        - The resolution should align with this information, treating True as "Yes" and False as "No."
-        - Ensure the resolution remains valid for all potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
-        - Reject the question if the resolution is not correct in the context of the question's body and the news article.
+            1. **Definitive, Correct Answers**:
+            - Questions must yield a clear YES or NO answer based on concrete, factual information from past news articles.
+            - The resolution should align with this information, treating True as "Yes" and False as "No."
+            - Ensure the resolution remains valid for all potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
+            - Reject the question if the resolution is not correct in the context of the question's body and the news article.
 
-        2. **Numeric Values**:
-        - For questions involving numeric values, frame inquiries to determine if the value will cross or fall below a specified threshold.
-        - Utilize rough thresholds to minimize numerical biases.
+            2. **Numeric Values**:
+            - For questions involving numeric values, frame inquiries to determine if the value will cross or fall below a specified threshold.
+            - Utilize rough thresholds to minimize numerical biases.
 
-        3. **Objectivity and Clarity**:
-        - Avoid ambiguous or subjective terms such as "significant", "major", or "substantial". 
-        - Questions must be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes.
+            3. **Objectivity and Clarity**:
+            - Avoid ambiguous or subjective terms such as "significant", "major", or "substantial". 
+            - Questions must be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes.
 
-        4. **Question Body**:
-        - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
-        - Provide adequate context without leading to predictable answers.
+            4. **Question Body**:
+            - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
+            - Provide adequate context without leading to predictable answers.
 
-        5. **Future Accuracy**:
-        - Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date.
-        - Questions based on specific events are permissible, but they must not resolve between the forecaster's `pose_date` and the resolution date's month.
+            5. **Future Accuracy**:
+            - Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date.
+            - Questions based on specific events are permissible, but they must not resolve between the forecaster's `pose_date` and the resolution date's month.
 
-        6. **Avoid Overly Specific Questions**:
-        - Questions should not depend on specific knowledge that could disadvantage certain models or participants. A question is overly specific if it references more than three distinct named entities from the source article.
+            6. **Avoid Overly Specific Questions**:
+            - Questions should not depend on specific knowledge that could disadvantage certain models or participants. A question is overly specific if it references more than three distinct named entities from the source article.
 
-        7. **Do Not Fabricate Information**:
-        - Ensure that all questions are based solely on the information provided in the article. Avoid creating questions that stem from personal insights or interpretations beyond the content of the source.
+            7. **Do Not Fabricate Information**:
+            - Ensure that all questions are based solely on the information provided in the article. Avoid creating questions that stem from personal insights or interpretations beyond the content of the source.
 
-        8. **Avoid Obvious Answers**:
-        - Questions should not be so obvious that they can be easily guessed using common sense or simplistic reasoning.
-        - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
+            8. **Avoid Obvious Answers**:
+            - Questions should not be so obvious that they can be easily guessed using common sense or simplistic reasoning.
+            - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
 
-            **Examples of obvious questions to avoid**:
-            - "Will the sun rise tomorrow?"
-            - "Will a country exist on Earth by August 2024?"
-            - "Will a person named John Smith be born by August 2024?"
-            - "Will a major earthquake occur in California by August 2024?"
-            - "Will a new event happen named `xyz`?" (Rejected due to name specificity)
+                **Examples of obvious questions to avoid**:
+                - "Will the sun rise tomorrow?"
+                - "Will a country exist on Earth by August 2024?"
+                - "Will a person named John Smith be born by August 2024?"
+                - "Will a major earthquake occur in California by August 2024?"
+                - "Will a new event happen named `xyz`?" (Rejected due to name specificity)
 
-            **Examples of better questions**:
-            - "Will a new country be formed by merging two existing countries by August 2024?"
-            - "Will a major new international treaty be signed by at least 50 countries by August 2024?"
-            - "Will a new type of renewable energy source provide more than 10% of a country's total electricity generation by August 2024?"
-            - "Will a new vaccine for a previously untreatable disease be approved for public use by August 2024?"
+                **Examples of better questions**:
+                - "Will a new country be formed by merging two existing countries by August 2024?"
+                - "Will a major new international treaty be signed by at least 50 countries by August 2024?"
+                - "Will a new type of renewable energy source provide more than 10% of a country's total electricity generation by August 2024?"
+                - "Will a new vaccine for a previously untreatable disease be approved for public use by August 2024?"
 
-        9. **No Reference to Articles**:
-        - The title and body of the question must not reference any articles or indicate that the question was formed using news content.
-        - Ensure there is no discernible knowledge of the `pose_date`.
-        - Directly reject questions that fail this test without attempting modifications.
+            9. **No Reference to Articles**:
+            - The title and body of the question must not reference any articles or indicate that the question was formed using news content.
+            - Ensure there is no discernible knowledge of the `pose_date`.
+            - Directly reject questions that fail this test without attempting modifications.
 
         **Validation Process:**
 
