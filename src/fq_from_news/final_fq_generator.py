@@ -20,13 +20,13 @@ class NewsApiFinalForecastingQuestionGenerator:
     # Create the save path directory
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
 
-    preface = """
+    initial_preface = """
     You are an expert in validating forecasting (prediction) questions that require nuanced understanding and cannot be answered by simple or trivial forecasting algorithms. Verify that each forecasting question's title, body, and resolution adhere to the established guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date for the questions should be set as {month_name}, {year}.
 
     The forecaster will assume the current date is the `pose_date`, which is {pose_date}. Therefore, use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
     """
 
-    prompt = """
+    initial_prompt = """
     You are tasked with following the validation process as described. 
 
     **Guidelines for Validating Forecasting Questions**
@@ -162,7 +162,12 @@ class NewsApiFinalForecastingQuestionGenerator:
         "resolution": True,
     }
 
-    def _processed_rough_fq_data(rough_fq_date: dict) -> dict:
+    @classmethod
+    def check_if_fq_was_rejected(cls, fq: ForecastingQuestion_stripped_with_resolution):
+        return fq is None or fq.title.strip() == ""
+
+    @classmethod
+    def _processed_rough_fq_data(cls, rough_fq_date: dict) -> dict:
         """
         Processes rough forecasting question data by removing unwanted fields.
 
@@ -178,8 +183,9 @@ class NewsApiFinalForecastingQuestionGenerator:
             if key not in ["articleUrl", "articlePublishedAt"]
         }
 
-    def _prompt_and_preface_formation(
-        rough_fq_data: dict, end_date: datetime, pose_date: datetime
+    @classmethod
+    def _initial_prompt_and_preface_formation(
+        cls, rough_fq_data: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
         Forms the forecasting prompt and preface from rough forecasting question data.
@@ -192,35 +198,25 @@ class NewsApiFinalForecastingQuestionGenerator:
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
         """
-        forecasting_preface = NewsApiFinalForecastingQuestionGenerator.preface.format(
+        forecasting_preface = cls.initial_preface.format(
             month_name=end_date.strftime("%B"),
             year=end_date.strftime("%Y"),
             pose_date=pose_date.strftime("%B %d, %Y"),
         )
-        forecasting_prompt = NewsApiFinalForecastingQuestionGenerator.prompt.format(
+        forecasting_prompt = cls.initial_prompt.format(
             source_rough_fq_data=rough_fq_data,
-            example_fq_1=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.example_fq_1, indent=4
-            ),
-            example_fq_2=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.example_fq_2, indent=4
-            ),
-            example_fq_3=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.example_fq_3, indent=4
-            ),
-            example_rejected_fq=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.example_rejected_fq, indent=4
-            ),
-            rough_fq_data_desc=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.rough_fq_data_desc, indent=4
-            ),
-            final_fq_form=json.dumps(
-                NewsApiFinalForecastingQuestionGenerator.final_fq_form, indent=4
-            ),
+            example_fq_1=json.dumps(cls.example_fq_1, indent=4),
+            example_fq_2=json.dumps(cls.example_fq_2, indent=4),
+            example_fq_3=json.dumps(cls.example_fq_3, indent=4),
+            example_rejected_fq=json.dumps(cls.example_rejected_fq, indent=4),
+            rough_fq_data_desc=json.dumps(cls.rough_fq_data_desc, indent=4),
+            final_fq_form=json.dumps(cls.final_fq_form, indent=4),
         )
         return forecasting_preface, forecasting_prompt
 
+    @classmethod
     def _form_final_fq_from_llm_return_val(
+        cls,
         rough_fq_data: dict,
         generated_stripped_final_forecasting_question: ForecastingQuestion_stripped_with_resolution,
         end_date: datetime,
@@ -238,7 +234,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         Returns:
             ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
         """
-        if generated_stripped_final_forecasting_question.title.strip() == "":
+        if cls.check_if_fq_was_rejected(generated_stripped_final_forecasting_question):
             return None
 
         return ForecastingQuestion(
@@ -287,7 +283,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(
+        ) = cls._initial_prompt_and_preface_formation(
             cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
         )
 
@@ -304,6 +300,82 @@ class NewsApiFinalForecastingQuestionGenerator:
             end_date,
             pose_date,
         )
+
+    @classmethod
+    async def _rough_fq_to_resolution_unchecked_final_stripped_fq(
+        cls,
+        rough_fq_data: dict,
+        model_name: str,
+        end_date: datetime,
+        pose_date: datetime,
+    ) -> ForecastingQuestion_stripped_with_resolution:
+        (
+            forecasting_preface,
+            forecasting_prompt,
+        ) = cls._initial_prompt_and_preface_formation(
+            cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
+        )
+
+        # Generate initial forcasting question (also attempts to verify resolution)
+        stripped_resolution_unchecked_fq: ForecastingQuestion_stripped_with_resolution = await answer(
+            prompt=forecasting_prompt,
+            preface=forecasting_preface,
+            model=model_name,
+            response_model=ForecastingQuestion_stripped_with_resolution,
+        )
+
+        return stripped_resolution_unchecked_fq
+
+    @classmethod
+    async def _res_unchecked_to_res_checked_final_stripped_fq(
+        cls,
+        rough_fq_data: dict,
+        model_name: str,
+        final_resolution_unchecked_forecasting_question: ForecastingQuestion_stripped_with_resolution,
+    ) -> ForecastingQuestion_stripped_with_resolution:
+        raise NotImplementedError
+
+        # If the FQ is already deemed invalid, return None
+        if cls.check_if_fq_was_rejected(
+            final_resolution_unchecked_forecasting_question
+        ):
+            return None
+
+        # Form prompt and verify resolution
+        processed_rough_fq_data = cls._processed_rough_fq_data(rough_fq_data)
+        article_title, article_description, article_content = (
+            processed_rough_fq_data["articleTitle"],
+            processed_rough_fq_data["articleDescription"],
+            processed_rough_fq_data["articleContent"],
+        )
+
+        res_unchecked_fq_title, res_unchecked_fq_body = (
+            final_resolution_unchecked_forecasting_question.title,
+            final_resolution_unchecked_forecasting_question.body,
+        )
+
+        (
+            forecasting_preface,
+            forecasting_prompt,
+        ) = cls._initial_prompt_and_preface_formation(
+            article_title,
+            article_description,
+            article_content,
+            res_unchecked_fq_title,
+            res_unchecked_fq_body,
+        )
+
+        # Generate fqs where resolution has been specifically checked
+        stripped_resolution_checked_fq: ForecastingQuestion_stripped_with_resolution = (
+            await answer(
+                prompt=forecasting_prompt,
+                preface=forecasting_preface,
+                model=model_name,
+                response_model=ForecastingQuestion_stripped_with_resolution,
+            )
+        )
+
+        return stripped_resolution_checked_fq
 
     @classmethod
     async def rough_fq_to_final_fq(
@@ -325,28 +397,30 @@ class NewsApiFinalForecastingQuestionGenerator:
         Returns:
             ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
         """
-        (
-            forecasting_preface,
-            forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(
-            cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
+
+        # Generate the FQs post the initial final check
+        final_resolution_unchecked_forecasting_question: ForecastingQuestion_stripped_with_resolution = await cls._rough_fq_to_resolution_unchecked_final_stripped_fq(
+            rough_fq_data, model_name, end_date, pose_date
         )
 
-        generated_stripped_final_forecasting_question = await answer(
-            prompt=forecasting_prompt,
-            preface=forecasting_preface,
-            model=model_name,
-            response_model=ForecastingQuestion_stripped_with_resolution,
-        )
+        # Generate the resolution checked (not verified) forecasting questions
+        # final_resolution_checked_forecasting_question: ForecastingQuestion_stripped_with_resolution = await cls._res_unchecked_to_res_checked_final_stripped_fq(
+        #     rough_fq_data, model_name, final_resolution_unchecked_forecasting_question
+        # )
 
-        return cls._form_final_fq_from_llm_return_val(
+        # Generate the forecasting question in the proper form
+        final_fq: ForecastingQuestion = cls._form_final_fq_from_llm_return_val(
             rough_fq_data,
-            generated_stripped_final_forecasting_question,
+            final_resolution_unchecked_forecasting_question,
             end_date,
             pose_date,
         )
 
+        return final_fq
+
+    @classmethod
     def rough_fq_to_final_fq_download_path(
+        cls,
         start_date: datetime,
         end_date: datetime,
         num_pages: int,
@@ -375,6 +449,6 @@ class NewsApiFinalForecastingQuestionGenerator:
         news_save_file_name = f"final_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
-            NewsApiFinalForecastingQuestionGenerator.news_api_final_fq_save_dir,
+            cls.news_api_final_fq_save_dir,
             news_save_file_name,
         )
