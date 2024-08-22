@@ -22,9 +22,6 @@ from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
     NegChecker,
-    ParaphraseChecker,
-    ButChecker,
-    CondChecker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -350,7 +347,9 @@ def main(
             forecaster = ConsistentForecaster.recursive(
                 depth=1,
                 hypocrite=BasicForecaster(),
-                checks=[NegChecker(), ParaphraseChecker(), ButChecker(), CondChecker()],
+                checks=[
+                    NegChecker()
+                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )
@@ -512,3 +511,4 @@ if __name__ == "__main__":
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
