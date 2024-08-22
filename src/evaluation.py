@@ -23,6 +23,8 @@ from static_checks.Checker import (
     Checker,
     NegChecker,
     ParaphraseChecker,
+    ButChecker,
+    CondChecker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -158,7 +160,12 @@ def process_check(
         results = []
         for batch_idx, batch in enumerate(batches):
             match forecaster_class:
-                case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster" | "RecursiveConsistentForecaster":
+                case (
+                    "BasicForecaster"
+                    | "CoTForecaster"
+                    | "ConsistentForecaster"
+                    | "RecursiveConsistentForecaster"
+                ):
                     if is_async:
                         reset_global_semaphore()
                         results_batch = asyncio.run(
@@ -265,7 +272,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-mini-2024-07-18",
+    default="gpt-4o-mini",  # -2024-07-18
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -341,9 +348,9 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth = 2,
+                depth=1,
                 hypocrite=BasicForecaster(),
-                checks=[NegChecker(), ParaphraseChecker()],
+                checks=[NegChecker(), ParaphraseChecker(), ButChecker(), CondChecker()],
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )
