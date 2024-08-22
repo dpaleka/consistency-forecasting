@@ -16,3 +16,7 @@ class ForecastingQuestion_stripped_with_resolution_list(BaseModel):
 
 
 register_model_for_cache(ForecastingQuestion_stripped_with_resolution_list)
+
+
+class ForecastingQuestionGroundTruthResolution(BaseModel):
+    resolution: bool
