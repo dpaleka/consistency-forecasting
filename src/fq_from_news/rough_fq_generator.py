@@ -28,99 +28,45 @@ class NewsApiRoughForecastingQuestionGenerator:
     """
 
     prompt = """
-    You are tasked with generating forecasting (prediction) questions that can be answered with a definitive YES or NO based on past events. Each question must consist of three parts: title, body, and resolution, adhering to the following guidelines:
+    A forecasting question consists of the title, the body and the resolution.
 
-    **1. Title**
-    - **Definitive Answers:** Suggest a question with a clear YES or NO answer based on past events.
-    - **Bias Prevention:** Avoid biases and ensure the title is not guessable through heuristics.
-    - **Sensitivity:** Exclude references to religion, politics, gender, race, or other sensitive matters.
-    - **Clarity:** Be straightforward and precise, avoiding ambiguity.
-    - **Resolution Date:** Specify as "by {month_name}, {year}?"
-    - **Definitiveness:** Ensure the resolution can be confirmed as YES or NO based on available information.
-    - **Scope:** The question must align with the exact wording in the source article.
-    - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
-    - **Article Usage:** Use "a" instead of "the" to enhance predictability.
-    - **Planned Events:** Frame questions regarding announced but incomplete events as proposals or announcements.
-    - **Sufficient Information:** The title should provide enough context to disambiguate events.
-
-    **2. Body**
-    - **Disambiguation:** Be precise, avoiding unnecessary details that could influence the resolution.
-    - **Specific Knowledge:** Avoid relying on specific knowledge that could disadvantage participants.
-    - **Context:** Only expand on the title’s date; do not include additional information.
-    - **Resolution Date:** Match the resolution date in the body with that in the title.
-    - **Article Usage:** Use "a" instead of "the" to maintain a predictive tone.
-
-    **3. Resolution**
-    - **Binary:** Mark the resolution as True for YES and False for NO.
-    - **Stability:** The resolution must remain unchanged by the end of the resolution date.
-    - **Concrete Events:** Base questions only on concrete events, not opinions.
-
-    **4. Additional Guidelines**
-    - **Quantity:** Generate as many high-quality forecasting questions as possible.
-    - **Numerical Values:** Use clear thresholds for numerical questions and avoid complex calculations.
-    - **Predictability:** Ensure details do not make the question predictable; use reasonable approximations.
-    - **Subjective Terms:** Avoid subjective terms like "significant."
-    - **Politically Biased Scenarios:** Exclude politically charged questions.
-    - **Avoid Overly Specific Questions:** Do not reference more than three distinct entities from the source article.
-    - **Do Not Fabricate Information:** Base questions solely on the provided article content.
-
-    **Examples of Questions That Should NOT Be Used**:
-
-    1. **Rejected Question**: Will the next United Nations Climate Change Conference result in an agreement on carbon emissions?
-    - **Reason**: The terms of the agreement are vague, multiple agreements could be reached, and it lacks a resolution date.
-
-    2. **Rejected Question**: Will a new variant of COVID-19 cause global disruptions in the next 12 months?
-    - **Reason**: "Disruptions" is subjective, and the resolution date is relative, not based on the publication date.
-
-    3. **Rejected Question**: Will the next G20 summit lead to a major international agreement on digital currency regulations?
-    - **Reason**: "Major" is subjective, the summit date is unspecified, and it lacks a resolution date.
-
-    4. **Rejected Question**: Will Donald Trump attack the U.S. criminal justice system after his historic guilty verdict?
-    - **Reason**: "Attack" is subjective, "historic" is not exact, and it is predictable.
-
-    5. **Rejected Question**: Will Hunter Biden be arrested following his charges for possession?
-    - **Reason**: It is common for arrests to follow charges, making it predictable, and the possession item is unspecified.
-
-    6. **Rejected Question**: Will a higher court in Pakistan uphold the death sentence of a Christian man by the end of <month> 2024?
-    - **Reason**: The question is overly specific and biased due to religious references. The specific use of "the" rather than "a" makes it too detailed.
-
-    7. **Rejected Question**: Will Hurricane Beryl make landfall in Tulum by the end of this week?
-    - **Reason**: The question is overly specific due to the hurricane's name, making it predictable. An alternate question could be: "Will a hurricane make landfall in Tulum by <month>, 2024?"
-
-    8. **Rejected Question**: Will the NFL be liable for over $4 billion in damages for violating antitrust laws in distributing out-of-market Sunday afternoon games by the end of <month>, 2024?
-    - **Reason**: The specificity regarding the amount and reason for damages makes it too predictable. An alternate question could be: "Will the NFL be liable for damages for violating antitrust laws this month?"
-
-    9. **Rejected Question**: Will a former president be granted absolute immunity for his core constitutional powers by the end of July?
-    - **Reason**: The question is overly specific regarding the terms of immunity, making it predictable. Moreover, the resolution year is not defined. 
-
-    10. **Rejected Question**: Will Tarmo Peltokoski start his term as music director of the Hong Kong Philharmonic in the July 2024 session?
-        - **Reason**: The specificity of the Philharmonic makes it too detailed. An alternate question could be: "Will Tarmo Peltokoski start his term as music director of a major orchestra in the July 2024 session"
-
-    11. **Rejected Question**: Will the far-right party gain a significant number of seats in the French legislative elections this month?
-        - **Reason**: "Significant" is subjective and could be interpreted differently, making it ambiguous. Moreover, it says "this month" rather than the concrete resolution date as the exact month and year. 
-
-    12. **Rejected Question**: Will an appeals court reject Garth Drabinsky's antitrust lawsuit against Actors'  by July 2024?
-        - **Reason**: The specificity about the parties involved and the nature of the lawsuit makes it too predictable.
-
-    13. **Rejected Question**: Will a woman cast her ballot in the second round of the legislative elections in France this month?
-        - **Reason**: It is predictable as women will cast ballots due to universal suffrage. Moreover, it says "this month" rather than the concrete resolution date as the exact month and year. 
-
-    14. **Rejected Question**: Will voters at a Paris polling station be acutely aware of the political situation in France by July 2024?
-        - **Reason**: "Acute awareness" is subjective and cannot be objectively measured.
-
-    15. **Rejected Question**: Will Steve Bannon report to a federal prison in Connecticut to serve his sentence by the end of by July 2024?
-        - **Reason**: The specificity of the prison location makes it predictable. An alternate question could be: "Will Steve Bannon report to a federal prison to serve a sentence by July 2024?"
-
-    16. **Rejected Question**: Will Archbishop Carlo Maria Vigano be excommunicated by the Vatican this month?
-        - **Reason**: The specificity of the Archbishop makes it too detailed. Alternative questions could be: "Will an Archbishop be excommunicated by the Vatican by July 2024?"
-
-    17. **Rejected Question**: "Will the number of fatalities from the propane tank explosion in Izmir, Turkey, increase to more than 5 by July 2024?"
-        - **Reason**: The question refers to "the" propane tank explosion which lets the forecaster understand that the event has already taken place.  
-        
-    18. **Rejected Question**: "Will TikTok settle the lawsuit with the Justice Department by August 2024?"
-        - **Reason**: It refers to the lawsuit using "the". The valid question is "Will TikTok settle a <some further context on lawsuit> lawsuit with the Justice Department by August 2024?"
+    **Guidelines for forecasting questions:**
     
-    **Your task is to create high-quality forecasting questions or reject the article if no proper question can be formed. If rejecting, return a forecasting question with an empty title and body as the reason.**
+        1. Title
+        - **Definitive Answers:** Suggest a question with a clear YES or NO answer based on past events.
+        - **Bias Prevention:** Avoid biases and ensure the title is not guessable through heuristics.
+        - **Sensitivity:** Exclude references to religion, politics, gender, race, or other sensitive matters.
+        - **Clarity:** Be straightforward and precise, avoiding ambiguity.
+        - **Resolution Date:** Specify as "by {month_name}, {year}?"
+        - **Definitiveness:** Ensure the resolution can be confirmed as YES or NO based on available information.
+        - **Scope:** The question must align with the exact wording in the source article.
+        - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
+        - **Article Usage:** Use "a" instead of "the" to enhance predictability.
+        - **Planned Events:** Frame questions regarding announced but incomplete events as proposals or announcements.
+        - **Sufficient Information:** The title should provide enough context to disambiguate events.
+
+        2. Body
+        - **Disambiguation:** Be precise, avoiding unnecessary details that could influence the resolution.
+        - **Specific Knowledge:** Avoid relying on specific knowledge that could disadvantage participants.
+        - **Context:** Only expand on the title’s date; do not include additional information.
+        - **Resolution Date:** Match the resolution date in the body with that in the title.
+        - **Article Usage:** Use "a" instead of "the" to maintain a predictive tone.
+
+        3. Resolution
+        - **Binary:** Mark the resolution as True for YES and False for NO.
+        - **Stability:** The resolution must remain unchanged by the end of the resolution date.
+        - **Concrete Events:** Base questions only on concrete events, not opinions.
+
+        4. Additional Guidelines
+        - **Quantity:** Generate as many high-quality forecasting questions as possible.
+        - **Numerical Values:** Use clear thresholds for numerical questions and avoid complex calculations.
+        - **Predictability:** Ensure details do not make the question predictable; use reasonable approximations.
+        - **Subjective Terms:** Avoid subjective terms like "significant."
+        - **Politically Biased Scenarios:** Exclude politically charged questions.
+        - **Avoid Overly Specific Questions:** Do not reference more than three distinct entities from the source article.
+        - **Do Not Fabricate Information:** Base questions solely on the provided article content.
+
+    A forecasting question following the above guidelines is said to be "proper".
 
     Here are examples of "proper" forecasting questions with title and body:
         Example 1:
@@ -135,24 +81,61 @@ class NewsApiRoughForecastingQuestionGenerator:
         ```JSON
         {example_fq_3}
         ```
+    ---
 
-    **You must reject the article if you cannot form a "proper" forecasting question from it.**
-    To reject a article, you may return the following forecasting question with an empty title and body as the reason for rejection as follows:
-    ```JSON
-    {example_rejected_fq}
-    ```
-
-    For this task, the format of the news article given to you will be:
-    ```JSON
+    A news article consist of the title, description and content.
     {article_description}
-    ```
+    
+    **Guidelines for news articles that can be used to form forecasting questions**
 
-    Generate a "proper" forecasting questions from the following source article. Reject it if you cannot generate a "proper" forecasting question. In case of rejection, you only return one forecasting question. 
+        1. **Clarity of Content**  
+        - The article must present information in a clear and straightforward manner. If the body of the article is ambiguous or convoluted, making it difficult for a reader or an AI forecaster to understand the context or events, the article should be rejected.
+
+        2. **Definitive Events**  
+        - The article should focus on concrete events that have occurred or are planned, allowing for a clear YES or NO answer. Articles that discuss hypothetical scenarios or opinions without clear outcomes should not be used.
+
+        3. **Contextual Relevance**  
+        - The article must provide sufficient context regarding the events discussed. If the events mentioned are not clearly defined or lack background information necessary for understanding, the article is not suitable.
+
+        4. **Specificity of Information**  
+        - The information within the article should be specific enough to allow for the formation of precise forecasting questions. Vague or overly general content that does not lend itself to clear predictions should be rejected.
+
+        5. **Binary Resolution Potential**  
+        - The article must imply a resolution that can be confirmed as TRUE (YES) or FALSE (NO) based on the information provided. If the outcome is uncertain or too subjective, the article should not be used.
+
+        6. **Avoidance of Sensitive Topics**  
+        - Articles that touch on sensitive subjects—such as religion, politics, gender, or race—should be avoided to prevent bias and ensure neutrality in the forecasting questions.
+
+        7. **Completeness of Information**  
+        - The article must contain enough information to create multiple high-quality forecasting questions. If it lacks sufficient detail or is too brief, it should be rejected.
+
+        8. **Absence of Fabricated Information**  
+        - All information used to form forecasting questions must be factual and derived directly from the article. Any article that contains unverifiable or fabricated information is not suitable.
+
+        9. **Numerical Clarity**  
+        - If the article includes numerical data, it should present clear thresholds or metrics that can be used to formulate precise forecasting questions. Articles with ambiguous numerical references should be rejected.
+
+        10. **Consistency with Guidelines**  
+            - The article must adhere to all the established guidelines for creating forecasting questions. Any deviation from these guidelines may result in rejection.
+
+    A news article following the above guidelines is said to be "complete".
+
+    ---
+
+    Consider the following source article:
     ```JSON
     {source_article}
     ```
 
-    Think carefully, aptly and adequately to either form "proper" forecasting questions (multiple if possible) from the source article or reject it.
+    You task is to
+    1. Judge whether the source news article is "complete", reject it otherwise.
+    2. Judge whether a "proper" forecasting question can be generated from it
+    3. Return multiple "proper" forecasting questions if the news article is "complete".
+
+    To reject a article, you may return the following forecasting question with an empty title and body as the reason for rejection as follows:
+    ```JSON
+    {example_rejected_fq}
+    ```
     """
 
     example_fq_1 = {
