@@ -185,8 +185,9 @@ class NewsApiRoughForecastingQuestionGenerator:
         "content": "The unformatted content of the article, where available. This is truncated to 200 chars. - you may use this to form the forecasting question",
     }
 
+    @classmethod
     def _prompt_and_preface_formation(
-        article: dict, end_date: datetime, pose_date: datetime
+        cls, article: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
         Forms the forecasting prompt and preface based on the given article and end date.
@@ -204,35 +205,27 @@ class NewsApiRoughForecastingQuestionGenerator:
             "description": article["description"],
             "content": article["content"],
         }
-        forecasting_preface = NewsApiRoughForecastingQuestionGenerator.preface.format(
+        forecasting_preface = cls.preface.format(
             month_name=end_date.strftime("%B"),
             year=end_date.strftime("%Y"),
             pose_date=pose_date.strftime("%B %d, %Y"),
         )
-        forecasting_prompt = NewsApiRoughForecastingQuestionGenerator.prompt.format(
+        forecasting_prompt = cls.prompt.format(
             source_article=json.dumps(formatted_article, indent=4),
-            example_fq_1=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_1, indent=4
-            ),
-            example_fq_2=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_2, indent=4
-            ),
-            example_fq_3=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_3, indent=4
-            ),
-            article_description=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.article_description, indent=4
-            ),
-            example_rejected_fq=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_rejected_fq, indent=4
-            ),
+            example_fq_1=json.dumps(cls.example_fq_1, indent=4),
+            example_fq_2=json.dumps(cls.example_fq_2, indent=4),
+            example_fq_3=json.dumps(cls.example_fq_3, indent=4),
+            article_description=json.dumps(cls.article_description, indent=4),
+            example_rejected_fq=json.dumps(cls.example_rejected_fq, indent=4),
             month_name=end_date.strftime("%B"),
             year=end_date.strftime("%Y"),
         )
 
         return forecasting_preface, forecasting_prompt
 
+    @classmethod
     def _form_rough_fq_from_llm_return_val(
+        cls,
         article: dict,
         generated_stripped_forecasting_questions: ForecastingQuestion_stripped_with_resolution_list,
     ) -> list:
@@ -342,7 +335,9 @@ class NewsApiRoughForecastingQuestionGenerator:
             article, generated_stripped_forecasting_questions
         )
 
+    @classmethod
     def article_to_rough_forecasting_question_download_path(
+        cls,
         start_date: datetime,
         end_date: datetime,
         num_pages: int,
@@ -371,6 +366,6 @@ class NewsApiRoughForecastingQuestionGenerator:
         news_save_file_name = f"rough_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
-            NewsApiRoughForecastingQuestionGenerator.news_api_rough_fq_save_dir,
+            cls.news_api_rough_fq_save_dir,
             news_save_file_name,
         )
