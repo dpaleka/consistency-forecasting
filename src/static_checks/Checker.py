@@ -110,7 +110,8 @@ class Checker(ABC):
 
     @classmethod
     def load_config(cls, config):
-        return cls(
+        subcls = globals()[config["name"]]
+        return subcls(
             default_tolerance=config["default_tolerance"],
             frequentist_hparams=config["frequentist_hparams"],
             path=config["path"],

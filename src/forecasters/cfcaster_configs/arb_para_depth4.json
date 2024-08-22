@@ -1,0 +1,105 @@
+{
+    "hypocrite": {
+        "hypocrite": {
+            "hypocrite": {
+                "hypocrite": {
+                    "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+                    "examples": [
+                        {
+                            "user": "{\"title\":\"Will Manhattan have a skyscraper a mile tall by 2030?\",\"body\":\"Resolves YES if at any point before 2030, there is at least one building in the NYC Borough of Manhattan (based on current geographic boundaries) that is at least a mile tall.\"}",
+                            "assistant": "0.03"
+                        }
+                    ]
+                },
+                "checks": [
+                    {
+                        "name": "ParaphraseChecker",
+                        "default_tolerance": 0.01,
+                        "frequentist_hparams": {
+                            "sigma": 0.05,
+                            "gamma": 2.58,
+                            "beta": 0.001
+                        },
+                        "path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\tuples\\ParaphraseChecker.jsonl"
+                    }
+                ],
+                "base_data_path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\fq\\real\\questions_cleaned_formatted.jsonl",
+                "instantiation_kwargs": {
+                    "simulate": false,
+                    "cost_estimation": null
+                },
+                "bq_func_kwargs": {
+                    "simulate": false,
+                    "cost_estimation": null
+                },
+                "call_kwargs": {}
+            },
+            "checks": [
+                {
+                    "name": "ParaphraseChecker",
+                    "default_tolerance": 0.01,
+                    "frequentist_hparams": {
+                        "sigma": 0.05,
+                        "gamma": 2.58,
+                        "beta": 0.001
+                    },
+                    "path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\tuples\\ParaphraseChecker.jsonl"
+                }
+            ],
+            "base_data_path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\fq\\real\\questions_cleaned_formatted.jsonl",
+            "instantiation_kwargs": {
+                "simulate": false,
+                "cost_estimation": null
+            },
+            "bq_func_kwargs": {
+                "simulate": false,
+                "cost_estimation": null
+            },
+            "call_kwargs": {}
+        },
+        "checks": [
+            {
+                "name": "ParaphraseChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\tuples\\ParaphraseChecker.jsonl"
+            }
+        ],
+        "base_data_path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\fq\\real\\questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "simulate": false,
+            "cost_estimation": null
+        },
+        "bq_func_kwargs": {
+            "simulate": false,
+            "cost_estimation": null
+        },
+        "call_kwargs": {}
+    },
+    "checks": [
+        {
+            "name": "ParaphraseChecker",
+            "default_tolerance": 0.01,
+            "frequentist_hparams": {
+                "sigma": 0.05,
+                "gamma": 2.58,
+                "beta": 0.001
+            },
+            "path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\tuples\\ParaphraseChecker.jsonl"
+        }
+    ],
+    "base_data_path": "C:\\Users\\abhim\\Google Drive\\Gittable\\Code\\consistency-forecasting\\src\\data\\fq\\real\\questions_cleaned_formatted.jsonl",
+    "instantiation_kwargs": {
+        "simulate": false,
+        "cost_estimation": null
+    },
+    "bq_func_kwargs": {
+        "simulate": false,
+        "cost_estimation": null
+    },
+    "call_kwargs": {}
+}

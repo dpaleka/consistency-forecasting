@@ -401,8 +401,10 @@ class ConsistentForecaster(Forecaster):
 
     @classmethod
     def load_config(cls, config):
+        if "hypocrite" not in config:
+            return BasicForecaster.load_config(config)
         return cls(
-            hypocrite=Forecaster.load_config(config["hypocrite"]),
+            hypocrite=cls.load_config(config["hypocrite"]),
             checks=[Checker.load_config(c) for c in config["checks"]],
             base_data_path=config["base_data_path"],
             instantiation_kwargs=config["instantiation_kwargs"],
