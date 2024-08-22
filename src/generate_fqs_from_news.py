@@ -136,6 +136,11 @@ def main(args: argparse.Namespace) -> None:
         args.final_fq_verification_model_name = args.model_name
 
     if args.sync:
+        raise RuntimeError(
+            "Added to ensure that the user understands that\
+                           some functionality may be missing."
+        )
+        # Not a warning as it's not visible due to large output after this warning
         generate_forecasting_questions_from_news_sync(
             processed_news_articles_path, args
         )
