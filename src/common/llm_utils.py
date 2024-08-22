@@ -589,6 +589,7 @@ def create_factory_for_model(model: Type[BaseModel]) -> Type[ModelFactory]:
             chain_of_thought="I'm thinking about this with a lot of attention and have come to the conclusion",
             prob=random.uniform(0.01, 0.99),
         ),
+        float: lambda: random.uniform(0.01, 9.99),
         # float: lambda: random.uniform(0.01, 0.99),
     }
 
