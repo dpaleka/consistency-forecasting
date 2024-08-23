@@ -21,6 +21,7 @@ import transformers
 
 from .datatypes import PlainText
 from .path_utils import get_src_path, get_root_path
+from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
 
 
 from .perscache import (
@@ -143,6 +144,30 @@ def singleton_constructor(get_instance_func):
         return instances[get_instance_func]
 
     return wrapper
+
+
+@singleton_constructor
+def get_async_perplexity_client() -> AsyncPerplexityClient:
+    load_dotenv()
+    api_key = os.getenv("PERPLEXITY_API_TOKEN")
+    if not api_key:
+        raise ValueError("PERPLEXITY_API_TOKEN not found in environment variables")
+    client = AsyncPerplexityClient(api_key)
+    # If you have a logging/instrumentation library like logfire, you can add it here
+    # logfire.instrument_perplexity(client)
+    return client
+
+
+@singleton_constructor
+def get_sync_perplexity_client() -> SyncPerplexityClient:
+    load_dotenv()
+    api_key = os.getenv("PERPLEXITY_API_TOKEN")
+    if not api_key:
+        raise ValueError("PERPLEXITY_API_TOKEN not found in environment variables")
+    client = SyncPerplexityClient(api_key)
+    # If you have a logging/instrumentation library like logfire, you can add it here
+    # logfire.instrument_perplexity(client)
+    return client
 
 
 @singleton_constructor
@@ -284,6 +309,11 @@ def is_openai(model: str) -> bool:
     return any(keyword in model for keyword in keywords)
 
 
+def is_perplexity_ai(model: str) -> bool:
+    keywords = ["perplexity", "sonar"]
+    return any(keyword.lower() in model.lower() for keyword in keywords)
+
+
 def is_togetherai(model: str) -> bool:
     keywords = ["together", "llama", "phi", "orca", "Hermes", "Yi"]
     return any(keyword in model for keyword in keywords)
@@ -304,6 +334,8 @@ def get_provider(model: str) -> str:
         return "openrouter"
     elif is_openai(model):
         return "openai"
+    elif is_perplexity_ai(model):
+        return "perplexity"
     elif is_anthropic(model):
         return "anthropic"
     elif is_togetherai(model):
@@ -391,6 +423,11 @@ def get_client_native(
                     "Only synchronous calls are supported for TogetherAI"
                 )
             client = get_togetherai_client_native()
+        elif provider == "perplexity":
+            if use_async:
+                client = get_async_perplexity_client()
+            else:
+                client = get_sync_perplexity_client()
         else:
             raise NotImplementedError(f"Model {model} is not supported for now")
 
