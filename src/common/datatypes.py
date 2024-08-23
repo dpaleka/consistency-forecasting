@@ -323,3 +323,9 @@ class DictLikeDataclass:
 
     def to_dict(self) -> dict:
         return {key: getattr(self, key) for key in self.keys()}
+
+
+class ResolverOutput(BaseModel):
+    chain_of_thought: str
+    can_resolve_question: bool
+    answer: Optional[bool]
