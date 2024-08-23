@@ -257,8 +257,18 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = self.hypocrite.call(sentence, **kwargs)
-        metadata["P"] = sentence.model_dump() | {"elicited_prob": ans_P}
+        ans_P = self.hypocrite.call(
+            sentence, include_metadata=include_metadata, **kwargs
+        )
+        if isinstance(ans_P, tuple):
+            ans_P, ans_P_metadata = ans_P
+            metadata["P"] = (
+                dict(sentence)
+                | {"elicited_prob": ans_P}
+                | {"elicitation_metadata": ans_P_metadata}
+            )
+        else:
+            metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
         cons_tuples = self.instantiate_cons_tuples(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
@@ -269,11 +279,23 @@ class ConsistentForecaster(Forecaster):
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
-            metadata[check.__class__.__name__] = {
-                k: cons_tuple[k].model_dump() | {"elicited_prob": hypocrite_answers[k]}
-                for k in cons_tuple
-            }
+            hypocrite_answers = self.hypocrite.elicit(
+                cons_tuple, include_metadata=include_metadata, **kwargs
+            )
+            if isinstance(next(iter(hypocrite_answers.values())), tuple):
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k][0]}
+                    | {"elicitation_metadata": hypocrite_answers[k][1]}
+                    for k in cons_tuple
+                }
+                hypocrite_answers = {k: v[0] for k, v in hypocrite_answers.items()}
+            else:
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k]}
+                    for k in cons_tuple
+                }
             hypocrite_answers["P"] = ans_P
             other = len(cons_tuple) - 1
             cons_answers, v = check.max_min_arbitrage(
@@ -320,8 +342,18 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = self.hypocrite.call(sentence, **kwargs)
-        metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
+        ans_P = await self.hypocrite.call_async(
+            sentence, include_metadata=include_metadata, **kwargs
+        )
+        if isinstance(ans_P, tuple):
+            ans_P, ans_P_metadata = ans_P
+            metadata["P"] = (
+                dict(sentence)
+                | {"elicited_prob": ans_P}
+                | {"elicitation_metadata": ans_P_metadata}
+            )
+        else:
+            metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
         cons_tuples = await self.instantiate_cons_tuples_async(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
@@ -333,11 +365,24 @@ class ConsistentForecaster(Forecaster):
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
-            metadata[check.__class__.__name__] = {
-                k: cons_tuple[k].model_dump() | {"elicited_prob": hypocrite_answers[k]}
-                for k in cons_tuple
-            }
+            hypocrite_answers = await self.hypocrite.elicit_async(
+                cons_tuple, include_metadata=include_metadata, **kwargs
+            )
+            if isinstance(next(iter(hypocrite_answers.values())), tuple):
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k][0]}
+                    | {"elicitation_metadata": hypocrite_answers[k][1]}
+                    for k in cons_tuple
+                }
+                hypocrite_answers = {k: v[0] for k, v in hypocrite_answers.items()}
+            else:
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k]}
+                    for k in cons_tuple
+                }
+
             hypocrite_answers["P"] = ans_P
             cons_answers, v = check.max_min_arbitrage(
                 hypocrite_answers, scoring=[P_weight, 1.0]
