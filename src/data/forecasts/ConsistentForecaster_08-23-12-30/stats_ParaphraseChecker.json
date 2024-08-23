@@ -1,0 +1,18 @@
+{
+    "default": {
+        "label": "ParaphraseChecker",
+        "num_samples": 20,
+        "num_violations": 3,
+        "avg_violation": 0.012598,
+        "avg_violation_no_outliers": 0.00395,
+        "median_violation": 0.001679
+    },
+    "frequentist": {
+        "label": "ParaphraseChecker",
+        "num_samples": 20,
+        "num_violations": 3,
+        "avg_violation": 0.08911,
+        "avg_violation_no_outliers": 0.064148,
+        "median_violation": 0.055999
+    }
+}
