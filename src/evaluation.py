@@ -21,7 +21,7 @@ from forecasters import (
 from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
-    ParaphraseChecker,
+    NegChecker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -345,10 +345,10 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth=2,
+                depth=4,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    ParaphraseChecker()
+                    NegChecker()
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
