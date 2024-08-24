@@ -21,7 +21,8 @@ from forecasters import (
 from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
-    ParaphraseChecker,
+    ParaphraseChecker,  # noqa
+    NegChecker,  # noqa
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
@@ -54,7 +55,10 @@ def get_stats(results: dict, label: str = "") -> dict:
         num_failed = sum(1 for c in checks if not c)
 
         # Calculate the average violation
-        avg_violation = sum(v for v in violations) / len(violations)
+        if len(violations) == 0:
+            avg_violation = 0
+        else:
+            avg_violation = sum(v for v in violations) / len(violations)
 
         # Calculate the median violation
         sorted_violations = sorted(violations, key=abs)
@@ -62,9 +66,12 @@ def get_stats(results: dict, label: str = "") -> dict:
         median_violation = (sorted_violations[n // 2] + sorted_violations[~n // 2]) / 2
 
         outlier_tail: int = 1
-        avg_violation_no_outliers = sum(
-            sorted_violations[outlier_tail:-outlier_tail]
-        ) / (len(sorted_violations) - 2 * outlier_tail)
+        if n - 2 * outlier_tail == 0:
+            avg_violation_no_outliers = avg_violation
+        else:
+            avg_violation_no_outliers = sum(
+                sorted_violations[outlier_tail:-outlier_tail]
+            ) / (len(sorted_violations) - 2 * outlier_tail)
 
         print(f"Number of violations: {num_failed}/{len(checks)}")
         print(f"Average violation: {avg_violation:.3f}")
@@ -168,7 +175,7 @@ def process_check(
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
-                                do_check=False,
+                                do_check=True,
                                 line_begin=batch[0],
                                 line_end=batch[1],
                                 model=model,
@@ -177,7 +184,7 @@ def process_check(
                     else:
                         results_batch = checkers[check_name].test_sync(
                             forecaster,
-                            do_check=False,
+                            do_check=True,
                             line_begin=batch[0],
                             line_end=batch[1],
                             model=model,
@@ -190,7 +197,7 @@ def process_check(
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
-                                do_check=False,
+                                do_check=True,
                                 line_begin=batch[0],
                                 line_end=batch[1],
                             )
@@ -198,7 +205,7 @@ def process_check(
                     else:
                         results_batch = checkers[check_name].test_sync(
                             forecaster,
-                            do_check=False,
+                            do_check=True,
                             line_begin=batch[0],
                             line_end=batch[1],
                         )
@@ -345,10 +352,10 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth=4,
+                depth=2,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    ParaphraseChecker()
+                    NegChecker()
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},

@@ -228,6 +228,7 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
+        only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
     ) -> float | tuple[float, dict]:
@@ -302,7 +303,7 @@ class ConsistentForecaster(Forecaster):
                 hypocrite_answers, scoring=[P_weight] + [1.0] * other
             )
             P_weight += 1.0 * other
-            if v > check.default_tolerance:
+            if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
             return ans_P, metadata
@@ -313,6 +314,7 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
+        only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
     ) -> float | tuple[float, dict]:
@@ -388,7 +390,7 @@ class ConsistentForecaster(Forecaster):
                 hypocrite_answers, scoring=[P_weight, 1.0]
             )
             P_weight += 1.0 * (len(cons_tuple) - 1)
-            if v > check.default_tolerance:
+            if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
             return ans_P, metadata
