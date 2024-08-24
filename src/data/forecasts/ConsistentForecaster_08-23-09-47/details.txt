@@ -1,6 +1,0 @@
-1iii-a) Single-check arbitrage - neg - depth = 3
-
-python evaluation.py ConsistentForecaster.recursive(checks=Neg, depth=3) -k NegChecker -n 20
-
-
-Approx cost: $1.53
