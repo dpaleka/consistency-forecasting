@@ -396,10 +396,12 @@ async def query_api_chat(
         options,
     )
 
-    response = await client.chat.completions.create(
+    response, completion = await client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    # print(f"Completion: {completion}")
+
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
@@ -478,10 +480,11 @@ def query_api_chat_sync(
         options,
     )
 
-    response = client.chat.completions.create(
+    response, completion = client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    # print(f"Completion: {completion}")
 
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")

@@ -27,9 +27,16 @@ class Prob(BaseModel):
 register_model_for_cache(Prob)
 
 
-class Prob_cot(Prob):
+class Prob_cot(BaseModel):
     chain_of_thought: str
-    prob: float  # redefine to maintain order
+    prob: float
+
+    @field_validator("prob")
+    @classmethod
+    def validate_prob(cls, v):
+        if not (0.0 <= v <= 1.0):
+            raise ValueError("Probability must be between 0 and 1.")
+        return v
 
 
 register_model_for_cache(Prob_cot)
