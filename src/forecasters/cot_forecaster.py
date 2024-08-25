@@ -32,7 +32,7 @@ class COT_Forecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    def call(self, sentence: ForecastingQuestion, **kwargs) -> tuple[float, str]:
         response = answer_sync(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -40,9 +40,11 @@ class COT_Forecaster(Forecaster):
             response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
-        return response.prob
+        return response.prob, response.chain_of_thought
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, **kwargs
+    ) -> tuple[float, str]:
         response = await answer(
             prompt=sentence.__str__(),
             preface=self.preface,
@@ -50,7 +52,7 @@ class COT_Forecaster(Forecaster):
             response_model=sentence.expected_answer_type(mode="cot"),
             **kwargs,
         )
-        return response.prob
+        return response.prob, response.chain_of_thought
 
     def dump_config(self):
         return {
