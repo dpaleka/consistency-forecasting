@@ -1,8 +1,9 @@
 # LLM Utils
-# Run tests in this file with python -m dpy.llm_utils
+# Run tests in this file with python -m common.llm_utils
 
 # %%
 import os
+import logging
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
 import instructor
@@ -15,6 +16,7 @@ from dataclasses_json import dataclass_json
 from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
+import logfire
 import transformers
 
 from .datatypes import PlainText
@@ -46,6 +48,29 @@ os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
+
+
+## All logging settings here
+if os.getenv("USE_LOGFIRE") == "True":
+    print("Setting up Pydantic Logfire")
+
+    def scrubbing_callback(m: logfire.ScrubMatch):
+        """
+        Need to disable some security measures of logfire.
+        Those trigges depending on whether some substrings like "auth" are present as param *values*;
+        and our param values are *prompts* and such, so no need to scrub them.
+        """
+        if m.pattern_match.group(0) == "auth":
+            return m.value
+
+    logfire.configure(
+        pydantic_plugin=logfire.PydanticPlugin(record="all"),
+        scrubbing=logfire.ScrubbingOptions(callback=scrubbing_callback),
+    )
+
+if os.getenv("LOGGING_DEBUG") == "True":
+    print("Setting logging level to DEBUG")
+    logging.basicConfig(level=logging.DEBUG, force=True)
 
 
 def reset_global_semaphore():
@@ -102,7 +127,7 @@ embeddings_cache = Cache(
     value_wrapper=ValueWrapperDictInspectArgs(),
 )
 
-FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
+FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE", "LOGGING_DEBUG", "USE_LOGFIRE"]
 
 
 client = None
@@ -124,26 +149,32 @@ def singleton_constructor(get_instance_func):
 def get_async_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client)
 
 
 @singleton_constructor
 def get_async_openai_client_native() -> AsyncOpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return AsyncOpenAI(api_key=api_key)
+    client = AsyncOpenAI(api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client)
 
 
 @singleton_constructor
 def get_openai_client_native() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return OpenAI(api_key=api_key)
+    client = OpenAI(api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
@@ -154,6 +185,7 @@ def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
     api_key = os.getenv("OPENROUTER_API_KEY")
     print(f"OPENROUTER_API_KEY: {api_key}")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client, mode=Mode.MD_JSON, **kwargs)
 
 
@@ -162,7 +194,9 @@ def get_async_openrouter_client_native() -> AsyncOpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
     print(f"OPENROUTER_API_KEY: {api_key}")
-    return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
@@ -176,6 +210,7 @@ def get_openrouter_client_pydantic(**kwargs) -> Instructor:
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
     print(f"OPENROUTER_API_KEY: {os.getenv('OPENROUTER_API_KEY')}")
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client, mode=Mode.TOOLS, **kwargs)
 
 
@@ -184,40 +219,50 @@ def get_openrouter_client_native() -> OpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
     print(f"OPENROUTER_API_KEY: {api_key}")
-    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_anthropic_async_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
+    logfire.instrument_anthropic(_client)
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
 def get_anthropic_async_client_native() -> AsyncAnthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
-    return AsyncAnthropic(api_key=api_key)
+    _client = AsyncAnthropic(api_key=api_key)
+    logfire.instrument_anthropic(_client)
+    return _client
 
 
 @singleton_constructor
 def get_anthropic_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = Anthropic(api_key=api_key)
+    logfire.instrument_anthropic(_client)
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
 def get_anthropic_client_native() -> Anthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
-    return Anthropic(api_key=api_key)
+    _client = Anthropic(api_key=api_key)
+    logfire.instrument_anthropic(_client)
+    return _client
 
 
 @singleton_constructor
 def get_togetherai_client_native() -> OpenAI:
     url = "https://api.together.xyz/v1"
     api_key = os.getenv("TOGETHER_API_KEY")
-    return OpenAI(api_key=api_key, base_url=url)
+    _client = OpenAI(api_key=api_key, base_url=url)
+    logfire.instrument_openai(_client)
+    return _client
 
 
 @singleton_constructor
@@ -275,8 +320,8 @@ def get_provider(model: str) -> str:
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     provider = get_provider(model)
 
-    print(f"Using {provider} provider for model {model}")
     if provider == "openrouter":
+        print(f"Using {provider} provider for model {model}")
         kwargs = {}
         client = (
             get_async_openrouter_client_pydantic(**kwargs)
@@ -356,6 +401,7 @@ def _mistral_message_transform(messages):
 
 
 @pydantic_cache
+@logfire.instrument("query_api_chat", extract_args=True)
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
@@ -392,9 +438,8 @@ async def query_api_chat(
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
-    print(
-        options,
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
     response, completion = await client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -408,6 +453,7 @@ async def query_api_chat(
 
 
 @text_cache
+@logfire.instrument("query_api_chat_native", extract_args=True)
 async def query_api_chat_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -425,9 +471,9 @@ async def query_api_chat_native(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
-    print(
-        options,
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
+
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
             messages=call_messages,
@@ -448,6 +494,7 @@ async def query_api_chat_native(
 
 
 @pydantic_cache
+@logfire.instrument("query_api_chat_sync", extract_args=True)
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -476,9 +523,8 @@ def query_api_chat_sync(
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
-    print(
-        options,
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
     response, completion = client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -492,6 +538,7 @@ def query_api_chat_sync(
 
 
 @text_cache
+@logfire.instrument("query_api_chat_sync_native", extract_args=True)
 def query_api_chat_sync_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -508,9 +555,8 @@ def query_api_chat_sync_native(
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
-    print(
-        options,
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = client.chat(
@@ -592,6 +638,7 @@ def prepare_messages_alt(
     return messages
 
 
+@logfire.instrument("answer", extract_args=True)
 async def answer(
     prompt: str,
     preface: Optional[str] = None,
@@ -607,12 +654,14 @@ async def answer(
     }
     options = default_options | kwargs  # override defaults with kwargs
 
-    print(f"options: {options}")
-    print(f"messages: {messages}")
+    if os.getenv("VERBOSE") == "True":
+        print(f"options: {options}")
+        print(f"messages: {messages}")
     async with global_llm_semaphore:
         return await query_api_chat(messages=messages, **options)
 
 
+@logfire.instrument("answer_sync", extract_args=True)
 def answer_sync(
     prompt: str,
     preface: str | None = None,
@@ -630,6 +679,7 @@ def answer_sync(
 
 
 @pydantic_cache
+@logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
     response = await client.completions.create(model=model, prompt=text, **kwargs)
@@ -639,6 +689,7 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     return response_text
 
 
+@logfire.instrument("query_api_text_sync", extract_args=True)
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
     response = client.completions.create(model=model, prompt=text, **kwargs)
@@ -684,14 +735,12 @@ async def parallelized_call(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
     )
 
-    # Create a local semaphore
     local_semaphore = asyncio.Semaphore(max_concurrent_queries)
 
     async def call_func(sem, func, datapoint):
         async with sem:
             return await func(datapoint)
 
-    print("Calling call_func")
     tasks = [call_func(local_semaphore, func, d) for d in data]
     return await asyncio.gather(*tasks)
 
