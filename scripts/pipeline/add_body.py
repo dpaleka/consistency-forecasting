@@ -15,43 +15,6 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../..
 from common.llm_utils import parallelized_call
 
 
-"""
-async def query_api_chat(
-    messages: list[dict[str, str]],
-    verbose=False,
-    model: str | None = None,
-    **kwargs,
-) -> BaseModel:
-    
-    Query the API (through instructor.Instructor) with the given messages.
-
-    Order of precedence for model:
-    1. `model` argument
-    2. `model` in `kwargs`
-    3. Default model
-    
-    def query_api_chat_sync(
-    messages: list[dict[str, str]],
-    verbose=False,
-    model: str | None = None,
-    **kwargs,
-) -> BaseModel:
-
-
-async def parallelized_call(
-    func: Coroutine,
-    data: list[str],
-    max_concurrent_queries: int = 100,
-) -> list[any]:
-    Run async func in parallel on the given data.
-    func will usually be a partial which uses query_api or whatever in some way.
-
-    Example usage:
-        partial_eval_method = functools.partial(eval_method, model=model, **kwargs)
-        results = await parallelized_call(partial_eval_method, [format_post(d) for d in data])
-"""
-
-
 def update_questions_with_details(file_path, source):
     with open(file_path, "r", encoding="utf-8") as file:
         questions = json.load(file)
