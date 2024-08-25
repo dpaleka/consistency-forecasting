@@ -29,7 +29,7 @@ from common.utils import (
     write_jsonl_async_from_str,
     update_recursive,
     write_jsonl_from_str,
-    make_json_serializable
+    make_json_serializable,
 )
 from common.path_utils import get_data_path
 from common.llm_utils import parallelized_call, answer, answer_sync
@@ -274,9 +274,6 @@ class Checker(ABC):
         supplied_metadata=None,
         **kwargs,
     ) -> List["Self.TupleFormat_with_metadata"]:
-        """Instantiate with a metadata field that can store the base questions and other things.
-        supplied_metadata is used to *recursively* update the metadata so you can surgically
-        update nested fields."""
         if supplied_metadata is None:
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
@@ -290,7 +287,20 @@ class Checker(ABC):
                 more_metadata = {"verification_result": verification_result.dict()}
                 update_recursive(metadata, more_metadata)
             else:
-                instantiated_object = result
+                instantiated_object = result[0] if isinstance(result, tuple) else result
+
+            # Ensure source_question and source_id are included in metadata for each question
+            for field, value in instantiated_object.__dict__.items():
+                if isinstance(value, ForecastingQuestion):
+                    value.metadata = value.metadata or {}
+                    question_metadata = supplied_metadata.get(field, {})
+                    source_question = question_metadata.get("source_question")
+                    source_id = question_metadata.get("source_id")
+                    if source_question:
+                        value.metadata["source_question"] = source_question
+                    if source_id:
+                        value.metadata["source_id"] = source_id
+
             instantiated_with_metadata.append(
                 self.TupleFormat_with_metadata(
                     **instantiated_object.dict(), metadata=metadata
@@ -325,6 +335,8 @@ class Checker(ABC):
         supplied_metadata=None,
         **kwargs,
     ):
+        if supplied_metadata is None:
+            supplied_metadata = {}
         results = await self.instantiate_with_metadata(
             base_sentences, supplied_metadata=supplied_metadata, **kwargs
         )
@@ -342,45 +354,48 @@ class Checker(ABC):
         overwrite=False,
         **kwargs,
     ):
-        """
-        Args:
-            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
-            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
-                because some will fail verification). If -1, will make as many as possible.
-        """
+        print(
+            f"instantiate_and_write_many called with {len(base_sentencess)} base sentences"
+        )
+        print(f"n_write: {n_write}, overwrite: {overwrite}")
+
         if overwrite:
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 
-        def _instantiate_and_write(
-            base_sentences: (
-                dict[str, ForecastingQuestion]
-                | tuple[dict[str, ForecastingQuestion], dict[str, Any]]
-            ),
-        ):
-            if isinstance(base_sentences, tuple):
-                base_sentences, supplied_metadata = base_sentences
+        def _instantiate_and_write(base_sentences):
+            if isinstance(base_sentences, dict):
+                # Old structure
+                return self.instantiate_and_write(base_sentences, **kwargs)
+            elif isinstance(base_sentences, tuple):
+                # Structure with metadata
+                questions, metadata = base_sentences
+                return self.instantiate_and_write(
+                    questions, supplied_metadata=metadata, **kwargs
+                )
             else:
-                supplied_metadata = None
-            return self.instantiate_and_write(
-                base_sentences, supplied_metadata=supplied_metadata, **kwargs
-            )
+                raise ValueError("Unrecognized input format for base_sentences")
 
-        # Added print statement to log the base sentences being processed
-        # print(f"Base sentences: {base_sentencess}")
         bq_counter = 0  # number of base sentences processed
         while n_write == -1 or self.counter < n_write:
             counter_prev = self.counter
+            to_process = base_sentencess[
+                bq_counter : bq_counter
+                + (n_write - counter_prev if n_write != -1 else len(base_sentencess))
+            ]
+            if not to_process:
+                break  # No more sentences to process
             results = await parallelized_call(
                 _instantiate_and_write,
-                base_sentencess[bq_counter : bq_counter + n_write - counter_prev],
+                to_process,
                 max_concurrent_queries=10,
             )
-            bq_counter += n_write - counter_prev
+            bq_counter += len(to_process)
             print(f"Counter: {self.counter}")
             print(f"BQ Counter: {bq_counter}")
-        # # Added print statement to log the results of instantiation
-        # print(f"Results of instantiation: {results}")
+
+        print(f"Processed {bq_counter} out of {len(base_sentencess)} base sentences")
+        return results
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
@@ -699,57 +714,48 @@ class Checker(ABC):
     def test_sync(
         self,
         forecaster: Forecaster,
-        line_begin: int = 0,
-        line_end: int = -1,
+        tuples: list[dict[str, Any]] | None = None,
         do_check=True,
         **kwargs,
     ) -> list[dict[str, Any]]:
-        """
-        Args:
-            [line_begin, line_end) : closed-open range of lines to check.
-            If line_end = -1, defaults to the end of the file.
-
-            do_check (bool): Whether to compute violation on the elicited probabilities.
-        """
         results = []
         log_path = (
             get_data_path()
             / "check_tuple_logs"
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
-        if line_end != -1:
-            assert (
-                line_begin >= 0 and line_begin < line_end
-            ), "We want a non-empty range"
 
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
-            with open(self.path, "r", encoding="utf-8") as file:
-                data: list[dict[str, Any]] = [json.loads(line) for line in file]
-            if line_end >= 0:
-                print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
-                data = data[line_begin:line_end]
+
+            if tuples is None:
+                with open(self.path, "r", encoding="utf-8") as file:
+                    data: list[dict[str, Any]] = [json.loads(line) for line in file]
+            else:
+                data = tuples
 
             for line in data:
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
-                answers_: dict[str, tuple[Prob, dict] | Prob | None] = (
-                    forecaster.elicit(line_obj, include_metadata=True, **kwargs)
-                )
+                answers_: dict[
+                    str, tuple[Prob, dict] | Prob | None
+                ] = forecaster.elicit(line_obj, include_metadata=True, **kwargs)
                 answers = {
                     q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()
                 }
                 if do_check:
-                    result_without_line: dict[str, Any] = (
-                        self.check_from_elicited_probs(line_obj, answers)
-                    )
+                    result_without_line: dict[
+                        str, Any
+                    ] = self.check_from_elicited_probs(line_obj, answers)
                 else:
                     result_without_line = {}
 
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
                     if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
+                        line[question]["elicitation_metadata"] = make_json_serializable(
+                            answers_[question][1]
+                        )
 
                 result = {"line": line, **result_without_line}
                 results.append(result)
@@ -760,37 +766,25 @@ class Checker(ABC):
     async def test(
         self,
         forecaster: Forecaster,
-        line_begin: int = 0,
-        line_end: int = -1,
+        tuples: list[dict[str, Any]] | None = None,
         do_check=True,
         **kwargs,
     ) -> list[dict[str, Any]]:
-        """
-        Args:
-            [line_begin, line_end) : closed-open range of lines to check.
-            If line_end = -1, defaults to the end of the file.
-
-            do_check (bool): Whether to compute violation on the elicited probabilities.
-        """
         results = []
         log_path = (
             get_data_path()
             / "check_tuple_logs"
             / f"{self.__class__.__name__}_test_log.jsonl"
         )
-        if line_end != -1:
-            assert (
-                line_begin >= 0 and line_begin < line_end
-            ), "We want a non-empty range"
 
         with jsonlines.open(log_path, mode="a") as writer:
             writer.write({"test_start": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
-            with open(self.path, "r", encoding="utf-8") as file:
-                data = [json.loads(line) for line in file]
-            if line_end >= 0:
-                print(f"Limiting to lines {line_begin} to {line_end} of {self.path}")
-                data = data[line_begin:line_end]
+            if tuples is None:
+                with open(self.path, "r", encoding="utf-8") as file:
+                    data = [json.loads(line) for line in file]
+            else:
+                data = tuples
 
             validated_lines: list[BaseModel] = [
                 self.get_line_obj(line) for line in data
@@ -822,7 +816,9 @@ class Checker(ABC):
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
                     if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(answers_[question][1])
+                        line[question]["elicitation_metadata"] = make_json_serializable(
+                            answers_[question][1]
+                        )
 
                 result = {"line": line, **result_without_line}
 
@@ -943,7 +939,6 @@ class NegChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
         weights = self.get_scoring(
@@ -1668,7 +1663,6 @@ class ConsequenceChecker(Checker):
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
-
             A = np.sqrt(answers["P"] * answers["cons_P"])
             B = np.sqrt((1 - answers["P"]) * (1 - answers["cons_P"]))
             p = A / (A + B)

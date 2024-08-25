@@ -14,10 +14,10 @@ src_path = root_path / "src"
 
 # Create a Modal image with the requirements installed
 env = {
-    "NO_CACHE": "True",
+    "NO_CACHE": "true",
     "MAX_CONCURRENT_QUERIES": "20",
-    "USE_OPENROUTER": "True",
-    "SKIP_NEWSCATCHER": "True",
+    # "USE_OPENROUTER": "false",
+    "SKIP_NEWSCATCHER": "true",
 }
 
 image = (

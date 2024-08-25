@@ -89,6 +89,8 @@ async def validate_and_format_synthetic_question(
             question_type="binary",
             metadata=metadata,
             fill_in_body=fill_in_body,
+            body=question.body,
+            date=question.resolution_date,
             **kwargs,
         )
         if verify:
@@ -253,7 +255,8 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
+        default=f"{get_data_path()}/other/from_related.jsonl",
+        # default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
