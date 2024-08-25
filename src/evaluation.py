@@ -352,10 +352,10 @@ def main(
             )
         case "RecursiveConsistentForecaster":
             forecaster = ConsistentForecaster.recursive(
-                depth=2,
+                depth=4,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    NegChecker()
+                    ParaphraseChecker()
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
