@@ -128,6 +128,11 @@ class CoT_multistep_Forecaster:
             ## add llm output to stream
             messages.append({"role": "assistant", "content": response.chain_of_thought})
 
+            print("\n\n\nADAMXXXXXXX")
+            print(messages[-2])
+            print(messages[-1])
+
+        ## this includes examples if it's there!  It's just all messages
         result = {
             "chain_of_thought": "\n\n".join(
                 [m["content"] for m in messages if m["role"] == "assistant"]
