@@ -4,17 +4,12 @@ from forecasters.consistent_forecaster import ConsistentForecaster
 from forecasters.basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion
 from static_checks.Checker import *
+from common.llm_utils import query_api_chat_sync
 from time import time
 
-cf = ConsistentForecaster(
-    BasicForecaster(),
-    checks=[
-        NegChecker(),
-        AndOrChecker(),
-        CondChecker(),
-        ParaphraseChecker(),
-    ],
-)
+
+#%%
+# Create a sample ForecastingQuestion
 fq = ForecastingQuestion(
     title="Will Manhattan have a skyscraper a mile tall by 2030?",
     body=(
@@ -30,6 +25,32 @@ fq = ForecastingQuestion(
     resolution=None,
 )
 
+#%%
+# Run BasicForecaster
+basic_forecaster = BasicForecaster()
+
+# Print logging module current setup
+import logging
+
+print("Current logging configuration:")
+print(f"Logging level: {logging.getLogger().getEffectiveLevel()}")
+print(f"Logging handlers: {logging.getLogger().handlers}")
+print(f"Logging formatter: {logging.getLogger().handlers[0].formatter if logging.getLogger().handlers else 'No formatter'}")
+
+# Call the BasicForecaster synchronously
+sync_result = basic_forecaster.call(fq)
+print(f"Synchronous BasicForecaster result: {sync_result}")
+
+#%%
+cf = ConsistentForecaster(
+    BasicForecaster(),
+    checks=[
+        NegChecker(),
+        AndOrChecker(),
+        CondChecker(),
+        ParaphraseChecker(),
+    ],
+)
 import asyncio
 
 # x = cf.call(fq)
