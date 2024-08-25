@@ -175,7 +175,7 @@ def process_check(
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
-                                do_check=True,
+                                do_check=False,
                                 line_begin=batch[0],
                                 line_end=batch[1],
                                 model=model,
@@ -184,7 +184,7 @@ def process_check(
                     else:
                         results_batch = checkers[check_name].test_sync(
                             forecaster,
-                            do_check=True,
+                            do_check=False,
                             line_begin=batch[0],
                             line_end=batch[1],
                             model=model,
@@ -197,7 +197,7 @@ def process_check(
                         results_batch = asyncio.run(
                             checkers[check_name].test(
                                 forecaster,
-                                do_check=True,
+                                do_check=False,
                                 line_begin=batch[0],
                                 line_end=batch[1],
                             )
@@ -205,7 +205,7 @@ def process_check(
                     else:
                         results_batch = checkers[check_name].test_sync(
                             forecaster,
-                            do_check=True,
+                            do_check=False,
                             line_begin=batch[0],
                             line_end=batch[1],
                         )

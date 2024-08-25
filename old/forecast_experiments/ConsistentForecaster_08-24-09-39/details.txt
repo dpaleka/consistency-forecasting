@@ -1,0 +1,2 @@
+not imp I was testing something
+I think depth=2 NegChecker single check arbitrage but I turned off tolerance
