@@ -66,6 +66,8 @@ dotenv_path = os.path.join(dotenv_path, ".env")
 if os.path.exists(dotenv_path):
     print(dotenv_path)
     load_dotenv(dotenv_path)
+
+
 METACULUS_TOKEN = os.environ.get("METACULUS_KEY")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
@@ -79,7 +81,7 @@ API_BASE_URL = "https://www.metaculus.com/api2"
 
 ## TODO (change)
 TOURNAMENT_ID = 3349  # 3294 is WARMUP_TOURNAMENT_ID, 3349 is the REAL tournament id
-SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
+SUBMIT_PREDICTION = True  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
 LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
 ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
@@ -87,8 +89,8 @@ SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 3  # How many times we should sample the adv. forecasters to get the "best" average score.
 IGNORE_VISITED = (
-    True,
-)  # If true, will not update / predict a market already submitted to.
+    False  # If true, will not update / predict a market already submitted to.
+)
 
 
 ##Coroutine parameters.  Note that these are multiplicative. So the "total threads" will be QUESTION_THREADS * SAMPLING_THREADS * {threads for running the forecasters which I think is already maxed}
@@ -96,6 +98,7 @@ QUESTION_THREADS = 4  # How many concurrency operations to run for questions.  I
 SAMPLING_THREADS = (
     1  # How many concurrency operations to run to sample advanced forecaster
 )
+
 
 ## paramaterize forecasters
 ADVANCED_FORECASTER = AdvancedForecaster(
@@ -363,8 +366,8 @@ async def parallel_post(q):
 
     qs = [q] * SAMPLES
 
-    adv_prob = 1.00
-    basic_prob = 1.00
+    adv_prob = 50.00
+    basic_prob = 50.00
 
     try:
         adv_probs = await parallelized_call(

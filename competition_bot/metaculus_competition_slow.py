@@ -76,7 +76,7 @@ API_BASE_URL = "https://www.metaculus.com/api2"
 
 ## TODO (change)
 TOURNAMENT_ID = 3349  # 3294 is WARMUP_TOURNAMENT_ID, fill this in with competition details, 3349 is the real tournament id
-SUBMIT_PREDICTION = (True,)  # turn on when ready to submit
+SUBMIT_PREDICTION = True  # turn on when ready to submit
 TOTAL_QUESTIONS = 100  # also get from competition details
 LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
 ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
@@ -84,8 +84,8 @@ SUBMIT_CHOICE = "adv"  # [adv, basic, meta], pick which result you actually want
 NO_COMMENT = False  # if true, posts 'test' as comment, else will take long time to use news to make "real" comment
 SAMPLES = 5  # How many times we should sample the adv. forecasters to get the "best" average score.  Is it worth "averaging" thre results of the forecaster, since it does slow it down a lot?
 IGNORE_VISITED = (
-    True,
-)  # If true, will not update / predict a market already submitted to.
+    False  # If true, will not update / predict a market already submitted to.
+)
 
 
 ## paramaterize forecasters
@@ -392,8 +392,8 @@ async def main():
         q = await metaculus_to_jsonl(q)
         q = ForecastingQuestion(**q)
 
-        adv_prob = 1.00
-        basic_prob = 1.00
+        adv_prob = 50.00
+        basic_prob = 50.00
 
         try:
             adv_probs = []

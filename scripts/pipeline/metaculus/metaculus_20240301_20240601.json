@@ -1,5 +1,26 @@
 [
     {
+        "id": 5427,
+        "title": "Will the Russian government introduce a tax on childlessness prior to the 2024 presidential election?",
+        "body": {
+            "resolution_criteria": "The question resolves positively if the Russian government introduces, prior to the 2024 presidential election in Russia, either:\n\n* An explicit tax on childlessness.\n* A tax levied on each person except those with children.\n\nFor the question to resolve positively, the tax should be active in at least 10 out of 85 [federal subjects](https://en.wikipedia.org/wiki/Federal_subjects_of_Russia) and apply to at least a quarter of all Russian adults under the age of 50.\n\nThe tax may apply either to married couples or individuals, in both cases the question resolves positively. A tax cut for people who do have children does not count.",
+            "background_info": "The [Tax on childlessness](https://en.wikipedia.org/wiki/Tax_on_childlessness) was a natalist policy in the USSR, Poland and Romania during certain periods in the 20th century.\n\nRecently, several public organizations urged the Russian government to re-enact that, or a similar, policy:\n\n* [Russia may introduce tax on childlessness](https://investforesight.com/russia-may-introduce-tax-on-childlessness/);\n* [The Ministry of Finance commented on the idea of ​​introducing a tax on childlessness in Russia](https://www.tellerreport.com/news/2020-10-12-the-ministry-of-finance-commented-on-the-idea-of-%E2%80%8B%E2%80%8Bintroducing-a-tax-on-childlessness-in-russia.rkvOu1MGPv.html)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2021-03-16T21:00:00Z",
+        "url": "https://www.metaculus.com/questions/5427",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/5427",
+            "market_prob": 0.25,
+            "resolve_time": "2024-03-15T23:50:00Z",
+            "close_time": "2021-03-16T21:00:00Z",
+            "effected_close_time": "2021-03-16T21:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 6369,
         "title": "Will Scotland hold an official, sanctioned referendum on independence before May 3, 2024?",
         "body": {
@@ -19,6 +40,216 @@
             "effected_close_time": "2024-05-02T21:00:00Z"
         },
         "resolution": 0.0
+    },
+    {
+        "id": 10551,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (50,000)",
+        "body": {
+            "resolution_criteria": "The Russo-Ukraine conflict intensified with an invasion of Ukraine on February 24, 2022. [Reports vary widely](https://en.wikipedia.org/wiki/Casualties_of_the_Russo-Ukrainian_War#2022_Russian_invasion_of_Ukraine) on the number of military deaths for both Russia and Ukraine, and accurate, up-to-date information is often difficult or impossible to obtain as fighting on the ground continues.\n\n***Will at least 25,000 Ukrainian soldiers be killed in the Russo-Ukrainian conflict before 2024?***\n\nThis question will resolve as the number of Ukrainian soldiers or military personnel which have been killed while in service during the Russo-Ukrainian war, during the period from February 24, 2022 to January 1, 2024.  The question will resolve as **Yes** if the number of deaths is greater than the following thresholds, and **No** if the number is fewer.\n\n\"Military personnel\" may include members of the Ukranian armed forces, national guard, and volunteer fighters. \n\nTo determine resolution, Metaculus Admins will consider reports by the Ukrainian and Russian governments, other governments such as the US or the UN, and credible media reports and experts in the conflict. Resolution will be determined by information available by March 1, 2024 (or earlier, if information is sufficiently clear).",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-30T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/10551",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/10551",
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-07T19:32:00Z",
+            "close_time": "2023-12-30T17:00:00Z",
+            "effected_close_time": "2023-12-30T17:00:00Z"
+        },
+        "resolution": -1.0
+    },
+    {
+        "id": 10554,
+        "title": "How many Ukrainian soldiers will be killed in the Russo-Ukrainian conflict before 2024? (100,000)",
+        "body": {
+            "resolution_criteria": "The Russo-Ukraine conflict intensified with an invasion of Ukraine on February 24, 2022. [Reports vary widely](https://en.wikipedia.org/wiki/Casualties_of_the_Russo-Ukrainian_War#2022_Russian_invasion_of_Ukraine) on the number of military deaths for both Russia and Ukraine, and accurate, up-to-date information is often difficult or impossible to obtain as fighting on the ground continues.\n\n***Will at least 25,000 Ukrainian soldiers be killed in the Russo-Ukrainian conflict before 2024?***\n\nThis question will resolve as the number of Ukrainian soldiers or military personnel which have been killed while in service during the Russo-Ukrainian war, during the period from February 24, 2022 to January 1, 2024.  The question will resolve as **Yes** if the number of deaths is greater than the following thresholds, and **No** if the number is fewer.\n\n\"Military personnel\" may include members of the Ukranian armed forces, national guard, and volunteer fighters. \n\nTo determine resolution, Metaculus Admins will consider reports by the Ukrainian and Russian governments, other governments such as the US or the UN, and credible media reports and experts in the conflict. Resolution will be determined by information available by March 1, 2024 (or earlier, if information is sufficiently clear).",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-30T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/10554",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/10554",
+            "market_prob": 0.45,
+            "resolve_time": "2024-03-07T19:31:00Z",
+            "close_time": "2023-12-30T17:00:00Z",
+            "effected_close_time": "2023-12-30T17:00:00Z"
+        },
+        "resolution": -1.0
+    },
+    {
+        "id": 12215,
+        "title": "If Trump is disqualified from holding the presidency, will that disqualification be ruled unconstitutional before January 20, 2025?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if prior to January 20, 2025, the question '[Will any US court rule that Donald J. Trump is disqualified from holding the presidency before January 20th 2025?](https://www.metaculus.com/questions/12214/d-j-trump-disqualified-before-jan-20-2025/)' resolves as **Yes**, and if such disqualification is later ruled unconstitutional by the Supreme Court of the United States; OR if such disqualification is ruled unconstitutional by an appellate court inferior to the US Supreme Court, AND the US Supreme Court refuses to hear an appeal against a lower court's prior ruling that such a disqualification is unconstitutional",
+            "background_info": "Various criminal offenses against the United States include as a potential penalty legal disqualification from holding federal office, theoretically including the presidency of the United States.\n\nThese offenses include (inter alia) those under [18 U.S. Code § 2071](https://www.law.cornell.edu/uscode/text/18/2071), which states:\n\n>(a)Whoever willfully and unlawfully conceals, removes, mutilates, obliterates, or destroys, or attempts to do so, or, with intent to do so takes and carries away any record, proceeding, map, book, paper, document, or other thing, filed or deposited with any clerk or officer of any court of the United States, or in any public office, or with any judicial or public officer of the United States, shall be fined under this title or imprisoned not more than three years, or both.\n\n>(b)Whoever, having the custody of any such record, proceeding, map, book, document, paper, or other thing, willfully and unlawfully conceals, removes, mutilates, obliterates, falsifies, or destroys the same, shall be fined under this title or imprisoned not more than three years, or both; and shall forfeit his office and be disqualified from holding any office under the United States. As used in this subsection, the term “office” does not include the office held by any person as a retired officer of the Armed Forces of the United States.\n\nIn early August 2022, federal agents executed a search warrant at Mar-a-Lago,  the primary residence of Donald J. Trump, the 45th president of the United States, in the course of an investigation into the handling of presidential documents, including classified documents, that may have been brought there. It has been speculated that Trump may eventually be charged with a crime in relation to these documents, potentially including an offense under 18 U.S. Code § 2071. \n\nAccording to [Reuters](https://www.reuters.com/legal/what-charges-might-trump-face-removing-white-house-records-2022-08-10/):\n\n>While the Presidential Records Act does not specify an enforcement mechanism, taking presidential records from the White House could open Trump up to charges of conspiring to impede the proper functioning of the National Archives, said Jeffrey Cohen, an associate professor at Boston College Law School and former federal prosecutor.\n\n>He could also be charged under a law, known by its code number 2071, making it a crime to conceal or destroy U.S. public documents, or laws making it illegal to steal or damage government property.\n\n>...\n\n>A provision of 2071 states that anyone convicted will be barred from holding federal office and face a prison term of up to three years.\n\nHowever, Reuters also notes:\n\n\n>But experts said that provision may not be constitutional. The U.S. Constitution sets forth the qualifications for holding federal elected office, and previous Supreme Court rulings have held that Congress cannot limit who can run for the presidency, the Senate or the House.\n\n>If convicted and disqualified from office, Trump would likely challenge it in court, where the outcome would be far from certain.\n\nAnother Metaculus question, '[Will any US court rule that Donald J. Trump is disqualified from holding the presidency before January 20th 2025?](https://www.metaculus.com/questions/12214/d-j-trump-disqualified-before-jan-20-2025/),' asks whether Trump will be disqualified from the presidency before inauguration day in 2025. This question asks, contingent on that happening, whether that disqualification will subsequently be ruled unconstitutional prior to inauguration day in 2025."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-11-05T00:00:00Z",
+        "url": "https://www.metaculus.com/questions/12215",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/12215",
+            "market_prob": 0.96,
+            "resolve_time": "2024-03-04T15:00:00Z",
+            "close_time": "2024-11-05T00:00:00Z",
+            "effected_close_time": "2024-03-04T15:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 13809,
+        "title": "Will Sadiq Khan win re-election in the 2024 London Mayoral Elections?",
+        "body": {
+            "resolution_criteria": "The resolution criteria for this question are as follows:\n\nThis question will resolve positively on the basis of an official election result that is published by a credible news source or government agency that clearly states that Sadiq Khan has been declared the winner and mayor of London.\n\nIf any other person wins the election, this question resolves negatively.\n\nIf the election is postponed (held after on Jan 1, 2025 or later), held earlier (held on Dec 31, 2023 or earlier), or otherwise cancelled, this question will resolve ambiguously",
+            "background_info": "The London mayoral election is held every four years to elect the Mayor of London, who serves as the head of the Greater London Authority (GLA). The next election is scheduled for [Thursday 2 May 2024](https://www.london.gov.uk/who-we-are/governance-and-spending/good-governance/electing-mayor-and-assembly).\n\nSadiq Khan has been the mayor of London since 2016, and will run for re-election in 2024. As the incumbent mayor, he will be seeking to continue serving in the role. In late 2022, he said that [“still very much [his] intention to run and win a third term](https://www.cityam.com/khan-says-it-is-my-intention-to-run-and-win-third-term-as-london-mayor/). \n\nAccording to [smarkets.com](https://smarkets.com/event/42282035/politics/uk/london-mayoral-election/2024-london-mayoral-election-winner), the top three follow-up candidates for 2024 London mayoral election winner after Sadiq Khan are Jeremy Corbyn, Dawn Butler, and David Lammy. \n\nPreviously, London mayoral elections used the supplementary vote system. The supplementary vote system is a method of conducting elections in which voters are allowed to cast two votes for a single office. The first vote is for their preferred candidate, and the second vote is for their second choice. If a candidate receives more than 50% of the first-choice votes, they are declared the winner. If no candidate receives a majority of first-choice votes, the two candidates with the most first-choice votes move on to a second round of voting. In this round, only the second-choice votes of voters who selected one of the two remaining candidates as their first choice are counted. The candidate with the most votes in the second round is declared the winner. \n\nHowever, for the 2024 mayoral election, based on the Elections Act 2022, the election will be conducted under the [first-past-the-post system.](https://www.gov.uk/government/news/first-past-the-post-to-be-introduced-for-all-local-mayoral-and-police-and-crime-commissioner-elections) Under this system, each voter gets to cast a ballot for their preferred candidate, and the candidate who receives the most votes wins the election. This means that the winner may not necessarily have received a majority of the votes, but rather just more votes than any other individual candidate.\n\nIn the last election, [no candidate received more than 50% of the vote]( https://www.londonelects.org.uk/im-voter/election-results/results-2021-elections/results-factsheet-2021):\n\n>Had a candidate received more than 50 per cent of the total good first choice votes, they would have been elected without considering second choice votes. No candidate did so. The candidate with the highest number of first choice votes, Sadiq Khan, gained 40 per cent of the total first choice votes for all candidates (1,013,721 as a percentage of 2,531,357).\n\nSo far, all London mayors (Livingstone, Johnson, and Khan) have served two terms only. If Sadiq Khan wins the re-election, that would make him the [first mayor of London to have won three terms.](https://www.onlondon.co.uk/labour-candidate-selection-trigger-ballot-for-2024-mayoral-race-gets-underway/)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-01-01T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/13809",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/13809",
+            "market_prob": 0.68,
+            "resolve_time": "2024-05-04T16:33:00Z",
+            "close_time": "2024-01-01T12:00:00Z",
+            "effected_close_time": "2024-01-01T12:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 13831,
+        "title": "Will any state hold a caucus instead of a primary for the Democratic Presidential nomination in 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve **Yes** if any U.S. state holds caucus- rather than primary-type selection processes for the Democratic nominee for President in 2024, and **No** if this does not happen. If there is doubt or ambiguity about whether a state uses one or the other process, administrators will rely preferentially on [the National Conference of State Legislatures](https://www.ncsl.org/research/elections-and-campaigns/primary-types.aspx) with [Ballotpedia](https://ballotpedia.org/Primary_election_systems_by_state) as a secondary backstop",
+            "background_info": "\"The way we choose our presidential candidates in the United States,\" [note Galen Druke and Jake Arlow of FiveThirtyEight](https://fivethirtyeight.com/features/how-the-modern-primary-system-has-shaped-our-politics/), \"is unique among the world’s democracies.\"\n\n> [E]verything changed after the [disastrous 1968 Democratic national convention in Chicago.](https://www.c-span.org/video/?74510-1/1968-democratic-convention) Although somewhat unintended, the reforms following that convention created a candidate selection system more open to public input than ever before.\n\n> At first blush, allowing for greater public input may seem like the most democratic thing to do — but there is more to a well-functioning democracy than whether people have the opportunity to vote. The quality of the system also depends on its design.\n\nRecently, the President of the United States [wrote a letter on non-Presidential stationary to certain officials of his Party.](https://democrats.org/news/president-bidens-letter-to-the-dncs-rules-and-bylaws-committee-on-the-presidential-nominating-process/) Therein, he criticized certain qualities of the present system, and proposed certain changes in its design. Among [other proposals](https://www.metaculus.com/questions/3600/iowa-hosts-first-caucus-by-2029/), Biden wrote:\n\n> Our party should no longer allow caucuses as part of our nominating process. We are a party dedicated to ensuring participation by all voters and for removing barriers to political participation. Caucuses – requiring voters to choose in public, to spend significant amounts of time to caucus, disadvantaging hourly workers and anyone who does not have the flexibility to go to a set location at a set time – are inherently anti-participatory. It should be our party’s goal to rid the nominating process of restrictive, anti-worker caucuses."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-01-01T04:59:00Z",
+        "url": "https://www.metaculus.com/questions/13831",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/13831",
+            "market_prob": 0.76,
+            "resolve_time": "2024-04-13T14:35:00Z",
+            "close_time": "2024-01-01T04:59:00Z",
+            "effected_close_time": "2024-01-01T04:59:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 14032,
+        "title": "In 2023 will any other war have more casualties than Russia-Ukraine?",
+        "body": {
+            "resolution_criteria": "To clarify this question, Scott Alexander wrote:\r\n\r\n>We will judge casualties for the Ukraine war based on the sum of the UN estimate of civilian deaths + injuries, plus each side's report of the other side's deaths + injuries. See eg https://en.wikipedia.org/wiki/2022_Russian_invasion_of_Ukraine#Field_casualties_and_injuries . We reserve the right to change this if one side starts giving implausible numbers. When a range is offered, the midpoint of the range will be taken. If there is no easy way to determine which Ukraine casualties happened in 2022 vs. 2023, the current total of 225,216 will be subtracted from the best available end-of-2023 number. The casualty numbers for other wars will be calculated in a method as similar to this as possible; if an identical methodology cannot be used, we reserve the right to use credible third-party (eg US government, well-known neutral media outlet) estimates. \r\n\r\nThis question will resolve at the exclusive authority of [Scott Alexander](https://astralcodexten.substack.com/p/2023-prediction-contest) in his 2023 prediction contest.  More information about the contest can be found [here](https://astralcodexten.substack.com/p/2023-prediction-contest).\r\n\r\nPredictions on Metaculus will only count for your Metaculus track record; they will not be evaluated by Scott Alexander",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/14032",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/14032",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-05T02:00:00Z",
+            "close_time": "2023-12-31T23:00:00Z",
+            "effected_close_time": "2023-12-31T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14275,
+        "title": "On January 1, 2024, will an ordinary person be able to take a self-driving taxi from Oakland → SF during rush hour?",
+        "body": {
+            "resolution_criteria": "To clarify this question, Scott Alexander wrote:\n\n>Scott Alexander will spend some time January 1 checking whether he can get via his house in Oakland to the Presidio in San Francisco via self-driving car at rush hour. He will probably not actually take the trip, but he will resolve this as positive if it looks like he could take the trip with less than one hour of figuring out how and less than $500 cost. Currently (late 2022) he estimates he cannot do this, because the self-driving taxis in SF only operate at night and won’t cross the bridge into Oakland. \n\nThis question will resolve at the exclusive authority of [Scott Alexander](https://astralcodexten.substack.com/p/2023-prediction-contest) in his 2023 prediction contest.  More information about the contest can be found [here](https://astralcodexten.substack.com/p/2023-prediction-contest).\n\nPredictions on Metaculus will only count for your Metaculus track record; they will not be evaluated by Scott Alexander",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/14275",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/14275",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-05T02:00:00Z",
+            "close_time": "2023-12-31T23:00:00Z",
+            "effected_close_time": "2023-12-31T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14276,
+        "title": "In 2023 will a cultured meat product be available in at least one US store or restaurant for less than $30?",
+        "body": {
+            "resolution_criteria": "This question will resolve at the exclusive authority of [Scott Alexander](https://astralcodexten.substack.com/p/2023-prediction-contest) in his 2023 prediction contest.  More information about the contest can be found [here](https://astralcodexten.substack.com/p/2023-prediction-contest).\n\nPredictions on Metaculus will only count for your Metaculus track record; they will not be evaluated by Scott Alexander",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/14276",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/14276",
+            "market_prob": 0.05,
+            "resolve_time": "2024-03-05T02:00:00Z",
+            "close_time": "2023-12-31T23:00:00Z",
+            "effected_close_time": "2023-12-31T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 14277,
+        "title": "In 2023 will a successful deepfake attempt causing real damage make the front page of a major news source?",
+        "body": {
+            "resolution_criteria": "To clarify this question, Scott Alexander wrote:\r\n\r\n>A deepfake is defined as any sophisticated AI-generated image, video, or audio meant to mislead. For this question to resolve positively, it must actually harm someone, not just exist. Valid forms of harm include but are not limited to costing someone money, or making some specific name-able person genuinely upset (not just “for all we know, people could have seen this and been upset by it”). The harm must come directly from the victim believing the deepfake, so somebody seeing the deepfake and being upset because the existence of deepfakes makes them sad does not count.\r\n\r\nThis question will resolve at the exclusive authority of [Scott Alexander](https://astralcodexten.substack.com/p/2023-prediction-contest) in his 2023 prediction contest.  More information about the contest can be found [here](https://astralcodexten.substack.com/p/2023-prediction-contest).\r\n\r\nPredictions on Metaculus will only count for your Metaculus track record; they will not be evaluated by Scott Alexander",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/14277",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/14277",
+            "market_prob": 0.75,
+            "resolve_time": "2024-03-05T02:00:00Z",
+            "close_time": "2023-12-31T23:00:00Z",
+            "effected_close_time": "2023-12-31T23:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 14325,
+        "title": "Will Avraham Eisenberg be convicted of a felony in the United States before 2028?",
+        "body": {
+            "resolution_criteria": "This question will resolve **Yes** if reliable published reports indicate that Avraham Eisenberg has been convicted in a United States court of a felony criminal offense before January 1st 2028. It will resolve **No** if January 1st, 2028 arrives without this happening. Resolutions will be dated to the time at which the verdict was delivered. Subsequent appeals, pardons, or other developments will **not** reverse the question resolution; initial conviction is the threshold",
+            "background_info": "From [the Jerusalem Post](https://www.jpost.com/business-and-innovation/banking-and-finance/article-725977),\n\n> US prosecutors have filed criminal charges of commodities fraud and manipulation against a man accused of trying to steal about $110 million in October by rigging the Mango Markets cryptocurrency exchange.\n\n> According to a complaint made public on Tuesday in Manhattan federal court, Avraham Eisenberg's trades in futures related to Mango's crypto token MNGO enabled him to withdraw $110 million in cryptocurrencies from other investors' deposits, with no apparent intention to repay the funds.\n\n> Eisenberg was arrested on Monday night in Puerto Rico, US Attorney Damian Williams in Manhattan said in a court filing.\n\nAvraham also has [an account on Metaculus](https://www.metaculus.com/accounts/profile/114222/)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2028-01-01T08:00:00Z",
+        "url": "https://www.metaculus.com/questions/14325",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/14325",
+            "market_prob": 0.74,
+            "resolve_time": "2024-04-18T17:12:00Z",
+            "close_time": "2028-01-01T08:00:00Z",
+            "effected_close_time": "2024-04-18T17:12:00Z"
+        },
+        "resolution": 1.0
     },
     {
         "id": 14501,
@@ -63,6 +294,27 @@
         "resolution": 1.0
     },
     {
+        "id": 15106,
+        "title": "Will at least one mink farm worker die from any strain of bird flu in 2023?",
+        "body": {
+            "resolution_criteria": "This question resolves **yes** if by the end of March 31st, 2024, any credible source reports the death of at least one mink farm worker due to any strain of bird flu between Jan 1st, 2023 and the 31st of December, 2023. The death need not be associated with a confirmed outbreak at any particular mink farm.",
+            "background_info": "In October 2022, an [outbreak of H5N1 at a Spanish mink farm](https://www.pbs.org/newshour/health/why-a-bird-flu-outbreak-at-a-mink-farm-is-reigniting-public-health-concerns) showed likely mink-to-mink transmission. All minks were culled and destroyed, and no farm workers were infected.\n\nHowever, the outbreak raised concerns that H5N1 may be showing signs of acquiring mammal-to-mammal spread. The current outbreak in [wild birds and poultry](https://www.cdc.gov/flu/avianflu/avian-flu-summary.htm) is the worst in US history, with over 60 million birds dead. The virus has spilled over into a range of mammalian species, but the October mink farm outbreak is the first likely case of spread of the virus from mammal to mammal.\n\n[According to CIDRAP](https://www.cidrap.umn.edu/avian-influenza-bird-flu/researchers-detail-h5n1-avian-flu-outbreak-mink-farm-spain), no farm workers were infected during this outbreak, and Spanish mink farm workers are required to wear respirators to protect against COVID-19. Eleven farmworkers came in contact with infected mink, but [all tested negative for H5N1](https://www-nature-com.proxy.lib.umich.edu/articles/d41586-023-00201-2).\n\nScientists have sounded the alarm that a mink farm could generate a virus that spreads efficiently from mink to mink, and that this virus might also be capable of efficient human-to-human transmission."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-01-01T04:59:00Z",
+        "url": "https://www.metaculus.com/questions/15106",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/15106",
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-01T23:58:00Z",
+            "close_time": "2024-01-01T04:59:00Z",
+            "effected_close_time": "2024-01-01T04:59:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 15532,
         "title": "Will a nuclear weapon be detonated in or above a European Union state before the following dates? (March 15, 2024)",
         "body": {
@@ -84,6 +336,111 @@
         "resolution": 0.0
     },
     {
+        "id": 15550,
+        "title": "Will chips covered by the 2022 US export controls be exported to China before the following dates? (2024)",
+        "body": {
+            "resolution_criteria": "Each question resolves as **Yes** if, before the year displayed, reliable media sources report that over 100 chips covered by the 2022 US export controls have been exported to China. If the controls are no longer in force when this happens, the question will still resolve as **Yes**. If the source does not indicate the number of chips exported, we will resolve the question according to our own judgement, consulting with experts if necessary",
+            "background_info": "In 2022, the Biden administration introduced sweeping export controls targeting China's AI and semiconductor industries. The controls cover high-end AI chips, semiconductor manufacturing equipment (SME), SME components, and chip design software [[1](https://www.csis.org/analysis/choking-chinas-access-future-ai)].\n\nThe US considers its export controls to apply extraterritorially; any equipment or software that contains or was manufactured using US-made technology is considered to have \"US nationality\" and is therefore covered [[2](https://www.cailaw.org/media/files/SWIICL/ConferenceMaterial/2015/bootcamp/ear-ita-article1.pdf)]. This is why, for example, Taiwanese semiconductor fabrication giant TSMC ceased manufacturing chips which outperform NVIDIA's A100 (the baseline for the export controls) for Shanghai-based semiconductor startup Biren in October 2022 [[2](https://www.scmp.com/tech/tech-war/article/3196938/tsmc-said-suspend-production-chinese-chip-start-biren-amid-us-curbs)]."
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/15550",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/15550",
+            "market_prob": 0.05,
+            "resolve_time": "2024-05-28T22:59:33.564000Z",
+            "close_time": "2023-12-31T12:00:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 15563,
+        "title": "Will the estimated training FLOPs of any exfiltrated AI exceed the indicated amount before the indicated year? (Year: 2026 FLOPs: 10e26)",
+        "body": {
+            "resolution_criteria": "Each question resolves as Yes if, according to [credible sources](https://www.metaculus.com/help/faq/#definitions), an AI model which was trained using more than the indicated amount of FLOPs is exfiltrated (that is, copied to a location outside of the control of the host organization, against the wishes of that organization) before the date indicated. The model must be exfiltrated in full; a partial copy will not count.",
+            "background_info": "The theft of powerful AI systems is a concerning possibility, and a strategically important consideration. Thus, we are interested in the probability that models leveraging enough training compute to be candidates for profoundly transformative systems will be stolen.\n\nIt is [estimated](https://docs.google.com/document/d/1IJ6Sr-gPeXdSJugFulwIpvavc0atjHGM82QjIfUSBGQ/edit) that the training compute required for 2020 algorithms to produce models that can transform the world as much as the industrial revolution did is somewhere between \\(10^{28}\\) and \\(10^{44}\\) FLOPs.\n\nAs of 2023, the growth rate in training compute of the largest models is [estimated](https://epochai.org/trends#compute-trends-section) to be 0.62 orders of magnitude per year."
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/15563",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/15563",
+            "market_prob": null,
+            "resolve_time": "2024-03-02T17:00:00Z",
+            "close_time": "2023-12-31T17:00:00Z",
+            "effected_close_time": null
+        },
+        "resolution": null
+    },
+    {
+        "id": 15778,
+        "title": "Will Donald Trump be found guilty of any crime in the Manhattan case before Election Day 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve **Yes** if Donald Trump is found guilty in *The People of the State of New York v. Donald J. Trump* before Tuesday, November 5, 2024.",
+            "background_info": "On March 30, 2023, Donald Trump, the 45th president of the United States, was [charged](https://www.nytimes.com/article/trump-indictment-criminal-charges.html) with [34 felony counts](https://en.wikipedia.org/wiki/Indictment_of_Donald_Trump) associated with falsifying business records. The indictments by a Manhattan grand jury stem from his alleged role in hush money payments to actress Stormy Daniels during the 2016 presidential election. With the indictment, Trump became the [first president - former or current - charged with criminal activity](https://www.npr.org/2023/04/05/1168256845/donald-trump-becomes-the-first-president-charged-with-criminal-activity#:~:text=Raedle%2FGetty%20Images-,Donald%20Trump%20has%20become%20the%20first%20president%20%E2%80%93%20former%20or%20current,had%20sexual%20encounters%20with%20him.). On April 4th he [pleaded not-guilty](https://www.politico.com/news/2023/04/04/trump-surrenders-00090361)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-11-04T20:00:00Z",
+        "url": "https://www.metaculus.com/questions/15778",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/15778",
+            "market_prob": 0.76,
+            "resolve_time": "2024-05-30T21:00:00Z",
+            "close_time": "2024-11-04T20:00:00Z",
+            "effected_close_time": "2024-05-30T21:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 16592,
+        "title": "Will there be an open-source LLM with the capabilities of GPT 4 before 2027?",
+        "body": {
+            "resolution_criteria": "This question resolves **Yes** if, before January 1 2027,  the [Chatbot Arena Leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard), shows an open-source model with an \"Arena-ELO\", MMLU, or MT-bench greater than or equal to that of base GPT-4. \n\nIf the Chatbot Arena Leaderboard no longer exists or is not maintained, the question resolves **Yes** if  there is an open source model that is widely recognized to be of similar capabilities to GPT-4 in the unanimous opinion of three Metaculus administrators.",
+            "background_info": "[Chatbot Arena](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) is a benchmarking platform for large language models (LLMs). It uses an Elo rating system similar to the one used in chess to rank LLMs by their capabilities. \"Arena-ELO rankings\" are based on user ratings of different LLM systems. MT-bench scores (single-answer grading on a scale of 10) are computed by [fastchat.llm_judge](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge). The MMLU scores are mostly computed by [InstructEval](https://github.com/declare-lab/instruct-eval).\n\nGPT-4 and GPT-4-Turbo are the top-rated models across all three categories. As of December 2023, the top 6 models are all proprietary."
+        },
+        "question_type": "binary",
+        "resolution_date": "2026-12-31T20:00:00Z",
+        "url": "https://www.metaculus.com/questions/16592",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/16592",
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-21T03:59:00Z",
+            "close_time": "2026-12-31T20:00:00Z",
+            "effected_close_time": "2024-04-21T03:59:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 16762,
+        "title": "Will the US Housing Market crash in 2023?",
+        "body": {
+            "resolution_criteria": "For the purposes of this question, a \"crash\" is defined as drop of greater than or equal to 15% in the [national Case–Shiller home price index](https://en.wikipedia.org/wiki/Case%E2%80%93Shiller_index). \n\nThe question will resolve **Yes** if the [national version of this index](https://www.spglobal.com/spdji/en/indices/indicators/sp-corelogic-case-shiller-us-national-home-price-nsa-index/#overview) is below 249.20 for any month in 2023, which would be a more than 15% drop relative to the February 2023 value of 293.17.",
+            "background_info": "The last time a housing price drop of >= 15% in a year was in 2008 (18%). The collapse was due to the [subprime housing crisis](https://en.wikipedia.org/wiki/Subprime_mortgage_crisis). \n\n<img src=\"https://pbs.twimg.com/media/FxMZad2WwAABv39?format=jpg&name=4096x4096\" alt=\"Case Schiller Drop in 2008\">\n\n\nHome prices increased by [double digits](https://realestate.usnews.com/real-estate/articles/when-will-the-housing-market-crash#:~:text=Are%20we%20in%20a%20housing%20bubble%20right%20now%3F,housing%20bubble%20burst%20in%202023.) during the Covid pandemic years until mid 2022. Since then it has declined. While some economists [predict](https://www.yahoo.com/now/economist-predicted-2008-housing-crash-204218890.html#:~:text=Citing%20the%20large%20disparity%20between,fall%20another%2015%25%20in%202023.&text=Shepherdson%2C%20the%20founder%20and%20chief,crash%20of%202008%20in%202005.) a 15-20% \"crash\" into early next year, many others do not agree but see [smaller decreases](https://www.bloomberg.com/news/articles/2022-12-20/economist-who-foresaw-housing-crunch-sees-home-prices-dropping#xj4y7vzkg) in value."
+        },
+        "question_type": "binary",
+        "resolution_date": "2023-12-31T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/16762",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/16762",
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-04T23:32:00Z",
+            "close_time": "2023-12-31T17:00:00Z",
+            "effected_close_time": "2023-12-31T17:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 17593,
         "title": "Will the Sacramento Kings advance to the second round of the NBA playoffs in 2024?",
         "body": {
@@ -101,6 +458,27 @@
             "resolve_time": "2024-04-20T04:06:00Z",
             "close_time": "2024-04-15T16:00:00Z",
             "effected_close_time": "2024-04-15T16:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 18047,
+        "title": "Will Spain announce a snap general election before March 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if, before March 1, 2024, a dissolution of the Spanish Congress has been announced, with a snap election called.",
+            "background_info": "On 2023-07-23, Spaniards went to the polls to elect the 15th Cortes Generales. The election resulted in a hung Congress of Deputies; center-right PP is the biggest party, but its 136 seats are far short of the 176 needed for a majority in the 350-strong chamber.\n\nRunners-up were the PSOE, PP's center-left rival, with a surprising 122 seats - a gain of two compared to projected losses based on pre-election polls. Next come right-wing Vox and left-wing Sumar, with 33 and 31 seats respectively. The balance, 28 seats, is accounted for by seven regionalist parties of various affiliations in the left-right spectrum.\n\nThis suggests coalition talks might prove difficult. The only possible two-party majority would be a PP-PSOE government, but such a German-style \"grand coalition\" is unheard of in the Spanish political tradition. Junts, a Catalan independentist party that holds seven seats and is seen as \"big tent\" in the left-right spectrum, is seen as kingmakers; however, their main platform plank of Catalan independence is strongly opposed by both major parties.\n\nAfter decades of parliaments lasting for most of their terms, Spain has in recent years seen two elections, in December 2015 and April 2019, fail to produce lasting governments. These ballots were succeeded by others in June 2016 and November 2019, both of which resulted in longer-lasting Cortes.\n\nIn this scenario, the question arises: will Spain call another election soon?"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-28T22:59:00Z",
+        "url": "https://www.metaculus.com/questions/18047",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/18047",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T15:22:00Z",
+            "close_time": "2024-02-28T22:59:00Z",
+            "effected_close_time": "2024-02-28T22:59:00Z"
         },
         "resolution": 0.0
     },
@@ -145,6 +523,594 @@
             "effected_close_time": null
         },
         "resolution": null
+    },
+    {
+        "id": 19410,
+        "title": "Which team will win the 2024 NBA Finals? (Milwaukee Bucks)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-07-31T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19410",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19410",
+            "market_prob": 0.021,
+            "resolve_time": "2024-05-03T01:00:00Z",
+            "close_time": "2024-07-31T16:00:00Z",
+            "effected_close_time": "2024-05-03T01:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19412,
+        "title": "Which team will win the 2024 NBA Finals? (Philadelphia 76ers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19412",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19412",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-03T03:42:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-03T03:42:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19413,
+        "title": "Which team will win the 2024 NBA Finals? (Cleveland Cavaliers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19413",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19413",
+            "market_prob": 0.008,
+            "resolve_time": "2024-05-16T01:20:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-16T01:20:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19414,
+        "title": "Which team will win the 2024 NBA Finals? (New York Knicks)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19414",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19414",
+            "market_prob": 0.033,
+            "resolve_time": "2024-05-19T22:05:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-19T22:05:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19415,
+        "title": "Which team will win the 2024 NBA Finals? (Brooklyn Nets)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19415",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19415",
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-08T12:40:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-08T12:40:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19416,
+        "title": "Which team will win the 2024 NBA Finals? (Miami Heat)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19416",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19416",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-02T01:50:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-02T01:50:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19417,
+        "title": "Which team will win the 2024 NBA Finals? (Atlanta Hawks)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19417",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19417",
+            "market_prob": 0.002,
+            "resolve_time": "2024-04-18T04:21:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-18T04:21:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19418,
+        "title": "Which team will win the 2024 NBA Finals? (Toronto Raptors)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19418",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19418",
+            "market_prob": 0.001,
+            "resolve_time": "2024-03-28T04:00:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-28T04:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19419,
+        "title": "Which team will win the 2024 NBA Finals? (Chicago Bulls)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19419",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19419",
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-20T01:30:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-20T01:30:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19420,
+        "title": "Which team will win the 2024 NBA Finals? (Indiana Pacers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19420",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19420",
+            "market_prob": 0.002,
+            "resolve_time": "2024-05-28T02:43:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-28T02:43:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19421,
+        "title": "Which team will win the 2024 NBA Finals? (Washington Wizards)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19421",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19421",
+            "market_prob": 0.007,
+            "resolve_time": "2024-03-10T17:22:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-10T17:22:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19422,
+        "title": "Which team will win the 2024 NBA Finals? (Orlando Magic)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19422",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19422",
+            "market_prob": 0.004,
+            "resolve_time": "2024-05-05T19:49:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-05T19:49:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19423,
+        "title": "Which team will win the 2024 NBA Finals? (Charlotte Hornets)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19423",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19423",
+            "market_prob": 0.001,
+            "resolve_time": "2024-03-24T04:00:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-24T04:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19424,
+        "title": "Which team will win the 2024 NBA Finals? (Detroit Pistons)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19424",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19424",
+            "market_prob": 0.002,
+            "resolve_time": "2024-03-09T23:22:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-09T23:22:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19425,
+        "title": "Which team will win the 2024 NBA Finals? (Denver Nuggets)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19425",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19425",
+            "market_prob": 0.3,
+            "resolve_time": "2024-05-20T02:32:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-20T02:32:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19426,
+        "title": "Which team will win the 2024 NBA Finals? (Memphis Grizzlies)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19426",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19426",
+            "market_prob": 0.003,
+            "resolve_time": "2024-03-22T03:00:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-22T03:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19427,
+        "title": "Which team will win the 2024 NBA Finals? (Sacremento Kings)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19427",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19427",
+            "market_prob": 0.005,
+            "resolve_time": "2024-04-20T04:01:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-20T04:01:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19428,
+        "title": "Which team will win the 2024 NBA Finals? (Phoenix Suns)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19428",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19428",
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-29T00:17:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-29T00:17:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19429,
+        "title": "Which team will win the 2024 NBA Finals? (Los Angeles Clippers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19429",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19429",
+            "market_prob": 0.015,
+            "resolve_time": "2024-05-04T04:24:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-04T04:24:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19430,
+        "title": "Which team will win the 2024 NBA Finals? (Golden State Warriors)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19430",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19430",
+            "market_prob": 0.01,
+            "resolve_time": "2024-04-17T04:47:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-17T04:47:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19431,
+        "title": "Which team will win the 2024 NBA Finals? (Los Angeles Lakers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19431",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19431",
+            "market_prob": 0.005,
+            "resolve_time": "2024-04-30T04:30:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-30T04:30:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19432,
+        "title": "Which team will win the 2024 NBA Finals? (Minnesota Timberwolves)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19432",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19432",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-31T02:59:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-31T02:59:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19433,
+        "title": "Which team will win the 2024 NBA Finals? (New Orleans Pelicans)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19433",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19433",
+            "market_prob": 0.002,
+            "resolve_time": "2024-04-30T03:00:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-30T03:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19434,
+        "title": "Which team will win the 2024 NBA Finals? (Oklahoma City Thunder)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19434",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19434",
+            "market_prob": 0.04,
+            "resolve_time": "2024-05-19T02:41:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-05-19T02:41:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19436,
+        "title": "Which team will win the 2024 NBA Finals? (Utah Jazz)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19436",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19436",
+            "market_prob": 0.001,
+            "resolve_time": "2024-03-28T04:00:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-28T04:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19437,
+        "title": "Which team will win the 2024 NBA Finals? (Portland Trail Blazers)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19437",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19437",
+            "market_prob": 0.001,
+            "resolve_time": "2024-03-17T22:21:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-17T22:21:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19438,
+        "title": "Which team will win the 2024 NBA Finals? (Houston Rockets)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19438",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19438",
+            "market_prob": 0.001,
+            "resolve_time": "2024-04-08T12:39:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-04-08T12:39:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19439,
+        "title": "Which team will win the 2024 NBA Finals? (San Antonio Spurs)",
+        "body": {
+            "resolution_criteria": "The question resolves Yes for the team that is crowned the champion of the 2024 NBA Finals, according to [the NBA](https://www.nba.com/). \n\nIt resolves No for all other teams as they are eliminated from contention.",
+            "background_info": "[The Milwaukee Bucks, Boston Celtics, Denver Nuggets and Phoenix Suns have the best odds as of the preseason.](https://sports.betmgm.com/en/blog/nba/finals-odds-championship-nba-betting-bm05/) There is a steep drop-off after that, though the Golden State Warriors and Los Angeles Lakers also have decent odds and multiple future Hall-of-Famers."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-30T16:00:00Z",
+        "url": "https://www.metaculus.com/questions/19439",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19439",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-08T18:22:00Z",
+            "close_time": "2024-06-30T16:00:00Z",
+            "effected_close_time": "2024-03-08T18:22:00Z"
+        },
+        "resolution": 0.0
     },
     {
         "id": 19495,
@@ -630,6 +1596,300 @@
         "resolution": 0.0
     },
     {
+        "id": 19595,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Manchester City)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19595",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19595",
+            "market_prob": 0.3,
+            "resolve_time": "2024-04-17T22:11:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-04-17T22:11:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19597,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Arsenal)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19597",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19597",
+            "market_prob": 0.125,
+            "resolve_time": "2024-04-17T22:11:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-04-17T22:11:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19600,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Barcelona)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19600",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19600",
+            "market_prob": 0.073,
+            "resolve_time": "2024-04-16T22:23:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-04-16T22:23:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19602,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Athletico Madrid)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19602",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19602",
+            "market_prob": 0.04,
+            "resolve_time": "2024-04-16T22:39:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-04-16T22:39:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19603,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Real Sociedad)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19603",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19603",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-05T18:16:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-05T18:16:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19604,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Napoli)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19604",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19604",
+            "market_prob": 0.02,
+            "resolve_time": "2024-03-12T17:17:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-12T17:17:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19605,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Inter Milan)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19605",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19605",
+            "market_prob": 0.04,
+            "resolve_time": "2024-03-13T23:57:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-13T23:57:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19607,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Bayern Munich)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19607",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19607",
+            "market_prob": 0.2,
+            "resolve_time": "2024-05-08T22:30:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-05-08T22:30:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19609,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (RB Leipzig)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19609",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19609",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-06T18:15:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-06T18:15:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19611,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Paris Saint-Germain)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19611",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19611",
+            "market_prob": 0.13,
+            "resolve_time": "2024-05-07T22:30:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-05-07T22:30:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19614,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Porto)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19614",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19614",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-12T17:17:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-12T17:17:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19619,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Copenhagen)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19619",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19619",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-07T18:16:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-07T18:16:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19620,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (PSV)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19620",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19620",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-13T22:17:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-13T22:17:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19622,
+        "title": "Which team will win the 2023/2024 UEFA Champions League? (Lazio)",
+        "body": {
+            "resolution_criteria": "The question resolves \"Yes\" for the team that wins the Final on the 1st of June 2024, according to [UEFA](https://www.uefa.com/uefachampionsleague/). All other teams resolve \"No\".",
+            "background_info": "[The UEFA Champions League](https://en.wikipedia.org/wiki/UEFA_Champions_League) (previously known as the European Cup, abbreviated as UCL, or sometimes, UEFA CL) is an annual club association football competition organised by the Union of European Football Associations (UEFA) and contested by top-division European clubs, deciding the competition winners through a round robin group stage to qualify for a double-legged knockout format, and a single leg final. The 2023/24 edition features 32 teams, with the final being played on the 1st of June 2024 at Wembley Stadium."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-01T19:00:00Z",
+        "url": "https://www.metaculus.com/questions/19622",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19622",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-05T18:15:00Z",
+            "close_time": "2024-06-01T19:00:00Z",
+            "effected_close_time": "2024-03-05T18:15:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 19741,
         "title": "Will Macky Sall step down as president of Senegal at or before the currently scheduled end of his term?",
         "body": {
@@ -637,7 +1897,7 @@
             "background_info": "Senegal was [scheduled to hold presidential elections on February 25, 2024](https://en.wikipedia.org/wiki/2024_Senegalese_presidential_election), but on February 5 Senegalese President [Macky Sall](https://en.wikipedia.org/wiki/Macky_Sall) announced that the elections would be [delayed until December](https://www.cnn.com/2024/02/05/africa/senegal-parliament-debates-extending-presidents-mandate-intl/index.html). The delayed vote has led to [protests and unrest](https://news.yahoo.com/ahead-planned-march-over-vote-122105603.html), as well as a state crackdown against the protests.\n\nSall's term is scheduled to end on April 2, 2024, and the delayed elections have [led to uncertainty regarding whether Sall will respect the term limit](https://www.bbc.com/news/world-africa-68253255).\n\nSenegal is in the geographical region of Africa that has seen a high rate of coups the past three years. Despite this, Senegal had previously maintained some stability and helped coordinate responses against coups elsewhere in the region.\n\nYet when Sall was [interviewed by *The Economist*](https://www.economist.com/middle-east-and-africa/2023/10/26/senegals-president-asks-if-democracy-can-work-in-africas-coup-belt) in October 2023 he asked,\n\n> \"Is democracy as we want to do it really suitable?\"\n\nPreviously there had been a damaging fight between the incumbent president and an opposition leader, Ousmane Sonko. The Economist wrote,\n\n> The fight centres around the question of whether Senegal’s government is trying to tilt the election by using the courts to keep Mr Sonko off the ballot.\n\nThis has involved accusations of rape (acquitted), corruption of youth (convicted), plotting an insurrection (still active). The opposition claims this is repeating a pattern from 2019 when the opposition was also barred from running due to criminal convictions. The incumbent president denies this.\n\n> The charge and conviction sparked large protests, some of them violent, in support of Mr Sonko. The demonstrations were also fuelled by hints from Mr Sall that he might try to run for a third presidential term, even though Senegal’s constitution has a two-term limit. It was only in July that Mr Sall definitively said he would not seek office again, after more than two years of protests and at least 37 deaths, according to Amnesty International, a rights group.\n\n> Mr Sall’s announcement led to a lull in the violence, though it lasted less than a month until Mr Sonko was once more arrested. The government also dissolved his political party, Pastef, and arrested many of its leaders, including several mayors. As protests flared, the government cut mobile-internet access for almost a week.\n\nThere seems to be insecurities around how peaceful Senegal's democracy really is:\n\n> Many fear more violence before the election, especially if Mr Sonko is definitively barred from running. Even Mr Sall prevaricates when asked if he expects the election to be peaceful. [...] Mr Sall bristles at the suggestion there has been a backsliding of democracy on his watch. “Those who say that [there has been] are supporters of anarchy and chaos,” he retorts. “Senegal has no lessons in democracy to learn from anyone.”"
         },
         "question_type": "binary",
-        "resolution_date": "2024-04-02T18:28:00Z",
+        "resolution_date": "2024-04-03T22:00:00Z",
         "url": "https://www.metaculus.com/questions/19741",
         "data_source": "metaculus",
         "metadata": {
@@ -798,6 +2058,279 @@
         "resolution": 1.0
     },
     {
+        "id": 19849,
+        "title": "Will there be United Nations peacekeeping troops in Gaza on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as 'Yes' if, on May 31, 2024, there is an active United Nations-led peacekeeping operation physically present in the Gaza Strip. For the purposes of this question:\n\n•\tAn 'operation' is defined as any UN-led mission that includes peacekeeping troops, advisors, or observers officially deployed in a capacity recognized by the UN Security Council.\n\n•\tThe presence must be confirmed through an official announcement or mission update on the [UN Peacekeeping: Where We Operate]( https://peacekeeping.un.org/en/where-we-operate) page.\n\n•\tIf the primary source is unavailable or not updated, resolution will be based on official statements from the United Nations or reports by at least two reputable international news organizations.\n\n•\tThe presence of any form of a UN delegation or individual personnel engaged in diplomatic discussions, without an accompanying peacekeeping mandate, does not fulfill the resolution criteria. Neither does the presence of members of the UN Palestine Refugee Agency (UNRWA).",
+            "background_info": "As of late 2023, the Gaza Strip has been at the centre of [intense conflict and humanitarian crisis](https://edition.cnn.com/2023/10/28/middleeast/israel-hamas-war-one-month-explainer-mime-intl/index.html#:~:text=The%20conflict%20has%20led%20to,nowhere%20to%20escape%20Israel's%20bombs.) due to the escalating violence between Israel and Hamas. The situation deteriorated significantly following a major terrorist attack on Israel by Hamas militants on October 7, described as the largest terrorist attack in Israel's history. This attack led to [1,200 fatalities and numerous hostages](https://www.npr.org/2023/11/05/1210641727/israel-war-hamas-latest-updates) (Israel initially estimated 1,400 fatalities, later [revised down to around 1,200](https://thehill.com/policy/international/4304838-israeli-death-toll-estimate-down-to-about-1200/)), prompting a severe military response from Israel. In retaliation, the Israeli military launched an extensive offensive involving air, sea, and ground operations against Gaza. This has included a total siege aimed at curtailing the capabilities of Hamas, the ruling authority in the Gaza Strip. The conflict has resulted in a dire humanitarian situation in Gaza, exacerbating the long-standing difficulties faced by the civilian population in the area.\n\nIn light of the crisis, there have been discussions about international interventions to stabilize the situation. One of the [proposed solutions](https://www.bloomberg.com/news/articles/2023-10-31/us-and-israel-weigh-peacekeepers-for-the-gaza-strip-after-hamas?leadSource=reddit_wall) is the deployment of a multinational peacekeeping force in Gaza, potentially including troops from the United States, the United Kingdom, and France. Another option under consideration is placing Gaza under United Nations oversight."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19849",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19849",
+            "market_prob": 0.02,
+            "resolve_time": "2024-05-31T15:57:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19850,
+        "title": "Will at least one of Egypt, Jordan, or Lebanon be at war with Israel on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as 'Yes' if, on May 31, 2024, any of the nations Egypt, Jordan, or Lebanon is engaged in a state of war with Israel, characterized by any of the following being true:\n\n•\tOfficial statements by any of the involved nation's government or military acknowledging a state of war.\n\n•\tOfficial statements by the governments of at least two permanent members of the UN Security Council that acknowledge a state of war.\n\nThe primary source for resolution will be the official statements or press releases from the respective governments. If no official or credible report of a state of war is found by June 1, 2024, the question will resolve as 'No'.",
+            "background_info": "As of late 2023, the Gaza Strip has been at the centre of [intense conflict and humanitarian crisis](https://edition.cnn.com/2023/10/28/middleeast/israel-hamas-war-one-month-explainer-mime-intl/index.html#:~:text=The%20conflict%20has%20led%20to,nowhere%20to%20escape%20Israel's%20bombs.), primarily due to the escalating violence between Israel and Hamas. The situation deteriorated significantly following a major terrorist attack on Israel by Hamas militants on October 7, described as the largest terrorist attack in Israel's history. This attack led to over [1,400 fatalities and numerous hostages](https://www.npr.org/2023/11/05/1210641727/israel-war-hamas-latest-updates), prompting a severe military response from Israel. In retaliation, the Israeli military launched an extensive offensive involving air, sea, and ground operations against Gaza. This has included a total siege aimed at curtailing the capabilities of Hamas, the ruling authority in the Gaza Strip. The conflict has resulted in a dire humanitarian situation in Gaza, exacerbating the long-standing difficulties faced by the civilian population in the area.\nIn [previous wars](https://history.state.gov/milestones/1945-1952/arab-israeli-war) Israel engaged in warfare with up to five Arab nations. At the moment, however, it is unclear and unlikely that neighbouring Arab countries will join the fighting, having already shown [unwillingness to take refugees](https://apnews.com/article/palestinian-jordan-egypt-israel-refugee-502c06d004767d4b64848d878b66bd3d)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19850",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19850",
+            "market_prob": 0.015,
+            "resolve_time": "2024-05-31T16:09:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19851,
+        "title": "Will Rishi Sunak be Prime Minister of the UK on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as 'Yes' if Rishi Sunak is listed as the Prime Minister of the UK on the [official government website](https://www.gov.uk/government/ministers/prime-minister) on May 31, 2024. In the event of a discrepancy or delay in the update of the government website, the question will additionally resolve based on real-time reports from at least two reputable and independent national news outlets. These sources must directly confirm Rishi Sunak's status as Prime Minister on the specified date. If neither the official website nor independent news outlets confirm his position as Prime Minister, the question will resolve as 'No'.",
+            "background_info": "Rishi Sunak assumed office as the Prime Minister of the United Kingdom in October 2022, following the turbulent tenure of Liz Truss. His first year was dominated by efforts to stabilize the UK's economy, grappling with high inflation and the repercussions of Truss’s policies. Sunak focused on [austerity measures and pragmatic policymaking](https://www.instituteforgovernment.org.uk/comment/rishi-sunak-first-year-prime-minister), including the [Windsor Framework](https://www.gov.uk/government/publications/the-windsor-framework) which improved UK-EU relations, particularly concerning the Northern Ireland protocol. Despite these efforts, challenges such as persistent inflation and political scandals have continued. In terms of internal party dynamics, Sunak's leadership has been a balancing act within the Conservative Party, addressing divergent views and unifying the party ahead of the next [general election](https://www.parliament.uk/about/how/elections-and-voting/general/), which is scheduled for no later than January 2025."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19851",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19851",
+            "market_prob": 0.98,
+            "resolve_time": "2024-05-31T23:56:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19867,
+        "title": "Will Elon Musk be chairman of X (formerly Twitter) on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as 'Yes' if Elon Musk is listed as the chairman of X (formerly Twitter) on May 31, 2024 according to the Twitter page on [Wikipedia](https://en.wikipedia.org/wiki/Twitter). If the Wikipedia page has not been updated by the specified date or if there is a dispute regarding the accuracy of the information, confirmation will be sought from at least two credible and independent national or international news sources. If neither Wikipedia nor news sources confirm Elon Musk's status as chairman by the specified date, the question will resolve as 'No'.",
+            "background_info": "Elon Musk, the world’s richest person known for leading companies like SpaceX and Tesla, expanded his portfolio by acquiring Twitter for [$44 billion](https://www.bbc.co.uk/news/technology-63402338) in October 2022. Under his leadership, the company underwent significant changes, including a rebranding to \"X\" in July 2023. While Musk initially served as CEO, he transitioned to the roles of Chairman and Chief Technology Officer, passing the [CEO position to Linda Yaccarino in June 2023.](https://twitter.com/elonmusk/status/1657050349608501249?lang=en)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19867",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19867",
+            "market_prob": 0.99,
+            "resolve_time": "2024-05-31T16:01:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 19868,
+        "title": "Will X (formerly Twitter) be a public company on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as 'Yes' if X (formerly Twitter) is publicly traded on any stock exchange on May 31, 2024. This will be determined by official announcements from X, [stock exchange listings](https://stockanalysis.com/list/biggest-companies/), and [credible financial news](https://www.wsj.com/market-data/quotes/company-list/country/united-states) reports. If these sources indicate that X is not publicly listed and is a private entity as of the specified date, the question will resolve as 'No'.",
+            "background_info": "In October 2022, Elon Musk completed the acquisition of Twitter for [$44 billion](https://www.nytimes.com/2022/10/27/technology/elon-musk-twitter-deal-complete.html), transitioning the company from a public to a [private entity](https://www.nytimes.com/2022/10/28/technology/twitter-changes.html#:~:text=Making%20Twitter%20a%20private%20company,tightly%20controlled%20by%20an%20owner.). This change represents a significant shift in the company's structure and governance. Public companies, like Twitter was previously, are subject to strict disclosure requirements and shareholder scrutiny, with their shares traded on public stock exchanges. In contrast, a private company like Twitter under Musk's ownership is not obligated to disclose as much information and its shares are not publicly traded. This transition to a private structure grants Musk more control over the company's operations and strategic direction, allowing for potentially more rapid and significant changes in policies and practices. However, the long-term impact of this privatization on Twitter's operational and financial performance remains to be seen, as it introduces new dynamics in terms of management, debt obligations, and strategic vision implementation."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19868",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19868",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-31T15:42:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19871,
+        "title": "Will any OpenAI or Anthropic model be in the top-10 model with a non-proprietary license on May 31, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if there is at least one model in the top-10 that has a non-proprietary licence and is released by Anthropic or OpenAI based on the rankings of models on the [Chatbot Arena Leaderboard](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard) hosted on the Hugging Face website. Any license that is not ‘Proprietary’ is sufficient for a model to count for resolution. If the leaderboard does not provide sufficient information regarding the licensing or is not updated by the resolution date, the question will resolve as ambiguous.",
+            "background_info": "In the current AI landscape, there's a significant divide between proprietary and open-source AI models. Proprietary AI, represented by LLM models like OpenAI's ChatGPT and Anthropic's Claude, boasts substantial market influence and development, supported by extensive resources and large model and training run sizes. On the other hand, open-source AI models like Llama, Falcon, and Mistral rely on more open source approaches as well as lower model sizes. At the moment, proprietary models dominate the LLM [leaderboards](https://huggingface.co/spaces/lmsys/chatbot-arena-leaderboard), though given the fast-moving nature of this industry, it is unclear whether the advantage of large, proprietary models will be sustained."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/19871",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19871",
+            "market_prob": 0.02,
+            "resolve_time": "2024-05-31T16:15:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 19975,
+        "title": "Will a new SARS-CoV-2 variant be classified as a Variant of Concern (VOC) or worse in the United States before March 1, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if, after December 1, 2023 and before March 1, 2024, the SARS-CoV-2 Interagency Group announces (or the CDC [shows on its SARS-CoV-2 variant classifications page](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)) a new SARS-CoV-2 Variant of Concern (VOC) or Variant of High Consequence (VOHC) that was not previously identified as a VOC or VOHC at any point.",
+            "background_info": "The SARS-CoV-2 Interagency Group (SIG), established by the U.S. Department of Health and Human Services, coordinates between the CDC, National Institutes of Health, Food and Drug Administration, Biomedical Advanced Research and Development Authority, and Department of Defense. This group is responsible for classifying and monitoring emerging SARS-CoV-2 variants.\n\nThe US Centers for Disease Control and Prevention (CDC) tracks [SARS-CoV-2 variants](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html) classified by the SIG. As of December 1, 2023, the CDC shows four variant classifications which describe the characteristics of certain variants for use in informing the public health response. The four classifications are described as follows:\n\n**Variants Being Monitored (VBM)**\n>. . . Variants designated as VBM include:\n>\n>* lineages with potential impact on available medical countermeasures based on analysis of genetic sequence data.\n>* lineages that previously caused more severe disease or increased transmission but that are no longer detected.\n>* lineage with an unusually large number of antigenic mutations AND presence in multiple countries with collection dates within 4 weeks.\n>*lineages previously designated as a VOI, VOC, or VOHC that are currently circulating at very low levels in the United States.\n>\n>A Variant of Interest or a Variant of Concern may be downgraded to this list after it is no longer circulating at sustained levels and no longer poses significant risk to public health in the United States. Classifications may change over time, based on the evolving situation and information available.\n\n**Variant of Interest (VOI)**\n>. . . Variants designated as VOI include variants that have:\n>\n>* reduced neutralization by antibodies generated against previous infection or vaccination.\n>* reduced efficacy of FDA approved treatments, or diagnostic tests.\n>* predicted increase in transmissibility or disease severity.\n>\n>Possible attributes of a Variant of Interest include:\n>\n>* specific genetic markers that are predicted to affect transmission, diagnostics, therapeutics, or immune escape.\n>* evidence that it is the cause of an increased proportion of cases or unique outbreak clusters.\n\n**Variant of Concern (VOC)**\n>. . . In addition to the possible attributes of a variant of interest, variants designated as VOC include:\n>\n>* increase in transmissibility.\n>* more severe disease (for example, increased hospitalizations or deaths).\n>* significant reduction in neutralization by antibodies generated during previous infection or vaccination.\n>* reduced effectiveness of treatments or vaccines, or diagnostic detection failures.\n\n**Variant of High Consequence (VOHC)**\n>A VOHC has clear evidence that prevention measures or medical countermeasures (MCMs) have significantly reduced effectiveness relative to previously circulating variants. . . In addition to the possible attributes of a variant of concern, variants designated as VOHC include impact on MCMs such as:\n>\n>* demonstrated failure of diagnostic test targets.\n>* evidence to suggest a significant reduction in vaccine effectiveness, a disproportionately high number of infections in vaccinated persons, or very low vaccine-induced protection against severe disease.\n>* significantly reduced susceptibility to multiple EUA or approved therapeutics.\n>* more severe clinical disease and increased hospitalizations.\n\nThe variant class hierarchy is described by the CDC as follows:\n\n>Each variant classification includes the possible attributes of lower classes (for example, VOC includes the possible attributes of VOI). . . U.S. classifications may differ from the WHO classifications because the impact of variants may differ by location.\n\nAs of December 1, 2023, only \"Omicron (parent lineages)\" is classified as a VOC. All other variants are classified as VBM, except for \"variants containing the F456L spike mutations\" which is classified as a VOI. Previously the only variants to have reached the level of VOC were Alpha, Beta, Gamma, Delta, Epsilon, and Omicron, though all but \"Omicron (parent lineages)\" have since been downgraded."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/19975",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/19975",
+            "market_prob": 0.001,
+            "resolve_time": "2024-03-01T15:01:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20024,
+        "title": "Will Sweden join NATO before 2025?",
+        "body": {
+            "resolution_criteria": "This question will resolve Yes if an official statement by NATO or the Country of Sweden, issued before January 1, 2025, declares that Sweden has joined NATO.",
+            "background_info": "NATO is an is an intergovernmental military alliance established in the aftermath of World War II.  During the Cold War, the main purpose of NATO was to provide collective security against the Soviet Union and its allies, the Warsaw Pact.  Recently, NATO has provided a European system of security against Russia, viewed by many in Europe as a hostile threat, especially after its invasion of Ukraine.\n\nSweden was neutral throughout both World Wars.  However, in the wake of the Russian invasion of Ukraine, its neighbor Finland, which also had [a longstanding policy](https://www.bbc.co.uk/news/world-europe-61397478) of neutrality, [joined NATO](https://www.nato.int/cps/en/natohq/news_213448.htm).\n\nRecently, Sweden has applied to NATO.  NATO accession requires the unanimous consent of NATO members, and Turkey has [delayed](https://www.reuters.com/world/swedens-nato-bid-delayed-turkish-parliament-2023-11-16/) its vote on Sweden has NATO.  A [previous Metaculus question](https://www.metaculus.com/questions/10084/sweden-to-join-nato-before-2024/) asked if Sweden would join NATO before 2024.  Here, we ask if Sweden will join NATO before 2025.\n\nDisclaimer: I [sourced much of the description](https://www.france24.com/en/live-news/20220301-ukraine-war-brings-sweden-finland-even-closer-to-nato) from here."
+        },
+        "question_type": "binary",
+        "resolution_date": "2025-01-01T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/20024",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20024",
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-07T17:00:00Z",
+            "close_time": "2025-01-01T12:00:00Z",
+            "effected_close_time": "2024-03-07T17:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20049,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI against Microsoft)",
+        "body": {
+            "resolution_criteria": "These questions will resolve as **Yes** if, after November 20, 2023, and before March 1, 2024, [credible sources](https://www.metaculus.com/help/faq/#definitions) report that a lawsuit has been filed by the listed plaintiff against the listed defendant. The lawsuits may generally be filed for any reason, except that a potential antitrust lawsuit against Microsoft must be related to their dealings with OpenAI following the announced firing of Sam Altman.",
+            "background_info": "On November 17, 2023, OpenAI [announced that it had fired CEO Sam Altman](https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired). Following the announcement there were reports that OpenAI leadership and its employees were unhappy with the move, and OpenAI President Greg Brockman announced he was quitting.\n\nIn his article for his independent analysis publication, Stratechery, Ben Thompson wrote:\n\n>* Over the weekend rumors surged that Altman was negotiating his return, only for OpenAI to hire former Twitch CEO Emmett Shear as CEO.\n>* Finally, late Sunday night, [Satya Nadella announced via tweet](https://twitter.com/satyanadella/status/1726509045803336122) that Altman and Brockman, “together with colleagues”, would be joining Microsoft.\n>\n>This is, quite obviously, a phenomenal outcome for Microsoft. The company already has [a perpetual license to all OpenAI IP](https://www.wsj.com/articles/microsoft-and-openai-forge-awkward-partnership-as-techs-new-power-couple-3092de51) ([short of artificial general intelligence](https://openai.com/our-structure#:~:text=the%20board%20determines%20when%20we%27ve%20attained%20AGI.%20Again%2C%20by%20AGI%20we%20mean%20a%20highly%20autonomous%20system%20that%20outperforms%20humans%20at%20most%20economically%20valuable%20work.%20Such%20a%20system%20is%20excluded%20from%20IP%20licenses%20and%20other%20commercial%20terms%20with%20Microsoft%2C%20which%20only%20apply%20to%20pre%2DAGI%20technology.)), including source code and model weights; the question was whether it would have the talent to exploit that IP if OpenAI suffered the sort of talent drain that was threatened upon Altman and Brockman’s removal. Indeed they will, as a good portion of that talent seems likely to flow to Microsoft; you can make the case that Microsoft just acquired OpenAI for $0 and zero risk of an antitrust lawsuit.\n\n[According to Techcrunch](https://techcrunch.com/2023/11/19/openais-board-is-no-match-for-investors-wrath/):\n\n>Satya Nadella, the CEO of Microsoft, a major OpenAI partner, was reportedly “furious” to learn of Altman’s departure “minutes” after it happened, and has been in touch with Altman — and pledged to support him — as OpenAI backers (in particular Tiger Global, Sequoia Capital and Thrive Capital) recruit Microsoft’s aid in exerting pressure on the board to reverse course. Meanwhile, some key venture capital backers of OpenAI are said to be contemplating a lawsuit against the board; none, including Khosla Ventures and LinkedIn co-founder Reid Hoffman, a former OpenAI board member, were given advance notice of the decision to fire Altman."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20049",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20049",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T16:03:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20050,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI investors against OpenAI board)",
+        "body": {
+            "resolution_criteria": "These questions will resolve as **Yes** if, after November 20, 2023, and before March 1, 2024, [credible sources](https://www.metaculus.com/help/faq/#definitions) report that a lawsuit has been filed by the listed plaintiff against the listed defendant. The lawsuits may generally be filed for any reason, except that a potential antitrust lawsuit against Microsoft must be related to their dealings with OpenAI following the announced firing of Sam Altman.",
+            "background_info": "On November 17, 2023, OpenAI [announced that it had fired CEO Sam Altman](https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired). Following the announcement there were reports that OpenAI leadership and its employees were unhappy with the move, and OpenAI President Greg Brockman announced he was quitting.\n\nIn his article for his independent analysis publication, Stratechery, Ben Thompson wrote:\n\n>* Over the weekend rumors surged that Altman was negotiating his return, only for OpenAI to hire former Twitch CEO Emmett Shear as CEO.\n>* Finally, late Sunday night, [Satya Nadella announced via tweet](https://twitter.com/satyanadella/status/1726509045803336122) that Altman and Brockman, “together with colleagues”, would be joining Microsoft.\n>\n>This is, quite obviously, a phenomenal outcome for Microsoft. The company already has [a perpetual license to all OpenAI IP](https://www.wsj.com/articles/microsoft-and-openai-forge-awkward-partnership-as-techs-new-power-couple-3092de51) ([short of artificial general intelligence](https://openai.com/our-structure#:~:text=the%20board%20determines%20when%20we%27ve%20attained%20AGI.%20Again%2C%20by%20AGI%20we%20mean%20a%20highly%20autonomous%20system%20that%20outperforms%20humans%20at%20most%20economically%20valuable%20work.%20Such%20a%20system%20is%20excluded%20from%20IP%20licenses%20and%20other%20commercial%20terms%20with%20Microsoft%2C%20which%20only%20apply%20to%20pre%2DAGI%20technology.)), including source code and model weights; the question was whether it would have the talent to exploit that IP if OpenAI suffered the sort of talent drain that was threatened upon Altman and Brockman’s removal. Indeed they will, as a good portion of that talent seems likely to flow to Microsoft; you can make the case that Microsoft just acquired OpenAI for $0 and zero risk of an antitrust lawsuit.\n\n[According to Techcrunch](https://techcrunch.com/2023/11/19/openais-board-is-no-match-for-investors-wrath/):\n\n>Satya Nadella, the CEO of Microsoft, a major OpenAI partner, was reportedly “furious” to learn of Altman’s departure “minutes” after it happened, and has been in touch with Altman — and pledged to support him — as OpenAI backers (in particular Tiger Global, Sequoia Capital and Thrive Capital) recruit Microsoft’s aid in exerting pressure on the board to reverse course. Meanwhile, some key venture capital backers of OpenAI are said to be contemplating a lawsuit against the board; none, including Khosla Ventures and LinkedIn co-founder Reid Hoffman, a former OpenAI board member, were given advance notice of the decision to fire Altman."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20050",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20050",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T16:03:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20051,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (OpenAI against Sam Altman)",
+        "body": {
+            "resolution_criteria": "These questions will resolve as **Yes** if, after November 20, 2023, and before March 1, 2024, [credible sources](https://www.metaculus.com/help/faq/#definitions) report that a lawsuit has been filed by the listed plaintiff against the listed defendant. The lawsuits may generally be filed for any reason, except that a potential antitrust lawsuit against Microsoft must be related to their dealings with OpenAI following the announced firing of Sam Altman.",
+            "background_info": "On November 17, 2023, OpenAI [announced that it had fired CEO Sam Altman](https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired). Following the announcement there were reports that OpenAI leadership and its employees were unhappy with the move, and OpenAI President Greg Brockman announced he was quitting.\n\nIn his article for his independent analysis publication, Stratechery, Ben Thompson wrote:\n\n>* Over the weekend rumors surged that Altman was negotiating his return, only for OpenAI to hire former Twitch CEO Emmett Shear as CEO.\n>* Finally, late Sunday night, [Satya Nadella announced via tweet](https://twitter.com/satyanadella/status/1726509045803336122) that Altman and Brockman, “together with colleagues”, would be joining Microsoft.\n>\n>This is, quite obviously, a phenomenal outcome for Microsoft. The company already has [a perpetual license to all OpenAI IP](https://www.wsj.com/articles/microsoft-and-openai-forge-awkward-partnership-as-techs-new-power-couple-3092de51) ([short of artificial general intelligence](https://openai.com/our-structure#:~:text=the%20board%20determines%20when%20we%27ve%20attained%20AGI.%20Again%2C%20by%20AGI%20we%20mean%20a%20highly%20autonomous%20system%20that%20outperforms%20humans%20at%20most%20economically%20valuable%20work.%20Such%20a%20system%20is%20excluded%20from%20IP%20licenses%20and%20other%20commercial%20terms%20with%20Microsoft%2C%20which%20only%20apply%20to%20pre%2DAGI%20technology.)), including source code and model weights; the question was whether it would have the talent to exploit that IP if OpenAI suffered the sort of talent drain that was threatened upon Altman and Brockman’s removal. Indeed they will, as a good portion of that talent seems likely to flow to Microsoft; you can make the case that Microsoft just acquired OpenAI for $0 and zero risk of an antitrust lawsuit.\n\n[According to Techcrunch](https://techcrunch.com/2023/11/19/openais-board-is-no-match-for-investors-wrath/):\n\n>Satya Nadella, the CEO of Microsoft, a major OpenAI partner, was reportedly “furious” to learn of Altman’s departure “minutes” after it happened, and has been in touch with Altman — and pledged to support him — as OpenAI backers (in particular Tiger Global, Sequoia Capital and Thrive Capital) recruit Microsoft’s aid in exerting pressure on the board to reverse course. Meanwhile, some key venture capital backers of OpenAI are said to be contemplating a lawsuit against the board; none, including Khosla Ventures and LinkedIn co-founder Reid Hoffman, a former OpenAI board member, were given advance notice of the decision to fire Altman."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20051",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20051",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T16:03:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20052,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (Government antitrust against Microsoft)",
+        "body": {
+            "resolution_criteria": "These questions will resolve as **Yes** if, after November 20, 2023, and before March 1, 2024, [credible sources](https://www.metaculus.com/help/faq/#definitions) report that a lawsuit has been filed by the listed plaintiff against the listed defendant. The lawsuits may generally be filed for any reason, except that a potential antitrust lawsuit against Microsoft must be related to their dealings with OpenAI following the announced firing of Sam Altman.",
+            "background_info": "On November 17, 2023, OpenAI [announced that it had fired CEO Sam Altman](https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired). Following the announcement there were reports that OpenAI leadership and its employees were unhappy with the move, and OpenAI President Greg Brockman announced he was quitting.\n\nIn his article for his independent analysis publication, Stratechery, Ben Thompson wrote:\n\n>* Over the weekend rumors surged that Altman was negotiating his return, only for OpenAI to hire former Twitch CEO Emmett Shear as CEO.\n>* Finally, late Sunday night, [Satya Nadella announced via tweet](https://twitter.com/satyanadella/status/1726509045803336122) that Altman and Brockman, “together with colleagues”, would be joining Microsoft.\n>\n>This is, quite obviously, a phenomenal outcome for Microsoft. The company already has [a perpetual license to all OpenAI IP](https://www.wsj.com/articles/microsoft-and-openai-forge-awkward-partnership-as-techs-new-power-couple-3092de51) ([short of artificial general intelligence](https://openai.com/our-structure#:~:text=the%20board%20determines%20when%20we%27ve%20attained%20AGI.%20Again%2C%20by%20AGI%20we%20mean%20a%20highly%20autonomous%20system%20that%20outperforms%20humans%20at%20most%20economically%20valuable%20work.%20Such%20a%20system%20is%20excluded%20from%20IP%20licenses%20and%20other%20commercial%20terms%20with%20Microsoft%2C%20which%20only%20apply%20to%20pre%2DAGI%20technology.)), including source code and model weights; the question was whether it would have the talent to exploit that IP if OpenAI suffered the sort of talent drain that was threatened upon Altman and Brockman’s removal. Indeed they will, as a good portion of that talent seems likely to flow to Microsoft; you can make the case that Microsoft just acquired OpenAI for $0 and zero risk of an antitrust lawsuit.\n\n[According to Techcrunch](https://techcrunch.com/2023/11/19/openais-board-is-no-match-for-investors-wrath/):\n\n>Satya Nadella, the CEO of Microsoft, a major OpenAI partner, was reportedly “furious” to learn of Altman’s departure “minutes” after it happened, and has been in touch with Altman — and pledged to support him — as OpenAI backers (in particular Tiger Global, Sequoia Capital and Thrive Capital) recruit Microsoft’s aid in exerting pressure on the board to reverse course. Meanwhile, some key venture capital backers of OpenAI are said to be contemplating a lawsuit against the board; none, including Khosla Ventures and LinkedIn co-founder Reid Hoffman, a former OpenAI board member, were given advance notice of the decision to fire Altman."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20052",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20052",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T16:03:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20055,
+        "title": "Will lawsuits related to the firing of Sam Altman by OpenAI be filed with the following plaintiffs and defendants before March 1, 2024? (Sam Altman against OpenAI)",
+        "body": {
+            "resolution_criteria": "These questions will resolve as **Yes** if, after November 20, 2023, and before March 1, 2024, [credible sources](https://www.metaculus.com/help/faq/#definitions) report that a lawsuit has been filed by the listed plaintiff against the listed defendant. The lawsuits may generally be filed for any reason, except that a potential antitrust lawsuit against Microsoft must be related to their dealings with OpenAI following the announced firing of Sam Altman.",
+            "background_info": "On November 17, 2023, OpenAI [announced that it had fired CEO Sam Altman](https://www.theverge.com/2023/11/17/23965982/openai-ceo-sam-altman-fired). Following the announcement there were reports that OpenAI leadership and its employees were unhappy with the move, and OpenAI President Greg Brockman announced he was quitting.\n\nIn his article for his independent analysis publication, Stratechery, Ben Thompson wrote:\n\n>* Over the weekend rumors surged that Altman was negotiating his return, only for OpenAI to hire former Twitch CEO Emmett Shear as CEO.\n>* Finally, late Sunday night, [Satya Nadella announced via tweet](https://twitter.com/satyanadella/status/1726509045803336122) that Altman and Brockman, “together with colleagues”, would be joining Microsoft.\n>\n>This is, quite obviously, a phenomenal outcome for Microsoft. The company already has [a perpetual license to all OpenAI IP](https://www.wsj.com/articles/microsoft-and-openai-forge-awkward-partnership-as-techs-new-power-couple-3092de51) ([short of artificial general intelligence](https://openai.com/our-structure#:~:text=the%20board%20determines%20when%20we%27ve%20attained%20AGI.%20Again%2C%20by%20AGI%20we%20mean%20a%20highly%20autonomous%20system%20that%20outperforms%20humans%20at%20most%20economically%20valuable%20work.%20Such%20a%20system%20is%20excluded%20from%20IP%20licenses%20and%20other%20commercial%20terms%20with%20Microsoft%2C%20which%20only%20apply%20to%20pre%2DAGI%20technology.)), including source code and model weights; the question was whether it would have the talent to exploit that IP if OpenAI suffered the sort of talent drain that was threatened upon Altman and Brockman’s removal. Indeed they will, as a good portion of that talent seems likely to flow to Microsoft; you can make the case that Microsoft just acquired OpenAI for $0 and zero risk of an antitrust lawsuit.\n\n[According to Techcrunch](https://techcrunch.com/2023/11/19/openais-board-is-no-match-for-investors-wrath/):\n\n>Satya Nadella, the CEO of Microsoft, a major OpenAI partner, was reportedly “furious” to learn of Altman’s departure “minutes” after it happened, and has been in touch with Altman — and pledged to support him — as OpenAI backers (in particular Tiger Global, Sequoia Capital and Thrive Capital) recruit Microsoft’s aid in exerting pressure on the board to reverse course. Meanwhile, some key venture capital backers of OpenAI are said to be contemplating a lawsuit against the board; none, including Khosla Ventures and LinkedIn co-founder Reid Hoffman, a former OpenAI board member, were given advance notice of the decision to fire Altman."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20055",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20055",
+            "market_prob": 0.01,
+            "resolve_time": "2024-03-04T16:03:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 20399,
         "title": "Which 8 players will participate in the 2024 FIDE Candidates tournament? (Parham Maghsoodloo)",
         "body": {
@@ -840,6 +2373,27 @@
         "resolution": 0.0
     },
     {
+        "id": 20409,
+        "title": "Musk Chairman Of Twitter in 2024? (Yes) → Twitter Public Company in May 2024?",
+        "body": {
+            "resolution_criteria": "",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/20409",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20409",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-31T16:01:00Z",
+            "close_time": "2024-02-29T12:00:00Z",
+            "effected_close_time": "2024-02-29T12:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 20547,
         "title": "Will the Republican Party retain California's 20th District in the 2024 special election?",
         "body": {
@@ -847,7 +2401,7 @@
             "background_info": "Rep. Kevin McCarthy has announced his intention to resign from the house before the end of 2023 (and before the end of his term). Subsequently, the Governor of California is mandated by CA state law to schedule a special election to replace McCarthy. [More information about the process can be found here](https://en.wikipedia.org/wiki/2024_California%27s_20th_congressional_district_special_election). The election is will likely happen in April or May 2024."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-22T22:00:00Z",
+        "resolution_date": "2024-05-22T05:59:00Z",
         "url": "https://www.metaculus.com/questions/20547",
         "data_source": "metaculus",
         "metadata": {
@@ -861,6 +2415,48 @@
         "resolution": 1.0
     },
     {
+        "id": 20780,
+        "title": "Will a member of the United States Congress introduce legislation limiting the use of LLMs in 2024?",
+        "body": {
+            "resolution_criteria": "This question resolves as **Yes** if, before January 1, 2025, a bill is introduced in either the US House or US Senate which would impose one of the following restrictions on large language models or products using large language models.\n\n* Forbids their creation\n* Sets limits on how they're trained, for example by limiting access to previously usable training data or by setting limits on the number of parameters they may be trained with.\n* Prevents their use for certain applications, such as interacting with customers, interfacing with other applications, or performing actions on the web.\n* Restricts the ability of US citizens to use foreign LLM-based products or restricts US operated LLM products or businesses from being sold to foreign customers or entities.\n    * The export restriction must be specific, and not universally applied to all exports or exports of a broad industry. For example, a blanket ban on exports to a specific country would not qualify, and neither would a blanket ban on allowing the purchase of US businesses by investors in a specific country. Introducing a ban that specifically limits the export of artificial intelligence or machine learning software to a specific country or a broad number of countries would qualify if it was known to apply to LLM products.\n    * An introduced bill specifically classifying artificial intelligence software or machine learning models such that they would newly qualify for existing export bans would qualify.\n\nResolution will be determined according to reporting from [credible sources](https://www.metaculus.com/help/faq/#definitions) and keyword searches of [GovTrack.us](GovTrack.us).",
+            "background_info": "Specific legislation limiting LLMs has not been introduced in the U.S. Congress as of now. However, the ongoing discussions and emerging concerns in various sectors, including healthcare, indicate a growing awareness and potential for legislative action in the near future. \n\nNote: There is no formal definition for LLMs, though [one article](https://towardsdatascience.com/how-to-speed-up-training-for-large-language-models-81ffb30c36b2) describes them as follows:\n\n>Typically, a large language model contains more than 100 billion parameters and is trained using advanced algorithms on a large corpus."
+        },
+        "question_type": "binary",
+        "resolution_date": "2025-01-01T04:59:00Z",
+        "url": "https://www.metaculus.com/questions/20780",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20780",
+            "market_prob": 0.51,
+            "resolve_time": "2024-03-19T16:40:00Z",
+            "close_time": "2025-01-01T04:59:00Z",
+            "effected_close_time": "2024-03-19T16:40:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 20786,
+        "title": "Will Donald Trump be convicted of a felony before the 2024 presidential election?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if, before November 5, 2024, any court in the United States convicts Donald Trump of committing a felony.",
+            "background_info": "Former President Donald Trump [has been charged with 91 felony counts](https://www.politico.com/interactives/2023/trump-criminal-investigations-cases-tracker-list/) in four separate cases. The earliest of these, the federal election fraud trial, is [scheduled to go to trial in March 2024](https://www.axios.com/2023/07/27/trump-2024-presidential-election-legal-trials). The trial most likely to go to court last is the Georgia election interference case, which does not yet have a scheduled court date, but Fulton County District Attorney Fani Willis [has requested an August 2024 trial date](https://www.usatoday.com/story/news/politics/elections/2023/11/22/when-trump-trials-2024-schedule/71637316007/)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-11-04T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/20786",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20786",
+            "market_prob": 0.6,
+            "resolve_time": "2024-05-30T21:00:00Z",
+            "close_time": "2024-11-04T23:00:00Z",
+            "effected_close_time": "2024-05-30T21:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
         "id": 20791,
         "title": "Will a New or Joint \"Worst 82-Game Regular Season Record\" in NBA History be set in 2024?",
         "body": {
@@ -868,7 +2464,7 @@
             "background_info": "Two months into the 2023-24 [National Basketball Association](https://www.nba.com/) (NBA) regular season, a number of teams have slumped to a poor record. The Detroit Pistons, Washington Wizards and San Antonio Spurs have less than a .200 winning percentage. There has been [some criticism of the Detroit Pistons](https://sports.yahoo.com/nba-fact-or-fiction-are-the-2023-24-detroit-pistons-the-worst-team-ever-to-try-221917107.html) in particular due to [their record-breaking 27-game losing streak](https://www.espn.com/nba/story/_/id/39189426/detroit-pistons-set-nba-record-27th-straight-loss), and [chants of \"sell the team\"](https://www.bbc.co.uk/sport/basketball/67799559). Some have suggested they are one of the worst NBA teams in the league's history. \n\nOrdinarily, the NBA regular season consists of 82 games, and the current worst 82-game regular season record is 9 wins and 73 losses, set by [the 1972-73 Philadelphia 76ers](https://www.landofbasketball.com/statistics/worst_seasons.htm).\n\nThis question asks whether a team will set a new record for the worst NBA 82-game regular season or equal the current record (and thereby jointing holding the record)."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-08T03:15:00Z",
+        "resolution_date": "2024-04-14T22:00:00Z",
         "url": "https://www.metaculus.com/questions/20791",
         "data_source": "metaculus",
         "metadata": {
@@ -878,6 +2474,27 @@
             "resolve_time": "2024-03-08T03:15:00Z",
             "close_time": "2024-04-14T22:00:00Z",
             "effected_close_time": "2024-03-08T03:15:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
+        "id": 20876,
+        "title": "Will the 2024 Indonesian presidential election go to a runoff?",
+        "body": {
+            "resolution_criteria": "The question will resolve as **Yes** if credible sources report that, following the first round of the presidential election, the results show that none of the three presidential candidates have won 50% or more of the vote and that a runoff will be held.",
+            "background_info": "The Indonesian presidential election is being contested by [Anies Baswedan](https://en.wikipedia.org/wiki/Anies_Baswedan) (independent), the former governor of Jakarta; [Prabowo Subianto](https://en.wikipedia.org/wiki/Prabowo_Subianto) (Gerindra), the Minister of Defense; and [Ganjar Pranowo](https://en.wikipedia.org/wiki/Ganjar_Pranowo) (PDI-P), the former governor of Central Java. According to [Indonesian election law](https://rumahpemilu.org/wp-content/uploads/2017/08/UU-No.7-Tahun-2017-tentang-Pemilu.pdf), all candidates must register with the General Election Commission (KPU); the period for doing so ended on 14 December, 2023, eliminating the possibility of any other candidates competing.\n\nIndonesian presidential elections are direct, and determined by the popular vote. The law states that if no candidate wins more than 50% of the vote, then a second round of voting will be held from which all but the two most successful candidates in the first round are to be eliminated. This was the case in 2004 and 2009, after which only two candidates have run (Prabowo and Joko Widodo, the latter of whom won in both 2014 and 2019 but is limited to two terms as President) until now. The first round in 2024 will be held on 14 February, and any second round is to be held on 26 June."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-13T17:00:00Z",
+        "url": "https://www.metaculus.com/questions/20876",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/20876",
+            "market_prob": 0.3,
+            "resolve_time": "2024-03-06T15:37:00Z",
+            "close_time": "2024-02-13T17:00:00Z",
+            "effected_close_time": "2024-02-13T17:00:00Z"
         },
         "resolution": 0.0
     },
@@ -987,6 +2604,27 @@
         "resolution": 0.0
     },
     {
+        "id": 21081,
+        "title": "Will the \"Dune: Part Two\" domestic opening box office be greater than that of \"Dune (2021)\"?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if the domestic box office weekend opening of **Dune: Part Two** as reported by its [page on Boxofficemojo](https://www.boxofficemojo.com/release/rl68715265/) is greater than $41,011,174, the opening of the **Dune (2021)**. If the reported value is less than or equal to $41,011,174 the question will resolve as **No**.\n\nThe box office value will be checked at least 10 days after the movie's release date to allow the actual data to be collected. Metaculus admins can further delay the question resolution date if there are reasons to believe that the value might significantly change and affect the resolution.",
+            "background_info": "[Dune: Part Two](https://en.wikipedia.org/wiki/Dune:_Part_Two) is an upcoming epic science fiction film directed by Denis Villeneuve. It is the second movie of a two-part adaptation of the 1965 novel Dune by Frank Herbert. \n\nThe first part, named [Dune](https://en.wikipedia.org/wiki/Dune_(2021_film)) was released in 2021 and earned $41,011,174 on its opening weekend according to the analytics site [Boxofficemojo](https://www.boxofficemojo.com/release/rl3162015233/weekend/?ref_=bo_rl_tab#tabs).\n\nThe second part is scheduled to be released on March 1, 2024."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/21081",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21081",
+            "market_prob": 0.99,
+            "resolve_time": "2024-03-05T21:22:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
         "id": 21120,
         "title": "Before April 1, 2024, will Fani Willis cease to be an attorney for the prosecution in the State of Georgia v. Donald Trump, et al. case?",
         "body": {
@@ -1015,7 +2653,7 @@
             "background_info": "On January 8, 2024, Ecuador's president Daniel Noboa [declared a 60-day state of emergency](https://www.reuters.com/world/americas/ecuador-declares-state-emergency-amid-prison-chaos-2024-01-08/). The state of emergency followed a [wave of violence](https://www.vox.com/world-politics/2024/1/11/24034891/ecuador-drugs-cocaine-cartels-violence-murder-daniel-naboa-columbia-crime) related to the drug trade in Ecuador and the [escape](https://www.nbcnews.com/news/latino/who-is-fito-jose-macias-ecuador-gang-leader-rcna133435) of gang leader José Adolfo Macías Villamar (also known as Fito) from prison."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-08T12:00:00Z",
+        "resolution_date": "2024-03-31T22:00:00Z",
         "url": "https://www.metaculus.com/questions/21182",
         "data_source": "metaculus",
         "metadata": {
@@ -1141,7 +2779,7 @@
             "background_info": "[Ariel Henry](https://en.wikipedia.org/wiki/Ariel_Henry) has been Acting Prime Minister of Haiti since he was [appointed](https://www.bbc.com/news/world-latin-america-57910829) by former president [Jovenel Moïse](https://en.wikipedia.org/wiki/Jovenel_Mo%C3%AFse), who was assassinated on July 7, 2021, shortly after appointing Henry.\n\nGang violence and political instability have disrupted Haiti in recent years. Elections have repeatedly been cancelled due to instability following the last national elections in 2016, and [no elected officials remain in government](https://www.npr.org/2023/01/18/1149556481/haiti-last-elected-official-political-crisis). Frustrations have culminated in [recent protests](https://www.bbc.com/news/world-latin-america-68239332), as February 7, 2024, was the day that the new government [would have been sworn](https://en.wikipedia.org/wiki/Next_Haitian_general_election#:~:text=On%2021%20December%202022%2C%20Henry%20signed%20an%20agreement%20with%20political%20parties%2C%20civil%20society%20organizations%20and%20private%20sector%20members%20to%20hold%20the%20elections%20in%202023%2C%20with%20the%20new%20government%20scheduled%20to%20be%20sworn%20in%20on%207%20February%202024.) in following the most recent cancelled election."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-11T14:00:00Z",
+        "resolution_date": "2024-03-31T22:00:00Z",
         "url": "https://www.metaculus.com/questions/21405",
         "data_source": "metaculus",
         "metadata": {
@@ -1204,7 +2842,7 @@
             "background_info": "Nikki Haley remains the only major candidate opposing Donald Trump for the nomination to be the Republican Party's candidate for president in the 2024 US election. As of February 21, 2024, [political analysis website 538 shows](https://projects.fivethirtyeight.com/polls/president-primary-r/2024/national/) Haley with a primary polling average of 17.1% compared to Trump's 77.7%.\n\nDespite trailing Trump in both polls and [delegates from the first three states](https://www.politico.com/2024-election/results/president/#), as recently as February 20 Haley has [said she's staying in the race](https://abcnews.go.com/Politics/haley-shes-dropping-feel-kiss-ring-trump/story?id=107370200). However, it is unclear how long she'll continue to campaign. The next primary to occur will be South Carolina on February 24, where [Haley was governor for six years](https://apnews.com/article/south-carolina-republican-primary-what-to-expect-5b8ea70466d4ff1505ffe32633e11b0a). [Super Tuesday](https://en.wikipedia.org/wiki/Super_Tuesday), when a number of states hold their primaries on the same day, is also [coming up on March 5](https://en.wikipedia.org/wiki/2024_Republican_Party_presidential_primaries#Primaries_and_caucus_calendar)."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-06T15:03:00Z",
+        "resolution_date": "2024-03-14T22:00:00Z",
         "url": "https://www.metaculus.com/questions/21487",
         "data_source": "metaculus",
         "metadata": {
@@ -1239,6 +2877,27 @@
         "resolution": 1.0
     },
     {
+        "id": 21489,
+        "title": "Will President Biden issue an executive order on immigration before the State of the Union on March 7, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if, after February 21, 2024, and before President Biden's State of the Union speech begins on March 7, 2024, the Biden administration has issued an executive order that it describes as targeted at reducing the flow of migrants entering the US.",
+            "background_info": "President Biden has faced significant criticism from conservatives, and from [liberals as well](https://www.politico.com/news/2024/02/15/biden-border-immigration-00141388), regarding his handling of the border. Illegal border crossings hit an [all-time high](https://apnews.com/article/immigration-border-crossings-mexico-biden-18ac91ef502e0c5433f74de6cc629b32) in December 2023, before [encounters fell in January 2024](https://www.cbp.gov/newsroom/stats/southwest-land-border-encounters).\n\n<img src=\"https://metaculus-media.s3.amazonaws.com/user_uploaded/Screenshot_2024-02-21_123130.jpeg\" alt=\"Land Border Encounters by Month\">\n*[Image from US Customs and Border Protection](https://www.cbp.gov/newsroom/stats/southwest-land-border-encounters)*\n\n[According to Axios](https://www.axios.com/2024/02/19/biden-trump-age-state-union-election), the Biden administration has been seeking a means to improve public perceptions and improve Biden's [polling deficit against Trump](https://www.realclearpolling.com/polls/president/general/2024/trump-vs-biden), and sees his upcoming [State of the Union](https://en.wikipedia.org/wiki/State_of_the_Union) address as such an opportunity. According to unnamed officials cited by Axios, one approach being considered by Biden is to publish an executive order on the border ahead of the State of the Union:\n\n>One bold move that Biden has considered, we're told, is an executive order that would dramatically stanch the record flow of migrants into the Southwest. This could even happen in the two weeks before the address, allowing Biden to say he took action while Republicans just talk."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-02-29T23:00:00Z",
+        "url": "https://www.metaculus.com/questions/21489",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21489",
+            "market_prob": 0.35,
+            "resolve_time": "2024-03-11T16:11:00Z",
+            "close_time": "2024-02-29T23:00:00Z",
+            "effected_close_time": "2024-02-29T23:00:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 21493,
         "title": "Will Oppenheimer win the most Oscar awards?",
         "body": {
@@ -1267,7 +2926,7 @@
             "background_info": "On February 19, 2024, Houthi rebels in Yemen struck the *M/V Rubymar* - a Belize-flagged, UK-registered, and Lebanese-operated open-hatch general cargo ship - with ballistic missiles whilst it was operating in the Gulf of Aden. The ship sustained major damage, however the crew managed to anchor the ship before [escaping](https://x.com/UK_MTO/status/1759401808668070214?s=20) unharmed. The ship remains abandoned south of the Hanish Islands, which is around 50km from the coast of Yemen.\n\nThe United States Central Command (USCENTCOM) [reported](https://x.com/CENTCOM/status/1761225931656704052?s=20) that an 18 mile oil slick had formed.\n\nWith the *Rubymar* filled with 41,000 tonnes of fertiliser (ammonia), as well as fuel, there has been speculation that if the vessel were to sink, that an environmental disaster could occur. \n\nYemen's internationally recognised government recently [requested](https://www.arabnews.com/node/2465881/middle-east) international assistance in preventing the release of the vessel's cargo.\n\nWith Houthi attacks ongoing in the region, there are serious security risks associated with a salvage operation. However, the Houthi’s may provide safe passage to salvage vessels since any environmental disaster would inevitably have an impact on the Houthi’s themselves. Indeed, any ceasefire in the ongoing [Israel-Hamas war](https://en.m.wikipedia.org/wiki/Israel–Hamas_war) may provide a window to safely commence operations.\n\nPreviously, on August 11, 2023, an [international salvage operation](https://www.metaculus.com/questions/18102/safer-transfer-finished-in-19-days/) by Boskalis took place on the Safer - a Floating Storage and Offloading (FSO) vessel - which was anchored off the coast of Yemen and at risk of spilling over 1.1 million barrels of oil due to being in a state of disrepair largely due to the Yemen civil war."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-02T16:11:00Z",
+        "resolution_date": "2024-03-29T12:00:00Z",
         "url": "https://www.metaculus.com/questions/21546",
         "data_source": "metaculus",
         "metadata": {
@@ -1323,6 +2982,27 @@
         "resolution": 0.0
     },
     {
+        "id": 21774,
+        "title": "If Donald Trump wins the Republican nomination, will Nikki Haley endorse him before November 5th, 2024?",
+        "body": {
+            "resolution_criteria": "This question will resolve Yes if Nikki Haley announces that she will vote for, or is encouraging other people to vote for, Donald Trump in the 2024 US Presidential Election.\n\nIf Donald Trump is not the Republican nominee, this question will be annulled.",
+            "background_info": "Donald Trump and Nikki Haley are both running for the Republican Party nomination for the 2024 US Presidential election. Traditionally defeated candidates for the nomination will endorse the party's candidate, [however Nikki  Haley has cast doubt on weather she would](https://twitter.com/kylegriffin1/status/1764294831134687242)."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-11-04T12:00:00Z",
+        "url": "https://www.metaculus.com/questions/21774",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21774",
+            "market_prob": 0.66,
+            "resolve_time": "2024-05-22T20:49:00Z",
+            "close_time": "2024-11-04T12:00:00Z",
+            "effected_close_time": "2024-05-22T20:49:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
         "id": 21789,
         "title": "Will Ariel Henry return to Haiti before March 13, 2024?",
         "body": {
@@ -1351,7 +3031,7 @@
             "background_info": "[Territorial disputes over the South China Sea](https://en.wikipedia.org/wiki/Territorial_disputes_in_the_South_China_Sea) have led to high tensions between China and a number of regional countries, including the Philippines. On March 5, 2024, [Chinese and Philippine military vessels collided](https://apnews.com/article/philippines-china-south-china-sea-collision-e69d9506e85d1d23685db4f220b50d71) during a Philippine resupply mission to an outpost in the South China Sea, and Chinese vessels sprayed water cannons at the Philippine vessels."
         },
         "question_type": "binary",
-        "resolution_date": "2024-03-23T00:10:00Z",
+        "resolution_date": "2024-03-31T22:00:00Z",
         "url": "https://www.metaculus.com/questions/21792",
         "data_source": "metaculus",
         "metadata": {
@@ -1361,6 +3041,27 @@
             "resolve_time": "2024-03-23T00:10:00Z",
             "close_time": "2024-03-31T22:00:00Z",
             "effected_close_time": "2024-03-23T00:10:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 21796,
+        "title": "Will the United States government either ban TikTok or force a sale before 2025?",
+        "body": {
+            "resolution_criteria": "This question will resolve as *Yes* if, before January 1, 2025, credible sources report that the US government has taken action, through an enacted law or executive order, with at least one of the following effects:\n\n* Forces a sale of US-facing components of TikTok effective in 365 days or less relative to the date of the act being signed into law or the executive order being published.\n\n* Prevents the TikTok mobile app from being available in the Google Play Store and the iOS App Store",
+            "background_info": "On March 7, the House Energy and Commerce Committee unanimously advanced two pieces legislation both on a 50-0 vote - the [\"Protecting Americans’ Data from Foreign Adversaries Act of 2024\"](https://www.congress.gov/bill/118th-congress/house-bill/7520?s=1&r=1) (H.R. 7520) and the [\"Protecting Americans from Foreign Adversary Controlled Applications Act\"](https://www.congress.gov/bill/118th-congress/house-bill/7521?s=1&r=1) (H.R. 7521). These two bills, if passed and sign into law, would prevent applications from being available in US app stores or web hosting services when those applications are subject to the control of a foreign adversary, as defined by Congress in Title 10. This would include TikTok, currently owned by ByteDance, a Chinese company.\n\nThe bills also create a process for apps to remain on US app stores and web hosting services if they sever ties to entities subject to the control of a foreign adversary through divestment.  This suggests that these laws, if passed, would require ByteDance to sell off TikTok or face it being banned in the United States."
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-12-31T11:00:00Z",
+        "url": "https://www.metaculus.com/questions/21796",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/21796",
+            "market_prob": 0.99,
+            "resolve_time": "2024-04-24T15:13:00Z",
+            "close_time": "2024-12-31T11:00:00Z",
+            "effected_close_time": "2024-04-24T15:13:00Z"
         },
         "resolution": 1.0
     },
@@ -1456,7 +3157,7 @@
             "background_info": "The [Powerball](https://en.wikipedia.org/wiki/Powerball) is a US lottery operated by the [Multi-State Lottery Association](https://en.wikipedia.org/wiki/Multi-State_Lottery_Association). Drawings are held [every Monday, Wednesday, and Saturday](https://ialottery.com/Pages/Games/DrawingTimes.aspx). The [last time the jackpot was won](https://www.powerball.net/winners) was on January 1, 2024, and since then the jackpot has grown to a value of approximately $1.3 billion, the [fourth largest](https://www.usatoday.com/story/money/lottery/2024/04/05/powerball-drawing-lottery-jackpot/73214381007/) Powerball jackpot in history and the [eighth largest](https://www.npr.org/2024/04/04/1242720091/powerball-jackpot-no-winner) US lottery jackpot in history.\n\n*This is a warmup question for the Bridgewater x Metaculus Forecasting Contest.* ***Visit the [contest landing page](https://www.metaculus.com/bridgewater/) to register for the competition, which begins on April 16th.*** *Participation is limited to individuals based in the United States. Warmup questions do not count toward contest rankings.*"
         },
         "question_type": "binary",
-        "resolution_date": "2024-04-07T06:30:00Z",
+        "resolution_date": "2024-04-13T20:00:00Z",
         "url": "https://www.metaculus.com/questions/22149",
         "data_source": "metaculus",
         "metadata": {
@@ -1498,7 +3199,7 @@
             "background_info": "The [Israeli invasion of the Gaza Strip](https://en.wikipedia.org/wiki/Israeli_invasion_of_the_Gaza_Strip_(2023–present)#27_October) commenced on October 27, 2023 in response to a [Hamas-led attack on Israel](https://en.wikipedia.org/wiki/2023_Hamas-led_attack_on_Israel) on October 7, 2023 which saw over a thousand killed, and hundreds kidnapped.\n\nThe invasion was initially limited to Northern Gaza, but the plans were gradually expanded further South. Recently, Israel has [stated its intentions to expand its invasion to the Southern city of Rafah](https://www.bloomberg.com/news/articles/2024-02-12/israel-conducts-strikes-in-rafah-as-humanitarian-concerns-mount), which borders Egypt. These expansion plans, like prior ones, have seen widespread condemnation from both pro and anti-Israeli nations. This condemnation is primarily based on the alarming number of deaths and casualties stemming from the ground invasion; the growing humanitarian crisis, which has become more acute as the Israeli invasion has expanded; and the vast number of Palestinian refugees which are reportedly taking refuge in the city having fled from Northern Gaza.\n\nIsrael has already [commenced airstrikes and covert raids in Rafah](https://www.bloomberg.com/news/articles/2024-02-12/israel-conducts-strikes-in-rafah-as-humanitarian-concerns-mount), but a full-scale ground invasion has yet to commence.\n\nAmongst the nations who have condemned the plans are the US - Israel's closest ally - and Egypt - Gaza's Southern neighbour which [has threatened](https://www.cnbc.com/2024/02/11/egypt-threatens-to-suspend-key-peace-treaty-if-israel-pushes-into-rafah-on-its-border-officials-say.html) to break it's 45 year old peace treaty with Israel if the ground invasion plans commence in Rafah.\n\nIsraeli Prime Minister Benjamin Netanyahu has continued to state that an invasion is imminent and that Israel has a specific date set, though on April 9 it [was reported](https://www.axios.com/2024/04/09/israel-defense-gallant-deny-rafah-invasion-date) that Israeli Defense Minister Yoav Gallant has said there is no date set."
         },
         "question_type": "binary",
-        "resolution_date": "2024-05-13T18:00:00Z",
+        "resolution_date": "2024-05-31T22:00:31Z",
         "url": "https://www.metaculus.com/questions/22298",
         "data_source": "metaculus",
         "metadata": {
@@ -2205,6 +3906,27 @@
         "resolution": 0.0
     },
     {
+        "id": 22415,
+        "title": "Will Donald Trump testify at the hush money trial?",
+        "body": {
+            "resolution_criteria": "This question will resolve as **Yes** if [credible sources](https://www.metaculus.com/help/faq/#definitions) report Donald Trump has testified, whether in person or remotely, at the [trial](https://iapps.courts.state.ny.us/webcrim_attorney/Detail?which=case&docketNumber=q23XFOwZRDQ1d4LrNRdw2clqCMt/CzUoG/kRII/7Nmg=&countyId=K4i18rFVPQh5HTQ/kUoO3Q==&docketId=3Y4iKU5oHM75AtDme2cPhw==&docketDseq=T/O1YN_PLUS_BG65HkOeqEnpAkw==&defendantName=TRUMP,+DONALD&court=New+York+Supreme+Criminal+Court&courtType=U&recordType=U&recordNum=) concerning the so-called \"hush money\" payments to Stormy Daniels.",
+            "background_info": "The commencement of Donald Trump's [trial in the so-called \"hush money\" case](https://thehill.com/regulation/court-battles/4589001-5-things-to-know-ahead-of-trumps-hush-money-trial/) marks a historic moment as he becomes the first former U.S. president to face criminal charges in court. The trial centers around allegations that Trump, during the 2016 presidential campaign, orchestrated a hush money payment to an adult film actress to prevent damaging stories from surfacing. This payment, and similar transactions, are claimed by the Manhattan district attorney to have been unlawfully logged as legal expenses by Trump’s company.\n\nThe trial is scheduled to commence on April 15th, 2024 and is expected to last approximately six weeks.\n\n*This question is part of the Q2 2024 Quarterly Cup, however, if the trial has not concluded when the tournament ends on July 8, 2024, it will not be scored in the Quarterly Cup. It will still count as part of the annual leaderboard.*"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-15T06:00:00Z",
+        "url": "https://www.metaculus.com/questions/22415",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/22415",
+            "market_prob": 0.01,
+            "resolve_time": "2024-05-21T14:32:00Z",
+            "close_time": "2024-06-15T06:00:00Z",
+            "effected_close_time": "2024-05-21T14:32:00Z"
+        },
+        "resolution": 0.0
+    },
+    {
         "id": 22421,
         "title": "Iran deadly attack on Israel before May 2024? (No) → Israel Deadly Attack on Iran Before May 2024?",
         "body": {
@@ -2254,7 +3976,7 @@
             "background_info": "When it comes to separatism and Moldova, most will likely recall Transnistria, which is controlled by separatists and elements of the Russian Federation armed forces since the 1990s.\n\nHowever, another autonomous region of Moldova, [Gagauzia](https://www.clingendael.org/pub/2022/walking-the-tightrope-towards-the-eu/4-gagauzia-the-restless-region-in-the-south/), is currently undergoing major \"temptation\" from Russia. The region, inhabited by over 120,000 Gagauzes, who are an Orthodox, mostly Russian speaking Moldovan minority, is newly connected to the Mir banking system, Russian [propaganda](https://dfrlab.org/2024/03/19/kremlin-media-blitz-gagauzia/) is widely spreading (most TV channels are Russian), and control of the [Chisinau](https://en.wikipedia.org/wiki/Chi%C8%99in%C4%83u) government is openly challenged.\n\nThe most important figure in this new development is Evghenia Guțul, a young pro-Russian politician, who was [elected](https://www.rferl.org/a/gutul-gagauzia-moldova-leader-shor-party/32412419.html) a governor of the region in the last year's elections, which brought a lot of controversy due to allegations of corruption and the fact that Guțul ran on a ticket of a banned Pro-Russian party (connected to the Russian oligarch Ilan Shor).\n\nGuțul visited Russia twice in the last several weeks. The most recent [visit](https://balkaninsight.com/2024/04/10/moldovas-restive-gagauzia-region-mulls-using-russian-payment-cards/) occurred on the 8th of April, and before that on the 6th of March, during which she [met](https://balkaninsight.com/2024/03/07/pro-moscow-governor-of-moldovas-gagauzia-seeks-putins-help/) with Russian President Vladimir Putin (edit May 6, 2024: Guțul also appears to have been in Moscow when this question was launched, with a [meeting in Moscow on April 22](https://www.reuters.com/world/europe/moldova-brings-criminal-case-against-pro-russian-gagauzia-leader-court-2024-04-24/) and on [April 24](https://twitter.com/EvgheniaGutul/status/1783236723297685785)).\n\nIn the aftermath of both visits Russia promised to \"protect\" Gagauzia and also to distribute monthly [payments](https://cepa.org/article/the-kremlin-decides-to-buy-a-population/) to Gagauzian civil servants and senior citizens (together accounting for approximately 25,000 people).\n\nMore Guțul visits in Russia might signal rapid development in this region, which could mean further deterioration of the relationship between Gagauzia and Moldovan government."
         },
         "question_type": "binary",
-        "resolution_date": "2024-05-09T06:00:00Z",
+        "resolution_date": "2024-05-31T21:59:00Z",
         "url": "https://www.metaculus.com/questions/22547",
         "data_source": "metaculus",
         "metadata": {
@@ -2329,5 +4051,47 @@
             "effected_close_time": "2024-05-07T22:00:00Z"
         },
         "resolution": 0.0
+    },
+    {
+        "id": 24590,
+        "title": "Trump guilty in Manhattan by Election Day (Yes) → Trump Felony Conviction Before Election?",
+        "body": {
+            "resolution_criteria": "",
+            "background_info": ""
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-11-04T20:00:00Z",
+        "url": "https://www.metaculus.com/questions/24590",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24590",
+            "market_prob": 0.69,
+            "resolve_time": "2024-05-30T21:00:00Z",
+            "close_time": "2024-11-04T20:00:00Z",
+            "effected_close_time": "2024-05-30T21:00:00Z"
+        },
+        "resolution": 1.0
+    },
+    {
+        "id": 24753,
+        "title": "[Short Fuse] Will the proxy advisor Institutional Shareholder Services (ISS) advise Tesla shareholders to vote against Elon Musk's $57 billion package OR the re-election of Kimbal Musk?",
+        "body": {
+            "resolution_criteria": "The question will resolve **Yes** if Institutional Shareholder Services (ISS) releases a statement explicitly advising Tesla shareholders to vote *against* Elon Musk's pay package at the 2024 Tesla shareholder meeting OR the re-election of Kimbal Musk to the Tesla board of directors. Otherwise the question will resolve as **No**.",
+            "background_info": "Elon Musk is the current CEO of Tesla and owns around 13% of the company. During its founding years in 2003 - 2005, Musk invested heavily into the company, eventually becoming chair of the board of directors and one of the largest shareholders; he subsequently became CEO in October 2008. His success at the company has seen Tesla become the 17th largest company in the world by market cap with its share price soaring since its June 2010 IPO.\n\nAs a result of his immense success as CEO, a $56 billion pay package to Musk was approved by Tesla's board of the directors in 2018. However, Musk has yet to receive this package, as per the [FT](https://www.ft.com/content/8d823cef-543a-4d33-afa0-c68f081842d1):\n\n>Tesla’s board has been lobbying investors to re-ratify the $56bn award given in 2018, which was struck down by a Delaware judge in January due to concerns over its size and the independence of the board. In response, Musk vowed to leave the state and move Tesla’s incorporation to Texas.\n\n>Tesla chair Robyn Denholm has argued that Musk deserves to be paid so much because the company hit ambitious targets for revenue and its stock price. She brushed off criticism she is too close to the CEO as “crap”.\n\nAside from the sheer size of the pay package - the largest of its kind - those who oppose it call into question various decisions made by Musk during his tenure as CEO. In particular,  Musk's social media activity has been called into question, and perhaps most notably the:\n\n- Purchase - and subsequent rebrand - of Twitter (now X) for $44 billion which has attracted a lot of negative criticism and has also seen Musk spend a disproportionate amount of time at that company instead of Tesla.\n\n - Purchase of $1.5 billion of Bitcoin in 2021 and allowing the cryptocurrency to be used by customers for purchasing Tesla automobiles. The company promptly stopped accepting the currency - causing the price to plummet - after which Tesla announced they had sold almost all of their Bitcoin holdings at a loss.\n\nDuring significant shareholder votes like this one, influential proxy advisory firms often send out advice to shareholders on what to vote and why. According to [Wikipedia](https://en.wikipedia.org/wiki/Proxy_firm):\n\n>A proxy firm provides services to shareholders (in most cases an institutional investor of some type) to vote their shares at shareholder meetings of, usually, listed companies.\n\nThe two largest proxy advisory firms are ISS and Glass Lewis. The latter has [advised](https://www.ft.com/content/8d823cef-543a-4d33-afa0-c68f081842d1) shareholders *not* to vote in favour of Musk's package as well as advising shareholders to vote against the re-election of Kimbal Musk - brother of Elon Musk - from the board of directors. The ISS, however, has yet to issue any advice with respect to the June 13 shareholder meeting.\n\n---------------------\n\nSee related question:\n\n[*Will a non-Disney-nominated board member be elected to Disney's board at the April 3, 2024, shareholder meeting?*](https://www.metaculus.com/questions/21972/non-disney-board-member-elected-april-2024/)"
+        },
+        "question_type": "binary",
+        "resolution_date": "2024-06-12T22:00:00Z",
+        "url": "https://www.metaculus.com/questions/24753",
+        "data_source": "metaculus",
+        "metadata": {
+            "topics": [],
+            "api_url": "https://www.metaculus.com/api2/questions/24753",
+            "market_prob": 0.78,
+            "resolve_time": "2024-05-31T02:00:00Z",
+            "close_time": "2024-06-12T22:00:00Z",
+            "effected_close_time": "2024-05-31T02:00:00Z"
+        },
+        "resolution": 1.0
     }
 ]

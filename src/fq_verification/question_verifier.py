@@ -290,11 +290,12 @@ async def verify_question_filter_known_smells(
 
 
 async def verify_question_all_methods(
-    question: ForecastingQuestion, **kwargs
+    question: ForecastingQuestion, verbose: bool = False, **kwargs
 ) -> VerificationResult:
     current_date = datetime.now()
-    print(f"question.body: {question.body}")
-    print(f"current_date: {current_date}")
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"question.body: {question.body}")
+        print(f"current_date: {current_date}")
 
     verification = await verify_question_filter_known_smells(question)
     if not verification.valid:

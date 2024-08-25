@@ -16,6 +16,10 @@ pre-commit install
 
 Then, create your `.env` based on [`.env.example`](.env.example). By default, use `NO_CACHE=True`.
 
+### VS Code / Cursor settings
+Copy the settings in [`.vscode/settings.example.json`](.vscode/settings.example.json) to your workspace `settings.json`,
+or just do `cp .vscode/settings.example.json .vscode/settings.json` if you have no other settings nor an existing workspace.
+
 ## docs
 - [Meeting and Agenda doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
 - [Datatypes and Pipeline doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit)
@@ -30,6 +34,7 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 ### Utils
 **Please read [LLM call utils](/src/common/README.md).**
 Feel free to add more utils in `utils.py`, `llm_utils.py`, or other files, as you need them.
+
 
 ### Running code
 The preferred way to test anything is either from `playground.py`, or creating a new file / Jupyter notebook in the `src` directory.
@@ -66,14 +71,16 @@ import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 ```
 
 ### Validation of data
-Our base data directory is `src/data/`. Inside this, we have the following scheme:
+(Note: *validation* is about data format, *verification* is about the semantics of the data.)
+
+Our base data directory is `src/data/`. Inside this, we have the following schema:
 ```
 src/data
 ├── fq
 │  ├── real             # ForecastingQuestions made from real scraped data. Formatting validated upon commit.
 │  └── synthetic        # ForecastingQuestions made from synthetic data. Formatting validated upon commit.
 ├── feedback            # Feedback data on real and synhetic questions. TODO Validate upon commit.
-├── tuples              # Tuples of (question, answer) pairs. Formatting validated upon commit. TODO we need to expand this section and clean up where tuples go.
+├── tuple*              # Tuples of (question, answer) pairs. Formatting validated upon commit. TODO we need to expand this section and clean up where tuples go.
 ├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated. TODO move some stuff out of here to somewhere where it makes sense.
 ├── check_tuple_logs    # Where forecasting of the already instantiated consistency checks + violation is logged. In .gitignore, do not commit. 
 ├── forecasts           # Where forecast results on tuples are saved. Not validated. Commit only full-fledged experimental results.
@@ -81,13 +88,19 @@ src/data
 └── test                # Where tests write data. In .gitignore, do not commit.
 ```
 
-This scheme is not final. In particular:
+This schema is not final. In particular:
 - We might add other directories, e.g. for forecasts, later. 
 - If we figure out a need for some data to be committed, we can remove the corresponding .gitignore entry.
 
 TODO we need to fix this schema, too many things are in `data/other`.
 
 Please install `pre-commit`, so the validation hooks in `hooks/` can check that all data in the validated directories is in the correct format.
+The script that validates the data is [`hooks/validate_jsonls.py`](hooks/validate_jsonls.py). The pre-commit hooks runs this on everything that is changed in the commit. 
+To validate all data outside of the pre-commit hook process, execute the following command:
+```
+VALIDATE_ALL=True python hooks/validate_jsonls.py
+```
+
 
 
 ## Labeling tool for questions
