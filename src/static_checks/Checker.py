@@ -728,6 +728,9 @@ class AndChecker(Checker):
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     async def instantiate(
@@ -736,6 +739,9 @@ class AndChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     def frequentist_violation(
@@ -787,6 +793,9 @@ class OrChecker(Checker):
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     async def instantiate(
@@ -795,6 +804,9 @@ class OrChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
@@ -847,6 +859,9 @@ class AndOrChecker(Checker):
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -860,6 +875,9 @@ class AndOrChecker(Checker):
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(P, list) or isinstance(Q, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -911,6 +929,10 @@ class ButChecker(Checker):
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(not_P, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -926,6 +948,10 @@ class ButChecker(Checker):
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list) or isinstance(P, list) or isinstance(not_P, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -973,6 +999,10 @@ class CondChecker(Checker):
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = Conditional().instantiate_sync(base_sentences, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
+        
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(Q_given_P, list) or isinstance(P, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
@@ -985,6 +1015,10 @@ class CondChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = await Conditional().instantiate(base_sentences, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
+        
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if isinstance(P_and_Q, list) or isinstance(Q_given_P, list) or isinstance(P, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q

@@ -431,7 +431,7 @@ async def test_conditional_verify_fail():
         title="Will NASA's Artemis II mission launch in 2024?",
         body="Resolves YES if NASA launches the Artemis II crewed mission around the Moon in 2024. The launch must be officially confirmed by NASA and the mission must successfully orbit the Moon.",
         resolution_date=datetime(2024, 12, 31),
-        question_type="binary"
+        question_type="binary",
     )
     
     incorrect_output = Conditional.OutputFormat(
@@ -469,7 +469,8 @@ async def test_consequence_quantity_verify_pass():
         title="Will the global smartphone market exceed 1.5 billion units sold in 2026?",
         body="Resolves YES if the total number of smartphones sold worldwide in the year 2026 surpasses 1.5 billion units, as reported by IDC, Gartner, or another reputable technology market research firm. Resolves NO otherwise.",
         resolution_date=datetime(2026, 12, 31),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "quantity"}
     )
     
     sample_output = Consequence.OutputFormat(
@@ -483,7 +484,7 @@ async def test_consequence_quantity_verify_pass():
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(sample_output, base_sentences)
     
@@ -507,7 +508,8 @@ async def test_consequence_time_verify_pass():
         title="Will quantum computers achieve quantum supremacy for a practical problem by 2028?",
         body="Resolves YES if a quantum computer demonstrably solves a practical problem faster than any classical computer before January 1, 2028. The achievement must be published in a peer-reviewed scientific journal and acknowledged by the scientific community. Resolves NO otherwise.",
         resolution_date=datetime(2028, 1, 1),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "time"}
     )
     
     sample_output = Consequence.OutputFormat(
@@ -521,7 +523,7 @@ async def test_consequence_time_verify_pass():
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(sample_output, base_sentences)
     
@@ -546,7 +548,8 @@ async def test_consequence_misc_verify_pass():
         title="Will a private company successfully remove 1000 pieces of space debris from Earth's orbit by 2035?",
         body="Resolves YES if a private company (not government-owned or operated) successfully removes at least 1000 pieces of space debris (defined as non-functional human-made objects in Earth's orbit) from orbit by December 31, 2035. The removal must be verified by independent space agencies or reputable space tracking organizations. Resolves NO otherwise.",
         resolution_date=datetime(2035, 12, 31),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "misc"}
     )
     
     sample_output = Consequence.OutputFormat(
@@ -560,7 +563,7 @@ async def test_consequence_misc_verify_pass():
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(sample_output, base_sentences)
     
@@ -584,7 +587,8 @@ async def test_consequence_misc_verify_fail():
         title="Will a multinational company successfully develop a commercially viable fusion reactor by 2040?",
         body="Resolves YES if a multinational company (defined as a company operating in more than one country) successfully develops and demonstrates a fusion reactor that produces more energy than it consumes, and announces plans for commercial deployment, by December 31, 2040. The achievement must be independently verified by reputable scientific institutions and acknowledged by the International Atomic Energy Agency or a similar international body. Resolves NO otherwise.",
         resolution_date=datetime(2040, 12, 31),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "misc"}
     )
     
     incorrect_output = Consequence.OutputFormat(
@@ -594,11 +598,10 @@ async def test_consequence_misc_verify_fail():
             body="Resolves YES if the average global electricity price, as reported by the International Energy Agency or a similar reputable source, decreases by 20% or more from 2023 levels by December 31, 2041. The decrease must be sustained for at least six months to account for short-term fluctuations. Resolves NO otherwise.",
             resolution_date=datetime(2041, 12, 31),
             question_type="binary",
-            metadata={"consequence_type": "misc"}
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(incorrect_output, base_sentences)
     
@@ -622,7 +625,8 @@ async def test_consequence_quantity_verify_fail():
         title="Will the global smartphone market exceed 1.5 billion units sold in 2026?",
         body="Resolves YES if the total number of smartphones sold worldwide in the year 2026 surpasses 1.5 billion units, as reported by IDC, Gartner, or another reputable technology market research firm. Resolves NO otherwise.",
         resolution_date=datetime(2026, 12, 31),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "quantity"}
     )
     
     incorrect_output = Consequence.OutputFormat(
@@ -632,11 +636,10 @@ async def test_consequence_quantity_verify_fail():
             body="Resolves YES if the total number of smartphones sold worldwide in the year 2026 surpasses 1.7 billion units, as reported by IDC, Gartner, or another reputable technology market research firm. Resolves NO otherwise.",
             resolution_date=datetime(2026, 12, 31),
             question_type="binary",
-            metadata={"consequence_type": "quantity"}
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(incorrect_output, base_sentences)
     
@@ -661,7 +664,8 @@ async def test_consequence_time_verify_fail():
         title="Will a human land on Europa before 2050?",
         body="Resolves YES if a human astronaut successfully lands on the surface of Jupiter's moon Europa before January 1, 2050. The landing must be verified by multiple space agencies and published in peer-reviewed scientific journals. Resolves NO otherwise.",
         resolution_date=datetime(2050, 1, 1),
-        question_type="binary"
+        question_type="binary",
+        metadata={"consequence_type": "time"}
     )
     
     incorrect_output = Consequence.OutputFormat(
@@ -671,11 +675,10 @@ async def test_consequence_time_verify_fail():
             body="Resolves YES if a human astronaut successfully lands on the surface of Jupiter's moon Europa before January 1, 2045. The landing must be verified by multiple space agencies and published in peer-reviewed scientific journals. Resolves NO otherwise.",
             resolution_date=datetime(2045, 1, 1),
             question_type="binary",
-            metadata={"consequence_type": "time"}
         )
     )
     
-    base_sentences = Consequence.BaseSentenceFormat(P=sample_question_P)
+    base_sentences = sample_question_P
     
     result = await consequence_instance.verify(incorrect_output, base_sentences)
     
@@ -687,4 +690,4 @@ async def test_consequence_time_verify_fail():
 
     assert result_sync.valid == False, "Time verification should fail for incorrect consequence, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
-    assert consequence_instance.verify_length(incorrect_output, base_sentences), "Consequence length verification failed, sync version"
+    assert consequence_instance.verif_length(incorrect_output, base_sentences), "Consequence length verification failed, sync version"
