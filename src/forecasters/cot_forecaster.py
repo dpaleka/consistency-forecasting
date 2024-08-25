@@ -1,5 +1,12 @@
 from .forecaster import Forecaster
-from common.datatypes import ForecastingQuestion, ForecastingQuestion_stripped, Prob_cot
+from common.datatypes import (
+    ForecastingQuestion,
+    ForecastingQuestion_stripped,
+    Prob_cot,
+    Prob,
+    reasoning_field,
+    PlainText,
+)
 from common.llm_utils import (
     answer,
     answer_sync,
@@ -100,6 +107,7 @@ class CoT_multistep_Forecaster:
         **kwargs,
     ) -> float:
         self.steps = len(user_prompts_lists)
+        assert self.steps >= 1, "Must have at least one step"
 
         messages = [
             {"role": "system", "content": self.preface},
@@ -109,12 +117,27 @@ class CoT_multistep_Forecaster:
             # },
         ]
 
+        num_examples = 0
+        print(
+            "\n\nIgnoring examples!!! Try debugging by uncommenting examples=None and using a simpler list of examples \n\n"
+        )
+        examples = None
         if examples:
             for e in examples:
                 messages.extend(e)
+                num_examples += 1
 
-        for s in range(self.steps):
-            new_msg = {"role": "user", "content": user_prompts_lists[s]}
+        print(f"{len(messages)=} after examples")
+        print(f"messages[-1]: {messages[-1]}")
+        print(f"{len(user_prompts_lists)=}")
+
+        step_formats = {
+            **{i: PlainText for i in range(self.steps - 1)},
+            self.steps - 1: Prob,
+        }
+
+        for step_idx in range(self.steps):
+            new_msg = {"role": "user", "content": user_prompts_lists[step_idx]}
             ##ad new user input
             messages.append(new_msg)
 
@@ -122,15 +145,17 @@ class CoT_multistep_Forecaster:
             response = answer_messages_sync(
                 messages=messages,
                 # examples=self.examples,
-                response_model=Prob_cot,
+                response_model=step_formats[step_idx],
                 **kwargs,
             )
             ## add llm output to stream
-            messages.append({"role": "assistant", "content": response.chain_of_thought})
+            messages.append({"role": "assistant", "content": reasoning_field(response)})
 
             print("\n\n\nADAMXXXXXXX")
-            print(messages[-2])
-            print(messages[-1])
+            print(f"{len(messages)=}")
+            for m in messages[-5:]:
+                print(m)
+            print(f"messages[-1]: {messages[-1]}")
 
         ## this includes examples if it's there!  It's just all messages
         result = {
