@@ -355,7 +355,8 @@ def main(
                 depth=4,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    ParaphraseChecker()
+                    ParaphraseChecker(),
+                    NegChecker(),
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
