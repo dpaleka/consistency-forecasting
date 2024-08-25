@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import argparse
 import datetime as dt
 from tqdm import tqdm
+from decide_dates import decide_resolution_date
 
 
 def fetch_resolution_criteria(question_url):
@@ -64,6 +65,11 @@ def fetch_live_questions_with_dates(
         print(f"{api_url}/questions")
         response = requests.get(f"{api_url}/questions", headers=headers, params=params)
 
+        start_datetime = (
+            dt.datetime.strptime(start_date, "%Y%m%d") if start_date else None
+        )
+        end_datetime = dt.datetime.strptime(end_date, "%Y%m%d") if end_date else None
+
         if response.status_code != 200:
             raise Exception(f"Failed to fetch the API: {api_url}")
 
@@ -100,15 +106,16 @@ def fetch_live_questions_with_dates(
             except Exception as e:
                 resolve_date = None
 
-            # Close time and resolve time are both bad choices for the logical a priori resolution date, for different reasons
-            # Close time can sometimes be way before the logical resolution date, if the market creator decided to close it early
-            # Resolve time can be at some random point if the market resolved -> Navalny bias
-            if resolve_date < close_date:
-                # We pick close_date because it's possible it resolved early
-                resolution_date = close_date
-            else:
-                # We pick resolution_date because it's possible close_date was early
-                resolution_date = resolve_date
+            resolution_date = (
+                decide_resolution_date(
+                    close_date,
+                    resolve_date,
+                    min_date=start_datetime,
+                    max_date=end_datetime,
+                )
+                if resolve_date
+                else close_date
+            )
 
             question_info = {
                 "id": question.get("id"),
@@ -190,6 +197,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Error: {e}")
+        raise e
 
 
 """
