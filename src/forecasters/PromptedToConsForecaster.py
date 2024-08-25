@@ -128,13 +128,29 @@ def gen_or_tuple(og_question_1, og_question_2):
 ## DEFAULTS, Todo
 
 DEFAULT_PROMPTS = [
-    "PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE.",
-    "CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, also explain why / why not the rule is obeyed.",
+    """
+    GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.
+    """,
+    """PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE. Your output MUST look like and be formatted like the following.
+    P: 0.xx
+    not_P: 0.xx
+    P_or_Q: 0.xx
+    ...""",
+    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, also explain why / why not the rule is obeyed. Your output MUST look like and be formatted like the following.
+    neg: P = 1- not_P, EQUATION is EVALUATION
+    andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION
+    and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION
+    ...
+    {ALL consistency checks passed!} OR {CHECK_1, CHECK_2 ... consistency checks failed!}""",
     """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occured before.
         Note that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes  
         your correction needs to ENSURE that it still passes other consistency checks too.
-        If there were no violations found then simply output the same dict again.""",
-    "FLOAT: Now just output your probability estimate of P",
+        If there were no violations found then simply output the same dict again.  Your output MUST look like and be formatted like the following.
+        P: 0.xx
+        not_P: 0.xx
+        P_or_Q: 0.xx
+        ...""",
+    "FLOAT: Now just output your probability estimate of P and nothing else as a decimal!",
 ]
 
 
@@ -240,13 +256,12 @@ EXAMPLE_QUESTIONS_DICT = """
 
 """
 
-
 example_consistent = [
     {"role": "user", "content": "QUESTIONS: {}".format(EXAMPLE_QUESTIONS_DICT)},
     {"role": "assistant", "content": "RECEIVED"},
     {
         "role": "user",
-        "content": "GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.",
+        "content": DEFAULT_PROMPTS[0],
     },
     {
         "role": "assistant",
@@ -254,7 +269,7 @@ example_consistent = [
     },
     {
         "role": "user",
-        "content": "PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE.",
+        "content": DEFAULT_PROMPTS[1],
     },
     {
         "role": "assistant",
@@ -262,7 +277,7 @@ example_consistent = [
     },
     {
         "role": "user",
-        "content": "CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, also explain why / why not the rule is obeyed.",
+        "content": DEFAULT_PROMPTS[2],
     },
     {
         "role": "assistant",
@@ -270,7 +285,7 @@ example_consistent = [
     },
     {
         "role": "user",
-        "content": "PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occured before.\nNote that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes your correction needs to ENSURE that it still passes other consistency checks too.\nIf there were no violations found then simply output the same dict again.",
+        "content": DEFAULT_PROMPTS[3],
     },
     {
         "role": "assistant",
@@ -278,7 +293,7 @@ example_consistent = [
     },
     {
         "role": "user",
-        "content": "FLOAT: Now just output your probability estimate of P",
+        "content": DEFAULT_PROMPTS[4],
     },
     {"role": "assistant", "content": "0.73"},
 ]
@@ -289,7 +304,7 @@ example_inconsistent = [
     {"role": "assistant", "content": "RECEIVED"},
     {
         "role": "user",
-        "content": "GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.",
+        "content": DEFAULT_PROMPTS[0],
     },
     {
         "role": "assistant",
@@ -297,7 +312,7 @@ example_inconsistent = [
     },
     {
         "role": "user",
-        "content": "PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE.",
+        "content": DEFAULT_PROMPTS[1],
     },
     {
         "role": "assistant",
@@ -305,7 +320,7 @@ example_inconsistent = [
     },
     {
         "role": "user",
-        "content": "CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, also explain why / why not the rule is obeyed.",
+        "content": DEFAULT_PROMPTS[2],
     },
     {
         "role": "assistant",
@@ -313,7 +328,7 @@ example_inconsistent = [
     },
     {
         "role": "user",
-        "content": "PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occured before.\nNote that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes your correction needs to ENSURE that it still passes other consistency checks too.\nIf there were no violations found then simply output the same dict again.",
+        "content": DEFAULT_PROMPTS[3],
     },
     {
         "role": "assistant",
@@ -321,12 +336,99 @@ example_inconsistent = [
     },
     {
         "role": "user",
-        "content": "FLOAT: Now just output your probability estimate of P",
+        "content": DEFAULT_PROMPTS[4],
     },
     {"role": "assistant", "content": "0.73"},
 ]
 
-DEFAULT_EXAMPLES = [example_consistent]
+
+example_generic_c = [
+    {"role": "user", "content": "QUESTIONS: {}".format(EXAMPLE_QUESTIONS_DICT)},
+    {"role": "assistant", "content": "RECEIVED"},
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[0],
+    },
+    {
+        "role": "assistant",
+        "content": "P: #Reasons P may or may not happen\nnot_P: #Reasons not_P may or may not happen\npara_P: #Reasons para_P may or may not happen\nQ: #Reasons Q may or may not happen\nP_and_Q: #Reasons P_and_Q may or may not happen\nP_or_Q: #Reasons P_or_Q may or may not happen\nQ_and_not_P: #Reasons Q_and_not_P may or may not happen\nQ_given_P: #Reasons Q_given_P may or may not happen",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[1],
+    },
+    {
+        "role": "assistant",
+        "content": "P: 0.73\nnot_P: 0.27\npara_P: 0.73\nQ: 0.33\nP_and_Q: 0.23\nP_or_Q: 0.83\nQ_and_not_P: 0.10\nQ_given_P: 0.32",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[2],
+    },
+    {
+        "role": "assistant",
+        "content": "neg: P = 1 - not_P, 0.73 = 1 - 0.27 is TRUE\nandor: P = P_or_Q + P_and_Q - Q, 0.73 = 0.83 + 0.23 - 0.33 is TRUE\nand: max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), max(0.73, + 0.33 - 1, 0) <= 0.23 <= min(0.73, 0.33) is TRUE\nor: max(P, Q) <= P_or_Q <= min(1, P + Q), max(0.73, 0.33) <= 0.83 <= min(1, 0.73 + 0.33) is TRUE\nbut: P = P_or_Q - Q_and_not_P, 0.73 = 0.83 - 0.10 is TRUE\ncond: P ≈ P_and_Q / Q_given_P, 0.73 ≈ 0.23 / 0.32 is TRUE\npara: P = para_P, 0.73 = 0.73 is TRUE\nALL consistency checks passed!",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[3],
+    },
+    {
+        "role": "assistant",
+        "content": "P: 0.73\nnot_P: 0.27\npara_P: 0.73\nQ: 0.33\nP_and_Q: 0.23\nP_or_Q: 0.83\nQ_and_not_P: 0.10\nQ_given_P: 0.32",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[4],
+    },
+    {"role": "assistant", "content": "0.73"},
+]
+
+
+example_generic_i = [
+    {"role": "user", "content": "QUESTIONS: {}".format(EXAMPLE_QUESTIONS_DICT)},
+    {"role": "assistant", "content": "RECEIVED"},
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[0],
+    },
+    {
+        "role": "assistant",
+        "content": "P: #Reasons P may or may not happen\nnot_P: #Reasons not_P may or may not happen\npara_P: #Reasons para_P may or may not happen\nQ: #Reasons Q may or may not happen\nP_and_Q: #Reasons P_and_Q may or may not happen\nP_or_Q: #Reasons P_or_Q may or may not happen\nQ_and_not_P: #Reasons Q_and_not_P may or may not happen\nQ_given_P: #Reasons Q_given_P may or may not happen",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[1],
+    },
+    {
+        "role": "assistant",
+        "content": "P: 0.73\nnot_P: 0.35\npara_P: 0.76\nQ: 0.33\nP_and_Q: 0.23\nP_or_Q: 0.71\nQ_and_not_P: 0.12\nQ_given_P: 0.32",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[2],
+    },
+    {
+        "role": "assistant",
+        "content": "neg: P = 1 - not_P, 0.73 = 1 - 0.35 is FALSE\nandor: P = P_or_Q + P_and_Q - Q, 0.73 = 0.71 + 0.23 - 0.33 is FALSE\nand: max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), max(0.73 + 0.33 - 1, 0) <= 0.23 <= min(0.73, 0.33) is TRUE\nor: max(P, Q) <= P_or_Q <= min(1, P + Q), max(0.73, 0.33) <= 0.71 <= min(1, 0.73 + 0.33) is FALSE\nbut: P = P_or_Q - Q_and_not_P, 0.73 = 0.71 - 0.12 is FALSE\ncond: P ≈ P_and_Q / Q_given_P, 0.73 ≈ 0.23 / 0.32 is TRUE\npara: P = para_P, 0.73 = 0.76 is FALSE\n\nneg, andor, or, but, para consistency checks failed!",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[3],
+    },
+    {
+        "role": "assistant",
+        "content": "P: 0.73\nnot_P: 0.27\npara_P: 0.73\nQ: 0.33\nP_and_Q: 0.23\nP_or_Q: 0.83\nQ_and_not_P: 0.10\nQ_given_P: 0.32",
+    },
+    {
+        "role": "user",
+        "content": DEFAULT_PROMPTS[4],
+    },
+    {"role": "assistant", "content": "0.73"},
+]
+
+
+DEFAULT_EXAMPLES = [example_consistent, example_inconsistent]
 
 
 class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
@@ -409,6 +511,10 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
 
     def generate_user_prompts(self, questions_dict):
         first_str = "QUESTIONS: {}".format(questions_dict)
+
+        if self.user_prompts[0][:9] == "QUESTIONS":
+            return self.user_prompts
+
         self.user_prompts.insert(0, first_str)
 
         return self.user_prompts
