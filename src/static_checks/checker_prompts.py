@@ -452,9 +452,17 @@ consequence_time_verification_prompt = (
 paraphrase_verification_prompt = """
 I will present two questions, P and Q. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer. Each question has a title and a body. The body provides additional context and resolution criteria.
 
+Please take care of the following:
+
+1. The questions should always have the same answer in all events.
+2. The questions should be paraphrases of each other.
+3. The paraphrased question should not drop any significant information necessary to answer the question.
+4. The paraphrased question should not add new information that could change the answer.
+
 Your response should have the following format:
 reasoning: Your reasoning for why P and Q are paraphrases or why not.
 valid: a boolean, True or False.
+
 
 Examples:
 
@@ -490,6 +498,46 @@ body: Resolves YES if, as of January 1, 2025, the majority of space exploration 
 
 reasoning: These questions are not paraphrases. The first question (P) asks about the actual occurrence of a manned Mars mission in 2025, while the second question (Q) asks about the probability or expert opinion of such a mission occurring. The bodies clearly show different resolution criteria: P resolves based on an actual landing, while Q resolves based on expert opinions at the start of 2025. These questions could have different answers and thus are not paraphrases.
 valid: False
+
+P:
+title: Will the global average temperature increase by more than 1.5°C above pre-industrial levels by 2050?
+body: Resolves YES if the global mean surface temperature, as reported by the World Meteorological Organization, exceeds 1.5°C above the 1850-1900 average by December 31, 2050. Resolves NO if this threshold is not reached by this date.
+
+Q:
+title: Will the global temperature grow by 1.5°C by 2050?
+body: This question resolves YES if the World Meteorological Organization reports that the global mean surface temperature grows by more than 1.5°C by December 31, 2050. Resolves NO otherwise.
+
+reasoning: The question Q drops specific information about where the increase should be measured from (pre-industrial levels). 
+This introduces ambiguity in an important aspect of the question (the reference temperature for the increase).
+Someone's natural interpretation of the question could be that the increase should be measured from the current temperature, not the pre-industrial levels.
+valid: False
+
+P:
+title: Will the global average temperature increase by more than 1.5°C above pre-industrial levels by 2050?
+body: Resolves YES if the global mean surface temperature, as reported by the World Meteorological Organization, exceeds 1.5°C above the 1850-1900 average by December 31, 2050. Resolves NO if this threshold is not reached by this date.
+
+Q:
+title: Will the global temperature grow by 1.5°C above pre-industrial levels by 2050?
+body: This question resolves YES if the World Meteorological Organization reports that the global mean surface temperature grows by more than 1.5°C above the 1850-1900 average by 2050. Resolves NO otherwise.
+
+reasoning: The question Q changes two irrelevant details (the word "increase" to "grow", and "by December 31 2050" to "by 2050"). Both of these preserve the meaning of the question.
+valid: True
+
+P:
+title: Will a nuke be dropped on Shanghai before 2035?
+body: Resolves YES if a nuclear weapon is detonated in or over Shanghai city limits before 2035. 
+News reports and credible sources will be used to determine if this has occurred.
+Resolves NO otherwise.
+
+Q: Will US drop an nuclear weapon on Shanghai before 2035?
+body: Resolves YES if the United States detonates a nuclear weapon in or over Shanghai city limits before 2035. 
+News reports and credible sources will be used to determine if this has occurred.
+Resolves NO otherwise.
+
+reasoning: The question Q mentions the United States, while the question P does not. This is a significant change that could change the answer.
+valid: False
+
+---
 
 Now the actual questions:
 
