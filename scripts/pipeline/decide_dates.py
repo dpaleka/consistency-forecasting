@@ -6,12 +6,10 @@ def noneify_if_not_in_range(
 ) -> dt.datetime | None:
     if date is None:
         return None
-    if min_date is not None:
-        if date < min_date:
-            return None
-    if max_date is not None:
-        if date > max_date:
-            return None
+    if min_date is not None and date < min_date:
+        return None
+    if max_date is not None and date > max_date:
+        return None
     return date
 
 
@@ -27,34 +25,58 @@ def decide_resolution_date(
     Args:
     close_date (dt.datetime): The close time of the question.
     resolve_date (dt.datetime): The resolve time of the question.
-    last_updated_date (dt.datetime, optional): The last updated time of the question.
     min_date (dt.datetime, optional): The minimum allowed date for the logical a priori resolution_date
     max_date (dt.datetime, optional): The maximum allowed date for the logical a priori resolution_date
 
     Returns:
-    dt.datetime: The chosen resolution date.
+    dt.datetime | None: The chosen resolution date or None if no valid date is found.
     """
     print("Parameters:")
     print(f"close_date: {close_date}")
     print(f"resolve_date: {resolve_date}")
     print(f"min_date: {min_date}")
     print(f"max_date: {max_date}")
+
+    later_date = (
+        max(close_date, resolve_date)
+        if close_date is not None and resolve_date is not None
+        else (close_date or resolve_date)
+    )
+
+    if min_date and later_date and later_date < min_date:
+        print("Later of close_date and resolve_date is before min_date, returning None")
+        return None
+
+    if max_date and later_date and later_date > max_date:
+        print("Later of close_date and resolve_date is after max_date, returning None")
+        return
+
+    if min_date and resolve_date and resolve_date < min_date:
+        print("Resolve date is before min_date, returning None")
+        return None
+
     close_date = noneify_if_not_in_range(close_date, min_date, max_date)
     resolve_date = noneify_if_not_in_range(resolve_date, min_date, max_date)
 
+    if min_date and close_date is None and resolve_date:
+        if resolve_date < min_date + dt.timedelta(days=7):
+            print("Resolve date is within 7 days of min_date, returning None")
+            return None
+
     if resolve_date is not None and close_date is not None:
         if resolve_date < close_date:
-            # We pick close_date because it's possible it resolved early
+            print("Resolve date is before close date, returning close date")
             return close_date
         else:
-            # We pick resolve_date because it's possible close_date was early
+            print("Close date is before resolve date, returning resolve date")
             return resolve_date
-    elif resolve_date is None and close_date is not None:
+    elif close_date is not None:
+        print("Only close date is valid, returning close date")
         return close_date
-    elif resolve_date is not None and close_date is None:
-        print("No valid close date found, using resolve date")
+    elif resolve_date is not None:
+        print("Only resolve date is valid, returning resolve date")
         return resolve_date
-    elif resolve_date is None and close_date is None:
+    else:
         print("No valid close or resolve date found, returning None")
         return None
 
@@ -65,4 +87,4 @@ def decide_question_created_date(
     min_date: dt.datetime = None,
     max_date: dt.datetime = None,
 ) -> dt.datetime:
-    return NotImplementedError
+    raise NotImplementedError
