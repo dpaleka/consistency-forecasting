@@ -3,7 +3,8 @@
         "--config=./ruff.toml"
     ],
     "python.analysis.extraPaths": [
-        "./src"
+        "./src",
+        "./scripts",
     ],
     "terminal.integrated.cwd": "${workspaceFolder}/src"
 }
