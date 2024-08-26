@@ -41,7 +41,7 @@ skip_consequence_time_verify_fail = skip_all_tests
 skip_consequence_misc_verify_pass = skip_all_tests
 skip_consequence_misc_verify_fail = skip_all_tests
 
-MODEL = "gpt-4o-mini-2024-07-18"
+MODEL = "gpt-4o-2024-08-06"
 SEED = 32
 
 
