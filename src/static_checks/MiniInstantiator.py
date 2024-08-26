@@ -271,19 +271,19 @@ class MiniInstantiator(ABC):
     def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
         return ""
 
-    def verify_sync(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+    def verify_sync(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat", **kwargs) -> VerificationResult:
         if output is None:
             return VerificationResult(valid=False, reasoning="Output is None")
         
         prompt = self._verification_prompt(output, base_sentences)
         if verify_length and not self.verify_length(output, base_sentences):
             return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
-        verification = answer_sync(prompt, response_model=VerificationResult)
+        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             write_verification_result_sync("and", output, verification)
         return verification
 
-    async def verify(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+    async def verify(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat", **kwargs) -> VerificationResult:
         if output is None:
             return VerificationResult(valid=False, reasoning="Output is None")
 
@@ -296,14 +296,14 @@ class MiniInstantiator(ABC):
 
         # If a ForecastingQuestion is found, call verify_full_question on it
         if forecasting_question:
-            full_question_verification = await verify_full_question(forecasting_question)
+            full_question_verification = await verify_full_question(forecasting_question, **kwargs)
             if not full_question_verification.valid:
                 return full_question_verification
 
         prompt = self._verification_prompt(output, base_sentences)
         if verify_length and not self.verify_length(output, base_sentences):
             return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
-        verification = await answer(prompt, response_model=VerificationResult)
+        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result("and", output, verification)
         return verification

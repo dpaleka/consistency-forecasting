@@ -23,6 +23,10 @@ skip_consequence_time_verify_fail = False
 skip_consequence_misc_verify_pass = False
 skip_consequence_misc_verify_fail = False
 
+MODEL = "gpt-4o-mini-2024-07-18"
+SEED = 32
+
+
 @pytest.mark.asyncio
 @pytest.mark.skipif(skip_test_trivial_verify, reason="Skipping trivial verify test")
 async def test_trivial_verify():
@@ -39,12 +43,12 @@ async def test_trivial_verify():
     base_sentences = Trivial.BaseSentenceFormat(P=sample_question)
     output = Trivial.OutputFormat(P=sample_question)
     
-    result = await trivial_instance.verify(output, base_sentences)
+    result = await trivial_instance.verify(output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, "Verification should always pass for Trivial class"
     assert isinstance(result, VerificationResult), "Result should be an instance of VerificationResult"
 
-    result_sync = trivial_instance.verify_sync(output, base_sentences)
+    result_sync = trivial_instance.verify_sync(output, base_sentences, model=MODEL, seed=SEED)
     
     assert result_sync.valid == True, "Verification should always pass for Trivial class, sync version"
     assert isinstance(result_sync, VerificationResult), "Result should be an instance of VerificationResult, sync version"
@@ -75,12 +79,12 @@ async def test_neg_verify_pass():
     
     base_sentences = Neg.BaseSentenceFormat(P=sample_question)
     
-    result = await neg_instance.verify(sample_output, base_sentences)
+    result = await neg_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
-    result_sync = neg_instance.verify_sync(sample_output, base_sentences)
+    result_sync = neg_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -107,15 +111,14 @@ async def test_neg_verify_fail():
             question_type="binary"
         )
     )
-    print("not p title = ", incorrect_output.not_P.title) 
     base_sentences = Neg.BaseSentenceFormat(P=sample_question)
     
-    result = await neg_instance.verify(incorrect_output, base_sentences)
+    result = await neg_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Verification should fail for incorrect negation"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
 
-    result_sync = neg_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = neg_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Verification should fail for incorrect negation, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -153,12 +156,12 @@ async def test_and_verify_pass():
     
     base_sentences = And.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
     
-    result = await and_instance.verify(sample_output, base_sentences)
+    result = await and_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
-    result_sync = and_instance.verify_sync(sample_output, base_sentences)
+    result_sync = and_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -196,12 +199,12 @@ async def test_and_verify_fail():
     
     base_sentences = And.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
     
-    result = await and_instance.verify(incorrect_output, base_sentences)
+    result = await and_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Verification should fail for incorrect AND combination"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
 
-    result_sync = and_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = and_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Verification should fail for incorrect AND combination, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -240,12 +243,12 @@ async def test_or_verify_pass():
     
     base_sentences = Or.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
     
-    result = await or_instance.verify(sample_output, base_sentences)
+    result = await or_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
-    result_sync = or_instance.verify_sync(sample_output, base_sentences)
+    result_sync = or_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -283,12 +286,12 @@ async def test_or_verify_fail():
     
     base_sentences = Or.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
     
-    result = await or_instance.verify(incorrect_output, base_sentences)
+    result = await or_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Verification should fail for incorrect OR combination"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
 
-    result_sync = or_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = or_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Verification should fail for incorrect OR combination, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -319,13 +322,13 @@ async def test_paraphrase_verify_pass():
     
     base_sentences = Paraphrase.BaseSentenceFormat(P=sample_question)
     
-    result = await paraphrase_instance.verify(sample_output, base_sentences)
+    result = await paraphrase_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
     assert paraphrase_instance.verify_length(sample_output, base_sentences), "Paraphrase length verification failed"
 
-    result_sync = paraphrase_instance.verify_sync(sample_output, base_sentences)
+    result_sync = paraphrase_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -356,13 +359,13 @@ async def test_paraphrase_verify_fail():
     
     base_sentences = Paraphrase.BaseSentenceFormat(P=sample_question)
     
-    result = await paraphrase_instance.verify(incorrect_output, base_sentences)
+    result = await paraphrase_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Verification should fail for incorrect paraphrase"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
     assert paraphrase_instance.verify_length(incorrect_output, base_sentences), "Paraphrase length verification failed"
 
-    result_sync = paraphrase_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = paraphrase_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Verification should fail for incorrect paraphrase, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -401,13 +404,13 @@ async def test_conditional_verify_pass():
     
     base_sentences = Conditional.BaseSentenceFormat(P=sample_question_P, Q=sample_question_Q)
     
-    result = await conditional_instance.verify(sample_output, base_sentences)
+    result = await conditional_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
     assert conditional_instance.verify_length(sample_output, base_sentences), "Conditional length verification failed"
 
-    result_sync = conditional_instance.verify_sync(sample_output, base_sentences)
+    result_sync = conditional_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -446,13 +449,13 @@ async def test_conditional_verify_fail():
     
     base_sentences = Conditional.BaseSentenceFormat(P=sample_question_P, Q=sample_question_Q)
     
-    result = await conditional_instance.verify(incorrect_output, base_sentences)
+    result = await conditional_instance.verify(incorrect_output, base_sentences, model = MODEL, seed = SEED)
     
     assert result.valid == False, "Verification should fail for incorrect conditional"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
     assert conditional_instance.verify_length(incorrect_output, base_sentences), "Conditional length verification failed"
 
-    result_sync = conditional_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = conditional_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Verification should fail for incorrect conditional, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -486,13 +489,13 @@ async def test_consequence_quantity_verify_pass():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(sample_output, base_sentences)
+    result = await consequence_instance.verify(sample_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == True, f"Quantity verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
     assert consequence_instance.verify_length(sample_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(sample_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Quantity verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -525,13 +528,13 @@ async def test_consequence_time_verify_pass():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(sample_output, base_sentences)
+    result = await consequence_instance.verify(sample_output, base_sentences, model= MODEL, seed=SEED)
     
     assert result.valid == True, f"Time verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
     assert consequence_instance.verify_length(sample_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(sample_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Time verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -565,13 +568,13 @@ async def test_consequence_misc_verify_pass():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(sample_output, base_sentences)
+    result = await consequence_instance.verify(sample_output, base_sentences, model= MODEL, seed=SEED)
     
     assert result.valid == True, f"Misc verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
     assert consequence_instance.verify_length(sample_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(sample_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(sample_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == True, f"Misc verification failed. Reasoning: {result.reasoning}, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning should not be empty, sync version"
@@ -603,13 +606,13 @@ async def test_consequence_misc_verify_fail():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(incorrect_output, base_sentences)
+    result = await consequence_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Misc verification should fail for incorrect consequence"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
     assert consequence_instance.verify_length(incorrect_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Misc verification should fail for incorrect consequence, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -641,13 +644,13 @@ async def test_consequence_quantity_verify_fail():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(incorrect_output, base_sentences)
+    result = await consequence_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Quantity verification should fail for incorrect consequence"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
     assert consequence_instance.verify_length(incorrect_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Quantity verification should fail for incorrect consequence, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
@@ -680,14 +683,14 @@ async def test_consequence_time_verify_fail():
     
     base_sentences = sample_question_P
     
-    result = await consequence_instance.verify(incorrect_output, base_sentences)
+    result = await consequence_instance.verify(incorrect_output, base_sentences, model=MODEL, seed=SEED)
     
     assert result.valid == False, "Time verification should fail for incorrect consequence"
     assert len(result.reasoning) > 0, "Verification reasoning for failure should not be empty"
     assert consequence_instance.verify_length(incorrect_output, base_sentences), "Consequence length verification failed"
 
-    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences)
+    result_sync = consequence_instance.verify_sync(incorrect_output, base_sentences, model=MODEL, seed=SEED)
 
     assert result_sync.valid == False, "Time verification should fail for incorrect consequence, sync version"
     assert len(result_sync.reasoning) > 0, "Verification reasoning for failure should not be empty, sync version"
-    assert consequence_instance.verif_length(incorrect_output, base_sentences), "Consequence length verification failed, sync version"
+    assert consequence_instance.verify_length(incorrect_output, base_sentences), "Consequence length verification failed, sync version"
