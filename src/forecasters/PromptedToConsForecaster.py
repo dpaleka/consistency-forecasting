@@ -129,19 +129,19 @@ def gen_or_tuple(og_question_1, og_question_2):
 
 DEFAULT_PROMPTS = [
     """
-    GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.
+    GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.  
     """,
     """PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE. Your output MUST look like and be formatted like the following.
     P: 0.xx
     not_P: 0.xx
     P_or_Q: 0.xx
     ...""",
-    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, also explain why / why not the rule is obeyed. Your output MUST look like and be formatted like the following.
+    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print out the mathematical rule and the associated numbers associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. Your output MUST look like and be formatted like the following.
     neg: P = 1- not_P, EQUATION is EVALUATION
     andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION
     and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION
     ...
-    {ALL consistency checks passed!} OR {CHECK_1, CHECK_2 ... consistency checks failed!}""",
+    {ALL consistency checks passed!} OR {failed_check_1, failed_check_2 ... consistency checks failed!}""",
     """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occured before.
         Note that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes  
         your correction needs to ENSURE that it still passes other consistency checks too.
@@ -428,7 +428,7 @@ example_generic_i = [
 ]
 
 
-DEFAULT_EXAMPLES = [example_consistent, example_inconsistent]
+DEFAULT_EXAMPLES = [example_generic_c, example_generic_i]
 
 
 class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
