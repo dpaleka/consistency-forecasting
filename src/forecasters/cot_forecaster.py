@@ -116,14 +116,17 @@ class CoT_multistep_Forecaster:
         ]
 
         num_examples = 0
-        print(
-            "\n\nIgnoring examples!!! Try debugging by uncommenting examples=None and using a simpler list of examples \n\n"
-        )
-        examples = None
+        ## comment this out for examples
+        # examples = None
         if examples:
             for e in examples:
                 messages.extend(e)
                 num_examples += 1
+
+        else:
+            print(
+                "\n\nIgnoring examples!!! Try debugging by uncommenting examples=None and using a simpler list of examples \n\n"
+            )
 
         print(f"{len(messages)=} after examples")
         print(f"messages[-1]: {messages[-1]}")
@@ -151,9 +154,13 @@ class CoT_multistep_Forecaster:
 
             print("\n\n\nADAMXXXXXXX")
             print(f"{len(messages)=}")
-            for m in messages[-5:]:
-                print(m)
+            # for m in messages[-5:]:
+            # print(m)
+
+            print(f"messages[-2]: {messages[-2]}")
+            print("")
             print(f"messages[-1]: {messages[-1]}")
+            print("\n\n")
 
         ## this includes examples if it's there!  It's just all messages
         result = {
