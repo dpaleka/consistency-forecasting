@@ -4,7 +4,28 @@ from bs4 import BeautifulSoup
 import argparse
 import datetime as dt
 from tqdm import tqdm
-from decide_dates import decide_resolution_date
+from decide_dates_real_fq import decide_resolution_date, too_close_dates
+
+
+def normalize_date_string(date_str):
+    """
+    Normalizes a date string by ensuring it ends with 'Z' and removing milliseconds.
+    Also handles the datetime conversion.
+
+    :param date_str: The input date string.
+    :return: Normalized datetime object or None if conversion fails.
+    """
+    try:
+        if date_str is None:
+            return None
+        if "." in date_str:
+            date_str = date_str.split(".")[0]
+        if not date_str.endswith("Z"):
+            date_str += "Z"
+        return dt.datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+    except Exception as e:
+        print(f"Error normalizing date string: {date_str}. Error: {e}")
+        return None
 
 
 def fetch_resolution_criteria(question_url):
@@ -87,35 +108,35 @@ def fetch_live_questions_with_dates(
             if question_type != "binary":
                 continue
 
+            print("\nURL:", question.get("url"))
+
             # only include resolution times either in range or expires past 30 days and within 10 years
             resolution_date = None
 
-            close_date_str = question.get("close_time")
-            if "." in close_date_str:
-                close_date_str = close_date_str.split(".")[0] + "Z"
-            close_date = dt.datetime.strptime(close_date_str, "%Y-%m-%dT%H:%M:%SZ")
+            close_date = normalize_date_string(question.get("close_time"))
+            resolve_date = normalize_date_string(question.get("resolve_time"))
+            publish_date = normalize_date_string(question.get("publish_time"))
 
-            try:
-                resolve_date_str = question.get("resolve_time")
+            if close_date is None or resolve_date is None or publish_date is None:
+                continue  # Skip this question if any date conversion failed
 
-                if "." in resolve_date_str:
-                    resolve_date_str = resolve_date_str.split(".")[0] + "Z"
-                resolve_date = dt.datetime.strptime(
-                    resolve_date_str, "%Y-%m-%dT%H:%M:%SZ"
-                )
-            except Exception as e:
-                resolve_date = None
-
-            resolution_date = (
-                decide_resolution_date(
-                    close_date,
-                    resolve_date,
-                    min_date=start_datetime,
-                    max_date=end_datetime,
-                )
-                if resolve_date
-                else close_date
+            resolution_date = decide_resolution_date(
+                close_date,
+                resolve_date,
+                min_date=start_datetime,
+                max_date=end_datetime,
             )
+
+            print("Resolution date:", resolution_date)
+
+            created_date_str = question.get("created_time")
+            publish_date_str = normalize_date_string(question.get("publish_time"))
+
+            question_created = publish_date
+            print("Question created:", question_created)
+
+            if too_close_dates(question_created, resolution_date):
+                continue
 
             question_info = {
                 "id": question.get("id"),
@@ -138,6 +159,8 @@ def fetch_live_questions_with_dates(
                     "resolve_time": question.get("resolve_time"),
                     "close_time": question.get("close_time"),
                     "effected_close_time": question.get("effected_close_time"),
+                    "created_time": question.get("created_time"),
+                    "publish_time": question.get("publish_time"),
                 },
                 "resolution": question.get("resolution"),
             }

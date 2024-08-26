@@ -5,7 +5,7 @@ from common.path_utils import get_scripts_path
 
 sys.path.append(str(get_scripts_path()))
 
-from pipeline.decide_dates import (
+from pipeline.decide_dates_real_fq import (
     noneify_if_not_in_range,
     decide_resolution_date,
 )
