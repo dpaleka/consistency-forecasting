@@ -81,10 +81,17 @@ def decide_resolution_date(
         return None
 
 
-def decide_question_created_date(
-    created_date: dt.datetime,
-    published_date: dt.datetime | None,
-    min_date: dt.datetime = None,
-    max_date: dt.datetime = None,
-) -> dt.datetime:
-    raise NotImplementedError
+def too_close_dates(
+    question_created: dt.datetime | None,
+    resolution_date: dt.datetime,
+) -> bool:
+    """
+    We discard questions where the resolution date is within 3 days of the creation date,
+    for likely being not serious enough to include in any testing.
+    """
+    assert resolution_date is not None
+    if question_created is None:
+        return False
+    assert question_created <= resolution_date
+    if resolution_date - question_created <= dt.timedelta(days=3):
+        return True

@@ -3,7 +3,7 @@ import json
 import datetime as dt
 import argparse
 from tqdm import tqdm
-from decide_dates import decide_resolution_date
+from decide_dates_real_fq import decide_resolution_date, too_close_dates
 
 
 def epoch_to_datetime(epoch):
@@ -77,7 +77,7 @@ def scrape_manifold_markets(
             resolution_time = epoch_to_datetime(market.get("resolutionTime"))
 
             url = market.get("url", "").lower()
-            print(f"URL: {url}")
+            print(f"\nURL: {url}")
 
             resolution_date = decide_resolution_date(
                 close_date=close_time,
@@ -89,6 +89,14 @@ def scrape_manifold_markets(
                 continue
 
             print(f"Resolution date: {resolution_date}")
+
+            created_time = epoch_to_datetime(market.get("createdTime"))
+
+            question_created = created_time
+            print(f"Created time: {created_time}")
+
+            if too_close_dates(question_created, resolution_date):
+                continue
 
             market_info = {
                 "id": market["id"],
@@ -107,6 +115,8 @@ def scrape_manifold_markets(
                     "last_updated_time": str(
                         epoch_to_datetime(market.get("lastUpdatedTime"))
                     ),
+                    "created_time": str(epoch_to_datetime(market.get("createdTime"))),
+                    "last_bet_time": str(epoch_to_datetime(market.get("lastBetTime"))),
                 },
                 "resolution": market.get("isResolved", None),
             }
