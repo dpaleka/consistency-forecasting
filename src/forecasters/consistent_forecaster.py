@@ -51,7 +51,6 @@ class ConsistentForecaster(Forecaster):
         / "fq"
         / "real"
         / "questions_cleaned_formatted.jsonl",
-        pregenerate=True,
         coerce_nonbinary_qs=True,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
@@ -67,7 +66,6 @@ class ConsistentForecaster(Forecaster):
         ]
         self.base_data_path = base_data_path
         self.coerce_nonbinary_qs = coerce_nonbinary_qs
-        self.pregenerate = pregenerate
         self.instantiation_kwargs = instantiation_kwargs or {}
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
@@ -145,13 +143,95 @@ class ConsistentForecaster(Forecaster):
         tup = res[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
-    def call(
+    def instantiate_cons_tuples(
         self,
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
         **kwargs,
-    ) -> float:
+    ) -> list[dict[str, ForecastingQuestion]]:
+        """Instantiate tuples for arbitraging the given sentence.
+
+        Args:
+            sentence (ForecastingQuestion): Sentence to instantiate consistent tuples for.
+            bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        """
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+
+        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        max_tuple_size = max(check.num_base_questions for check in self.checks)
+        bq_tuple_max = self.bq_function(
+            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        )
+
+        cons_tuples = []
+        for check in self.checks:
+            bq_tuple = {
+                k: v
+                for k, v in bq_tuple_max.items()
+                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+            }
+            cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuples.append(cons_tuple)
+        return cons_tuples
+
+    async def instantiate_cons_tuples_async(
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
+        **kwargs,
+    ) -> list[dict[str, ForecastingQuestion]]:
+        """Instantiate tuples for arbitraging the given sentence.
+
+        Args:
+            sentence (ForecastingQuestion): Sentence to instantiate consistent tuples for.
+            bq_func_kwargs (dict): Keyword arguments for bq_function.
+            instantiation_kwargs (dict): Keyword arguments for instantiation.
+
+        """
+        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
+            sentence.question_type = "binary"
+        kwargs = self.kwargs | (kwargs or {})
+        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
+        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+
+        # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        max_tuple_size = max(check.num_base_questions for check in self.checks)
+        bq_tuple_max = await self.bq_function_async(
+            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        )
+
+        cons_tuples = []
+        for check in self.checks:
+            bq_tuple = {
+                k: v
+                for k, v in bq_tuple_max.items()
+                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+            }
+            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
+            if isinstance(cons_tuple, list):
+                cons_tuple = cons_tuple[0]
+            cons_tuples.append(cons_tuple)
+        return cons_tuples
+
+    def call(
+        self,
+        sentence: ForecastingQuestion,
+        bq_func_kwargs: dict = None,
+        instantiation_kwargs: dict = None,
+        only_arbitrage_if_fail=False,
+        include_metadata=False,
+        **kwargs,
+    ) -> float | tuple[float, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -177,40 +257,56 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
-            sentence.question_type = "binary"
-        kwargs = self.kwargs | (kwargs or {})
-        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
-        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
-        ans_P = self.hypocrite.call(sentence, **kwargs)
-
-        if self.pregenerate:
-            # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
-            max_tuple_size = max(check.num_base_questions for check in self.checks)
-            bq_tuple_max = self.bq_function(
-                sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        metadata = {}
+        ans_P = self.hypocrite.call(
+            sentence, include_metadata=include_metadata, **kwargs
+        )
+        if isinstance(ans_P, tuple):
+            ans_P, ans_P_metadata = ans_P
+            metadata["P"] = (
+                dict(sentence)
+                | {"elicited_prob": ans_P}
+                | {"elicitation_metadata": ans_P_metadata}
             )
-
-        for check in self.checks:
-            if self.pregenerate:
-                bq_tuple = {
-                    k: v
-                    for k, v in bq_tuple_max.items()
-                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-                }
-            else:
-                bq_tuple = self.bq_function(
-                    sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
-                )
-            cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                cons_tuple = cons_tuple[0]
+        else:
+            metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
+        cons_tuples = self.instantiate_cons_tuples(
+            sentence,
+            bq_func_kwargs=bq_func_kwargs,
+            instantiation_kwargs=instantiation_kwargs,
+            **kwargs,
+        )
+        P_weight = 1.0
+        for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
+            hypocrite_answers = self.hypocrite.elicit(
+                cons_tuple, include_metadata=include_metadata, **kwargs
+            )
+            if isinstance(next(iter(hypocrite_answers.values())), tuple):
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k][0]}
+                    | {"elicitation_metadata": hypocrite_answers[k][1]}
+                    for k in cons_tuple
+                }
+                hypocrite_answers = {k: v[0] for k, v in hypocrite_answers.items()}
+            else:
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k]}
+                    for k in cons_tuple
+                }
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
-            ans_P = cons_answers["P"]
+            other = len(cons_tuple) - 1
+            cons_answers, v = check.max_min_arbitrage(
+                hypocrite_answers, scoring=[P_weight] + [1.0] * other
+            )
+            P_weight += 1.0 * other
+            if v > check.default_tolerance or not only_arbitrage_if_fail:
+                ans_P = cons_answers["P"]
+        if include_metadata:
+            return ans_P, metadata
         return ans_P
 
     async def call_async(
@@ -218,8 +314,10 @@ class ConsistentForecaster(Forecaster):
         sentence: ForecastingQuestion,
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
+        only_arbitrage_if_fail=False,
+        include_metadata=False,
         **kwargs,
-    ) -> float:
+    ) -> float | tuple[float, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -245,48 +343,96 @@ class ConsistentForecaster(Forecaster):
         )
 
         """
-        if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
-            sentence.question_type = "binary"
-        kwargs = self.kwargs | (kwargs or {})
-        bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
-        instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
-        ans_P = await self.hypocrite.call_async(sentence, **kwargs)
-        if self.pregenerate:
-            # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
-            max_tuple_size = max(check.num_base_questions for check in self.checks)
-            bq_tuple_max = await self.bq_function_async(
-                sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+        metadata = {}
+        ans_P = await self.hypocrite.call_async(
+            sentence, include_metadata=include_metadata, **kwargs
+        )
+        if isinstance(ans_P, tuple):
+            ans_P, ans_P_metadata = ans_P
+            metadata["P"] = (
+                dict(sentence)
+                | {"elicited_prob": ans_P}
+                | {"elicitation_metadata": ans_P_metadata}
             )
+        else:
+            metadata["P"] = dict(sentence) | {"elicited_prob": ans_P}
+        cons_tuples = await self.instantiate_cons_tuples_async(
+            sentence,
+            bq_func_kwargs=bq_func_kwargs,
+            instantiation_kwargs=instantiation_kwargs,
+            **kwargs,
+        )
 
-        for check in self.checks:
-            if self.pregenerate:
-                bq_tuple = {
-                    k: v
-                    for k, v in bq_tuple_max.items()
-                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-                }
-            else:
-                bq_tuple = await self.bq_function_async(
-                    sentence, tuple_size=check.num_base_questions, **bq_func_kwargs
-                )
-            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                cons_tuple = cons_tuple[0]
+        P_weight = 1.0
+        for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
+            hypocrite_answers = await self.hypocrite.elicit_async(
+                cons_tuple, include_metadata=include_metadata, **kwargs
+            )
+            if isinstance(next(iter(hypocrite_answers.values())), tuple):
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k][0]}
+                    | {"elicitation_metadata": hypocrite_answers[k][1]}
+                    for k in cons_tuple
+                }
+                hypocrite_answers = {k: v[0] for k, v in hypocrite_answers.items()}
+            else:
+                metadata[check.__class__.__name__] = {
+                    k: cons_tuple[k].model_dump()
+                    | {"elicited_prob": hypocrite_answers[k]}
+                    for k in cons_tuple
+                }
+
             hypocrite_answers["P"] = ans_P
-            cons_answers, v = check.max_min_arbitrage(hypocrite_answers)
-            ans_P = cons_answers["P"]
+            cons_answers, v = check.max_min_arbitrage(
+                hypocrite_answers, scoring=[P_weight, 1.0]
+            )
+            P_weight += 1.0 * (len(cons_tuple) - 1)
+            if v > check.default_tolerance or not only_arbitrage_if_fail:
+                ans_P = cons_answers["P"]
+        if include_metadata:
+            return ans_P, metadata
         return ans_P
+
+    @classmethod
+    def recursive(
+        cls,
+        depth: int = 0,
+        hypocrite: Forecaster = None,
+        **kwargs,
+    ) -> "ConsistentForecaster":
+        assert isinstance(depth, int) and depth >= 0
+        if depth == 0:
+            return hypocrite or BasicForecaster()
+        else:
+            return cls(
+                hypocrite=cls.recursive(
+                    depth=depth - 1,
+                    hypocrite=hypocrite,
+                    **kwargs,
+                ),
+                **kwargs,
+            )
 
     def dump_config(self):
         return {
             "hypocrite": self.hypocrite.dump_config(),
             "checks": [c.dump_config() for c in self.checks],
             "base_data_path": str(self.base_data_path),
-            "pregenerate": self.pregenerate,
             "instantiation_kwargs": self.instantiation_kwargs,
             "bq_func_kwargs": self.bq_func_kwargs,
             "call_kwargs": self.kwargs,
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            hypocrite=Forecaster.load_config(config["hypocrite"]),
+            checks=[Checker.load_config(c) for c in config["checks"]],
+            base_data_path=config["base_data_path"],
+            instantiation_kwargs=config["instantiation_kwargs"],
+            bq_func_kwargs=config["bq_func_kwargs"],
+            **config["call_kwargs"],
+        )
