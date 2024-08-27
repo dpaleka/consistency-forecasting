@@ -173,36 +173,60 @@ S body: {S_body}
 
 
 conditional_verification_prompt = """
-I will provide three questions: P, R, and S. In this scenario:
+I will provide three questions: P, Q, and Q_given_P. Each question has a title and a body. In this scenario:
 - P is a direct statement or proposition.
-- R represents the conditional probability of Q given P, denoting how likely Q is to occur if P is true.
-- S represents the conjunction of P and Q, indicating that both P and Q must be true.
+- Q is another statement or proposition.
+- Q_given_P represents the conditional probability of Q given P, denoting how likely Q is to occur if P is true.
 
-Your task is to validate whether the relationships between P, Q, R, and S are logically consistent and plausible.
+Your task is to validate whether the relationships between P, Q, and Q_given_P are logically consistent and plausible.
 
 Example 1:
+P:
+  Title: Will it rain in New York City tomorrow?
+  Body: Resolves YES if there is measurable precipitation in Central Park, New York City, within the 24-hour period starting at 00:00 local time tomorrow. Resolves NO otherwise.
 
-P: Will it rain tomorrow?
-R: Will there be a thunderstorm tomorrow given that it rains?
-S: Will it rain tomorrow and there be a thunderstorm?
+Q:
+  Title: Will there be a thunderstorm in New York City tomorrow?
+  Body: Resolves YES if there is at least one instance of thunder heard in Central Park, New York City, within the 24-hour period starting at 00:00 local time tomorrow. Resolves NO otherwise.
 
-reasoning: Assuming Q is the occurrence of a thunderstorm, R evaluates the probability of a thunderstorm given that it rains (P). S checks if both events, rain and thunderstorm, occur simultaneously. Thus, the conditions for R and S logically follow from the definitions of conditional probability and conjunction respectively.
+Q_given_P:
+  Title: If it rains in New York City tomorrow, will there be a thunderstorm?
+  Body: Resolves YES if, given that it rains in Central Park tomorrow (as defined in P), there is at least one instance of thunder heard in Central Park within the same 24-hour period. Resolves NO if it rains but no thunder is heard. Resolves INVALID if it doesn't rain.
+
+reasoning: The relationship between P, Q, and Q_given_P is logically consistent. P asks about rain, Q asks about a thunderstorm, and Q_given_P correctly represents the conditional probability of a thunderstorm given that it rains. The body of Q_given_P appropriately specifies that it resolves INVALID if the condition (rain) doesn't occur.
+
 valid: True
 
 Example 2:
+P:
+  Title: Will the S&P 500 close above 4000 points next Friday?
+  Body: Resolves YES if the S&P 500 index closes above 4000 points next Friday. Resolves NO otherwise.
 
-P: Will it rain tomorrow?
-R: If tomorrow is sunny, will it rain?
-S: Will it be sunny tomorrow and rain?
+Q:
+  Title: Will the NASDAQ composite index increase by more than 2% next week?
+  Body: Resolves YES if the NASDAQ composite index increases by more than 2% over the course of next week (Monday open to Friday close). Resolves NO otherwise.
 
-reasoning: In this scenario, R does not represent the conditional probability of Q given P, and S does not represent the conjunction of P and Q. The relationships between P, Q, R, and S are not logically consistent.
+Q_given_P:
+  Title: If the S&P 500 closes above 4000 points next Friday, will the US dollar strengthen against the euro?
+  Body: Resolves YES if, given that the S&P 500 closes above 4000 points next Friday, the US dollar strengthens against the euro compared to the previous day's closing rate. Resolves NO if the S&P 500 closes above 4000 but the dollar doesn't strengthen. Resolves INVALID if the S&P 500 doesn't close above 4000.
+
+reasoning: While P and Q_given_P are logically related, Q is unrelated to both P and Q_given_P. Q asks about the NASDAQ index, while Q_given_P introduces a new concept about the US dollar-euro exchange rate. This makes the relationship between P, Q, and Q_given_P inconsistent.
+
 valid: False
 
 ----
 
-P: {P}
-R: {Q_given_P}
-S: {P_and_Q}
+P:
+  Title: {P_title}
+  Body: {P_body}
+
+Q:
+  Title: {Q_title}
+  Body: {Q_body}
+
+Q_given_P:
+  Title: {Q_given_P_title}
+  Body: {Q_given_P_body}
 """
 
 consequence_verification_prompt = (
@@ -360,6 +384,15 @@ consequence_time_verification_prompt = (
     "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
     "resolution date: 2085-01-01 00:00:00\n"
     "Q:\n"
+    "title: Will a Swiss person set foot on Mars before 2083?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2083. Resolves NO otherwise.\n"
+    "resolution date: 2086-01-01 00:00:00\n"
+    "reasoning: If a Swiss person sets foot on Mars before 2085, it doesnt mean that they also set foot on Mars before 2083. It could have happened after 2083.\n"
+    "valid: False\n\n"
+    "title: Will a Swiss person set foot on Mars before 2085?\n"
+    "body: Resolves YES if a Swiss person sets foot on Mars before 2085. Resolves NO otherwise.\n"
+    "resolution date: 2085-01-01 00:00:00\n"
+    "Q:\n"
     "title: Will a Swiss person set foot on Mars before 2086?\n"
     "body: Resolves YES if a Swiss person sets foot on Mars before 2086. Resolves NO otherwise.\n"
     "resolution date: 2086-01-01 00:00:00\n"
@@ -417,50 +450,102 @@ consequence_time_verification_prompt = (
 
 
 paraphrase_verification_prompt = """
-I will present two questions, Q and P. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer.
+I will present two questions, P and Q. Your task is to determine if they are paraphrases of each other, meaning they ask the same question but potentially in different ways. They should mean the same things, and always have the same answer. Each question has a title and a body. The body provides additional context and resolution criteria.
 
-Example 1:
+Please take care of the following:
 
-P: What is the current temperature in New York City?
-Q: How warm is it right now in New York City?
+1. The questions should always have the same answer in all events.
+2. The questions should be paraphrases of each other.
+3. The paraphrased question should not drop any significant information necessary to answer the question.
+4. The paraphrased question should not add new information that could change the answer.
 
-reasoning: Both questions inquire about the present temperature in New York City. Despite slight differences in phrasing ("current temperature" vs. "how warm"), the essential inquiry is the same, focusing on the temperature at this moment.
+Your response should have the following format:
+reasoning: Your reasoning for why P and Q are paraphrases or why not.
+valid: a boolean, True or False.
+
+
+Examples:
+
+P:
+title: What is the current temperature in New York City?
+body: The temperature should be measured in Fahrenheit at Central Park weather station. Resolution is based on the official reading at noon local time.
+
+Q:
+title: How warm is it right now in New York City?
+body: Measure the temperature in Fahrenheit at the Central Park weather station. Use the official reading at 12:00 PM local time for resolution.
+
+reasoning: Both questions inquire about the present temperature in New York City, specifically at Central Park weather station at noon. The bodies provide identical resolution criteria, ensuring the same answer. Despite slight differences in phrasing, the essential inquiry and resolution method are the same.
 valid: True
 
-Example 2:
+P:
+title: Who won the Best Actor award at the Oscars last year?
+body: This question resolves based on the winner of the Academy Award for Best Actor at the most recent Oscar ceremony prior to the resolution date.
 
-P: Who won the Best Actor award at the Oscars last year?
-Q: Who was the recipient of the last Academy Award for Best Actress?
+Q:
+title: Who was the recipient of the last Academy Award for Best Actress?
+body: This question resolves based on the winner of the Academy Award for Best Actress at the most recent Oscar ceremony prior to the resolution date.
 
-reasoning: These questions appear similar as they both pertain to Oscar winners, but they ask about different categories—Best Actor and Best Actress. Therefore, they are not paraphrases because they request distinct information.
+reasoning: While these questions appear similar as they both pertain to Oscar winners, they ask about different categories—Best Actor and Best Actress. The bodies confirm that they resolve based on different award categories. Therefore, they are not paraphrases because they request distinct information.
 valid: False
 
-Example 3:
+P:
+title: Will there be a manned Mars mission in 2025?
+body: Resolves YES if a human-crewed spacecraft lands on Mars at any point during the calendar year 2025. Resolves NO otherwise.
 
-P: Can dogs eat chocolate?
-Q: Is it safe for dogs to consume chocolate?
+Q:
+title: Is it probable that a manned mission to Mars will happen in 2025?
+body: Resolves YES if, as of January 1, 2025, the majority of space exploration experts surveyed believe there is greater than a 50% chance of a human-crewed Mars landing occurring in 2025. Resolves NO otherwise.
 
-reasoning: Both questions address the safety of chocolate consumption for dogs. The essence of the inquiry is whether chocolate poses a risk to dogs, which makes them paraphrases of each other despite the subtle difference in wording.
+reasoning: These questions are not paraphrases. The first question (P) asks about the actual occurrence of a manned Mars mission in 2025, while the second question (Q) asks about the probability or expert opinion of such a mission occurring. The bodies clearly show different resolution criteria: P resolves based on an actual landing, while Q resolves based on expert opinions at the start of 2025. These questions could have different answers and thus are not paraphrases.
+valid: False
+
+P:
+title: Will the global average temperature increase by more than 1.5°C above pre-industrial levels by 2050?
+body: Resolves YES if the global mean surface temperature, as reported by the World Meteorological Organization, exceeds 1.5°C above the 1850-1900 average by December 31, 2050. Resolves NO if this threshold is not reached by this date.
+
+Q:
+title: Will the global temperature grow by 1.5°C by 2050?
+body: This question resolves YES if the World Meteorological Organization reports that the global mean surface temperature grows by more than 1.5°C by December 31, 2050. Resolves NO otherwise.
+
+reasoning: The question Q drops specific information about where the increase should be measured from (pre-industrial levels). 
+This introduces ambiguity in an important aspect of the question (the reference temperature for the increase).
+Someone's natural interpretation of the question could be that the increase should be measured from the current temperature, not the pre-industrial levels.
+valid: False
+
+P:
+title: Will the global average temperature increase by more than 1.5°C above pre-industrial levels by 2050?
+body: Resolves YES if the global mean surface temperature, as reported by the World Meteorological Organization, exceeds 1.5°C above the 1850-1900 average by December 31, 2050. Resolves NO if this threshold is not reached by this date.
+
+Q:
+title: Will the global temperature grow by 1.5°C above pre-industrial levels by 2050?
+body: This question resolves YES if the World Meteorological Organization reports that the global mean surface temperature grows by more than 1.5°C above the 1850-1900 average by 2050. Resolves NO otherwise.
+
+reasoning: The question Q changes two irrelevant details (the word "increase" to "grow", and "by December 31 2050" to "by 2050"). Both of these preserve the meaning of the question.
 valid: True
 
-Example 4:
+P:
+title: Will a nuke be dropped on Shanghai before 2035?
+body: Resolves YES if a nuclear weapon is detonated in or over Shanghai city limits before 2035. 
+News reports and credible sources will be used to determine if this has occurred.
+Resolves NO otherwise.
 
-P: How far is it from Earth to Mars?
-Q: What is the distance between Earth and the Moon?
+Q: Will US drop an nuclear weapon on Shanghai before 2035?
+body: Resolves YES if the United States detonates a nuclear weapon in or over Shanghai city limits before 2035. 
+News reports and credible sources will be used to determine if this has occurred.
+Resolves NO otherwise.
 
-Reasoning: Although both questions ask about distances in space, they refer to entirely different celestial measurements. Hence, they are not paraphrases as they inquire about different distances.
-Valid: False
-
-Example 5:
-
-P: Will there be a manned Mars mission in 2025?
-Q: Is it probable that a manned mission to Mars will happen in 2025?
-
-reasoning: It's a bit subtle, but these questions do not necessarily have the same answer. For example, it is possible that a manned Mars mission will happen in 2025, but it was not a priori probable; or that a manned Mars mission will not happen in 2025, but it was regarded as probable before that. So they are not paraphrases.
+reasoning: The question Q mentions the United States, while the question P does not. This is a significant change that could change the answer.
 valid: False
 
-----
+---
 
-P: {P}
-Q: {para_P}
+Now the actual questions:
+
+P:
+title: {P_title}
+body: {P_body}
+
+Q:
+title: {para_P_title}
+body: {para_P_body}
 """
