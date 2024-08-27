@@ -1,0 +1,18 @@
+{
+    "default": {
+        "label": "AndOrChecker",
+        "num_samples": 3,
+        "num_violations": 1,
+        "avg_violation": 0.012877,
+        "avg_violation_no_outliers": 0.002503,
+        "median_violation": 0.002503
+    },
+    "frequentist": {
+        "label": "AndOrChecker",
+        "num_samples": 3,
+        "num_violations": 1,
+        "avg_violation": 0.119043,
+        "avg_violation_no_outliers": 0.070699,
+        "median_violation": 0.070699
+    }
+}
