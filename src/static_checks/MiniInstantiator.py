@@ -8,7 +8,6 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Type, Any, Optional, Self, List, List, Union  # noqa
 from pydantic import BaseModel, field_validator
-from common.utils import write_jsonl_async_from_str  # noqa
 from common.llm_utils import (
     answer,
     answer_sync,
@@ -38,12 +37,14 @@ from .checker_prompts import (
     paraphrase_verification_prompt,
 )
 
+TUPLE_VERIFY_SEED = 32
 
 load_dotenv()
 verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
+
 
 async def write_verification_result(tuple_type, generated_tuple, verification):
     filename = get_data_path() / "verification/tuple_verifications.jsonl"
@@ -156,7 +157,7 @@ class MiniInstantiator(ABC):
     async def title_body(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> "Self.OutputFormat_stripped":
-        base_sentences = self.to_base_sentence_format_stripped(base_sentences) 
+        base_sentences = self.to_base_sentence_format_stripped(base_sentences)
         return await self.title_body_(base_sentences, **kwargs)
 
     def resolution_date(
@@ -193,7 +194,6 @@ class MiniInstantiator(ABC):
             return self.resolution_(resolutions)
         return {k: None for k in self.OutputFormat.model_fields}
 
-
     def instantiate_sync(
         self,
         base_sentences: dict[str, ForecastingQuestion],
@@ -208,8 +208,7 @@ class MiniInstantiator(ABC):
                     return output
             return []
         else:
-            return self._instantiate_sync(base_sentences, **kwargs)    
-
+            return self._instantiate_sync(base_sentences, **kwargs)
 
     def _instantiate_sync(
         self,
@@ -244,7 +243,6 @@ class MiniInstantiator(ABC):
                     return output
             return []
         else:
-
             return await self._instantiate(base_sentences, **kwargs)
 
     async def _instantiate(
@@ -265,25 +263,45 @@ class MiniInstantiator(ABC):
             }
         )
 
-    def verify_length(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
-        return VerificationResult(valid=True, reasoning="Verify length not implemented, valid by default")
+    def verify_length(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> VerificationResult:
+        return VerificationResult(
+            valid=True, reasoning="Verify length not implemented, valid by default"
+        )
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> VerificationResult:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> VerificationResult:
         return ""
 
-    def verify_sync(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat", **kwargs) -> VerificationResult:
+    def verify_sync(
+        self,
+        output: Optional["Self.OutputFormat"],
+        base_sentences: "Self.BaseSentenceFormat",
+        **kwargs,
+    ) -> VerificationResult:
         if output is None:
             return VerificationResult(valid=False, reasoning="Output is None")
-        
+
         prompt = self._verification_prompt(output, base_sentences)
         if verify_length and not self.verify_length(output, base_sentences):
-            return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
+            return VerificationResult(
+                valid=False, reasoning="Length of combined question body is too short"
+            )
         verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             write_verification_result_sync("and", output, verification)
         return verification
 
-    async def verify(self, output: Optional["Self.OutputFormat"], base_sentences: "Self.BaseSentenceFormat", **kwargs) -> VerificationResult:
+    async def verify(
+        self,
+        output: Optional["Self.OutputFormat"],
+        base_sentences: "Self.BaseSentenceFormat",
+        seed: int = TUPLE_VERIFY_SEED,
+        temperature: float = 0.0,
+        **kwargs,
+    ) -> VerificationResult:
         if output is None:
             return VerificationResult(valid=False, reasoning="Output is None")
 
@@ -296,17 +314,22 @@ class MiniInstantiator(ABC):
 
         # If a ForecastingQuestion is found, call verify_full_question on it
         if forecasting_question:
-            full_question_verification = await verify_full_question(forecasting_question, **kwargs)
+            full_question_verification = await verify_full_question(
+                forecasting_question, **kwargs
+            )
             if not full_question_verification.valid:
                 return full_question_verification
 
         prompt = self._verification_prompt(output, base_sentences)
         if verify_length and not self.verify_length(output, base_sentences):
-            return VerificationResult(valid=False, reasoning="Length of combined question body is too short")
+            return VerificationResult(
+                valid=False, reasoning="Length of combined question body is too short"
+            )
         verification = await answer(prompt, response_model=VerificationResult, **kwargs)
         if write_verification:
             await write_verification_result("and", output, verification)
         return verification
+
 
 class Trivial(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -334,11 +357,24 @@ class Trivial(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return resolutions
 
-    def verify_sync(self, output: "Self.OutputFormat", base_sentences, **kwargs) -> VerificationResult:
-        return VerificationResult(valid=True, reasoning="Trivial Instantiation always valid")
+    def verify_sync(
+        self, output: "Self.OutputFormat", base_sentences, **kwargs
+    ) -> VerificationResult:
+        return VerificationResult(
+            valid=True, reasoning="Trivial Instantiation always valid"
+        )
 
-    async def verify(self, output: "Self.OutputFormat", base_sentences, **kwargs) -> VerificationResult:
-        return VerificationResult(valid=True, reasoning="Trivial Instantiation always valid")
+    async def verify(
+        self,
+        output: "Self.OutputFormat",
+        base_sentences,
+        seed: int = TUPLE_VERIFY_SEED,
+        temperature: float = 0.0,
+        **kwargs,
+    ) -> VerificationResult:
+        return VerificationResult(
+            valid=True, reasoning="Trivial Instantiation always valid"
+        )
 
 
 class Neg(MiniInstantiator):
@@ -503,8 +539,16 @@ class Neg(MiniInstantiator):
     ) -> bool:
         return len(output.not_P.body) > 0.8 * len(base_sentences.P.body)
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
-        return neg_verification_prompt.format(P_title=base_sentences.P.title, P_body=base_sentences.P.body, not_P_title=output.not_P.title, not_P_body=output.not_P.body)
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
+        return neg_verification_prompt.format(
+            P_title=base_sentences.P.title,
+            P_body=base_sentences.P.body,
+            not_P_title=output.not_P.title,
+            not_P_body=output.not_P.body,
+        )
+
 
 class And(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -718,17 +762,22 @@ class And(MiniInstantiator):
         base_sentences: "Self.BaseSentenceFormat",
         **kwargs,
     ) -> bool:
-        return len(output.P_and_Q.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+        return len(output.P_and_Q.body) > 1.4 * max(
+            len(base_sentences.P.body), len(base_sentences.Q.body)
+        )
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
         return and_verification_prompt.format(
             P_title=base_sentences.P.title,
             P_body=base_sentences.P.body,
             Q_title=base_sentences.Q.title,
             Q_body=base_sentences.Q.body,
             R_title=output.P_and_Q.title,
-            R_body=output.P_and_Q.body
+            R_body=output.P_and_Q.body,
         )
+
 
 class Or(MiniInstantiator):
     class BaseSentenceFormat(BaseModel):
@@ -877,16 +926,20 @@ class Or(MiniInstantiator):
         base_sentences: "Self.BaseSentenceFormat",
         **kwargs,
     ) -> bool:
-        return len(output.P_or_Q.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+        return len(output.P_or_Q.body) > 1.4 * max(
+            len(base_sentences.P.body), len(base_sentences.Q.body)
+        )
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
         return or_verification_prompt.format(
             P_title=base_sentences.P.title,
             P_body=base_sentences.P.body,
             Q_title=base_sentences.Q.title,
             Q_body=base_sentences.Q.body,
             R_title=output.P_or_Q.title,
-            R_body=output.P_or_Q.body
+            R_body=output.P_or_Q.body,
         )
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
@@ -968,13 +1021,16 @@ class Paraphrase(MiniInstantiator):
     ) -> bool:
         return len(generated_tuple.para_P.body) > 0.65 * len(base_sentences.P.body)
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
         return paraphrase_verification_prompt.format(
             P_title=base_sentences.P.title,
             P_body=base_sentences.P.body,
             para_P_title=output.para_P.title,
             para_P_body=output.para_P.body,
         )
+
 
 class Conditional(MiniInstantiator):
     use_examples_here = True
@@ -1100,17 +1156,26 @@ class Conditional(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"Q_given_P": resolutions["Q"] if resolutions["P"] else None}
 
-    def verify_length(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat", **kwargs) -> bool:
-        return len(output.Q_given_P.body) > 1.4 * max(len(base_sentences.P.body), len(base_sentences.Q.body))
+    def verify_length(
+        self,
+        output: "Self.OutputFormat",
+        base_sentences: "Self.BaseSentenceFormat",
+        **kwargs,
+    ) -> bool:
+        return len(output.Q_given_P.body) > 1.4 * max(
+            len(base_sentences.P.body), len(base_sentences.Q.body)
+        )
 
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
         return conditional_verification_prompt.format(
             P_title=base_sentences.P.title,
             P_body=base_sentences.P.body,
             Q_title=base_sentences.Q.title,
             Q_body=base_sentences.Q.body,
             Q_given_P_title=output.Q_given_P.title,
-            Q_given_P_body=output.Q_given_P.body
+            Q_given_P_body=output.Q_given_P.body,
         )
 
 
@@ -1360,11 +1425,23 @@ class Consequence(MiniInstantiator):
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
             if consequence_type == self.ConsequenceType.quantity:
-                instantiation_results += await self._instantiate_by_type_with_verification(p, "quantity", n_verification=n_verification)
+                instantiation_results += (
+                    await self._instantiate_by_type_with_verification(
+                        p, "quantity", n_verification=n_verification
+                    )
+                )
             elif consequence_type == self.ConsequenceType.time:
-                instantiation_results += await self._instantiate_by_type_with_verification(p, "time", n_verification=n_verification)
+                instantiation_results += (
+                    await self._instantiate_by_type_with_verification(
+                        p, "time", n_verification=n_verification
+                    )
+                )
             else:
-                instantiation_results += await self._instantiate_by_type_with_verification(p, "misc", n_verification=n_verification)
+                instantiation_results += (
+                    await self._instantiate_by_type_with_verification(
+                        p, "misc", n_verification=n_verification
+                    )
+                )
         return instantiation_results
 
     def instantiate_sync(
@@ -1380,13 +1457,24 @@ class Consequence(MiniInstantiator):
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
             if consequence_type == self.ConsequenceType.quantity:
-                instantiation_results += self._instantiate_sync_by_type_with_verification(p, "quantity", n_verification=n_verification)
+                instantiation_results += (
+                    self._instantiate_sync_by_type_with_verification(
+                        p, "quantity", n_verification=n_verification
+                    )
+                )
             elif consequence_type == self.ConsequenceType.time:
-                instantiation_results += self._instantiate_sync_by_type_with_verification(p, "time", n_verification=n_verification)
+                instantiation_results += (
+                    self._instantiate_sync_by_type_with_verification(
+                        p, "time", n_verification=n_verification
+                    )
+                )
             else:
-                instantiation_results += self._instantiate_sync_by_type_with_verification(p, "misc", n_verification=n_verification)
+                instantiation_results += (
+                    self._instantiate_sync_by_type_with_verification(
+                        p, "misc", n_verification=n_verification
+                    )
+                )
         return instantiation_results
-        
 
     def _instantiate_sync_by_type_with_verification(
         self,
@@ -1397,13 +1485,18 @@ class Consequence(MiniInstantiator):
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
             for _ in range(n_verification):
-                output = self._instantiate_sync_by_type(base_sentences, consequence_type=consequence_type, **kwargs)
+                output = self._instantiate_sync_by_type(
+                    base_sentences, consequence_type=consequence_type, **kwargs
+                )
                 if self.verify_sync(output, base_sentences).valid:
                     return [output]
             return []
         else:
-            return [self._instantiate_sync_by_type(base_sentences, consequence_type=consequence_type, **kwargs)]
-
+            return [
+                self._instantiate_sync_by_type(
+                    base_sentences, consequence_type=consequence_type, **kwargs
+                )
+            ]
 
     async def _instantiate_by_type_with_verification(
         self,
@@ -1414,14 +1507,19 @@ class Consequence(MiniInstantiator):
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
             for _ in range(n_verification):
-                output = await self._instantiate_by_type(base_sentences, consequence_type=consequence_type, **kwargs)
+                output = await self._instantiate_by_type(
+                    base_sentences, consequence_type=consequence_type, **kwargs
+                )
                 verification = await self.verify(output, base_sentences)
                 if verification.valid:
                     return [output]
             return []
         else:
-
-            return await [self._instantiate_by_type(base_sentences, consequence_type=consequence_type, **kwargs)]
+            return await [
+                self._instantiate_by_type(
+                    base_sentences, consequence_type=consequence_type, **kwargs
+                )
+            ]
 
     async def _classify_consequence(
         self, p: ForecastingQuestion
@@ -1507,15 +1605,16 @@ class Consequence(MiniInstantiator):
         )
         return self.OutputFormat(cons_P=forecasting_question)
 
-
-    def _verification_prompt(self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat") -> str:
+    def _verification_prompt(
+        self, output: "Self.OutputFormat", base_sentences: "Self.BaseSentenceFormat"
+    ) -> str:
         consequence_type = base_sentences.metadata.get("consequence_type", "misc")
 
         common_format_args = {
             "P_title": base_sentences.title,
             "P_body": base_sentences.body,
             "Q_title": output.cons_P.title,
-            "Q_body": output.cons_P.body
+            "Q_body": output.cons_P.body,
         }
 
         if consequence_type == "quantity":
@@ -1524,12 +1623,11 @@ class Consequence(MiniInstantiator):
             time_format_args = {
                 **common_format_args,
                 "P_resolution_date": base_sentences.resolution_date,
-                "Q_resolution_date": output.cons_P.resolution_date
+                "Q_resolution_date": output.cons_P.resolution_date,
             }
             return consequence_time_verification_prompt.format(**time_format_args)
         else:
             return consequence_verification_prompt.format(**common_format_args)
-
 
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
