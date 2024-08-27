@@ -12,6 +12,7 @@ from static_checks.MiniInstantiator import (
     Paraphrase,
     Conditional,
     Consequence,
+    TUPLE_VERIFY_SEED,
 )
 import os
 
@@ -42,7 +43,6 @@ skip_consequence_misc_verify_pass = skip_all_tests
 skip_consequence_misc_verify_fail = skip_all_tests
 
 MODEL = "gpt-4o-2024-08-06"
-SEED = 32
 
 
 @pytest.mark.asyncio
@@ -62,7 +62,7 @@ async def test_trivial_verify():
     output = Trivial.OutputFormat(P=sample_question)
 
     result = await trivial_instance.verify(
-        output, base_sentences, model=MODEL, seed=SEED
+        output, base_sentences, model=MODEL, seed=TUPLE_VERIFY_SEED, temperature=0.0
     )
 
     assert result.valid == True, "Verification should always pass for Trivial class"
@@ -71,7 +71,7 @@ async def test_trivial_verify():
     ), "Result should be an instance of VerificationResult"
 
     result_sync = trivial_instance.verify_sync(
-        output, base_sentences, model=MODEL, seed=SEED
+        output, base_sentences, model=MODEL, seed=TUPLE_VERIFY_SEED, temperature=0.0
     )
 
     assert (
@@ -108,14 +108,22 @@ async def test_neg_verify_pass():
     base_sentences = Neg.BaseSentenceFormat(P=sample_question)
 
     result = await neg_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
     result_sync = neg_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -151,7 +159,11 @@ async def test_neg_verify_fail():
     base_sentences = Neg.BaseSentenceFormat(P=sample_question)
 
     result = await neg_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == False, "Verification should fail for incorrect negation"
@@ -160,7 +172,11 @@ async def test_neg_verify_fail():
     ), "Verification reasoning for failure should not be empty"
 
     result_sync = neg_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -205,14 +221,22 @@ async def test_and_verify_pass():
     base_sentences = And.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
 
     result = await and_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
     result_sync = and_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -257,7 +281,11 @@ async def test_and_verify_fail():
     base_sentences = And.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
 
     result = await and_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -268,7 +296,11 @@ async def test_and_verify_fail():
     ), "Verification reasoning for failure should not be empty"
 
     result_sync = and_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -313,14 +345,22 @@ async def test_or_verify_pass():
     base_sentences = Or.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
 
     result = await or_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
     assert len(result.reasoning) > 0, "Verification reasoning should not be empty"
 
     result_sync = or_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -365,7 +405,11 @@ async def test_or_verify_fail():
     base_sentences = Or.BaseSentenceFormat(P=sample_question_1, Q=sample_question_2)
 
     result = await or_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -376,7 +420,11 @@ async def test_or_verify_fail():
     ), "Verification reasoning for failure should not be empty"
 
     result_sync = or_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -415,7 +463,11 @@ async def test_paraphrase_verify_pass():
     base_sentences = Paraphrase.BaseSentenceFormat(P=sample_question)
 
     result = await paraphrase_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
@@ -425,7 +477,11 @@ async def test_paraphrase_verify_pass():
     ), "Paraphrase length verification failed"
 
     result_sync = paraphrase_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -467,7 +523,11 @@ async def test_paraphrase_verify_fail_omit_key_info():
     base_sentences = Paraphrase.BaseSentenceFormat(P=sample_question)
 
     result = await paraphrase_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -481,7 +541,11 @@ async def test_paraphrase_verify_fail_omit_key_info():
     ), "Paraphrase length verification failed"
 
     result_sync = paraphrase_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -523,7 +587,11 @@ async def test_paraphrase_verify_fail():
     base_sentences = Paraphrase.BaseSentenceFormat(P=sample_question)
 
     result = await paraphrase_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == False, "Verification should fail for incorrect paraphrase"
@@ -535,7 +603,11 @@ async def test_paraphrase_verify_fail():
     ), "Paraphrase length verification failed"
 
     result_sync = paraphrase_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -587,7 +659,11 @@ async def test_conditional_verify_pass():
     )
 
     result = await conditional_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == True, f"Verification failed. Reasoning: {result.reasoning}"
@@ -597,7 +673,11 @@ async def test_conditional_verify_pass():
     ), "Conditional length verification failed"
 
     result_sync = conditional_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -649,7 +729,11 @@ async def test_conditional_verify_fail_incorrect_direction():
     )
 
     result = await conditional_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -663,7 +747,11 @@ async def test_conditional_verify_fail_incorrect_direction():
     ), "Conditional length verification failed"
 
     result_sync = conditional_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -715,7 +803,11 @@ async def test_conditional_verify_complete_mess_fail():
     )
 
     result = await conditional_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert result.valid == False, "Verification should fail for incorrect conditional"
@@ -727,7 +819,11 @@ async def test_conditional_verify_complete_mess_fail():
     ), "Conditional length verification failed"
 
     result_sync = conditional_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -772,7 +868,11 @@ async def test_consequence_quantity_verify_pass():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -784,7 +884,11 @@ async def test_consequence_quantity_verify_pass():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -828,7 +932,11 @@ async def test_consequence_time_verify_pass():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -840,7 +948,11 @@ async def test_consequence_time_verify_pass():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -884,7 +996,11 @@ async def test_consequence_misc_verify_pass():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -896,7 +1012,11 @@ async def test_consequence_misc_verify_pass():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -940,7 +1060,11 @@ async def test_consequence_misc_multiple_axes_verify_pass():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -952,7 +1076,11 @@ async def test_consequence_misc_multiple_axes_verify_pass():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        sample_output, base_sentences, model=MODEL, seed=SEED
+        sample_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -995,7 +1123,11 @@ async def test_consequence_misc_verify_fail():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1009,7 +1141,11 @@ async def test_consequence_misc_verify_fail():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1053,7 +1189,11 @@ async def test_consequence_quantity_wrong_direction_verify_fail():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1067,7 +1207,11 @@ async def test_consequence_quantity_wrong_direction_verify_fail():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1111,7 +1255,11 @@ async def test_consequence_quantity_wrong_detail_verify_fail():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1125,7 +1273,11 @@ async def test_consequence_quantity_wrong_detail_verify_fail():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1168,7 +1320,11 @@ async def test_consequence_time_wrong_direction_verify_fail():
     base_sentences = sample_question_P
 
     result = await consequence_instance.verify(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
@@ -1182,7 +1338,11 @@ async def test_consequence_time_wrong_direction_verify_fail():
     ), "Consequence length verification failed"
 
     result_sync = consequence_instance.verify_sync(
-        incorrect_output, base_sentences, model=MODEL, seed=SEED
+        incorrect_output,
+        base_sentences,
+        model=MODEL,
+        seed=TUPLE_VERIFY_SEED,
+        temperature=0.0,
     )
 
     assert (
