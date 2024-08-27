@@ -145,3 +145,9 @@ def normalize_date_format(date: str) -> Optional[datetime]:
         f"\033[1mWARNING:\033[0m Date format invalid and cannot be normalized: {date=}"
     )
     return None
+
+
+def delist(item):
+    if isinstance(item, list):
+        return item[0]
+    return item

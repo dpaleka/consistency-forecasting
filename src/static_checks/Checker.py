@@ -28,6 +28,7 @@ from common.utils import (
     write_jsonl_async_from_str,
     update_recursive,
     make_json_serializable,
+    delist,
 )
 from common.path_utils import get_data_path
 from common.llm_utils import parallelized_call
@@ -744,6 +745,7 @@ class NegChecker(Checker):
         not_P = Neg().instantiate_sync(base_sentences, **kwargs)
         if not not_P:
             return []
+        P, not_P = delist(P), delist(not_P)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
     async def instantiate(
@@ -755,6 +757,7 @@ class NegChecker(Checker):
         not_P = await Neg().instantiate(base_sentences, **kwargs)
         if not not_P:
             return []
+        P, not_P = delist(P), delist(not_P)
         return [self.TupleFormat(P=P.P, not_P=not_P.not_P)]
 
     def max_min_arbitrage(
@@ -1386,22 +1389,31 @@ class CondCondChecker(Checker):
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
         Q_given_P_obj = Conditional().instantiate_sync(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
         P_and_Q_obj = And().instantiate_sync(base_sentences_PQ, **kwargs)
+
+        if (
+            isinstance(P_obj, list)
+            or isinstance(Q_given_P_obj, list)
+            or isinstance(P_and_Q_obj, list)
+        ):
+            return []
+
+        P = P_obj.P
+        Q_given_P = Q_given_P_obj.Q_given_P
         P_and_Q = P_and_Q_obj.P_and_Q
 
         R_given_P_and_Q_obj = Conditional().instantiate_sync(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
         P_and_Q_and_R_obj = And().instantiate_sync(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
+
+        if isinstance(R_given_P_and_Q_obj, list) or isinstance(P_and_Q_and_R_obj, list):
+            return []
+
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
         return [
@@ -1419,22 +1431,31 @@ class CondCondChecker(Checker):
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
         Q_given_P_obj = await Conditional().instantiate(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
         P_and_Q_obj = await And().instantiate(base_sentences_PQ, **kwargs)
+
+        if (
+            isinstance(P_obj, list)
+            or isinstance(Q_given_P_obj, list)
+            or isinstance(P_and_Q_obj, list)
+        ):
+            return []
+
+        P = P_obj.P
+        Q_given_P = Q_given_P_obj.Q_given_P
         P_and_Q = P_and_Q_obj.P_and_Q
 
         R_given_P_and_Q_obj = await Conditional().instantiate(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
         P_and_Q_and_R_obj = await And().instantiate(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
+
+        if isinstance(R_given_P_and_Q_obj, list) or isinstance(P_and_Q_and_R_obj, list):
+            return []
+
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
         return [
