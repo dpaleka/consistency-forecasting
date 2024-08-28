@@ -152,15 +152,12 @@ class CoT_multistep_Forecaster:
             ## add llm output to stream
             messages.append({"role": "assistant", "content": reasoning_field(response)})
 
-            print("\n\n\nADAMXXXXXXX")
+            """print("\n\n\nADAMXXXXXXX")
             print(f"{len(messages)=}")
-            # for m in messages[-5:]:
-            # print(m)
-
             print(f"messages[-2]: {messages[-2]}")
             print("")
             print(f"messages[-1]: {messages[-1]}")
-            print("\n\n")
+            print("\n\n")"""
 
         ## this includes examples if it's there!  It's just all messages
         result = {

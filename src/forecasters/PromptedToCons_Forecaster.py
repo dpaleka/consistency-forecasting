@@ -527,7 +527,7 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         return {
             "preface": self.preface,
             "examples": self.examples,
-            "related_questions": self.forecasting_questions.__str__(),
+            # "related_questions": self.forecasting_questions.__str__(),
             "checks": self.consistency_checks.__str__(),
         }
 
