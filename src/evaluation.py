@@ -1,3 +1,5 @@
+import sys
+import io
 import os
 import json
 import asyncio
@@ -18,22 +20,27 @@ from forecasters import (
     COT_Forecaster,
 )
 from forecasters.consistent_forecaster import ConsistentForecaster
+from forecasters.PromptedToCons_Forecaster import PromptedToCons_Forecaster  # Adam
 from static_checks.Checker import (
     Checker,
+    ParaphraseChecker,  # noqa
+    NegChecker,  # noqa
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
 
-# BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
+# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -254,7 +261,12 @@ def process_check(
                 batch_tuples = checker_tuples[start:end]
 
                 match forecaster_class:
-                    case "BasicForecaster" | "CoTForecaster" | "ConsistentForecaster":
+                    case (
+                        "BasicForecaster"
+                        | "CoTForecaster"
+                        | "ConsistentForecaster"
+                        | "RecursiveConsistentForecaster"
+                    ):
                         if is_async:
                             reset_global_semaphore()
                             results_batch = asyncio.run(
@@ -287,6 +299,26 @@ def process_check(
                                 forecaster,
                                 do_check=False,
                                 tuples=batch_tuples,
+                            )
+                    case "PromptedToCons_Forecaster":  # Adam
+                        forecaster.prep_call(checker_tuples[0]["P"])
+
+                        if is_async:
+                            reset_global_semaphore()
+                            results_batch = asyncio.run(
+                                checkers[check_name].test(
+                                    forecaster,
+                                    do_check=False,
+                                    tuples=batch_tuples,
+                                    model=model,
+                                )
+                            )
+                        else:
+                            results_batch = checkers[check_name].test_sync(
+                                forecaster,
+                                do_check=False,
+                                tuples=batch_tuples,
+                                model=model,
                             )
 
                 print(f"results_batch: {results_batch}")
@@ -381,7 +413,7 @@ def process_check(
     "-f",
     "--forecaster_class",
     default="AdvancedForecaster",
-    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster.",
+    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster, RecursiveConsistentForecaster.",
 )
 @click.option(
     "-c",
@@ -393,7 +425,7 @@ def process_check(
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-mini-2024-07-18",
+    default="gpt-4o-mini",  # -2024-07-18
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -482,10 +514,23 @@ def main(
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )
+        case "RecursiveConsistentForecaster":
+            forecaster = ConsistentForecaster.recursive(
+                depth=4,
+                hypocrite=BasicForecaster(),
+                checks=[
+                    ParaphraseChecker(),
+                    NegChecker(),
+                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
+                instantiation_kwargs={"model": model},
+                bq_func_kwargs={"model": model},
+            )
         case "AdvancedForecaster":
             with open(config_path, "r", encoding="utf-8") as f:
                 config: dict[str, Any] = yaml.safe_load(f)
             forecaster = AdvancedForecaster(**config)
+        case "PromptedToCons_Forecaster":
+            forecaster = PromptedToCons_Forecaster()
         case _:
             raise ValueError(f"Invalid forecaster class: {forecaster_class}")
 
@@ -628,6 +673,7 @@ def main(
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
             print(f"\n{check_name}:")
+            print(stats)
             overall_stats = stats["overall"]
             print(
                 f"  Overall: {overall_stats[metric]['num_violations']}/{overall_stats[metric]['num_samples']}"
@@ -654,3 +700,7 @@ if __name__ == "__main__":
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
+# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
+# python evaluation.py -f PromptedToCons_Forecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
