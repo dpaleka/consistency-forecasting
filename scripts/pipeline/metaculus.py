@@ -115,9 +115,10 @@ def fetch_live_questions_with_dates(
 
             close_date = normalize_date_string(question.get("close_time"))
             resolve_date = normalize_date_string(question.get("resolve_time"))
-            publish_date = normalize_date_string(question.get("publish_time"))
+            publish_time = normalize_date_string(question.get("publish_time"))
+            created_time = normalize_date_string(question.get("created_time"))
 
-            if close_date is None or resolve_date is None or publish_date is None:
+            if close_date is None or resolve_date is None or publish_time is None:
                 continue  # Skip this question if any date conversion failed
 
             resolution_date = decide_resolution_date(
@@ -129,13 +130,10 @@ def fetch_live_questions_with_dates(
 
             print("Resolution date:", resolution_date)
 
-            created_date_str = question.get("created_time")
-            publish_date_str = normalize_date_string(question.get("publish_time"))
+            created_date = publish_time
+            print("Question created:", created_date)
 
-            question_created = publish_date
-            print("Question created:", question_created)
-
-            if too_close_dates(question_created, resolution_date):
+            if too_close_dates(created_date, resolution_date):
                 continue
 
             question_info = {
@@ -150,6 +148,7 @@ def fetch_live_questions_with_dates(
                 else None,  # You might need to format this date
                 "url": f"https://www.metaculus.com/questions/{question.get('id')}",
                 "data_source": "metaculus",
+                "created_date": created_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "metadata": {
                     "topics": question.get(
                         "tags", []

@@ -92,10 +92,10 @@ def scrape_manifold_markets(
 
             created_time = epoch_to_datetime(market.get("createdTime"))
 
-            question_created = created_time
+            created_date = created_time
             print(f"Created time: {created_time}")
 
-            if too_close_dates(question_created, resolution_date):
+            if too_close_dates(created_date, resolution_date):
                 continue
 
             market_info = {
@@ -106,6 +106,7 @@ def scrape_manifold_markets(
                 "resolution_date": resolution_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "url": market.get("url", "").lower(),
                 "data_source": "manifold",
+                "created_date": created_date.strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "metadata": {
                     "topics": market.get("tags", []),
                     "close_time": str(epoch_to_datetime(market.get("closeTime"))),

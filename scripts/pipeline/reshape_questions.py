@@ -101,7 +101,6 @@ class Options:
 args = parser.add_arguments(Options, dest="opt")
 args = parser.parse_args()
 args = args.opt
-print(type(args), dir(args))
 
 with open(args.filename, "r") as f:
     if args.filename.endswith(".json"):
