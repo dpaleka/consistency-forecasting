@@ -21,6 +21,7 @@ SyntheticQuestion = Union[
 
 
 def read_json_or_jsonl(file_path: Path):
+    print(f"Reading file: {file_path}")
     if not file_path.exists():
         return []
 
@@ -46,11 +47,12 @@ async def validate_and_format_question(
         forecasting_question = await fq_body_generator.from_string(
             question["title"],
             data_source=question["data_source"],
+            created_date=question.get("created_date", None),
             question_type=question.get("question_type"),
             url=question.get("url", None),
             metadata=question.get("metadata", None),
             body=question.get("body", None),
-            date=question.get("resolution_date", None),
+            resolution_date=question.get("resolution_date", None),
             resolution=question.get("resolution", None),
             model=model,
             fill_in_body=fill_in_body,
@@ -90,7 +92,7 @@ async def validate_and_format_synthetic_question(
             metadata=metadata,
             fill_in_body=fill_in_body,
             body=question.body,
-            date=question.resolution_date,
+            resolution_date=question.resolution_date,
             **kwargs,
         )
         if verify:
@@ -233,9 +235,9 @@ async def main(
     print(f"Number of invalid questions found: {none_count}")
 
     data_to_write = [fq.dict() for fq in forecasting_questions]
-    for data in data_to_write:
-        data["id"] = str(data["id"])
-        data["resolution_date"] = str(data["resolution_date"])
+    for field in ["resolution_date", "created_date", "id"]:
+        for data in data_to_write:
+            data[field] = str(data[field])
 
     await write_jsonl_async(
         output_path,

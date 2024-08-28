@@ -71,7 +71,7 @@ def main():
             "scrape",
             "count_entries",
             "add_body",
-            "reshape_questions",
+            "uniformize_into_jsonl",
             "format_and_verify_questions",
         ],
     )
@@ -97,9 +97,9 @@ def main():
             f"python add_body.py {args.data_source}/{args.data_source}_{args.start_date}_{args.end_date}.json",
             dry_run=args.dry_run,
         )
-    if "reshape_questions" not in args.skip:
+    if "uniformize_into_jsonl" not in args.skip:
         run_command(
-            f"python reshape_questions.py --filename {args.data_source}/{args.data_source}_{args.start_date}_{args.end_date}.json",
+            f"python uniformize_into_jsonl.py --filename {args.data_source}/{args.data_source}_{args.start_date}_{args.end_date}.json",
             dry_run=args.dry_run,
         )
     if "format_and_verify_questions" not in args.skip:
