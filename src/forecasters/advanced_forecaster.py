@@ -1,4 +1,3 @@
-import time
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion
 from typing import Optional
@@ -208,6 +207,10 @@ class AdvancedForecaster(Forecaster):
             "retrieval_config": self.retrieval_config.to_dict(),
             "reasoning_config": self.reasoning_config.to_dict(),
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(**config)
 
 
 # TODO: make a cheaper/faster version of this that uses a different default config

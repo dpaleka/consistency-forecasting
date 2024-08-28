@@ -51,11 +51,11 @@ This will run all tests located in the `tests/` directory. Please fix any failin
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
 
 #### Skipping tests
-The following tests are skipped by default. You can run them by setting the corresponding flags to `True`:
+The following tests are skipped by default. You can run them by enabling the corresponding flags:
 
 - [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
+- [`tests/test_verify_tuple.py`](tests/test_verify_tuple.py) checks that all consistency tuple verification works as expected. The flag is `TEST_TUPLE_VERIFICATION`.
 - [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
-- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
 
 All other tests are enabled by default.
 
