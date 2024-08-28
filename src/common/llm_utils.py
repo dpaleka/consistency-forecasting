@@ -228,7 +228,7 @@ def get_openrouter_client_native() -> OpenAI:
 def get_anthropic_async_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
-    logfire.instrument_anthropic(_client)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
@@ -236,7 +236,7 @@ def get_anthropic_async_client_pydantic() -> Instructor:
 def get_anthropic_async_client_native() -> AsyncAnthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
-    logfire.instrument_anthropic(_client)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return _client
 
 
@@ -244,7 +244,7 @@ def get_anthropic_async_client_native() -> AsyncAnthropic:
 def get_anthropic_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = Anthropic(api_key=api_key)
-    logfire.instrument_anthropic(_client)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
@@ -252,7 +252,7 @@ def get_anthropic_client_pydantic() -> Instructor:
 def get_anthropic_client_native() -> Anthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = Anthropic(api_key=api_key)
-    logfire.instrument_anthropic(_client)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return _client
 
 
@@ -317,8 +317,9 @@ def get_provider(model: str) -> str:
         assert False
 
 
-def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
+def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str, str]:
     provider = get_provider(model)
+    final_model_name = model
 
     if provider == "openrouter":
         print(f"Using {provider} provider for model {model}")
@@ -331,12 +332,16 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
     else:
         print(f"Using {provider} provider for model {model}")
         if provider == "openai":
+            final_model_name = model.replace("openai/", "")
             client = (
                 get_async_openai_client_pydantic()
                 if use_async
                 else get_openai_client_pydantic()
             )
         elif provider == "anthropic":
+            final_model_name = model.replace("anthropic/", "")
+            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
             client = (
                 get_anthropic_async_client_pydantic()
                 if use_async
@@ -347,13 +352,14 @@ def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
                 f"Model {model} Pydantic client is not supported for now outside of OpenRouter"
             )
 
-    return client, provider
+    return client, provider, final_model_name
 
 
 def get_client_native(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI | OpenAI | AsyncAnthropic | Anthropic, str]:
+) -> tuple[AsyncOpenAI | OpenAI | AsyncAnthropic | Anthropic, str, str]:
     provider = get_provider(model)
+    final_model_name = model
 
     if provider == "openrouter":
         client = (
@@ -364,12 +370,16 @@ def get_client_native(
     else:
         print(f"Using {provider} provider for model {model}")
         if provider == "openai":
+            final_model_name = model.replace("openai/", "")
             client = (
                 get_async_openai_client_native()
                 if use_async
                 else get_openai_client_native()
             )
         elif provider == "anthropic":
+            final_model_name = model.replace("anthropic/", "")
+            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
             client = (
                 get_anthropic_async_client_native()
                 if use_async
@@ -384,7 +394,7 @@ def get_client_native(
         else:
             raise NotImplementedError(f"Model {model} is not supported for now")
 
-    return client, provider
+    return client, provider, final_model_name
 
 
 def is_llama2_tokenized(model: str) -> bool:
@@ -398,6 +408,14 @@ def _mistral_message_transform(messages):
         mistral_message = ChatMessage(role=message["role"], content=message["content"])
         mistral_messages.append(mistral_message)
     return mistral_messages
+
+
+ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
+    "claude-3.5-sonnet": "claude-3-5-sonnet-20240620",
+    "claude-3-opus": "claude-3-opus-20240229",
+    "claude-3-sonnet": "claude-3-sonnet-20240229",
+    "claude-3-haiku": "claude-3-haiku-20240307",
+}
 
 
 @pydantic_cache
@@ -427,7 +445,10 @@ async def query_api_chat(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_pydantic(options["model"], use_async=True)
+    client, client_name, final_model_name = get_client_pydantic(
+        options["model"], use_async=True
+    )
+    options["model"] = final_model_name
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
 
@@ -466,7 +487,10 @@ async def query_api_chat_native(
     options = default_options | kwargs
     options["model"] = model or options["model"]
 
-    client, client_name = get_client_native(options["model"], use_async=True)
+    client, client_name, final_model_name = get_client_native(
+        options["model"], use_async=True
+    )
+    options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
@@ -512,7 +536,10 @@ def query_api_chat_sync(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_pydantic(options["model"], use_async=False)
+    client, client_name, final_model_name = get_client_pydantic(
+        options["model"], use_async=False
+    )
+    options["model"] = final_model_name
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple structured queries not supported yet")
 
@@ -550,7 +577,10 @@ def query_api_chat_sync_native(
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_native(options["model"], use_async=False)
+    client, client_name, final_model_name = get_client_native(
+        options["model"], use_async=False
+    )
+    options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )

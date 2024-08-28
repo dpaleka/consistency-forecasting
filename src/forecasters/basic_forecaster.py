@@ -73,3 +73,16 @@ class BasicForecaster(Forecaster):
                 for e in self.examples
             ],
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            preface=config["preface"],
+            examples=[
+                Example(
+                    user=ForecastingQuestion_stripped.load_model_json(e["user"]),
+                    assistant=e["assistant"],
+                )
+                for e in config["examples"]
+            ],
+        )
