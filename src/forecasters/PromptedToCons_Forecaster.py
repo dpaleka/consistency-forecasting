@@ -498,6 +498,10 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         )"""
 
         cons_test = ConsistentForecaster()
+
+        print(sentence)
+        print("AAAAAXXXXXX")
+
         gen_tuple = cons_test.instantiate_cons_tuples(sentence)
 
         self.forecasting_questions = {}

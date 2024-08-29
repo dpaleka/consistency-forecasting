@@ -178,6 +178,8 @@ class ConsistentForecaster(Forecaster):
                 if k in list(bq_tuple_max.keys())[: check.num_base_questions]
             }
             cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
+            print(cons_tuple)
+            print("CONS TUPLE")
             if isinstance(cons_tuple, list):
                 cons_tuple = cons_tuple[0]
             cons_tuples.append(cons_tuple)
