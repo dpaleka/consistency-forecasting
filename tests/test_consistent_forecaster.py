@@ -7,6 +7,14 @@ from forecasters import BasicForecaster
 from static_checks.Checker import NegChecker, CondCondChecker
 from common.datatypes import ForecastingQuestion
 
+import os
+
+
+pytest.mark.expensive = pytest.mark.skipif(
+    os.getenv("TEST_CONSISTENT_FORECASTER", "False").lower() == "false",
+    reason="Skipping ConsistentForecaster tests",
+)
+
 
 @pytest.fixture
 def consistent_forecaster():

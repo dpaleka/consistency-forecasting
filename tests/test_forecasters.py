@@ -1,4 +1,3 @@
-import os
 import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
@@ -15,11 +14,6 @@ mock_response = MagicMock(prob=0.09)
 mock_cot_response = MagicMock(
     chain_of_thought="I think because of this and that, the probability is 0.09",
     prob=0.09,
-)
-
-pytest.mark.expensive = pytest.mark.skipif(
-    os.getenv("TEST_CONSISTENT_FORECASTER", "False").lower() == "false",
-    reason="Skipping ConsistentForecaster tests",
 )
 
 
