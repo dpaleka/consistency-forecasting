@@ -56,6 +56,7 @@ The following tests are skipped by default. You can run them by enabling the cor
 - [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
 - [`tests/test_verify_tuple.py`](tests/test_verify_tuple.py) checks that all consistency tuple verification works as expected. The flag is `TEST_TUPLE_VERIFICATION`.
 - [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
+- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
 
 All other tests are enabled by default.
 
