@@ -2,6 +2,7 @@
 
 import argparse
 import subprocess
+import sys
 
 
 def run_command(command, dry_run=False):
@@ -10,14 +11,26 @@ def run_command(command, dry_run=False):
         print("Dry run, not executing command")
         return
     process = subprocess.Popen(
-        command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        bufsize=1,
+        universal_newlines=True,
     )
-    stdout, stderr = process.communicate()
+
+    for line in process.stdout:
+        sys.stdout.write(line)
+        sys.stdout.flush()
+
+    for line in process.stderr:
+        sys.stderr.write(line)
+        sys.stderr.flush()
+
+    process.wait()
     if process.returncode != 0:
         print(f"Error executing command: {command}")
-        print(f"Error message: {stderr.decode('utf-8')}")
-    else:
-        print(stdout.decode("utf-8"))
+        exit(1)
 
 
 def main():
@@ -62,6 +75,14 @@ def main():
         help="Perform a dry run without executing commands",
     )
     parser.add_argument(
+        "-v",
+        "--verification_level",
+        type=str,
+        default="full",
+        choices=["full", "light", "none"],
+        help="Verification level",
+    )
+    parser.add_argument(
         "--skip",
         required=False,
         nargs="+",
@@ -94,7 +115,7 @@ def main():
         )
     if "add_body" not in args.skip:
         run_command(
-            f"python add_body.py {args.data_source}/{args.data_source}_{args.start_date}_{args.end_date}.json",
+            f"python add_body.py {args.data_source}/{args.data_source}_{args.start_date}_{args.end_date}.json -n {max_questions}",
             dry_run=args.dry_run,
         )
     if "uniformize_into_jsonl" not in args.skip:
@@ -111,7 +132,8 @@ def main():
             f"--max_questions {max_questions} "
             f"--overwrite "
             f"-F True "
-            f"-M {args.model}"
+            f"-M {args.model} "
+            f"-v {args.verification_level}"
         )
         run_command(format_command, dry_run=args.dry_run)
 
@@ -121,4 +143,4 @@ if __name__ == "__main__":
 
 
 # Example usage:
-# ./scrape_question.py -d manifold -s 20240301 -e 20240701 -n 500 -o manifold_cleaned_formatted -m gpt-4o
+# ./scrape_question.py -d manifold -s 20240301 -e 20240701 -n 500 -o manifold_cleaned_formatted -m gpt-4o-2024-08-06

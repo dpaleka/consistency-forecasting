@@ -9,7 +9,7 @@ from common.datatypes import (
 )
 import fq_verification.question_verifier as question_verifier
 import fq_generation.fq_body_generator as fq_body_generator
-from common.utils import write_jsonl_async
+from common.utils import write_jsonl_async, recombine_filename
 from common.llm_utils import parallelized_call
 from common.path_utils import get_data_path, get_scripts_path
 from simple_parsing import ArgumentParser
@@ -114,6 +114,7 @@ async def process_synthetic_questions_from_file(
     output_path: Path,
     max_questions: Optional[int] = None,
     model: str = "gpt-4o-mini-2024-07-18",
+    verification_level: str = "full",
     fill_in_body: bool = False,
     concurrent_queries=15,
 ) -> List[ForecastingQuestion]:
@@ -136,8 +137,13 @@ async def process_synthetic_questions_from_file(
 
     max_questions = max_questions if max_questions else len(questions)
 
+    verify = verification_level == "full"
+
     func = functools.partial(
-        validate_and_format_synthetic_question, model=model, fill_in_body=fill_in_body
+        validate_and_format_synthetic_question,
+        model=model,
+        fill_in_body=fill_in_body,
+        verify=verify,
     )
     forecasting_questions = await parallelized_call(
         func=func,
@@ -154,14 +160,19 @@ async def process_questions_from_file(
     file_path: Path,
     max_questions: Optional[int],
     model: str = "gpt-4o-mini-2024-07-18",
+    verification_level: str = "full",
     fill_in_body: bool = False,
     concurrent_queries: int = 15,
 ) -> List[ForecastingQuestion]:
     questions = read_json_or_jsonl(file_path)
 
     max_questions = max_questions if max_questions else len(questions)
+    verify = verification_level == "full"
     func = functools.partial(
-        validate_and_format_question, model=model, fill_in_body=fill_in_body
+        validate_and_format_question,
+        model=model,
+        fill_in_body=fill_in_body,
+        verify=verify,
     )
     forecasting_questions = await parallelized_call(
         func=func,
@@ -193,12 +204,24 @@ async def main(
     out_file_name: str,
     max_questions: int,
     model: str,
+    verification_level: str,
     synthetic: bool,
     fill_in_body: bool,
     overwrite: bool = False,
     concurrent_queries: int = 15,
 ):
     output_path = Path(f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}")
+
+    if verification_level == "full":
+        verification_suffix = ""
+    elif verification_level == "light":
+        verification_suffix = "_lightverified"
+        assert NotImplementedError("Light verification not implemented")
+    else:
+        verification_suffix = "_unverified"
+
+    output_path = recombine_filename(output_path, verification_suffix)
+
     if overwrite:
         if output_path.exists():
             print(
@@ -218,6 +241,7 @@ async def main(
             file_path,
             output_path,
             max_questions=max_questions,
+            verification_level=verification_level,
             model=model,
             fill_in_body=fill_in_body,
             concurrent_queries=concurrent_queries,
@@ -228,6 +252,7 @@ async def main(
             file_path,
             max_questions=max_questions,
             model=model,
+            verification_level=verification_level,
             fill_in_body=fill_in_body,
             concurrent_queries=concurrent_queries,
         )
@@ -316,19 +341,30 @@ if __name__ == "__main__":
         default=15,
         help="Max number of concurrent queries permitted to run",
     )
+    parser.add_argument(
+        "--verification_level",
+        "-v",
+        type=str,
+        default="full",
+        choices=["full", "light", "none"],
+        help="Verification level",
+    )
 
     args = parser.parse_args()
 
+    print("Verification level:", args.verification_level)
+
     asyncio.run(
         main(
-            Path(args.file_path),
-            args.out_data_dir,
-            args.out_file_name,
-            args.max_questions,
-            args.model,
-            args.synthetic,
-            args.fill_in_body,
-            args.overwrite,
-            args.concurrent_queries,
+            file_path=Path(args.file_path),
+            out_data_dir=args.out_data_dir,
+            out_file_name=args.out_file_name,
+            max_questions=args.max_questions,
+            model=args.model,
+            synthetic=args.synthetic,
+            fill_in_body=args.fill_in_body,
+            overwrite=args.overwrite,
+            concurrent_queries=args.concurrent_queries,
+            verification_level=args.verification_level,
         )
     )

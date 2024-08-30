@@ -7,6 +7,7 @@ import hashlib
 from pydantic import BaseModel
 from common.datatypes import ForecastingQuestion
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 
@@ -145,3 +146,9 @@ def normalize_date_format(date: str) -> Optional[datetime]:
         f"\033[1mWARNING:\033[0m Date format invalid and cannot be normalized: {date=}"
     )
     return None
+
+
+def recombine_filename(filename: Path, suffix: str) -> Path:
+    # Remove the current suffix (if any) and add the new one
+    current_suffix = filename.suffix
+    return filename.with_name(f"{filename.stem}{suffix}").with_suffix(current_suffix)
