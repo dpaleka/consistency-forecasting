@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 from tqdm import tqdm
 from decide_dates_real_fq import decide_resolution_date, too_close_dates
+from pathlib import Path
 
 
 def normalize_date_string(date_str):
@@ -200,21 +201,24 @@ if __name__ == "__main__":
 
     api_url = "https://www.metaculus.com/api2"
 
+    write_dir = "metaculus"
+    if not Path(write_dir).exists():
+        Path(write_dir).mkdir()
+
     try:
         # Scrape the website
         data = fetch_live_questions_with_dates(api_url, args.start, args.end, args.num)
 
         # Convert the data to JSON and print
-        # print(json.dumps(data, indent=4))
         print("total entries:", len(data))
 
         if args.start or args.end:
             s = "" if args.start is None else args.start
             e = "" if args.end is None else args.end
-            with open("metaculus_{}_{}.json".format(s, e), "w") as json_file:
+            with open(f"{write_dir}/metaculus_{s}_{e}.json", "w") as json_file:
                 json.dump(data, json_file, indent=4)
         else:
-            with open("metaculus.json", "w") as json_file:
+            with open(f"{write_dir}/metaculus.json", "w") as json_file:
                 json.dump(data, json_file, indent=4)
 
     except Exception as e:

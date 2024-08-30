@@ -4,6 +4,7 @@ import datetime as dt
 import argparse
 from tqdm import tqdm
 from decide_dates_real_fq import decide_resolution_date, too_close_dates
+from pathlib import Path
 
 
 def epoch_to_datetime(epoch):
@@ -174,16 +175,20 @@ if __name__ == "__main__":
         print("Total entries:", len(data))
         # Convert the data to JSON and print
 
+        write_dir = "manifold"
+        if not Path(write_dir).exists():
+            Path(write_dir).mkdir()
+
         if args.start or args.end:
             s = "" if args.start is None else args.start
             e = "" if args.end is None else args.end
-            with open("manifold_{}_{}.json".format(s, e), "w") as json_file:
+            with open(f"{write_dir}/manifold_{s}_{e}.json", "w") as json_file:
                 json.dump(data, json_file, indent=4)
-            print(f"Data saved to manifold_{s}_{e}.json")
+            print(f"Data saved to {write_dir}/manifold_{s}_{e}.json")
         else:
-            with open("manifold.json", "w") as json_file:
+            with open(f"{write_dir}/manifold.json", "w") as json_file:
                 json.dump(data, json_file, indent=4)
-            print("Data saved to manifold.json")
+            print(f"Data saved to {write_dir}/manifold.json")
 
     except Exception as e:
         print(f"Error: {e}")

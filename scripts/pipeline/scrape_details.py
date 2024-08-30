@@ -49,6 +49,10 @@ async def fetch_question_details_manifold(question):
     resolution_criteria_text = ""
     background_info_text = ""
 
+    print("Fetching question details for {}".format(url))
+    # flush
+    sys.stdout.flush()
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             response_json = await response.json()
