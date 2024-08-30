@@ -152,3 +152,9 @@ def recombine_filename(filename: Path, suffix: str) -> Path:
     # Remove the current suffix (if any) and add the new one
     current_suffix = filename.suffix
     return filename.with_name(f"{filename.stem}{suffix}").with_suffix(current_suffix)
+
+  
+def delist(item):
+    if isinstance(item, list):
+        return item[0]
+    return item

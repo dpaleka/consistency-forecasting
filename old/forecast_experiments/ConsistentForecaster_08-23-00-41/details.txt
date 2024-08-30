@@ -1,0 +1,3 @@
+1i-b) Single-check arbitrage - para
+python evaluation.py -f ConsistentForecaster(checks=Paraphrase) -m gpt-4o-mini -k ParaphraseChecker --run -n 20
+Approx cost: $0.27
