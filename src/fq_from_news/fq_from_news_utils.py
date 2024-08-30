@@ -6,6 +6,7 @@ from common.utils import write_jsonl, append_question, load_questions, load_json
 from question_generators.question_formatter import verify_question
 from .final_fq_generator import NewsApiFinalForecastingQuestionGenerator
 from .rough_fq_generator import NewsApiRoughForecastingQuestionGenerator
+from .date_utils import format_news_range_date
 
 
 # *************************************************************************************************************************
@@ -113,18 +114,44 @@ async def generate_rough_forecasting_data(
         rough_fq_gen_model_name,
     )
 
-    articles = load_jsonl(articles_download_path)
+    news_articles_validation_path = (
+        NewsApiRoughForecastingQuestionGenerator.validated_news_articles_save_path(
+            start_date,
+            end_date,
+            num_pages,
+            num_articles,
+            rough_fq_gen_model_name,
+        )
+    )
+
+    initial_articles = load_jsonl(articles_download_path)
 
     tasks = []
-    for article in articles:
+    for article in initial_articles:
         if len(tasks) >= num_articles:
             break
 
         tasks.append(
-            NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question(
+            NewsApiRoughForecastingQuestionGenerator.validate_articles_for_fq_generation(
                 article, rough_fq_gen_model_name, end_date, pose_date
             )
         )
+
+    article_validation_results = await asyncio.gather(*tasks)
+
+    write_jsonl(news_articles_validation_path, article_validation_results)
+    print(
+        f"News artciles validation results have been saved to {news_articles_validation_path}"
+    )
+
+    tasks = []
+    for article_val_result in article_validation_results:
+        if article_val_result["validation_result"]:
+            tasks.append(
+                NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question(
+                    article_val_result, rough_fq_gen_model_name, end_date, pose_date
+                )
+            )
 
     results = await asyncio.gather(*tasks)
 
@@ -315,7 +342,7 @@ def _final_verified_forecasting_questions_save_path(
     final_fq_verification_model_name = final_fq_verification_model_name.replace(
         "/", "__"
     ).replace("\\", "__")
-    news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+    news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
     # TODO - refactor for non News API things
     final_verfied_fq_save_path = os.path.join(

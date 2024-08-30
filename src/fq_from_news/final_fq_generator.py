@@ -9,7 +9,7 @@ from .fq_from_news_datatypes import (
     ForecastingQuestion_stripped_with_resolution,
     ForecastingQuestionGroundTruthResolution,
 )
-from .date_utils import last_datetime_of_month
+from .date_utils import last_datetime_of_month, format_news_range_date
 
 
 class NewsApiFinalForecastingQuestionGenerator:
@@ -31,70 +31,55 @@ class NewsApiFinalForecastingQuestionGenerator:
         The forecaster will assume the current date is the `pose_date`, which is {pose_date}. Therefore, use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
         """,
         "prompt": """
-        You are tasked with following the validation process as described. 
+        ## Guidelines for Validating Forecasting Questions
 
-        **Guidelines for Validating Forecasting Questions**
+        ### 1. **Definitive Answers**:
+        - Questions should yield a clear YES or NO answer based on factual information from news articles.
+        - The resolution should align with this information, treating True as "Yes" and False as "No."
+        - Ensure the resolution remains valid for most potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
+        - Questions may be accepted even if the resolution is not completely correct in the context of the question's body and the news article.
 
-            1. **Definitive, Correct Answers**:
-            - Questions must yield a clear YES or NO answer based on concrete, factual information from past news articles.
-            - The resolution should align with this information, treating True as "Yes" and False as "No."
-            - Ensure the resolution remains valid for all potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
-            - Reject the question if the resolution is not correct in the context of the question's body and the news article.
+        ### 2. **Numeric Values**:
+        - For questions involving numeric values, frame inquiries to determine if the value will cross or fall below a specified threshold.
+        - Utilize rough thresholds to minimize numerical biases.
 
-            2. **Numeric Values**:
-            - For questions involving numeric values, frame inquiries to determine if the value will cross or fall below a specified threshold.
-            - Utilize rough thresholds to minimize numerical biases.
+        ### 3. **Objectivity and Clarity**:
+        - Avoid ambiguous or subjective terms when possible.
+        - Questions should be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes when feasible.
 
-            3. **Objectivity and Clarity**:
-            - Avoid ambiguous or subjective terms such as "significant", "major", or "substantial". 
-            - Questions must be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes.
+        ### 4. **Question Body**:
+        - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
+        - Provide adequate context without leading to predictable answers.
 
-            4. **Question Body**:
-            - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
-            - Provide adequate context without leading to predictable answers.
+        ### 5. **Future Accuracy**:
+        - Ensure that the question remains accurate for most foreseeable futures up to the specified resolution date.
+        - Questions based on specific events are permissible, even if they may resolve between the forecaster's `pose_date` and the resolution date's month.
 
-            5. **Future Accuracy**:
-            - Ensure that the question remains accurate for all foreseeable futures up to the specified resolution date.
-            - Questions based on specific events are permissible, but they must not resolve between the forecaster's `pose_date` and the resolution date's month.
+        ### 6. **Avoid Overly Specific Questions**:
+        - Questions should not depend on specific knowledge that could disadvantage certain models or participants. A question is overly specific if it references more than five distinct named entities from the source article.
 
-            6. **Avoid Overly Specific Questions**:
-            - Questions should not depend on specific knowledge that could disadvantage certain models or participants. A question is overly specific if it references more than three distinct named entities from the source article.
+        ### 7. **Do Not Fabricate Information**:
+        - Ensure that most questions are based on the information provided in the article. Some questions stemming from reasonable interpretations beyond the content of the source may be accepted.
 
-            7. **Do Not Fabricate Information**:
-            - Ensure that all questions are based solely on the information provided in the article. Avoid creating questions that stem from personal insights or interpretations beyond the content of the source.
+        ### 8. **Avoid Obvious Answers**:
+        - Questions should not be so obvious that they can be easily guessed using common sense or simplistic reasoning.
+        - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
 
-            8. **Avoid Obvious Answers**:
-            - Questions should not be so obvious that they can be easily guessed using common sense or simplistic reasoning.
-            - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
+        ### 9. **No Reference to Articles**:
+        - The title and body of the question should not directly reference any articles or indicate that the question was formed using news content.
+        - Ensure there is no discernible knowledge of the `pose_date`.
+        - Questions that fail this test may be accepted if they meet all other guidelines.
 
-                **Examples of obvious questions to avoid**:
-                - "Will the sun rise tomorrow?"
-                - "Will a country exist on Earth by August 2024?"
-                - "Will a person named John Smith be born by August 2024?"
-                - "Will a major earthquake occur in California by August 2024?"
-                - "Will a new event happen named `xyz`?" (Rejected due to name specificity)
+        ## Validation Process:
 
-                **Examples of better questions**:
-                - "Will a new country be formed by merging two existing countries by August 2024?"
-                - "Will a major new international treaty be signed by at least 50 countries by August 2024?"
-                - "Will a new type of renewable energy source provide more than 10% of a country's total electricity generation by August 2024?"
-                - "Will a new vaccine for a previously untreatable disease be approved for public use by August 2024?"
+        1. **Validation**:
+        - Validate the forecasting question and return its "Final Form." A question is valid if it mostly follows the above guidelines.
 
-            9. **No Reference to Articles**:
-            - The title and body of the question must not reference any articles or indicate that the question was formed using news content.
-            - Ensure there is no discernible knowledge of the `pose_date`.
-            - Directly reject questions that fail this test without attempting modifications.
-
-        **Validation Process:**
-
-        1. Validation:
-        - Validate the forecasting question and return its "Final Form." A question is valid if it follows the above guidelines.
-
-        2. Modification:
+        2. **Modification**:
         - If the question is invalid, attempt to modify it to meet the guidelines and return the modified version's "Final Form."
 
-        3. Rejection:
-        - If modification fails, return a rejected "Final Form." The rejected form is: 
+        3. **Rejection**:
+        - If modification fails, return a rejected "Final Form" only if the question is completely unacceptable. The rejected form is: 
             ```JSON
             {example_rejected_fq}
             ```
@@ -121,7 +106,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         {example_fq_3}
         ```
 
-        Think carefully & aptly and perform the above validation steps for the following forecasting question:
+        Think carefully & aptly and perform the above validation process steps for the following forecasting question:
         ```JSON
         {source_rough_fq_data}
         ```
@@ -130,26 +115,28 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     resolution_checker_prompt = {
         "preface": """
-        You are an AI agent tasked with answering questions based solely on the content of a provided news article.
-        
-        Guidelines:
-        - Respond only using information directly from the article.
-        - Avoid adding any personal insights, interpretations, or external information.
-        - Do not fabricate any details.
+        You are an AI agent tasked with answering questions based solely on the content of a provided news article. Follow these guidelines:
+
+        - Respond using information directly stated or reasonably inferred from the article.
+        - Avoid adding personal insights, interpretations, or external information that is not supported by the article.
+        - Do not fabricate details, but reasonable interpretations based on the content are acceptable.
         """,
         "prompt": """
-        Consider the following article:
+        Consider the following news article:
             Title: {article_title}
             Description: {article_description}
             Content: {article_content}
 
-        Consider this question - {question_title}
-        Use the following information for disambiguating the above question:
+        Now, consider this question: {question_title}
+
+        For additional context, use the following information to disambiguate the question:
             {question_body}
 
-        You are tasked with answering the question using only factual information from the news article. Return
-        1. `True`, if the answer to the question is Yes
-        2. `False`, if the answer to the question is No
+        Your task is to answer the question using **only** factual information from the news article. Return:
+        1. `True` if the answer to the question is reasonably inferred as Yes
+        2. `False` if the answer to the question is reasonably inferred as No
+
+        Please provide a brief reasoning for your answer.
         """,
     }
 
@@ -311,7 +298,7 @@ class NewsApiFinalForecastingQuestionGenerator:
                     "article_title": rough_fq_data["articleTitle"],
                     "article_content": rough_fq_data["articleContent"],
                 },
-                "pose_date": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
+                "question_created": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
                 "scraped_date": scraped_date,
             },
         )
@@ -428,7 +415,8 @@ class NewsApiFinalForecastingQuestionGenerator:
         )
 
         if (
-            generated_resolution.resolution
+            generated_resolution.resolution is None
+            or generated_resolution.resolution
             != final_resolution_unchecked_forecasting_question.resolution
         ):
             return None
@@ -504,7 +492,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             num_articles = "all"
 
         model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"final_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        news_save_file_name = f"final_fq_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
             cls.news_api_final_fq_save_dir,
