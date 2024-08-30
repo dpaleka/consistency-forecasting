@@ -156,11 +156,12 @@ async def get_date(
 async def from_string(
     question: str,
     data_source: str,
+    created_date: Optional[str] = None,
     question_type: Optional[str] = None,
     url: Optional[str] = None,
     metadata: Optional[dict] = None,
     body: Optional[str] = None,
-    date: Optional[str] = None,
+    resolution_date: Optional[str] = None,
     resolution: Optional[bool] = None,
     model: str = "gpt-4o-2024-05-13",
     fill_in_body: bool = False,
@@ -169,8 +170,11 @@ async def from_string(
     if not question_type:
         question_type = "binary"
 
-    if date is not None:
-        date = normalize_date_format(date)
+    if resolution_date is not None:
+        resolution_date = normalize_date_format(resolution_date)
+
+    if created_date is not None:
+        created_date = normalize_date_format(created_date)
 
     if not fill_in_body and body is None:
         raise ValueError("No question body provided and fill_in_body is False")
@@ -184,8 +188,8 @@ async def from_string(
                 )
                 if body is None:
                     body = bodyAndDate.resolution_criteria
-                if date is None:
-                    date = bodyAndDate.resolution_date
+                if resolution_date is None:
+                    resolution_date = bodyAndDate.resolution_date
                 break
             except Exception as e:
                 print(f"An error has occurred: {e}")
@@ -194,19 +198,20 @@ async def from_string(
                 await asyncio.sleep(1)
         print(f"\nfq_body_generator.from_string: {bodyAndDate=}")
 
-    elif date is None:
+    elif resolution_date is None:
         print("No date, getting date from the title with an LLM call")
         resolution_date = await get_date(question, model=model, **kwargs)
         print(f"\nfq_body_generator.from_string: {resolution_date=}")
-        date = resolution_date.resolution_date
+        resolution_date = resolution_date.resolution_date
 
     return ForecastingQuestion(
         id=uuid.uuid4(),
         title=question,
         body=body,
-        resolution_date=date,
+        resolution_date=resolution_date,
         question_type=question_type,
         data_source=data_source,
+        created_date=created_date,
         url=url,
         metadata=metadata,
         resolution=resolution,

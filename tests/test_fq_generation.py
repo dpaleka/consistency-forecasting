@@ -46,7 +46,7 @@ async def test_from_string_with_optional_params():
         url=url,
         metadata=metadata,
         body=body,
-        date=date,
+        resolution_date=date,
         question_type="binary",
         fill_in_body=False,
     )
@@ -91,7 +91,7 @@ async def test_from_string_date_dmy():
     date_to_be_dmy = "12/07/2025"
 
     result = await from_string(
-        question, data_source, date=date_to_be_dmy, fill_in_body=True
+        question, data_source, resolution_date=date_to_be_dmy, fill_in_body=True
     )
 
     assert isinstance(result, ForecastingQuestion)
