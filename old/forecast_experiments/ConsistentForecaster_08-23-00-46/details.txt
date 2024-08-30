@@ -1,0 +1,3 @@
+1ii-a) Single-check arbitrage - neg - depth = 2
+python evaluation.py -f RecursiveConsistentForecaster(checks=Neg,depth=2) -m gpt-4o-mini -k NegChecker --run -n 20
+Approx cost: $0.67

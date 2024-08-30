@@ -1,0 +1,6 @@
+1iv-b) Single-check arbitrage - para - depth = 4
+
+python evaluation.py ConsistentForecaster.recursive(checks=Paraphrase, depth=4) -k ParaphraseChecker -n 20
+
+
+Approx cost: $3.33

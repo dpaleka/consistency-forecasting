@@ -27,13 +27,22 @@ class Forecaster(ABC):
         return {k: v for k, v in zip(keys, results)}
 
     @abstractmethod
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> Any:
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> Any:
         pass
 
     @abstractmethod
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> Any:
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> Any:
         pass
 
     @abstractmethod
     def dump_config(self) -> dict[str, Any]:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def load_config(cls, config: dict[str, Any]) -> "Forecaster":
         pass

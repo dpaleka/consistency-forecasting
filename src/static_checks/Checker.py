@@ -23,26 +23,15 @@ from pydantic import BaseModel, field_validator, create_model
 from common.datatypes import (
     ForecastingQuestion,
     Prob,
-    VerificationResult,
 )
 from common.utils import (
     write_jsonl_async_from_str,
     update_recursive,
-    write_jsonl_from_str,
+    make_json_serializable,
+    delist,
 )
 from common.path_utils import get_data_path
-from common.llm_utils import parallelized_call, answer, answer_sync
-from .checker_prompts import (
-    neg_verification_prompt,
-    and_verification_prompt,
-    or_verification_prompt,
-    but_verification_prompt,
-    conditional_verification_prompt,
-    consequence_verification_prompt,
-    consequence_quantity_verification_prompt,
-    consequence_time_verification_prompt,
-    paraphrase_verification_prompt,
-)
+from common.llm_utils import parallelized_call
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -56,34 +45,6 @@ from forecasters import Forecaster
 
 load_dotenv()
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
-verify_before_instantiation = (
-    os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
-)
-verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
-
-
-async def write_verification_result(tuple_type, generated_tuple, verification):
-    filename = get_data_path() / "verification/tuple_verifications.jsonl"
-    verification_jsonl = generated_tuple.model_dump_json()
-    verification_jsonl = (
-        verification_jsonl[:-1]
-        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
-        + f', "tuple_type":"{tuple_type}"'
-        + "}"
-    )
-    await write_jsonl_async_from_str(filename, [verification_jsonl], append=True)
-
-
-def write_verification_result_sync(tuple_type, generated_tuple, verification):
-    filename = get_data_path() / "verification/tuple.jsonl"
-    verification_jsonl = generated_tuple.model_dump_json()
-    verification_jsonl = (
-        verification_jsonl[:-1]
-        + f', "valid": "{verification.valid}", "reasoning": "{verification.reasoning}"'
-        + f", tuple_type:{tuple_type}"
-        + "}"
-    )
-    write_jsonl_from_str(filename, [verification_jsonl], append=True)
 
 
 class Checker(ABC):
@@ -106,6 +67,15 @@ class Checker(ABC):
             "frequentist_hparams": self.frequentist_hparams,
             "path": str(self.path),
         }
+
+    @classmethod
+    def load_config(cls, config):
+        subcls = globals()[config["name"]]
+        return subcls(
+            default_tolerance=config["default_tolerance"],
+            frequentist_hparams=config["frequentist_hparams"],
+            path=config["path"],
+        )
 
     @property
     @abstractmethod
@@ -148,94 +118,6 @@ class Checker(ABC):
     ) -> List["Self.TupleFormat"]:
         pass
 
-    def instantiate_with_verification_sync(
-        self,
-        base_sentences: dict[str, ForecastingQuestion],
-        supplied_metadata=None,
-        n_verification=3,
-        **kwargs,
-    ) -> List[tuple["Self.TupleFormat", VerificationResult]]:
-        """
-        Synchronously instantiate and verify the tuple format with metadata multiple times,
-        returning a list of instantiated objects and their verification results if verification
-        succeeds within the given attempts.
-        """
-        verified_objects = []
-
-        if verify_before_instantiation:
-            for _ in range(n_verification):
-                instantiated_objects = self.instantiate_sync(base_sentences, **kwargs)
-                for instantiated_object in instantiated_objects:
-                    verification_result = self.verify_sync(
-                        instantiated_object, **kwargs
-                    )
-                    if verify_length:
-                        length_check = self.verify_length(
-                            instantiated_object, base_sentences, **kwargs
-                        )
-                    else:
-                        length_check = True
-                    if verification_result.valid and length_check:
-                        self.counter += 1
-                        verified_objects.append(
-                            (instantiated_object, verification_result)
-                        )
-                if verified_objects:
-                    return verified_objects
-            return []
-        else:
-            instantiated_objects = self.instantiate_sync(
-                base_sentences, supplied_metadata, **kwargs
-            )
-            for instantiated_object in instantiated_objects:
-                self.counter += 1
-                verified_objects.append((instantiated_object, None))
-            return verified_objects
-
-    async def instantiate_with_verification(
-        self,
-        base_sentences: dict[str, ForecastingQuestion],
-        supplied_metadata=None,
-        n_verification=3,
-        **kwargs,
-    ) -> List[tuple["Self.TupleFormat", VerificationResult]]:
-        """
-        Asynchronously instantiate and verify the tuple format with metadata multiple times,
-        returning a list of instantiated objects and their verification results if verification
-        succeeds within the given attempts.
-        """
-        verified_objects = []
-
-        if verify_before_instantiation:
-            for _ in range(n_verification):
-                instantiated_objects = await self.instantiate(base_sentences, **kwargs)
-                for instantiated_object in instantiated_objects:
-                    verification_result = await self.verify(
-                        instantiated_object, **kwargs
-                    )
-                    if verify_length:
-                        length_check = self.verify_length(
-                            instantiated_object, base_sentences, **kwargs
-                        )
-                    else:
-                        length_check = True
-                    if verification_result.valid and length_check:
-                        self.counter += 1
-                        verified_objects.append(
-                            (instantiated_object, verification_result)
-                        )
-                if verified_objects:
-                    return verified_objects
-            return []
-        else:
-            instantiated_objects = await self.instantiate(
-                base_sentences, supplied_metadata, **kwargs
-            )
-            for instantiated_object in instantiated_objects:
-                self.counter += 1
-                verified_objects.append((instantiated_object, None))
-            return verified_objects
-
     def instantiate_sync_with_metadata(
         self,
         base_sentences: dict[str, ForecastingQuestion],
@@ -249,16 +131,11 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        results = self.instantiate_with_verification_sync(base_sentences, **kwargs)
+        results = self.instantiate_sync(base_sentences, **kwargs)
 
         instantiated_with_metadata = []
         for result in results:
-            if verify_before_instantiation:
-                instantiated_object, verification_result = result
-                more_metadata = {"verification_result": verification_result.dict()}
-                update_recursive(metadata, more_metadata)
-            else:
-                instantiated_object = result
+            instantiated_object = result
             instantiated_with_metadata.append(
                 self.TupleFormat_with_metadata(
                     **instantiated_object.dict(), metadata=metadata
@@ -277,16 +154,11 @@ class Checker(ABC):
             supplied_metadata = {}
         metadata = {"base_sentences": base_sentences}
         update_recursive(metadata, supplied_metadata)
-        results = await self.instantiate_with_verification(base_sentences, **kwargs)
+        results = await self.instantiate(base_sentences, **kwargs)
 
         instantiated_with_metadata = []
         for result in results:
-            if verify_before_instantiation:
-                instantiated_object, verification_result = result
-                more_metadata = {"verification_result": verification_result.dict()}
-                update_recursive(metadata, more_metadata)
-            else:
-                instantiated_object = result[0] if isinstance(result, tuple) else result
+            instantiated_object = result[0] if isinstance(result, tuple) else result
 
             # Ensure source_question and source_id are included in metadata for each question
             for field, value in instantiated_object.__dict__.items():
@@ -307,26 +179,6 @@ class Checker(ABC):
             )
 
         return instantiated_with_metadata
-
-    @abstractmethod
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        pass
-
-    @abstractmethod
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        pass
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return True
 
     async def instantiate_and_write(
         self,
@@ -353,11 +205,12 @@ class Checker(ABC):
         overwrite=False,
         **kwargs,
     ):
-        print(
-            f"instantiate_and_write_many called with {len(base_sentencess)} base sentences"
-        )
-        print(f"n_write: {n_write}, overwrite: {overwrite}")
-
+        """
+        Args:
+            base_sentencess: list of base sentences, each of which is a dict of ForecastingQuestions
+            n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
+                because some will fail verification). If -1, will make as many as possible.
+        """
         if overwrite:
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
@@ -408,19 +261,24 @@ class Checker(ABC):
         outcome: dict[str, bool | None],
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
     ) -> float:
         """Arbitrage earned given a particular outcome, forcaster answers and
         arbitrageur_answers.
         """
+
+        scoring = self.get_scoring(answers, scoring)
+
         score = 0.0
         for qun, ans in answers.items():
             if outcome[qun] is None:
                 continue
             elif outcome[qun] == True:  # noqa
-                score += scoring(arbitrageur_answers[qun]) - scoring(ans)
+                score += scoring[qun](arbitrageur_answers[qun]) - scoring[qun](ans)
             elif outcome[qun] == False:  # noqa
-                score += scoring(1 - arbitrageur_answers[qun]) - scoring(1 - ans)
+                score += scoring[qun](1 - arbitrageur_answers[qun]) - scoring[qun](
+                    1 - ans
+                )
         return score
 
     @property
@@ -441,7 +299,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
     ) -> float:
         """Minimum arbitrage earned regardless of outcome, given forcaster answers
         and arbitrageur_answers."""
@@ -470,7 +328,7 @@ class Checker(ABC):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
-        scoring: Callable[[Prob], float] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
         initial_guess: list[float] | str | None = None,
         methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> float:
@@ -479,7 +337,7 @@ class Checker(ABC):
 
         Args:
             answers (dict[str, Prob]): Forecaster answers.
-            scoring (Callable[[Prob], float], optional): Scoring function. Defaults to np.log.
+            scoring (dict[str, Callable[[Prob], float]], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
             methods (tuple[str], optional): Optimization method. Options:
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
@@ -731,7 +589,12 @@ class Checker(ABC):
             for line in data:
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
-                answers: dict[str, Prob | None] = forecaster.elicit(line_obj, **kwargs)
+                answers_: dict[
+                    str, tuple[Prob, dict] | Prob | None
+                ] = forecaster.elicit(line_obj, include_metadata=True, **kwargs)
+                answers = {
+                    q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()
+                }
                 if do_check:
                     result_without_line: dict[
                         str, Any
@@ -741,6 +604,10 @@ class Checker(ABC):
 
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
+                    if isinstance(answers_[question], tuple):
+                        line[question]["elicitation_metadata"] = make_json_serializable(
+                            answers_[question][1]
+                        )
 
                 result = {"line": line, **result_without_line}
                 results.append(result)
@@ -776,12 +643,18 @@ class Checker(ABC):
             ]
             print(validated_lines)
             print("Starting async elicitation")
-            elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
-            all_answers = await parallelized_call(
+            elicit_func = functools.partial(
+                forecaster.elicit_async, include_metadata=True, **kwargs
+            )
+            all_answers_ = await parallelized_call(
                 elicit_func,
                 validated_lines,
                 max_concurrent_queries=10,
             )
+            all_answers = [
+                {q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()}
+                for answers_ in all_answers_
+            ]
 
             if do_check:
                 print("Starting checking")
@@ -789,11 +662,15 @@ class Checker(ABC):
             else:
                 results_without_line = [{} for _ in data]
 
-            for line, answers, result_without_line in zip(
-                data, all_answers, results_without_line
+            for line, answers_, answers, result_without_line in zip(
+                data, all_answers_, all_answers, results_without_line
             ):
                 for question, prob in answers.items():
                     line[question]["elicited_prob"] = prob
+                    if isinstance(answers_[question], tuple):
+                        line[question]["elicitation_metadata"] = make_json_serializable(
+                            answers_[question][1]
+                        )
 
                 result = {"line": line, **result_without_line}
 
@@ -801,6 +678,49 @@ class Checker(ABC):
                 writer.write(result)
 
         return results
+
+    @classmethod
+    def get_scoring(
+        cls, answers: dict[str, Prob], scoring: Any, return_just_log_weights=False
+    ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
+        if isinstance(scoring, list):
+            if len(scoring) < len(answers):
+                scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
+            scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
+        if not isinstance(scoring, dict):
+            scoring = {q: scoring for q in answers.keys()}
+        scoring_weights = {}
+        scoring_functions = {}
+        for key, scoring_item in scoring.items():
+            if isinstance(scoring_item, (float, int)):
+                scoring_weights[key] = scoring_item
+                scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(
+                    x
+                )  # stupid HACK
+            elif callable(scoring_item):
+                scoring_functions[key] = scoring_item
+                scoring_weights = None
+            else:
+                raise ValueError(f"Scoring function {scoring_item} not recognized")
+        if return_just_log_weights:
+            return scoring_weights
+        return scoring_functions
+
+    @classmethod
+    def must_compute_arbitrage_numerically(
+        cls, answers: dict[str, Prob], **kwargs
+    ) -> bool:
+        if kwargs:
+            if len(kwargs) > 1 or "scoring" not in kwargs:
+                return True  # there are kwargs that aren't just scoring weights
+            else:
+                scoring = kwargs["scoring"]
+                scoring_weights = cls.get_scoring(
+                    answers, scoring, return_just_log_weights=True
+                )
+                if scoring_weights is None:
+                    return True
+        return False
 
 
 class NegChecker(Checker):
@@ -816,54 +736,28 @@ class NegChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = neg_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            not_P_title=generated_tuple.not_P.title,
-            not_P_body=generated_tuple.not_P.body,
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("negation", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = neg_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            not_P_title=generated_tuple.not_P.title,
-            not_P_body=generated_tuple.not_P.body,
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result("negation", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.not_P.body) > 0.8 * len(generated_tuple.P.body)
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
+        if not P:
+            return []
         not_P = Neg().instantiate_sync(base_sentences, **kwargs)
+        if not not_P:
+            return []
+        P, not_P = delist(P), delist(not_P)
         return self.TupleFormat(P=P.P, not_P=not_P.not_P)
 
     async def instantiate(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
+        if not P:
+            return []
         not_P = await Neg().instantiate(base_sentences, **kwargs)
+        if not not_P:
+            return []
+        P, not_P = delist(P), delist(not_P)
         return [self.TupleFormat(P=P.P, not_P=not_P.not_P)]
 
     def max_min_arbitrage(
@@ -871,12 +765,30 @@ class NegChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
-        A = np.sqrt(answers["P"] * (1 - answers["not_P"]))
-        B = np.sqrt((1 - answers["P"]) * answers["not_P"])
-        p = A / (A + B)
-        v = -2 * np.log(A + B)
+        weights = self.get_scoring(
+            answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
+        )
+        W = sum(weights.values())
+
+        answers_ = {"P": answers["P"], "implied_P": 1 - answers["not_P"]}
+        weights_ = {"P": weights["P"], "implied_P": weights["not_P"]}
+
+        logodds = (
+            sum(
+                [
+                    weights_[q] * np.log(answers_[q] / (1 - answers_[q]))
+                    for q in ["P", "implied_P"]
+                ]
+            )
+            / W
+        )
+        p = 1 / (1 + np.exp(-logodds))
+        v = W * np.log(p) - sum(
+            [weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]]
+        )
+
         return {"P": p, "not_P": 1 - p}, v
 
     def frequentist_violation(
@@ -910,54 +822,20 @@ class AndChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("and", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result("and", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.P_and_Q.body) > 1.4 * max(
-            len(generated_tuple.P.body), len(generated_tuple.Q.body)
-        )
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     async def instantiate(
@@ -966,6 +844,14 @@ class AndChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q)]
 
     def frequentist_violation(
@@ -1011,54 +897,20 @@ class OrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("or", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result("or", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
-            len(generated_tuple.P.body), len(generated_tuple.Q.body)
-        )
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     async def instantiate(
@@ -1067,6 +919,14 @@ class OrChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q)]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
@@ -1112,90 +972,6 @@ class AndOrChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        or_verification_result = answer_sync(
-            prompt, response_model=VerificationResult, **kwargs
-        )
-        prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        and_verification_result = answer_sync(
-            prompt, response_model=VerificationResult, **kwargs
-        )
-        verification = VerificationResult(
-            valid=and_verification_result.valid and or_verification_result.valid,
-            reasoning="And reasoning:\\n"
-            + and_verification_result.reasoning
-            + "\\nOr reasoning:\\n"
-            + or_verification_result.reasoning,
-        )
-        if write_verification:
-            write_verification_result_sync("AndOr", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        or_verification_result = await answer(
-            prompt, response_model=VerificationResult, **kwargs
-        )
-        prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        and_verification_result = await answer(
-            prompt, response_model=VerificationResult, **kwargs
-        )
-        verification = VerificationResult(
-            valid=and_verification_result.valid and or_verification_result.valid,
-            reasoning="And reasoning:\\n"
-            + and_verification_result.reasoning
-            + "\\nOr reasoning:\\n"
-            + or_verification_result.reasoning,
-        )
-        if write_verification:
-            await write_verification_result("AndOr", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
-            len(generated_tuple.P.body), len(generated_tuple.Q.body)
-        ) and len(generated_tuple.P_and_Q.body) > 1.4 * max(
-            len(generated_tuple.P.body), len(generated_tuple.Q.body)
-        )
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
@@ -1203,6 +979,15 @@ class AndOrChecker(Checker):
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -1216,6 +1001,15 @@ class AndOrChecker(Checker):
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -1258,50 +1052,6 @@ class ButChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = but_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_not_P.title,
-            R_body=generated_tuple.Q_and_not_P.body,
-            S_title=generated_tuple.P_or_Q.title,
-            S_body=generated_tuple.P_or_Q.body,
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("But", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = but_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_not_P.title,
-            R_body=generated_tuple.Q_and_not_P.body,
-            S_title=generated_tuple.P_or_Q.title,
-            S_body=generated_tuple.P_or_Q.body,
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result("But", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.Q_and_not_P.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        ) and len(generated_tuple.P_or_Q.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        )
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
@@ -1311,6 +1061,15 @@ class ButChecker(Checker):
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(Q_and_not_P, list)
+            or isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(not_P, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -1326,6 +1085,15 @@ class ButChecker(Checker):
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(Q_and_not_P, list)
+            or isinstance(P_or_Q, list)
+            or isinstance(P, list)
+            or isinstance(not_P, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_and_not_P=Q_and_not_P.P_and_Q, P_or_Q=P_or_Q.P_or_Q
@@ -1367,52 +1135,20 @@ class CondChecker(Checker):
                 raise ValueError("Question type must be conditional binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = conditional_verification_prompt.format(
-            P=generated_tuple.P,
-            Q_given_P=generated_tuple.Q_given_P,
-            P_and_Q=generated_tuple.P_and_Q,
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("Conditional", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = conditional_verification_prompt.format(
-            P=generated_tuple.P,
-            Q_given_P=generated_tuple.Q_given_P,
-            P_and_Q=generated_tuple.P_and_Q,
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result(
-                "Conditional", generated_tuple, verification
-            )
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.Q_given_P.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        ) and len(generated_tuple.P_and_Q.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        )
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = Conditional().instantiate_sync(base_sentences, **kwargs)
         P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(Q_given_P, list)
+            or isinstance(P, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
@@ -1425,6 +1161,14 @@ class CondChecker(Checker):
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q_given_P = await Conditional().instantiate(base_sentences, **kwargs)
         P_and_Q = await And().instantiate(base_sentences, **kwargs)
+
+        # Either the verification failed and the list is empty, or there is more than one element which is not expected.
+        if (
+            isinstance(P_and_Q, list)
+            or isinstance(Q_given_P, list)
+            or isinstance(P, list)
+        ):
+            return []
         return [
             self.TupleFormat(
                 P=P.P, Q_given_P=Q_given_P.Q_given_P, P_and_Q=P_and_Q.P_and_Q
@@ -1500,59 +1244,6 @@ class ConsequenceChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = consequence_verification_prompt.format(
-            P=generated_tuple.P, cons_P=generated_tuple.cons_P
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("Consequence", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        metadata = generated_tuple.cons_P.metadata
-        consequence_type = metadata.get("consequence_type", None) if metadata else None
-        if consequence_type == "quantity":
-            prompt = consequence_quantity_verification_prompt.format(
-                P_title=generated_tuple.P.title,
-                P_body=generated_tuple.P.body,
-                Q_title=generated_tuple.cons_P.title,
-                Q_body=generated_tuple.cons_P.body,
-            )
-        elif consequence_type == "time":
-            prompt = consequence_time_verification_prompt.format(
-                P_title=generated_tuple.P.title,
-                P_body=generated_tuple.P.body,
-                Q_title=generated_tuple.cons_P.title,
-                Q_body=generated_tuple.cons_P.body,
-            )
-        else:
-            prompt = consequence_verification_prompt.format(
-                P_title=generated_tuple.P.title,
-                P_body=generated_tuple.P.body,
-                Q_title=generated_tuple.cons_P.title,
-                Q_body=generated_tuple.cons_P.body,
-            )
-
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result(
-                "Consequence", generated_tuple, verification
-            )
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return True
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
@@ -1577,11 +1268,11 @@ class ConsequenceChecker(Checker):
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
-            # _answers = {"P": answers["P"], "para_P": answers["cons_P"]}
-            answers["para_P"] = answers.pop("cons_P")
-            p, v = ParaphraseChecker().max_min_arbitrage(answers, **kwargs)
-            p["cons_P"] = p.pop("para_P")
-            return p, v
+            A = np.sqrt(answers["P"] * answers["cons_P"])
+            B = np.sqrt((1 - answers["P"]) * (1 - answers["cons_P"]))
+            p = A / (A + B)
+            v = -2 * np.log(A + B)
+            return {"P": p, "cons_P": p}, v
 
     # def violation(self, answers: dict[str, Prob]) -> float:
     #     return max(0.0, answers["P"] - answers["cons_P"])
@@ -1616,36 +1307,6 @@ class ParaphraseChecker(Checker):
                 raise ValueError("Question type must be binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = paraphrase_verification_prompt.format(
-            P=generated_tuple.P, para_P=generated_tuple.para_P
-        )
-        verification = answer_sync(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            write_verification_result_sync("Paraphrase", generated_tuple, verification)
-        return verification
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        prompt = paraphrase_verification_prompt.format(
-            P=generated_tuple.P, para_P=generated_tuple.para_P
-        )
-        verification = await answer(prompt, response_model=VerificationResult, **kwargs)
-        if write_verification:
-            await write_verification_result("Paraphrase", generated_tuple, verification)
-        return verification
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.para_P.body) > 0.65 * len(generated_tuple.P.body)
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
@@ -1665,12 +1326,26 @@ class ParaphraseChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
-        A = np.sqrt(answers["P"] * answers["para_P"])
-        B = np.sqrt((1 - answers["P"]) * (1 - answers["para_P"]))
-        p = A / (A + B)
-        v = -2 * np.log(A + B)
+        weights = self.get_scoring(
+            answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
+        )
+        W = sum(weights.values())
+        logodds = (
+            sum(
+                [
+                    weights[q] * np.log(answers[q] / (1 - answers[q]))
+                    for q in ["P", "para_P"]
+                ]
+            )
+            / W
+        )
+        p = 1 / (1 + np.exp(-logodds))
+        v = W * np.log(p) - sum(
+            [weights[q] * np.log(answers[q]) for q in ["P", "para_P"]]
+        )
+
         return {"P": p, "para_P": p}, v
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
@@ -1708,40 +1383,37 @@ class CondCondChecker(Checker):
                 raise ValueError("Question type must be conditional binary")
             return value
 
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning="", valid=True)
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        # TODO(Alejadnro): Implement this
-        return VerificationResult(reasoning="", valid=True)
-
     def instantiate_sync(
         self, base_sentences: dict[str, ForecastingQuestion], **kwargs
     ) -> List["Self.TupleFormat"]:
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
         Q_given_P_obj = Conditional().instantiate_sync(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
         P_and_Q_obj = And().instantiate_sync(base_sentences_PQ, **kwargs)
+
+        if (
+            isinstance(P_obj, list)
+            or isinstance(Q_given_P_obj, list)
+            or isinstance(P_and_Q_obj, list)
+        ):
+            return []
+
+        P = P_obj.P
+        Q_given_P = Q_given_P_obj.Q_given_P
         P_and_Q = P_and_Q_obj.P_and_Q
 
         R_given_P_and_Q_obj = Conditional().instantiate_sync(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
         P_and_Q_and_R_obj = And().instantiate_sync(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
+
+        if isinstance(R_given_P_and_Q_obj, list) or isinstance(P_and_Q_and_R_obj, list):
+            return []
+
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
         return [
@@ -1759,22 +1431,31 @@ class CondCondChecker(Checker):
         base_sentences_PQ = {"P": base_sentences["P"], "Q": base_sentences["Q"]}
 
         P_obj = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
-        P = P_obj.P
-
         Q_given_P_obj = await Conditional().instantiate(base_sentences_PQ, **kwargs)
-        Q_given_P = Q_given_P_obj.Q_given_P
-
         P_and_Q_obj = await And().instantiate(base_sentences_PQ, **kwargs)
+
+        if (
+            isinstance(P_obj, list)
+            or isinstance(Q_given_P_obj, list)
+            or isinstance(P_and_Q_obj, list)
+        ):
+            return []
+
+        P = P_obj.P
+        Q_given_P = Q_given_P_obj.Q_given_P
         P_and_Q = P_and_Q_obj.P_and_Q
 
         R_given_P_and_Q_obj = await Conditional().instantiate(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
-        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
-
         P_and_Q_and_R_obj = await And().instantiate(
             {"P": P_and_Q, "Q": base_sentences["R"]}, **kwargs
         )
+
+        if isinstance(R_given_P_and_Q_obj, list) or isinstance(P_and_Q_and_R_obj, list):
+            return []
+
+        R_given_P_and_Q = R_given_P_and_Q_obj.Q_given_P
         P_and_Q_and_R = P_and_Q_and_R_obj.P_and_Q
 
         return [
@@ -1836,312 +1517,6 @@ class CondCondChecker(Checker):
                 "P_and_Q_and_R": False,
             },
         ]
-
-
-"""
-The following checks are deprecated. We should rethink how those integrate with Paraphrase.
-"""
-
-
-class SymmetryAndChecker(Checker):
-    num_base_questions = 2
-
-    class TupleFormat(BaseModel):
-        P: ForecastingQuestion
-        Q: ForecastingQuestion
-        P_and_Q: ForecastingQuestion
-        Q_and_P: ForecastingQuestion
-
-        @field_validator("P", "Q", "P_and_Q", "Q_and_P")
-        def check_question_type(cls, value):
-            if value.question_type != "binary":
-                raise ValueError("Question type must be binary")
-            return value
-
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        and_pq_prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        verification_pq = answer_sync(
-            and_pq_prompt, response_model=VerificationResult, **kwargs
-        )
-
-        and_qp_prompt = and_verification_prompt.format(
-            P_title=generated_tuple.Q.title,
-            P_body=generated_tuple.Q.body,
-            Q_title=generated_tuple.P.title,
-            Q_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_P.title,
-            R_body=generated_tuple.Q_and_P.body,
-        )
-        verification_qp = answer_sync(
-            and_qp_prompt, response_model=VerificationResult, **kwargs
-        )
-
-        valid = verification_pq.valid and verification_qp.valid
-        reasoning = (
-            f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n"
-            f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
-        )
-
-        verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-
-        if write_verification:
-            write_verification_result_sync(
-                "symmetry_and", generated_tuple, verification_result
-            )
-
-        return verification_result
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        and_pq_prompt = and_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_and_Q.title,
-            R_body=generated_tuple.P_and_Q.body,
-        )
-        verification_pq = await answer(
-            and_pq_prompt, response_model=VerificationResult, **kwargs
-        )
-        and_qp_prompt = and_verification_prompt.format(
-            P_title=generated_tuple.Q.title,
-            P_body=generated_tuple.Q.body,
-            Q_title=generated_tuple.P.title,
-            Q_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_and_P.title,
-            R_body=generated_tuple.Q_and_P.body,
-        )
-        verification_qp = await answer(
-            and_qp_prompt, response_model=VerificationResult, **kwargs
-        )
-
-        valid = verification_pq.valid and verification_qp.valid
-        reasoning = (
-            f"Symmetry And reasoning:\\nP_and_Q reasoning:\\n{verification_pq.reasoning}\\n"
-            f"Q_and_P reasoning:\\n{verification_qp.reasoning}"
-        )
-
-        verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-
-        if write_verification:
-            await write_verification_result(
-                "symmetry_and", generated_tuple, verification_result
-            )
-
-        return verification_result
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.P_and_Q.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        ) and len(generated_tuple.Q_and_P.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        )
-
-    def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> List["Self.TupleFormat"]:
-        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
-        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
-        P_and_Q = And().instantiate_sync(base_sentences, **kwargs)
-        Q_and_P = And().instantiate_sync(
-            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
-        )
-        return [
-            self.TupleFormat(
-                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
-            )
-        ]
-
-    async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> List["Self.TupleFormat"]:
-        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
-        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
-        P_and_Q = await And().instantiate(base_sentences, **kwargs)
-        Q_and_P = await And().instantiate(
-            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
-        )
-        return [
-            self.TupleFormat(
-                P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, Q_and_P=Q_and_P.P_and_Q
-            )
-        ]
-
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P_and_Q"] - answers["Q_and_P"])
-
-    def frequentist_violation(self, answers: dict[str, Any]) -> float:
-        raise NotImplementedError
-
-    def check_exact(self, answers: dict[str, Prob]) -> bool:
-        return (
-            all([a is not None for a in answers.values()])
-            and answers["P_and_Q"] == answers["Q_and_P"]
-        )
-
-
-class SymmetryOrChecker(Checker):
-    num_base_questions = 2
-
-    class TupleFormat(BaseModel):
-        P: ForecastingQuestion
-        Q: ForecastingQuestion
-        P_or_Q: ForecastingQuestion
-        Q_or_P: ForecastingQuestion
-
-        @field_validator("P", "Q", "P_or_Q", "Q_or_P")
-        def check_question_type(cls, value):
-            if value.question_type != "binary":
-                raise ValueError("Question type must be binary")
-            return value
-
-    def verify_sync(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        or_pq_prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        verification_pq = answer_sync(
-            or_pq_prompt, response_model=VerificationResult, **kwargs
-        )
-        or_qp_prompt = or_verification_prompt.format(
-            P_title=generated_tuple.Q.title,
-            P_body=generated_tuple.Q.body,
-            Q_title=generated_tuple.P.title,
-            Q_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_or_P.title,
-            R_body=generated_tuple.Q_or_P.body,
-        )
-        verification_qp = answer_sync(
-            or_qp_prompt, response_model=VerificationResult, **kwargs
-        )
-
-        valid = verification_pq.valid and verification_qp.valid
-        reasoning = (
-            f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n"
-            f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
-        )
-
-        verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-
-        if write_verification:
-            write_verification_result_sync(
-                "symmetry_or", generated_tuple, verification_result
-            )
-
-        return verification_result
-
-    async def verify(
-        self, generated_tuple: "Self.TupleFormat", **kwargs
-    ) -> VerificationResult:
-        or_pq_prompt = or_verification_prompt.format(
-            P_title=generated_tuple.P.title,
-            P_body=generated_tuple.P.body,
-            Q_title=generated_tuple.Q.title,
-            Q_body=generated_tuple.Q.body,
-            R_title=generated_tuple.P_or_Q.title,
-            R_body=generated_tuple.P_or_Q.body,
-        )
-        verification_pq = await answer(
-            or_pq_prompt, response_model=VerificationResult, **kwargs
-        )
-        or_qp_prompt = or_verification_prompt.format(
-            P_title=generated_tuple.Q.title,
-            P_body=generated_tuple.Q.body,
-            Q_title=generated_tuple.P.title,
-            Q_body=generated_tuple.P.body,
-            R_title=generated_tuple.Q_or_P.title,
-            R_body=generated_tuple.Q_or_P.body,
-        )
-        verification_qp = await answer(
-            or_qp_prompt, response_model=VerificationResult, **kwargs
-        )
-
-        valid = verification_pq.valid and verification_qp.valid
-        reasoning = (
-            f"Symmetry Or reasoning:\\nP_or_Q reasoning:\\n{verification_pq.reasoning}\\n"
-            f"Q_or_P reasoning:\\n{verification_qp.reasoning}"
-        )
-
-        verification_result = VerificationResult(valid=valid, reasoning=reasoning)
-
-        if write_verification:
-            await write_verification_result(
-                "symmetry_or", generated_tuple, verification_result
-            )
-
-        return verification_result
-
-    def verify_length(
-        self,
-        generated_tuple: "Self.TupleFormat",
-        base_sentences: dict[str, ForecastingQuestion],
-        **kwargs,
-    ) -> bool:
-        return len(generated_tuple.P_or_Q.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        ) and len(generated_tuple.Q_or_P.body) > 1.4 * max(
-            len(base_sentences["P"].body), len(base_sentences["Q"].body)
-        )
-
-    def instantiate_sync(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> List["Self.TupleFormat"]:
-        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
-        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
-        P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
-        Q_or_P = Or().instantiate_sync(
-            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
-        )
-        return [
-            self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q)
-        ]
-
-    async def instantiate(
-        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
-    ) -> List["Self.TupleFormat"]:
-        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
-        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
-        P_or_Q = await Or().instantiate(base_sentences, **kwargs)
-        Q_or_P = await Or().instantiate(
-            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
-        )
-        return [
-            self.TupleFormat(P=P.P, Q=Q.P, P_or_Q=P_or_Q.P_or_Q, Q_or_P=Q_or_P.P_or_Q)
-        ]
-
-    # def violation(self, answers: dict[str, Prob]) -> float:
-    #     return abs(answers["P_or_Q"] - answers["Q_or_P"])
-
-    def frequentist_violation(self, answers: dict[str, Any]) -> float:
-        raise NotImplementedError
-
-    def check_exact(self, answers: dict[str, Prob]) -> bool:
-        return (
-            all([a is not None for a in answers.values()])
-            and answers["P_or_Q"] == answers["Q_or_P"]
-        )
 
 
 checker_classes = [
