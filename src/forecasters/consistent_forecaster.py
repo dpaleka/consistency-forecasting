@@ -177,10 +177,15 @@ class ConsistentForecaster(Forecaster):
                 for k, v in bq_tuple_max.items()
                 if k in list(bq_tuple_max.keys())[: check.num_base_questions]
             }
+            print(f"{bq_tuple=}")
             cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
-            print(cons_tuple)
-            print("CONS TUPLE")
+            print(f"{cons_tuple=}")
             if isinstance(cons_tuple, list):
+                if len(cons_tuple) == 0:
+                    print(
+                        f"Found no valid instantiated cons_tuple for {check.__class__.__name__}"
+                    )
+                    continue
                 cons_tuple = cons_tuple[0]
             cons_tuples.append(cons_tuple)
         return cons_tuples
@@ -221,6 +226,11 @@ class ConsistentForecaster(Forecaster):
             }
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
+                if len(cons_tuple) == 0:
+                    print(
+                        f"Found multiple valid instantiated cons_tuples for {check.__class__.__name__}"
+                    )
+                    continue
                 cons_tuple = cons_tuple[0]
             cons_tuples.append(cons_tuple)
         return cons_tuples
