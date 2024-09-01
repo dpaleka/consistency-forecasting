@@ -55,60 +55,54 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     rough_fq_generation_prompt = {
         "preface": """
-        You are tasked with generating forecasting (prediction) questions that can be answered with a definitive YES or NO based on the provided news articles. Ensure that each question is clear, unambiguous, and free from trivial or misleading elements. Avoid sensitive topics such as religion, politics, gender, or race, and refrain from using subjective terms like "significant."
+        You are tasked with generating forecasting questions that can be answered with a definitive YES or NO based on the provided news articles. Ensure each question is clear, unambiguous, and free from sensitive topics like religion, politics, or gender. Avoid subjective terms like "significant."
 
-        Each question must have a resolution that remains definitive from the current date until the specified resolution date in {month_name}, {year}. Assume the current date is {pose_date}. Use concrete events from the articles and provide sufficient context if necessary.
+        Questions must have a resolution that remains definitive from the current date until {month_name}, {year}. Assume that the current date (`current_date`) is {pose_date} and add sufficient information for questions which refer to events that might not have come to pass as of this date.
+        
+        Use concrete events from the articles, providing necessary context. Do not include any information indicating the question was formed on the current date (`current_date`) or using an article.
 
-        Avoid overly specific or politically charged scenarios. Use generalizable terms unless widely known. For numerical questions, ensure clear thresholds and keep calculations straightforward.
-
-        Aim for a diverse set of questions that cover various topics and regularly review to ensure robustness.
+        Aim for a diverse, clear, and objective set of questions.
         """,
         "prompt": """
         Consider the following news article: 
         {source_article}
 
-        The reason this news article was chosen is -- {article_validation_reason}
+        The reason this news article was chosen is: {article_validation_reason}
 
         You are to create **multiple** forecasting questions based on the valid news articles provided. Each forecasting question consists of a title, a body, and a resolution. Follow these guidelines closely:
 
         ## Title Guidelines
         - **Definitive Answers:** Formulate a question that has a clear YES or NO answer based on the article.
-        - **Bias Prevention:** Ensure the title avoids biases and is not easily guessable through heuristics.
         - **Sensitivity:** Exclude references to sensitive topics such as religion, politics, gender, or race.
         - **Clarity:** Be straightforward and precise, avoiding ambiguity.
         - **Resolution Date:** Specify the resolution date as "by {month_name}, {year}?"
-        - **Definitiveness:** Ensure the resolution can be confirmed as YES or NO based on the article.
-        - **Scope:** Align the question with the exact wording in the source article.
-        - **Context:** Provide sufficient context if the event names may not be clear at the `pose_date`.
+        - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
         - **Article Usage:** Use "a" instead of "the" to enhance predictability.
-        - **Planned Events:** Frame questions about announced but incomplete events as proposals or announcements using titles such as "will <entity> announce/propose..."
-        - **Sufficient Information:** The title should provide enough context to disambiguate events.
+        - **Planned Events:** Frame questions about announced but incomplete events as proposals or announcements, explicitly avoiding questions about the completion of these events.
 
         ## Body Guidelines
         - **Disambiguation:** Be precise and avoid unnecessary details that could influence the resolution.
-        - **Specific Knowledge:** Avoid relying on specific knowledge that might disadvantage participants.
-        - **Context:** Expand only on the title's date; do not include additional information.
-        - **Resolution Date:** Ensure the resolution date in the body matches that in the title.
-        - **Article Usage:** Use "a" instead of "the" to maintain a predictive tone.
-        - **Focus on Relevance:** Include only information that directly supports the question and its resolution.
+        - **Context:** Expand only on the question title's date; do not include additional information or dates from the article.
+        - **Focus on Relevance:** Include only information that directly supports the question title.
+        - **Article Usage:** Use "a" instead of "the" to enhance predictability.
 
         ## Resolution Guidelines
         - **Binary:** Mark the resolution as True for YES and False for NO.
         - **Stability:** The resolution must remain unchanged by the end of the resolution date.
-        - **Concrete Events:** Base questions only on concrete events, not opinions.
+        - **Definitiveness:** Ensure the resolution can be confirmed as YES or NO based on the article.
 
-        ## Additional Guidelines
-        - **Quantity:** Generate as many high-quality forecasting questions as possible.
+        ## General Guidelines
+        - **Specific Knowledge:** Avoid relying on specific knowledge that might disadvantage participants.
+        - **No Reference to the Article:** Do NOT refer to the article in the question's title and body. The forecaster should not understand that the question was formed using an article.
+        - **Named Events:** The question should not refer to any specific named events that you (the AI Agent) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
         - **Numerical Values:** Use clear thresholds for numerical questions and avoid complex calculations.
-        - **Predictability:** Ensure details do not make the question predictable; use reasonable approximations.
-        - **Subjective Terms:** Avoid subjective terms like "significant."
-        - **Politically Biased Scenarios:** Exclude politically charged questions.
+        - **Predictability:** Ensure details do not make the question predictable; use reasonable approximations and ambiguity such as rough thresholds and describing the events rather than naming them.
         - **Avoid Overly Specific Questions:** Do not reference more than three distinct entities from the source article.
-        - **Do Not Fabricate Information:** Base questions solely on the provided article content.
+        - **Do Not Fabricate Information:** Base questions solely on the provided article.
 
         A forecasting question that adheres to these guidelines is considered "proper." Please generate the questions accordingly.
 
-        To reject an article, you may return the following forecasting question with an empty title and body as the reason for rejection as follows:
+        To reject an article, you may return the following forecasting question with an empty title and body as the reason for rejection: 
         {example_rejected_fq}
 
         Here are examples of "proper" forecasting questions: 
