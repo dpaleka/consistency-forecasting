@@ -201,7 +201,6 @@ def get_args() -> argparse.Namespace:
         "--be-lax-in-res-checking",
         action="store_true",
         help="Should the Final Generator be lax while checking the resolution",
-        required=True,
     )
 
     # Sync enabling argument (cannot be used with verify)
