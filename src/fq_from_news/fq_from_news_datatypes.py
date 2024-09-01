@@ -1,5 +1,6 @@
 from common.perscache import register_model_for_cache
 from pydantic import BaseModel
+from typing import Optional
 
 
 class ForecastingQuestion_stripped_with_resolution(BaseModel):
@@ -19,5 +20,5 @@ register_model_for_cache(ForecastingQuestion_stripped_with_resolution_list)
 
 
 class ForecastingQuestionGroundTruthResolution(BaseModel):
-    resolution: bool
+    resolution: Optional[bool]
     reasoning: str
