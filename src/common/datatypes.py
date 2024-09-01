@@ -27,9 +27,16 @@ class Prob(BaseModel):
 register_model_for_cache(Prob)
 
 
-class Prob_cot(Prob):
+class Prob_cot(BaseModel):
     chain_of_thought: str
-    prob: float  # redefine to maintain order
+    prob: float
+
+    @field_validator("prob")
+    @classmethod
+    def validate_prob(cls, v):
+        if not (0.0 <= v <= 1.0):
+            raise ValueError("Probability must be between 0 and 1.")
+        return v
 
 
 register_model_for_cache(Prob_cot)
@@ -69,6 +76,7 @@ class ForecastingQuestion_stripped(BaseModel):
             resolution_date=resolution_date,
             question_type=question_type,
             data_source=data_source,
+            created_date=None,
             **kwargs,
         )
 
@@ -91,6 +99,7 @@ class ForecastingQuestion(BaseModel):
     resolution_date: datetime
     question_type: str
     data_source: Optional[str] = None
+    created_date: Optional[datetime] = None
     url: Optional[str] = None
     metadata: Optional[dict] = None
     resolution: Optional[bool] = None
@@ -225,6 +234,8 @@ class SyntheticTagQuestion(BaseModel):
     tags: str
     feedback: Optional[str] = None
     fixed: Optional[bool] = False
+    body: Optional[str] = None
+    resolution_date: Optional[str] = None
 
 
 register_model_for_cache(SyntheticTagQuestion)
@@ -232,6 +243,8 @@ register_model_for_cache(SyntheticTagQuestion)
 
 class SyntheticRelQuestion(BaseModel):
     title: str
+    body: Optional[str] = None
+    resolution_date: Optional[str] = None
     source_question: Optional[str] = None
     feedback: Optional[str] = None
     fixed: Optional[bool] = False

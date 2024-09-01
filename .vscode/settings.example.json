@@ -1,0 +1,10 @@
+{
+    "ruff.lint.args": [
+        "--config=./ruff.toml"
+    ],
+    "python.analysis.extraPaths": [
+        "./src",
+        "./scripts",
+    ],
+    "terminal.integrated.cwd": "${workspaceFolder}/src"
+}

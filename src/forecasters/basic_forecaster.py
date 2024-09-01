@@ -25,7 +25,9 @@ class BasicForecaster(Forecaster):
             )
         ]
 
-    def call(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    def call(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         # Log the request details being sent to the OpenAI API
         print("Sending the following request to the LLM API:")
         print(f"Prompt: {sentence.__str__()}")
@@ -43,7 +45,9 @@ class BasicForecaster(Forecaster):
         print(f"Received the following response from OpenAI API: {response}")
         return response.prob
 
-    async def call_async(self, sentence: ForecastingQuestion, **kwargs) -> float:
+    async def call_async(
+        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
+    ) -> float:
         # Log the request details being sent to the OpenAI API
         print("Sending the following request to the LLM API:")
         print(f"Prompt: {sentence.__str__()}")
@@ -69,3 +73,16 @@ class BasicForecaster(Forecaster):
                 for e in self.examples
             ],
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            preface=config["preface"],
+            examples=[
+                Example(
+                    user=ForecastingQuestion_stripped.load_model_json(e["user"]),
+                    assistant=e["assistant"],
+                )
+                for e in config["examples"]
+            ],
+        )

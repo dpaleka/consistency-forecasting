@@ -3,10 +3,11 @@ src/data/test/*.jsonl
 src/data/test/*/*.jsonl
 src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
-src/data/forecasts/A_AdvancedForecaster_most_recent/
-src/data/forecasts/A_COTForecaster_most_recent/
-src/data/forecasts/A_BasicForecaster_most_recent/
+src/data/forecasts/A_*_most_recent/
 scripts/references/
+src/*see_eval.txt
+.vscode/settings.json
+*.log
 
 
 # Local
@@ -175,3 +176,28 @@ cython_debug/
 #.idea/
 
 logs/
+.env.swp
+modal_env/bin/activate
+modal_env/bin/activate.csh
+modal_env/bin/activate.fish
+modal_env/bin/Activate.ps1
+modal_env/bin/dotenv
+modal_env/bin/email_validator
+modal_env/bin/fastapi
+modal_env/bin/httpx
+modal_env/bin/markdown-it
+modal_env/bin/modal
+modal_env/bin/pip
+modal_env/bin/pip3
+modal_env/bin/pip3.11
+modal_env/bin/protoc-gen-grpclib_python
+modal_env/bin/protoc-gen-python_grpc
+modal_env/bin/pygmentize
+modal_env/bin/python
+modal_env/bin/python3
+modal_env/bin/python3.11
+modal_env/bin/typer
+modal_env/bin/uvicorn
+modal_env/bin/watchfiles
+modal_env/pyvenv.cfg
+scripts/halawi_sample_data.json

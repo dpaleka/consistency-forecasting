@@ -1,13 +1,11 @@
 # LLM Utils
-# Run tests in this file with python -m dpy.llm_utils
+# Run tests in this file with python -m common.llm_utils
 
 # %%
 import os
-import sys
+import logging
 from typing import Coroutine, Optional, List
 from openai import AsyncOpenAI, OpenAI
-from mistralai.async_client import MistralAsyncClient
-from mistralai.client import MistralClient
 import instructor
 from instructor.client import Instructor
 from instructor.mode import Mode
@@ -18,8 +16,7 @@ from dataclasses_json import dataclass_json
 from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
-from huggingface_hub import snapshot_download
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+import logfire
 import transformers
 
 from .datatypes import PlainText
@@ -50,8 +47,45 @@ override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
+print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
 
-global_semaphore = asyncio.Semaphore(max_concurrent_queries)
+
+## All logging settings here
+if os.getenv("USE_LOGFIRE") == "True":
+    print("Setting up Pydantic Logfire")
+
+    def scrubbing_callback(m: logfire.ScrubMatch):
+        """
+        Need to disable some security measures of logfire.
+        Those trigges depending on whether some substrings like "auth" are present as param *values*;
+        and our param values are *prompts* and such, so no need to scrub them.
+        """
+        if m.pattern_match.group(0) == "auth":
+            return m.value
+
+    logfire.configure(
+        pydantic_plugin=logfire.PydanticPlugin(record="all"),
+        scrubbing=logfire.ScrubbingOptions(callback=scrubbing_callback),
+    )
+
+if os.getenv("LOGGING_DEBUG") == "True":
+    print("Setting logging level to DEBUG")
+    logging.basicConfig(level=logging.DEBUG, force=True)
+
+
+def reset_global_semaphore():
+    """
+    Use if your code uses asyncio.run()
+    """
+    global global_llm_semaphore
+    global_llm_semaphore = asyncio.Semaphore(max_concurrent_queries)
+    print(
+        f"Resetting global semaphore, max concurrent queries: {max_concurrent_queries}"
+    )
+
+
+reset_global_semaphore()
+
 
 pydantic_cache = Cache(
     serializer=JSONPydanticResponseSerializer(),
@@ -93,7 +127,7 @@ embeddings_cache = Cache(
     value_wrapper=ValueWrapperDictInspectArgs(),
 )
 
-FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE"]
+FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE", "LOGGING_DEBUG", "USE_LOGFIRE"]
 
 
 client = None
@@ -115,32 +149,43 @@ def singleton_constructor(get_instance_func):
 def get_async_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client)
 
 
 @singleton_constructor
 def get_async_openai_client_native() -> AsyncOpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return AsyncOpenAI(api_key=api_key)
+    client = AsyncOpenAI(api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client)
 
 
 @singleton_constructor
 def get_openai_client_native() -> OpenAI:
     api_key = os.getenv("OPENAI_API_KEY")
-    return OpenAI(api_key=api_key)
+    client = OpenAI(api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints will work. If you encounter errors, please check on the OpenRouter website."
+    )
     api_key = os.getenv("OPENROUTER_API_KEY")
+    print(f"OPENROUTER_API_KEY: {api_key}")
     _client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(_client)
     return instructor.from_openai(_client, mode=Mode.MD_JSON, **kwargs)
 
 
@@ -148,103 +193,87 @@ def get_async_openrouter_client_pydantic(**kwargs) -> Instructor:
 def get_async_openrouter_client_native() -> AsyncOpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
-    return AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    print(f"OPENROUTER_API_KEY: {api_key}")
+    client = AsyncOpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_openrouter_client_pydantic(**kwargs) -> Instructor:
+    print(
+        "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+    )
     print("Calling models through OpenRouter")
     _client = OpenAI(
         base_url="https://openrouter.ai/api/v1",
         api_key=os.getenv("OPENROUTER_API_KEY"),
     )
-    return instructor.from_openai(_client, mode=Mode.MD_TOOLS, **kwargs)
+    print(f"OPENROUTER_API_KEY: {os.getenv('OPENROUTER_API_KEY')}")
+    logfire.instrument_openai(_client)
+    return instructor.from_openai(_client, mode=Mode.TOOLS, **kwargs)
 
 
 @singleton_constructor
 def get_openrouter_client_native() -> OpenAI:
     print("Calling models through OpenRouter")
     api_key = os.getenv("OPENROUTER_API_KEY")
-    return OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
-
-
-@singleton_constructor
-def get_mistral_async_client_pydantic() -> Instructor:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    _client = MistralAsyncClient(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.MISTRAL_TOOLS)
-
-
-@singleton_constructor
-def get_mistral_async_client_native() -> MistralAsyncClient:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralAsyncClient(api_key=api_key)
-
-
-@singleton_constructor
-def get_mistral_client_pydantic() -> Instructor:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    _client = MistralClient(api_key=api_key)
-    return instructor.from_openai(_client, mode=instructor.Mode.MISTRAL_TOOLS)
-
-
-@singleton_constructor
-def get_mistral_client_native() -> MistralClient:
-    api_key = os.getenv("MISTRAL_API_KEY")
-    return MistralClient(api_key=api_key)
+    print(f"OPENROUTER_API_KEY: {api_key}")
+    client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)
+    logfire.instrument_openai(client)
+    return client
 
 
 @singleton_constructor
 def get_anthropic_async_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = AsyncAnthropic(api_key=api_key)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
 def get_anthropic_async_client_native() -> AsyncAnthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
-    return AsyncAnthropic(api_key=api_key)
+    _client = AsyncAnthropic(api_key=api_key)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
+    return _client
 
 
 @singleton_constructor
 def get_anthropic_client_pydantic() -> Instructor:
     api_key = os.getenv("ANTHROPIC_API_KEY")
     _client = Anthropic(api_key=api_key)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
 
 
 @singleton_constructor
 def get_anthropic_client_native() -> Anthropic:
     api_key = os.getenv("ANTHROPIC_API_KEY")
-    return Anthropic(api_key=api_key)
+    _client = Anthropic(api_key=api_key)
+    # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
+    return _client
 
 
 @singleton_constructor
 def get_togetherai_client_native() -> OpenAI:
     url = "https://api.together.xyz/v1"
     api_key = os.getenv("TOGETHER_API_KEY")
-    return OpenAI(api_key=api_key, base_url=url)
+    _client = OpenAI(api_key=api_key, base_url=url)
+    logfire.instrument_openai(_client)
+    return _client
 
 
 @singleton_constructor
 def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
-    hf_model_path = os.path.join(os.getenv("HF_MODELS_DIR"), hf_repo)
-    if not os.path.exists(hf_model_path):
-        snapshot_download(hf_repo, local_dir=hf_model_path)
-
-    tokenizer = AutoTokenizer.from_pretrained(hf_model_path, legacy=False)
-    model = AutoModelForSeq2SeqLM.from_pretrained(hf_model_path)
-    pipeline = transformers.pipeline(
-        "text2text-generation", model=model, tokenizer=tokenizer, max_new_tokens=2048
-    )
-    return pipeline
+    raise NotImplementedError("HuggingFace local client not implemented")
 
 
 def is_openai(model: str) -> bool:
     keywords = [
         "ft:gpt",
-        "gpt-4o",
+        "gpt-4o-mini",
         "gpt-4",
         "gpt-3.5",
         "babbage",
@@ -255,18 +284,13 @@ def is_openai(model: str) -> bool:
     return any(keyword in model for keyword in keywords)
 
 
-def is_mistral(model: str) -> bool:
-    if model.startswith("mistral"):
-        return True
+def is_togetherai(model: str) -> bool:
+    keywords = ["together", "llama", "phi", "orca", "Hermes", "Yi"]
+    return any(keyword in model for keyword in keywords)
 
 
 def is_anthropic(model: str) -> bool:
     keywords = ["anthropic", "claude"]
-    return any(keyword in model for keyword in keywords)
-
-
-def is_togetherai(model: str) -> bool:
-    keywords = ["together", "llama", "phi", "orca", "Hermes", "Yi"]
     return any(keyword in model for keyword in keywords)
 
 
@@ -276,10 +300,10 @@ def is_huggingface_local(model: str) -> bool:
 
 
 def get_provider(model: str) -> str:
-    if is_openai(model):
+    if os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False":
+        return "openrouter"
+    elif is_openai(model):
         return "openai"
-    elif is_mistral(model):
-        return "mistral"
     elif is_anthropic(model):
         return "anthropic"
     elif is_togetherai(model):
@@ -287,109 +311,90 @@ def get_provider(model: str) -> str:
     elif is_huggingface_local(model):
         return "huggingface_local"
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
-
-
-def is_model_name_valid(model: str) -> bool:
-    if len(model) > 40:
-        return False  # Model name is too long, probably a mistake
-    try:
-        return get_provider(model) is not None
-    except NotImplementedError:
-        return False
-
-
-def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str]:
-    provider = get_provider(model)
-    if provider == "togetherai" and "nitro" not in model:
-        raise NotImplementedError(
-            "Most models on TogetherAI API, and the same models on OpenRouter API too, do not support function calling / JSON output mode. So, no Pydantic outputs for now. The exception seem to be Nitro-hosted models on OpenRouter."
-        )
-
-    use_openrouter = (
-        os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False"
-    )
-    if use_openrouter:
         print(
-            "Only some OpenRouter endpoints have `response_format`. If you encounter errors, please check on the OpenRouter website."
+            f"Model {model} is not supported with a provider; USE_OPENROUTER should be True"
         )
+        assert False
+
+
+def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str, str]:
+    provider = get_provider(model)
+    final_model_name = model
+
+    if provider == "openrouter":
+        print(f"Using {provider} provider for model {model}")
         kwargs = {}
-        if provider == "mistral":
-            # https://python.useinstructor.com/hub/mistral/
-            print(
-                "Only some Mistral endpoints have `response_format` on OpenRouter. If you encounter errors, please check on the OpenRouter website."
-            )
-            kwargs["mode"] = instructor.Mode.MISTRAL_TOOLS
-        elif provider == "anthropic":
-            raise NotImplementedError(
-                "Anthropic over OpenRouter does not work as of June 4 2024"
-            )
         client = (
             get_async_openrouter_client_pydantic(**kwargs)
             if use_async
             else get_openrouter_client_pydantic(**kwargs)
         )
-    elif provider == "openai":
-        client = (
-            get_async_openai_client_pydantic()
-            if use_async
-            else get_openai_client_pydantic()
-        )
-    elif provider == "mistral":
-        client = (
-            get_mistral_async_client_pydantic()
-            if use_async
-            else get_mistral_client_pydantic()
-        )
-    elif provider == "anthropic":
-        client = (
-            get_anthropic_async_client_pydantic()
-            if use_async
-            else get_anthropic_client_pydantic()
-        )
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
+        print(f"Using {provider} provider for model {model}")
+        if provider == "openai":
+            final_model_name = model.replace("openai/", "")
+            client = (
+                get_async_openai_client_pydantic()
+                if use_async
+                else get_openai_client_pydantic()
+            )
+        elif provider == "anthropic":
+            final_model_name = model.replace("anthropic/", "")
+            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
+            client = (
+                get_anthropic_async_client_pydantic()
+                if use_async
+                else get_anthropic_client_pydantic()
+            )
+        else:
+            raise NotImplementedError(
+                f"Model {model} Pydantic client is not supported for now outside of OpenRouter"
+            )
 
-    return client, provider
+    return client, provider, final_model_name
 
 
 def get_client_native(
     model: str, use_async=True
-) -> tuple[AsyncOpenAI | OpenAI | MistralAsyncClient | MistralClient, str]:
+) -> tuple[AsyncOpenAI | OpenAI | AsyncAnthropic | Anthropic, str, str]:
     provider = get_provider(model)
+    final_model_name = model
 
-    if os.getenv("USE_OPENROUTER"):
+    if provider == "openrouter":
         client = (
             get_async_openrouter_client_native()
             if use_async
             else get_openrouter_client_native()
         )
-    elif provider == "openai":
-        client = (
-            get_async_openai_client_native()
-            if use_async
-            else get_openai_client_native()
-        )
-    elif provider == "mistral":
-        client = (
-            get_mistral_async_client_native()
-            if use_async
-            else get_mistral_client_native()
-        )
-    elif provider == "togetherai":
-        if use_async:
-            raise NotImplementedError(
-                "Only synchronous calls are supported for TogetherAI"
-            )
-        client = get_togetherai_client_native()
-    elif provider == "huggingface_local":
-        assert model.startswith("hf:")
-        model = model.split("hf:")[1]
-        client = get_huggingface_local_client(model)
     else:
-        raise NotImplementedError(f"Model {model} is not supported for now")
+        print(f"Using {provider} provider for model {model}")
+        if provider == "openai":
+            final_model_name = model.replace("openai/", "")
+            client = (
+                get_async_openai_client_native()
+                if use_async
+                else get_openai_client_native()
+            )
+        elif provider == "anthropic":
+            final_model_name = model.replace("anthropic/", "")
+            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
+            client = (
+                get_anthropic_async_client_native()
+                if use_async
+                else get_anthropic_client_native()
+            )
+        elif provider == "togetherai":
+            if use_async:
+                raise NotImplementedError(
+                    "Only synchronous calls are supported for TogetherAI"
+                )
+            client = get_togetherai_client_native()
+        else:
+            raise NotImplementedError(f"Model {model} is not supported for now")
 
-    return client, provider
+    return client, provider, final_model_name
 
 
 def is_llama2_tokenized(model: str) -> bool:
@@ -405,7 +410,16 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
+ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
+    "claude-3.5-sonnet": "claude-3-5-sonnet-20240620",
+    "claude-3-opus": "claude-3-opus-20240229",
+    "claude-3-sonnet": "claude-3-sonnet-20240229",
+    "claude-3-haiku": "claude-3-haiku-20240307",
+}
+
+
 @pydantic_cache
+@logfire.instrument("query_api_chat", extract_args=True)
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
@@ -426,12 +440,15 @@ async def query_api_chat(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_pydantic(options["model"], use_async=True)
+    client, client_name, final_model_name = get_client_pydantic(
+        options["model"], use_async=True
+    )
+    options["model"] = final_model_name
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple queries not supported yet")
 
@@ -442,21 +459,22 @@ async def query_api_chat(
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
-    print(
-        options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
-    response = await client.chat.completions.create(
+    response, completion = await client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    # print(f"Completion: {completion}")
+
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
     return response
 
 
 @text_cache
+@logfire.instrument("query_api_chat_native", extract_args=True)
 async def query_api_chat_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -464,20 +482,22 @@ async def query_api_chat_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
 
-    client, client_name = get_client_native(options["model"], use_async=True)
+    client, client_name, final_model_name = get_client_native(
+        options["model"], use_async=True
+    )
+    options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
-    print(
-        options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
+
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
             messages=call_messages,
@@ -498,6 +518,7 @@ async def query_api_chat_native(
 
 
 @pydantic_cache
+@logfire.instrument("query_api_chat_sync", extract_args=True)
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -510,12 +531,15 @@ def query_api_chat_sync(
         ), "Cannot pass response_model=None if caching is enabled"
 
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "response_model": PlainText,
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_pydantic(options["model"], use_async=False)
+    client, client_name, final_model_name = get_client_pydantic(
+        options["model"], use_async=False
+    )
+    options["model"] = final_model_name
     if options.get("n", 1) != 1:
         raise NotImplementedError("Multiple structured queries not supported yet")
 
@@ -526,15 +550,14 @@ def query_api_chat_sync(
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
-    print(
-        options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
-    response = client.chat.completions.create(
+    response, completion = client.chat.completions.create_with_completion(
         messages=call_messages,
         **options,
     )
+    # print(f"Completion: {completion}")
 
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
@@ -542,6 +565,7 @@ def query_api_chat_sync(
 
 
 @text_cache
+@logfire.instrument("query_api_chat_sync_native", extract_args=True)
 def query_api_chat_sync_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -549,19 +573,20 @@ def query_api_chat_sync_native(
     **kwargs,
 ) -> str:
     default_options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
     }
     options = default_options | kwargs
     options["model"] = model or options["model"]
-    client, client_name = get_client_native(options["model"], use_async=False)
+    client, client_name, final_model_name = get_client_native(
+        options["model"], use_async=False
+    )
+    options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
 
-    print(
-        options,
-        f"Approx num tokens: {len(''.join([m['content'] for m in messages])) // 3}",
-    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(options)
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = client.chat(
@@ -643,6 +668,7 @@ def prepare_messages_alt(
     return messages
 
 
+@logfire.instrument("answer", extract_args=True)
 async def answer(
     prompt: str,
     preface: Optional[str] = None,
@@ -650,21 +676,22 @@ async def answer(
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
-    assert not is_model_name_valid(
-        str(prompt)
-    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     default_options = {
-        "model": "gpt-4o",
+        "model": "gpt-4o-mini-2024-07-18",
         "temperature": 0.5,
         "response_model": PlainText,
     }
     options = default_options | kwargs  # override defaults with kwargs
-    
-    async with global_semaphore:
+
+    if os.getenv("VERBOSE") == "True":
+        print(f"options: {options}")
+        print(f"messages: {messages}")
+    async with global_llm_semaphore:
         return await query_api_chat(messages=messages, **options)
 
 
+@logfire.instrument("answer_sync", extract_args=True)
 def answer_sync(
     prompt: str,
     preface: str | None = None,
@@ -672,12 +699,9 @@ def answer_sync(
     prepare_messages_func=prepare_messages,
     **kwargs,
 ) -> BaseModel:
-    assert not is_model_name_valid(
-        str(prompt)
-    ), "Are you sure you want to pass the model name as a prompt?"
     messages = prepare_messages_func(prompt, preface, examples)
     options = {
-        "model": "gpt-4o-2024-05-13",
+        "model": "gpt-4o-mini-2024-07-18",
         "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
@@ -685,6 +709,7 @@ def answer_sync(
 
 
 @pydantic_cache
+@logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
     response = await client.completions.create(model=model, prompt=text, **kwargs)
@@ -694,6 +719,7 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     return response_text
 
 
+@logfire.instrument("query_api_text_sync", extract_args=True)
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
     response = client.completions.create(model=model, prompt=text, **kwargs)
@@ -716,7 +742,6 @@ async def parallelized_call(
     func: Coroutine,
     data: list[str],
     max_concurrent_queries: int = 100,
-    concurrent_queries_cap: int = sys.maxsize,
 ) -> list[any]:
     """
     Run async func in parallel on the given data.
@@ -731,21 +756,22 @@ async def parallelized_call(
         print(f"Running {func} on {len(data)} datapoints sequentially")
         return [await func(d) for d in data]
 
-    max_concurrent_queries = int(
-        os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)
+    max_concurrent_queries = min(
+        max_concurrent_queries,
+        int(os.getenv("MAX_CONCURRENT_QUERIES", max_concurrent_queries)),
     )
-
-    max_concurrent_queries = min(max_concurrent_queries, concurrent_queries_cap)
 
     print(
         f"Running {func} on {len(data)} datapoints with {max_concurrent_queries} concurrent queries"
     )
 
+    local_semaphore = asyncio.Semaphore(max_concurrent_queries)
+
     async def call_func(sem, func, datapoint):
         async with sem:
             return await func(datapoint)
 
-    tasks = [call_func(global_semaphore, func, d) for d in data]
+    tasks = [call_func(local_semaphore, func, d) for d in data]
     return await asyncio.gather(*tasks)
 
 
@@ -753,7 +779,7 @@ async def parallelized_call(
 async def get_embedding(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=True)
@@ -765,7 +791,7 @@ async def get_embedding(
 def get_embeddings_sync(
     texts: list[str],
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[list[float]]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
     client, _ = get_client_pydantic(model, use_async=False)
@@ -777,7 +803,7 @@ def get_embeddings_sync(
 def get_embedding_sync(
     text: str,
     embedding_model: str = "text-embedding-3-small",
-    model: str = "gpt-3.5-turbo",
+    model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     return get_embeddings_sync([text], embedding_model, model)[0]
 
