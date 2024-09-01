@@ -1319,6 +1319,24 @@ class ExpectedEvidenceChecker(Checker):
             1 - answers["Q"]
         )
 
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        a, b, c, d = (
+            answers["P"],
+            answers["P_given_Q"],
+            answers["P_given_not_Q"],
+            answers["Q"],
+        )
+        denom = (
+            a * (1 - a)
+            + d**2 * b * (1 - b)
+            + (1 - d) ** 2 * c * (1 - c)
+            + (b - c) ** 2 * d * (1 - d)
+        )
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
+        num = abs(a - b * d - c * (1 - d))
+        v = num / denom
+        return v
+
 
 class ConsequenceChecker(Checker):
     num_base_questions = 1
