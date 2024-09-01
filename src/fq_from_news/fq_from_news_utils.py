@@ -270,6 +270,7 @@ async def generate_final_forecasting_questions(
     rough_fq_gen_model_name: str,
     final_fq_gen_model_name: str,
     pose_date: datetime,
+    be_lax_in_resolution_checking: bool,
 ) -> None:
     """
     Wrapper for calling functionality to generate final forecasting questions in an async manner.
@@ -295,7 +296,11 @@ async def generate_final_forecasting_questions(
         if not _check_if_rough_fq_was_rejected(rough_fq):
             tasks.append(
                 NewsApiFinalForecastingQuestionGenerator.rough_fq_to_final_fq(
-                    rough_fq, final_fq_gen_model_name, end_date, pose_date
+                    rough_fq,
+                    final_fq_gen_model_name,
+                    end_date,
+                    pose_date,
+                    be_lax_in_resolution_checking,
                 )
             )
 
