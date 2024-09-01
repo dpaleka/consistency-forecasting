@@ -1,7 +1,7 @@
 from common.utils import shallow_dict
 from .forecaster import Forecaster
 from .basic_forecaster import BasicForecaster
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Forecast
 from static_checks import (
     Checker,
     NegChecker,
@@ -242,7 +242,7 @@ class ConsistentForecaster(Forecaster):
         Example usage:
 
         ```python
-        cf.call_full(
+        cf.call(
             fq,
             bq_func_kwargs={
                 "n_relevance": 10,
@@ -258,7 +258,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = self.hypocrite.call_full(
+        ans_P = self.hypocrite.call(
             sentence, include_metadata=include_metadata, **kwargs
         )
         if isinstance(ans_P, tuple):
@@ -306,8 +306,8 @@ class ConsistentForecaster(Forecaster):
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
-            return ans_P, metadata
-        return ans_P
+            return Forecast(prob=ans_P, metadata=metadata), metadata
+        return Forecast(prob=ans_P, metadata=metadata)
 
     async def call_async(
         self,
@@ -328,7 +328,7 @@ class ConsistentForecaster(Forecaster):
         Example usage:
 
         ```python
-        cf.call_full(
+        cf.call(
             fq,
             bq_func_kwargs={
                 "n_relevance": 10,
@@ -344,7 +344,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = await self.hypocrite.call_async_full(
+        ans_P = await self.hypocrite.call_async(
             sentence, include_metadata=include_metadata, **kwargs
         )
         if isinstance(ans_P, tuple):
@@ -393,8 +393,8 @@ class ConsistentForecaster(Forecaster):
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
-            return ans_P, metadata
-        return ans_P
+            return Forecast(prob=ans_P, metadata=metadata), metadata
+        return Forecast(prob=ans_P, metadata=metadata)
 
     @classmethod
     def recursive(

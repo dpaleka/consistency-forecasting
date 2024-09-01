@@ -60,9 +60,9 @@ import asyncio
 
 
 if os.getenv("IPYKERNEL_CELL_NAME", None) is None:
-    final_prob = asyncio.run(af.call_async_full(sentence=fq))
+    final_prob = asyncio.run(af.call_async_full(fq=fq))
 else:
-    final_prob = await af.call_async_full(sentence=fq)  # noqa
+    final_prob = await af.call_async_full(fq=fq)  # noqa
 
 # %%
 print("Final LLM probability", final_prob)
