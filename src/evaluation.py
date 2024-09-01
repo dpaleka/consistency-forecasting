@@ -22,17 +22,16 @@ from forecasters import (
 from forecasters.consistent_forecaster import ConsistentForecaster
 from static_checks.Checker import (
     Checker,
-    ParaphraseChecker,  # noqa
-    NegChecker,  # noqa
+    ExpectedEvidenceChecker,
     choose_checkers,
 )
 from common.path_utils import get_data_path, get_src_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
+# BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 
-# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
@@ -498,8 +497,7 @@ def main(
                 depth=4,
                 hypocrite=BasicForecaster(),
                 checks=[
-                    ParaphraseChecker(),
-                    NegChecker(),
+                    ExpectedEvidenceChecker(),
                 ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
