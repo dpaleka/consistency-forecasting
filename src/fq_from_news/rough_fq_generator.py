@@ -21,35 +21,35 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     news_validation_prompt = {
         "preface": """
-        You are an AI agent tasked with evaluating news articles to determine if they are suitable for generating forecasting (prediction) questions that can be answered with a definitive YES or NO. Assess each article against the following criteria to ensure clarity, relevance, and factual accuracy:
+        You are an AI agent responsible for evaluating news articles to determine their suitability for generating forecasting (prediction) questions that can be answered with a definitive YES or NO. Assess each article against the following criteria to ensure clarity, relevance, and factual accuracy:
 
-        1. **Clarity of Content**: Does the article present information in a generally clear and straightforward manner? While some ambiguity is acceptable, reject articles that are overly convoluted or difficult to understand.
+        1. **Clarity of Content**: Is the information presented clearly and straightforwardly? Reject articles that are overly convoluted or difficult to understand.
 
-        2. **Definitive Events**: Does the article focus on concrete events that have occurred or are planned? Articles that reference past events not within the LLM's knowledge should still be evaluated based on the clarity and context they provide regarding those events.
+        2. **Focus on Definitive Events**: Does the article discuss concrete events that have occurred or are planned? Evaluate articles referencing past events based on their clarity and context.
 
-        3. **Contextual Relevance**: Does the article provide sufficient context for the events discussed? Articles may have some gaps in background information, but they should still allow for a reasonable understanding of the events, even if they refer to past occurrences.
+        3. **Contextual Relevance**: Does the article provide adequate context for the events discussed? While some background gaps are acceptable, the article should allow for a reasonable understanding of the events.
 
-        4. **Specificity of Information**: Is the information specific enough to allow for the formulation of precise forecasting questions? While some generality is acceptable, reject articles that are too vague to support clear predictions.
+        4. **Specificity of Information**: Is the information detailed enough to formulate precise forecasting questions? Reject articles that are too vague to support clear predictions.
 
-        5. **Binary Resolution Potential**: Does the article imply a resolution that can be reasonably confirmed as TRUE (YES) or FALSE (NO)? Articles may contain some subjective elements, but they should still lead to a binary resolution.
+        5. **Binary Resolution Potential**: Does the article imply a resolution that can be confirmed as TRUE (YES) or FALSE (NO)? Articles may contain subjective elements but should lead to a binary outcome.
 
-        6. **Avoidance of Sensitive Topics**: Does the article avoid sensitive subjects like religion, politics, gender, or race? Reject articles that may introduce significant bias.
+        6. **Avoidance of Sensitive Topics**: Does the article steer clear of sensitive subjects like religion, politics, gender, or race? Reject articles that may introduce significant bias.
 
-        7. **Completeness of Information**: Does the article contain enough detail to create multiple high-quality forecasting questions? It’s acceptable for articles to be somewhat brief, as long as they provide sufficient information for question generation.
+        7. **Completeness of Information**: Does the article provide sufficient detail to create multiple high-quality forecasting questions? Brief articles are acceptable as long as they contain enough information.
 
-        8. **Numerical Clarity**: If applicable, does the article present clear thresholds or metrics for numerical data? Some ambiguity in numerical references is acceptable, but they should still be understandable.
+        8. **Numerical Clarity**: If applicable, does the article present clear thresholds or metrics for numerical data? Some ambiguity is acceptable, but numerical references should be understandable.
 
-        9. **Sufficiency for Definitive Resolution**: The article should provide enough information to formulate forecasting questions that can yield resolutions remaining definitive from the current date until the specified resolution date in {month_name}, {year}. Ensure that the content supports actionable predictions based on concrete events, assuming the current date is {pose_date}.
+        9. **Sufficiency for Definitive Resolution**: Does the article provide enough information to formulate forecasting questions that yield definitive resolutions from the current date until the specified resolution date in {month_name}, {year}? Ensure the content supports actionable predictions based on concrete events, assuming the current date is {pose_date}.
 
-        10. **Truncated Information**: Truncated information is NOT a cause for rejection. As long as the article can be used to form a prediction question, accept it, even if it references past events not covered by the LLM's knowledge.
+        10. **Truncated Information**: Truncated information is NOT a cause for rejection. Accept articles that can form prediction questions, even if they reference past events not covered by the LLM's knowledge.
 
-        An article that meets most of these criteria is considered "complete" and suitable for generating forecasting questions, even if it contains some minor ambiguities or references past events that the you may not fully know.
+        An article that meets most of these criteria is considered "complete" and suitable for generating forecasting questions, even if it contains minor ambiguities or references past events that may not be fully known.
         """,
         "prompt": """
-        Please evaluate the following news article based on the established criteria for completeness. 
+        Please evaluate the following news article based on the established criteria for completeness: 
         {source_article}
 
-        Based on your evaluation, determine if the article is "complete" and suitable for generating forecasting questions. Provide a brief justification for your assessment.
+        Based on your assessment, determine if the article is "complete" and suitable for generating forecasting questions. Provide a brief justification for your decision.
         """,
     }
 
@@ -57,9 +57,9 @@ class NewsApiRoughForecastingQuestionGenerator:
         "preface": """
         You are tasked with generating forecasting questions that can be answered with a definitive YES or NO based on the provided news articles. Ensure each question is clear, unambiguous, and free from sensitive topics like religion, politics, or gender. Avoid subjective terms like "significant."
 
-        Questions must have a resolution that remains definitive from the current date until {month_name}, {year}. Assume that the current date (`current_date`) is {pose_date} and add sufficient information for questions which refer to events that might not have come to pass as of this date.
+        Questions must have a resolution that remains definitive from the current date until {month_name}, {year}. Assume that the current date (`current_date`) is {pose_date} and provide sufficient information for questions that refer to events that may not have occurred as of this date.
         
-        Use concrete events from the articles, providing necessary context. Do not include any information indicating the question was formed on the current date (`current_date`) or using an article.
+        Use concrete events from the articles, providing necessary context. Do not include any information indicating the question was formed on the current date (`current_date`) or using the article.
 
         Aim for a diverse, clear, and objective set of questions.
         """,
@@ -77,6 +77,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         - **Clarity:** Be straightforward and precise, avoiding ambiguity.
         - **Resolution Date:** Specify the resolution date as "by {month_name}, {year}?"
         - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
+        - **Named Entities:** Include at least one named entity (BUt at most three) from the article to enhance specificity.
         - **Article Usage:** Use "a" instead of "the" to enhance predictability.
         - **Planned Events:** Frame questions about announced but incomplete events as proposals or announcements, explicitly avoiding questions about the completion of these events.
 

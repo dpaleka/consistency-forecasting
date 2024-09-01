@@ -26,31 +26,31 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     initial_prompt = {
         "preface": """
-        You are an expert in validating forecasting (prediction) questions based on news articles. Verify that each question adheres to the established guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. The resolution date for the questions should be set as {month_name}, {year}.
+        You are an expert in validating forecasting (prediction) questions based on news articles. Your task is to verify that each question adheres to the established guidelines. Ensure that questions are based on concrete events, with the forecaster assuming the current date is {pose_date}. The resolution date for the questions should be set as {month_name}, {year}.
 
-        The forecaster will assume the current date is the `pose_date`, which is {pose_date}. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
+        The forecaster will assume the current date is the `pose_date`, which is {pose_date}. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event based solely on your training data.
         """,
         "prompt": """
         ## Guidelines for Validating Forecasting Questions
 
         ### 1. **Relevance to Article Content**:
-        - The question's title and body **must** refer to factual events or announcements stated in the source article and should NOT extrapolate anything beyond the article's content. 
-        - The resolution must be correct in the context of the news article.
+        - The question's title and body **must** refer to factual events or announcements stated in the source article and should NOT extrapolate beyond the article's content.
+        - The resolution must be accurate in the context of the news article.
 
         ### 2. **No Irrelevant Dates**:
-        - If either the question's body or the title refer to a date or time from the article apart from the one set as the resolution date in the question title, reject the question.
-        - If either the question's body or the title refer to the given `pose_date`, reject it.
+        - Reject questions that reference any date or time from the article other than the resolution date specified in the question title.
+        - Reject questions that mention the given `pose_date`.
 
         ### 3. **Named Events**:
-        - The question should not refer to any specific named events that you (the expert) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
+        - The question should not refer to specific named events that you (the expert) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
 
         ### 4. **No Reference to Articles**:
-        - The title and body should NOT refer to any articles or indicate the question was formed using news content.
-        - Ensure there is no discernible knowledge of the `pose_date`.
+        - The title and body should NOT indicate that the question was formed using news content or refer to any articles.
+        - Ensure there is no discernible knowledge of the `pose_date` in the question's title and body.
 
         ### 5. **Factual Basis**:
-        - The question should refer to events that are directly inferred from and supported by the article content.
-        - Do not accept questions that contain fabricated information not present in the article.
+        - The question should refer to events directly inferred from and supported by the article content.
+        - Do not accept questions containing fabricated information not present in the article.
 
         ### 6. **Definitive Answers**:
         - Questions should yield a clear YES or NO answer based on factual information.
@@ -69,7 +69,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         - Questions should not depend on specific knowledge that could disadvantage certain models or participants. Reject questions that refer to more than three specific details from the article.
 
         ### 10. **Avoid Obvious Answers**:
-        - Questions should not be easily guessed using common sense or simplistic reasoning. If you're able to answer the question correctly using just the question title and no other information, reject the question.
+        - Questions should not be easily guessed using common sense or simplistic reasoning. If you can answer the question correctly using just the question title and no other information, reject it.
         - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
 
         ## Validation Process:
@@ -84,7 +84,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         Data will be given to you in the following form:
             {rough_fq_data_desc}
 
-        You must return the "Final Form" of the forecasting question. It is defined as:
+        You must return the "Final Form" of the forecasting question, defined as:
             {final_fq_form}
 
         Here are examples of forecasting questions in their "Final Form":
@@ -102,11 +102,13 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     resolution_checker_prompt = {
         "preface": """
-        You are an AI agent tasked with answering questions based solely on the content of a provided news article. Follow these guidelines:
+        You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
 
-        - Respond using information directly stated or reasonably inferred from the article.
-        - Do not fabricate details; however, reasonable interpretations based on the content are acceptable.
-        - Understand that the forecasting question was formed on a date prior to the resolution date. Your answers should be based on the context of the news article's date, not the resolution date.
+        When evaluating a forecasting question, keep the following principles in mind:
+        - The resolution should be based on the factual information present in the news article.
+        - Your assessment should be made from the perspective of the article's publication date, not any other date.
+        - Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
+        - Use the `None` option **only** if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO. If the article provides any relevant context or information that can lead to a definitive answer, choose either `True` or `False`.
         """,
         "prompt": """
         Consider the following news article:
@@ -115,14 +117,15 @@ class NewsApiFinalForecastingQuestionGenerator:
             Content: {article_content}
             Date: {article_date}
 
-        Now, consider this question: {question_title}
+        Now, consider this forecasting question: {question_title}
 
         For additional context, use the following information to disambiguate the question:
             {question_body}
 
-        Your task is to answer the question using **only** factual information from the news article. Return:
-        1. `True` if the answer to the question can be reasonably inferred as YES based on the article.
-        2. `False` if the answer to the question can be reasonably inferred as NO based on the article.
+        Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
+        1. `True` if the answer to the question can be reasonably inferred as YES.
+        2. `False` if the answer to the question can be reasonably inferred as NO.
+        3. `None` if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO.
 
         Please provide a brief justification for your answer, citing specific details from the article that support your reasoning.
         """,
