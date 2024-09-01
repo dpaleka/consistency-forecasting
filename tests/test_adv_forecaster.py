@@ -53,7 +53,7 @@ async def test_advanced_forecaster():
             f"\n{question['title']}\n{question['body']}\n{question['resolution_date']}\n\n{'%'*40}\n% Running Advanced Forecaster\n{'%'*40}\n"
         )
 
-        final_prob = await af.call_async(sentence=fq)
+        final_prob = await af.call_async_full(sentence=fq)
 
         logging.info(f"Final LLM probability: {final_prob}")
 

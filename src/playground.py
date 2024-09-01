@@ -38,7 +38,7 @@ print(f"Logging handlers: {logging.getLogger().handlers}")
 print(f"Logging formatter: {logging.getLogger().handlers[0].formatter if logging.getLogger().handlers else 'No formatter'}")
 
 # Call the BasicForecaster synchronously
-sync_result = basic_forecaster.call(fq)
+sync_result = basic_forecaster.call_full(fq)
 print(f"Synchronous BasicForecaster result: {sync_result}")
 
 #%%
@@ -53,14 +53,12 @@ cf = ConsistentForecaster(
 )
 import asyncio
 
-# x = cf.call(fq)
-x = asyncio.run(cf.call_async(
+x = asyncio.run(cf.call_async_full(
     fq,
     bq_func_kwargs={"model": "gpt-4o-mini"},
     instantiation_kwargs={"model": "gpt-4o-mini"},
     model="gpt-4o-mini",
 ))
-# x = asyncio.run(cf.call_async(fq))
 
 # %%
 print(f"{x=}")

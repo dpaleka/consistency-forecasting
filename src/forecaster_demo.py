@@ -59,8 +59,10 @@ af = AdvancedForecaster(
 import asyncio
 
 
-final_prob = asyncio.run(af.call_async(sentence=fq))
-# final_prob = await af.call_async(sentence=fq)
+if os.getenv("IPYKERNEL_CELL_NAME", None) is None:
+    final_prob = asyncio.run(af.call_async_full(sentence=fq))
+else:
+    final_prob = await af.call_async_full(sentence=fq)  # noqa
 
 # %%
 print("Final LLM probability", final_prob)
