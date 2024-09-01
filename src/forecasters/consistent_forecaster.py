@@ -242,7 +242,7 @@ class ConsistentForecaster(Forecaster):
         Example usage:
 
         ```python
-        cf.call(
+        cf.call_full(
             fq,
             bq_func_kwargs={
                 "n_relevance": 10,
@@ -258,7 +258,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = self.hypocrite.call(
+        ans_P = self.hypocrite.call_full(
             sentence, include_metadata=include_metadata, **kwargs
         )
         if isinstance(ans_P, tuple):
@@ -328,7 +328,7 @@ class ConsistentForecaster(Forecaster):
         Example usage:
 
         ```python
-        cf.call(
+        cf.call_full(
             fq,
             bq_func_kwargs={
                 "n_relevance": 10,
@@ -344,7 +344,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = await self.hypocrite.call_async(
+        ans_P = await self.hypocrite.call_async_full(
             sentence, include_metadata=include_metadata, **kwargs
         )
         if isinstance(ans_P, tuple):

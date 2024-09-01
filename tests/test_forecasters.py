@@ -39,7 +39,7 @@ def test_basic_forecaster_call(
     mock_answer_sync, basic_forecaster, mock_forecasting_question
 ):
     expected_prob = mock_response.prob
-    prob = basic_forecaster.call(mock_forecasting_question)
+    prob = basic_forecaster.call_full(mock_forecasting_question)
     assert prob == pytest.approx(
         expected_prob
     ), "The calculated probability does not match the expected value"
@@ -52,7 +52,7 @@ async def test_basic_forecaster_call_async(
     mock_answer, basic_forecaster, mock_forecasting_question
 ):
     expected_prob = mock_response.prob
-    prob = await basic_forecaster.call_async(mock_forecasting_question)
+    prob = await basic_forecaster.call_async_full(mock_forecasting_question)
     assert prob == pytest.approx(
         expected_prob
     ), "The calculated probability does not match the expected value"
@@ -84,7 +84,7 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
 
     # Call the forecaster with actual prompts
     forecaster = COT_Forecaster(preface=user_preface, examples=None)
-    prob, chain_of_thought = forecaster.call(mock_forecasting_question)
+    prob, chain_of_thought = forecaster.call_full(mock_forecasting_question)
 
     # Print the chain of thought for manual inspection
     print(f"\n{chain_of_thought=}")
@@ -215,7 +215,7 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
     bq_func_kwargs = {
         "model": "gpt-4o-mini-2024-07-18"
     }  # doesn't pass, unsure where to provide model
-    prob = await consistent_forecaster.call_async(
+    prob = await consistent_forecaster.call_async_full(
         test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
     )
     print("Probability: ", prob)
@@ -228,7 +228,7 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
 def test_consistent_forecaster_call_sync(consistent_forecaster):
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    prob = consistent_forecaster.call(
+    prob = consistent_forecaster.call_full(
         test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
     )
     print("Probability: ", prob)
