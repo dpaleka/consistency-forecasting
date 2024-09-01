@@ -1259,9 +1259,18 @@ class ExpectedEvidenceChecker(Checker):
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         P_given_Q = Conditional().instantiate_sync(base_sentences, **kwargs)
         not_Q = Neg().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        if (
+            isinstance(P_given_Q, list)
+            or isinstance(not_Q, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         P_given_not_Q = Conditional().instantiate_sync(
             {"P": base_sentences["P"], "Q": not_Q.not_P}
         )
+        if isinstance(P_given_not_Q, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P,
@@ -1278,9 +1287,18 @@ class ExpectedEvidenceChecker(Checker):
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
         P_given_Q = await Conditional().instantiate(base_sentences, **kwargs)
         not_Q = await Neg().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        if (
+            isinstance(P_given_Q, list)
+            or isinstance(not_Q, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
         P_given_not_Q = await Conditional().instantiate(
             {"P": base_sentences["P"], "Q": not_Q.not_P}
         )
+        if isinstance(P_given_not_Q, list):
+            return []
         return [
             self.TupleFormat(
                 P=P.P,
@@ -1596,6 +1614,7 @@ checker_classes = [
     ("ConsequenceChecker", ConsequenceChecker),
     ("ParaphraseChecker", ParaphraseChecker),
     ("CondCondChecker", CondCondChecker),
+    ("ExpectedEvidenceChecker", ExpectedEvidenceChecker),
 ]
 
 
