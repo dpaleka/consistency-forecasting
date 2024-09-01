@@ -1257,7 +1257,9 @@ class ExpectedEvidenceChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
-        P_given_Q = Conditional().instantiate_sync(base_sentences, **kwargs)
+        P_given_Q = Conditional().instantiate_sync(
+            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
+        )
         not_Q = Neg().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
         if (
             isinstance(P_given_Q, list)
@@ -1267,7 +1269,7 @@ class ExpectedEvidenceChecker(Checker):
         ):
             return []
         P_given_not_Q = Conditional().instantiate_sync(
-            {"P": base_sentences["P"], "Q": not_Q.not_P}
+            {"P": not_Q.not_P, "Q": base_sentences["P"]}, **kwargs
         )
         if isinstance(P_given_not_Q, list):
             return []
@@ -1285,7 +1287,9 @@ class ExpectedEvidenceChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
-        P_given_Q = await Conditional().instantiate(base_sentences, **kwargs)
+        P_given_Q = await Conditional().instantiate(
+            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
+        )
         not_Q = await Neg().instantiate({"P": base_sentences["Q"]}, **kwargs)
         if (
             isinstance(P_given_Q, list)
@@ -1295,7 +1299,7 @@ class ExpectedEvidenceChecker(Checker):
         ):
             return []
         P_given_not_Q = await Conditional().instantiate(
-            {"P": base_sentences["P"], "Q": not_Q.not_P}
+            {"P": not_Q.not_P, "Q": base_sentences["P"]}, **kwargs
         )
         if isinstance(P_given_not_Q, list):
             return []
