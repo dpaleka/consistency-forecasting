@@ -398,7 +398,7 @@ async def main():
         try:
             adv_probs = []
             for i in range(SAMPLES):
-                adv_prob = await ADVANCED_FORECASTER.call_async(sentence=q)
+                adv_prob = await ADVANCED_FORECASTER.call_async(fq=q)
                 adv_probs.append(float(adv_prob))
 
             # Median of the samples
