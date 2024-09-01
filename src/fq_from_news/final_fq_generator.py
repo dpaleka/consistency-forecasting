@@ -26,90 +26,77 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     initial_prompt = {
         "preface": """
-        You are an expert in validating forecasting (prediction) questions that require nuanced understanding and cannot be answered by simple or trivial forecasting algorithms. Verify that each forecasting question's title, body, and resolution adhere to the established guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. Correct any discrepancies or ambiguities. The resolution date for the questions should be set as {month_name}, {year}.
+        You are an expert in validating forecasting (prediction) questions based on news articles. Verify that each question adheres to the established guidelines. Ensure questions are based on concrete events and assume the forecaster's current date is sometime in the previous year. The resolution date for the questions should be set as {month_name}, {year}.
 
-        The forecaster will assume the current date is the `pose_date`, which is {pose_date}. Therefore, use concrete events to form your questions. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
+        The forecaster will assume the current date is the `pose_date`, which is {pose_date}. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event through solely your training data.
         """,
         "prompt": """
         ## Guidelines for Validating Forecasting Questions
 
-        ### 1. **Definitive Answers**:
-        - Questions should yield a clear YES or NO answer based on factual information from news articles.
+        ### 1. **Relevance to Article Content**:
+        - The question's title and body **must** refer to factual events or announcements stated in the source article and should NOT extrapolate anything beyond the article's content. 
+        - The resolution must be correct in the context of the news article.
+
+        ### 2. **No Irrelevant Dates**:
+        - If either the question's body or the title refer to a date or time from the article apart from the one set as the resolution date in the question title, reject the question.
+        - If either the question's body or the title refer to the given `pose_date`, reject it.
+
+        ### 3. **Named Events**:
+        - The question should not refer to any specific named events that you (the expert) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
+
+        ### 4. **No Reference to Articles**:
+        - The title and body should NOT refer to any articles or indicate the question was formed using news content.
+        - Ensure there is no discernible knowledge of the `pose_date`.
+
+        ### 5. **Factual Basis**:
+        - The question should refer to events that are directly inferred from and supported by the article content.
+        - Do not accept questions that contain fabricated information not present in the article.
+
+        ### 6. **Definitive Answers**:
+        - Questions should yield a clear YES or NO answer based on factual information.
         - The resolution should align with this information, treating True as "Yes" and False as "No."
-        - Ensure the resolution remains valid for most potential scenarios up to the specified resolution date (e.g., "by the end of July 2024").
-        - Questions may be accepted even if the resolution is not completely correct in the context of the question's body and the news article.
+        - Ensure the resolution remains valid for most potential scenarios up to the specified resolution date.
 
-        ### 2. **Numeric Values**:
-        - For questions involving numeric values, frame inquiries to determine if the value will cross or fall below a specified threshold.
-        - Utilize rough thresholds to minimize numerical biases.
-
-        ### 3. **Objectivity and Clarity**:
-        - Avoid ambiguous or subjective terms when possible.
-        - Questions should be objective and unambiguous, steering clear of biases related to religion, culture, politics, or stereotypes when feasible.
-
-        ### 4. **Question Body**:
-        - The body of the question should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
+        ### 7. **Question Body**:
+        - The body should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
         - Provide adequate context without leading to predictable answers.
 
-        ### 5. **Future Accuracy**:
-        - Ensure that the question remains accurate for most foreseeable futures up to the specified resolution date.
+        ### 8. **Future Accuracy**:
+        - Ensure the question remains accurate for most foreseeable futures up to the resolution date.
         - Questions based on specific events are permissible, even if they may resolve between the forecaster's `pose_date` and the resolution date's month.
 
-        ### 6. **Avoid Overly Specific Questions**:
-        - Questions should not depend on specific knowledge that could disadvantage certain models or participants. A question is overly specific if it references more than five distinct named entities from the source article.
+        ### 9. **Avoid Overly Specific Questions**:
+        - Questions should not depend on specific knowledge that could disadvantage certain models or participants. Reject questions that refer to more than three specific details from the article.
 
-        ### 7. **Do Not Fabricate Information**:
-        - Ensure that most questions are based on the information provided in the article. Some questions stemming from reasonable interpretations beyond the content of the source may be accepted.
-
-        ### 8. **Avoid Obvious Answers**:
-        - Questions should not be so obvious that they can be easily guessed using common sense or simplistic reasoning.
+        ### 10. **Avoid Obvious Answers**:
+        - Questions should not be easily guessed using common sense or simplistic reasoning. If you're able to answer the question correctly using just the question title and no other information, reject the question.
         - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
-
-        ### 9. **No Reference to Articles**:
-        - The title and body of the question should not directly reference any articles or indicate that the question was formed using news content.
-        - Ensure there is no discernible knowledge of the `pose_date`.
-        - Questions that fail this test may be accepted if they meet all other guidelines.
 
         ## Validation Process:
 
         1. **Validation**:
         - Validate the forecasting question and return its "Final Form." A question is valid if it mostly follows the above guidelines.
 
-        2. **Modification**:
-        - If the question is invalid, attempt to modify it to meet the guidelines and return the modified version's "Final Form."
-
-        3. **Rejection**:
-        - If modification fails, return a rejected "Final Form" only if the question is completely unacceptable. The rejected form is: 
-            ```JSON
+        2. **Rejection**:
+        - If the question violates any of the guidelines, reject it. The rejected form is: 
             {example_rejected_fq}
-            ```
 
         Data will be given to you in the following form:
-        ```JSON
-        {rough_fq_data_desc}
-        ```
+            {rough_fq_data_desc}
 
         You must return the "Final Form" of the forecasting question. It is defined as:
-        ```JSON
-        {final_fq_form}
-        ```
+            {final_fq_form}
 
-        Here are a few examples of forecasting questions in their "Final Form":
-        ```JSON
-        {example_fq_1}
-        ```
-        Example 2:
-        ```JSON
-        {example_fq_2}
-        ```
-        ```JSON
-        {example_fq_3}
-        ```
+        Here are examples of forecasting questions in their "Final Form":
+            Example 1:
+                {example_fq_1}
+            Example 2:
+                {example_fq_2}
+            Example 3:
+                {example_fq_3}
 
-        Think carefully & aptly and perform the above validation process steps for the following forecasting question:
-        ```JSON
-        {source_rough_fq_data}
-        ```
+        Carefully validate the following forecasting question:
+            {source_rough_fq_data}
         """,
     }
 
@@ -118,14 +105,15 @@ class NewsApiFinalForecastingQuestionGenerator:
         You are an AI agent tasked with answering questions based solely on the content of a provided news article. Follow these guidelines:
 
         - Respond using information directly stated or reasonably inferred from the article.
-        - Avoid adding personal insights, interpretations, or external information that is not supported by the article.
-        - Do not fabricate details, but reasonable interpretations based on the content are acceptable.
+        - Do not fabricate details; however, reasonable interpretations based on the content are acceptable.
+        - Understand that the forecasting question was formed on a date prior to the resolution date. Your answers should be based on the context of the news article's date, not the resolution date.
         """,
         "prompt": """
         Consider the following news article:
             Title: {article_title}
             Description: {article_description}
             Content: {article_content}
+            Date: {article_date}
 
         Now, consider this question: {question_title}
 
@@ -133,10 +121,10 @@ class NewsApiFinalForecastingQuestionGenerator:
             {question_body}
 
         Your task is to answer the question using **only** factual information from the news article. Return:
-        1. `True` if the answer to the question is reasonably inferred as Yes
-        2. `False` if the answer to the question is reasonably inferred as No
+        1. `True` if the answer to the question can be reasonably inferred as YES based on the article.
+        2. `False` if the answer to the question can be reasonably inferred as NO based on the article.
 
-        Please provide a brief reasoning for your answer.
+        Please provide a brief justification for your answer, citing specific details from the article that support your reasoning.
         """,
     }
 
@@ -145,7 +133,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         "articleDescription": "The description of the news article that was used to form the forecasting question",
         "articleContent": "The content of the news article that was used to form the forecasting question",
         "fqTitle": "The title of the forecasting question",
-        "fqBody": "The Body of the forecasting question",
+        "fqBody": "The body of the forecasting question",
         "fqResolution": "A boolean representing the resolution of the forecasting question. True for 'Yes' and False for 'No'",
     }
 
@@ -237,6 +225,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         article_title,
         article_description,
         article_content,
+        article_date,
         res_unchecked_fq_title,
         res_unchecked_fq_body,
     ) -> tuple[str, str]:
@@ -248,6 +237,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             article_title=article_title,
             article_description=article_description,
             article_content=article_content,
+            article_date=article_date,
             question_title=res_unchecked_fq_title,
             question_body=res_unchecked_fq_body,
         )
@@ -384,10 +374,11 @@ class NewsApiFinalForecastingQuestionGenerator:
 
         # Form prompt and verify resolution
         processed_rough_fq_data = cls._processed_rough_fq_data(rough_fq_data)
-        article_title, article_description, article_content = (
+        article_title, article_description, article_content, article_date = (
             processed_rough_fq_data["articleTitle"],
             processed_rough_fq_data["articleDescription"],
             processed_rough_fq_data["articleContent"],
+            processed_rough_fq_data["articlePulishedAt"],
         )
 
         res_unchecked_fq_title, res_unchecked_fq_body = (
@@ -402,6 +393,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             article_title,
             article_description,
             article_content,
+            article_date,
             res_unchecked_fq_title,
             res_unchecked_fq_body,
         )
