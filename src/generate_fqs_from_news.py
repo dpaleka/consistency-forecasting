@@ -74,6 +74,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.rough_fq_gen_model_name,
             args.final_fq_gen_model_name,
             args.pose_date,
+            args.be_lax_in_res_checking,
         )
 
     if args.verify_fqs:
@@ -194,6 +195,15 @@ def get_args() -> argparse.Namespace:
         default="",
     )
 
+    # Resolution checking
+    parser.add_argument(
+        "-lax",
+        "--be-lax-in-res-checking",
+        action="store_true",
+        help="Should the Final Generator be lax while checking the resolution",
+        required=True,
+    )
+
     # Sync enabling argument (cannot be used with verify)
     parser.add_argument(
         "--sync",
@@ -300,6 +310,7 @@ def get_args() -> argparse.Namespace:
             help="The threshold used to designate an article as a duplicate while processing",
             default=0.25,
         )
+
     else:
         raise NotImplementedError("Sentinel scraping has not been implemented yet")
 

@@ -7,7 +7,8 @@ from common.datatypes import ForecastingQuestion
 from common.llm_utils import answer_sync, answer
 from .fq_from_news_datatypes import (
     ForecastingQuestion_stripped_with_resolution,
-    ForecastingQuestionGroundTruthResolution,
+    ForecastingQuestionGroundTruthResolutionStrict,
+    ForecastingQuestionGroundTruthResolutionLax,
 )
 from .date_utils import last_datetime_of_month, format_news_range_date
 
@@ -100,7 +101,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         """,
     }
 
-    resolution_checker_prompt = {
+    resolution_checker_prompt_strict = {
         "preface": """
         You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
 
@@ -128,6 +129,36 @@ class NewsApiFinalForecastingQuestionGenerator:
         3. `None` if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO.
 
         Please provide a brief justification for your answer, citing specific details from the article that support your reasoning.
+        """,
+    }
+
+    resolution_checker_prompt_lax = {
+        "preface": """
+        You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
+
+        When evaluating a forecasting question, keep the following principles in mind:
+        - The resolution should be based on the factual information present in the news article.
+        - Your assessment should be made from the perspective of the article's publication date, not any other date.
+        - Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
+        - You must provide an answer of either `True` or `False`. If the article does not provide sufficient information to definitively determine an answer, choose the option that aligns more closely with the context or implications presented in the article.
+        """,
+        "prompt": """
+        Consider the following news article:
+            Title: {article_title}
+            Description: {article_description}
+            Content: {article_content}
+            Date: {article_date}
+
+        Now, consider this forecasting question: {question_title}
+
+        For additional context, use the following information to disambiguate the question:
+            {question_body}
+
+        Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
+        1. `True` if the answer to the question can be reasonably inferred as YES.
+        2. `False` if the answer to the question can be reasonably inferred as NO.
+
+        Please provide a brief justification for your answer, citing specific details from the article that support your reasoning. If you find the information ambiguous, select the answer that best fits the context provided in the article.
         """,
     }
 
@@ -231,12 +262,18 @@ class NewsApiFinalForecastingQuestionGenerator:
         article_date,
         res_unchecked_fq_title,
         res_unchecked_fq_body,
+        use_lax,
     ) -> tuple[str, str]:
         """
         Forms the resolution checking forecasting prompt and preface from rough forecasting question data.
         """
-        forecasting_preface = cls.resolution_checker_prompt["preface"]
-        forecasting_prompt = cls.resolution_checker_prompt["prompt"].format(
+        if use_lax:
+            unformatted_forecasting_prompt = cls.resolution_checker_prompt_lax
+        else:
+            unformatted_forecasting_prompt = cls.resolution_checker_prompt_strict
+
+        forecasting_preface = unformatted_forecasting_prompt["preface"]
+        forecasting_prompt = unformatted_forecasting_prompt["prompt"].format(
             article_title=article_title,
             article_description=article_description,
             article_content=article_content,
@@ -368,6 +405,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         rough_fq_data: dict,
         model_name: str,
         final_resolution_unchecked_forecasting_question: ForecastingQuestion_stripped_with_resolution,
+        be_lax_in_resolution_checking: bool,
     ) -> ForecastingQuestion_stripped_with_resolution:
         # If the FQ is already deemed invalid, return None
         if cls.check_if_fq_was_rejected(
@@ -399,15 +437,28 @@ class NewsApiFinalForecastingQuestionGenerator:
             article_date,
             res_unchecked_fq_title,
             res_unchecked_fq_body,
+            be_lax_in_resolution_checking,
         )
 
         # Generate fqs where resolution has been specifically checked
-        generated_resolution: ForecastingQuestionGroundTruthResolution = await answer(
-            prompt=forecasting_prompt,
-            preface=forecasting_preface,
-            model=model_name,
-            response_model=ForecastingQuestionGroundTruthResolution,
-        )
+        if be_lax_in_resolution_checking:
+            generated_resolution: ForecastingQuestionGroundTruthResolutionLax = (
+                await answer(
+                    prompt=forecasting_prompt,
+                    preface=forecasting_preface,
+                    model=model_name,
+                    response_model=ForecastingQuestionGroundTruthResolutionLax,
+                )
+            )
+        else:
+            generated_resolution: ForecastingQuestionGroundTruthResolutionStrict = (
+                await answer(
+                    prompt=forecasting_prompt,
+                    preface=forecasting_preface,
+                    model=model_name,
+                    response_model=ForecastingQuestionGroundTruthResolutionStrict,
+                )
+            )
 
         if (
             generated_resolution.resolution is None
@@ -425,6 +476,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         model_name: str,
         end_date: datetime,
         pose_date: datetime,
+        be_lax_in_resolution_checking: bool,
     ) -> ForecastingQuestion:
         """
         Class method to create the final ForecastingQuestion from rough forecasting question data asynchronously.
@@ -434,6 +486,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             model_name (str): The model being used to create the rough forecasting question.
             end_date (datetime): Used to set context of the current date for the model.
             pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
+            be_lax_in_resolution_checking (bool): WHether to be lax in resolution checking
 
         Returns:
             ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
@@ -446,7 +499,10 @@ class NewsApiFinalForecastingQuestionGenerator:
 
         # Generate the resolution checked (not verified) forecasting questions
         final_resolution_checked_forecasting_question: ForecastingQuestion_stripped_with_resolution = await cls._res_unchecked_to_res_checked_final_stripped_fq(
-            rough_fq_data, model_name, final_resolution_unchecked_forecasting_question
+            rough_fq_data,
+            model_name,
+            final_resolution_unchecked_forecasting_question,
+            be_lax_in_resolution_checking,
         )
 
         # Generate the forecasting question in the proper form
