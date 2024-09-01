@@ -19,6 +19,7 @@ fq = ForecastingQuestion(
     ),
     resolution_date="2030-01-01T00:00:00",
     question_type="binary",
+    created_date=None,
     data_source="manifold",
     url="https://www.metaculus.com/questions/12345/",
     metadata={"foo": "bar"},
