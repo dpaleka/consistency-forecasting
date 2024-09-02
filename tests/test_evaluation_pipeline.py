@@ -41,9 +41,7 @@ commands = [
 ]
 
 
-@pytest.mark.parametrize("command", commands)
-def test_pipeline_command(command):
-    print(f"Command: {command}")
+def run_pipeline_command(command):
     returncode, stdout, stderr = run_command(command)
 
     print(f"Return Code: {returncode}")
@@ -101,7 +99,7 @@ def test_pipeline_end_to_end():
 
     for command in commands:
         print(f"\033[1mRunning command: {command}\033[0m")
-        test_pipeline_command(command)
+        run_pipeline_command(command)
 
     expected_files(test_exist=True)
 
