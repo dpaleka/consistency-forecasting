@@ -81,7 +81,7 @@ class COT_Forecaster(Forecaster):
         }
 
 
-class CoT_multistep_Forecaster:
+class CoT_multistep_Forecaster(Forecaster):
     def __init__(
         self, preface: str = "You are a helpful assistant", examples: list[str] = []
     ):
@@ -128,10 +128,6 @@ class CoT_multistep_Forecaster:
                 "\n\nIgnoring examples!!! Try debugging by uncommenting examples=None and using a simpler list of examples \n\n"
             )
 
-        print(f"{len(messages)=} after examples")
-        print(f"messages[-1]: {messages[-1]}")
-        print(f"{len(user_prompts_lists)=}")
-
         step_formats = {
             **{i: PlainText for i in range(self.steps - 1)},
             self.steps - 1: Prob,
@@ -151,13 +147,6 @@ class CoT_multistep_Forecaster:
             )
             ## add llm output to stream
             messages.append({"role": "assistant", "content": reasoning_field(response)})
-
-            """print("\n\n\nADAMXXXXXXX")
-            print(f"{len(messages)=}")
-            print(f"messages[-2]: {messages[-2]}")
-            print("")
-            print(f"messages[-1]: {messages[-1]}")
-            print("\n\n")"""
 
         ## this includes examples if it's there!  It's just all messages
         result = {
@@ -186,6 +175,9 @@ class CoT_multistep_Forecaster:
         include_metadata=False,
         **kwargs,
     ) -> float:
+        self.steps = len(user_prompts_lists)
+        assert self.steps >= 1, "Must have at least one step"
+
         messages = [
             {"role": "system", "content": self.preface},
             # {
@@ -194,25 +186,40 @@ class CoT_multistep_Forecaster:
             # },
         ]
 
+        num_examples = 0
+        ## comment this out for examples
+        # examples = None
         if examples:
             for e in examples:
                 messages.extend(e)
+                num_examples += 1
 
-        for s in range(self.steps):
-            new_msg = {"role": "user", "content": user_prompts_lists[s]}
+        else:
+            print(
+                "\n\nIgnoring examples!!! Try debugging by uncommenting examples=None and using a simpler list of examples \n\n"
+            )
+
+        step_formats = {
+            **{i: PlainText for i in range(self.steps - 1)},
+            self.steps - 1: Prob,
+        }
+
+        for step_idx in range(self.steps):
+            new_msg = {"role": "user", "content": user_prompts_lists[step_idx]}
             ##ad new user input
             messages.append(new_msg)
 
+            # response = await answer_messages(
             response = await answer_messages(
-                # response = answer_messages_sync(
                 messages=messages,
                 # examples=self.examples,
-                response_model=Prob_cot,
+                response_model=step_formats[step_idx],
                 **kwargs,
             )
             ## add llm output to stream
-            messages.append({"role": "assistant", "content": response.chain_of_thought})
+            messages.append({"role": "assistant", "content": reasoning_field(response)})
 
+        ## this includes examples if it's there!  It's just all messages
         result = {
             "chain_of_thought": "\n\n".join(
                 [m["content"] for m in messages if m["role"] == "assistant"]
@@ -229,6 +236,7 @@ class CoT_multistep_Forecaster:
             }
 
         self.result = result
+
         return result["prob"]
 
     def dump_config(self):
@@ -242,3 +250,7 @@ class CoT_multistep_Forecaster:
                 for e in self.examples
             ],
         }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(**config)

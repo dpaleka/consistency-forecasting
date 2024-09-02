@@ -498,10 +498,6 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         )"""
 
         cons_test = ConsistentForecaster()
-
-        print(sentence)
-        print("AAAAAXXXXXX")
-
         gen_tuple = cons_test.instantiate_cons_tuples(sentence)
 
         self.forecasting_questions = {}
@@ -526,6 +522,14 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
     def prep_call(self, ForecastingQuestion):
         self.generate_all_questions(ForecastingQuestion)
         self.generate_user_prompts(self.forecasting_questions)
+
+    def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
+        self.prep_call(ForecastingQuestion)
+        return super().call(self.user_prompts, self.examples, include_metadata)
+
+    def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
+        self.prep_call(ForecastingQuestion)
+        return super().call_async(self.user_prompts, self.examples, include_metadata)
 
     def dump_config(self):
         return {
