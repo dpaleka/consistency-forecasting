@@ -325,26 +325,6 @@ class Checker(ABC):
             ]
         )
 
-    def de_method(
-        self,
-        answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
-    ) -> float:
-        """
-        The idea is to compute the arbitraged probabilities by solving a system
-        of differential equations. Denote the probabilities for each question i
-        as p_i, and suppose this varies with time as p_i(t). Take `answers` to
-        be the initial conditions; then p_i(t) satisfies the following system of
-        len(self.Omega) ODEs:
-
-        For each omega in self.Omega
-        (e.g. {"P": True, "Q": False, "P_given_Q": None, "P_given_not_Q": True}),
-        the ODE
-        sum_{i: omega_i = True} scoring_i'(p_i) p_i'(t)
-        - sum_{i: omega_i = False} scoring_i'(1-p_i) p_i'(t)
-        = 1
-        """
-
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
@@ -1339,6 +1319,16 @@ class ExpectedEvidenceChecker(Checker):
             {"P": False, "Q": True, "P_given_Q": False, "P_given_not_Q": None},
             {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
         ]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        initial_guess: List[float] | str | None = None,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """just use shgo because this takes too long"""
+        return super().max_min_arbitrage(answers, scoring, initial_guess, methods)
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         a, b, c, d = (
