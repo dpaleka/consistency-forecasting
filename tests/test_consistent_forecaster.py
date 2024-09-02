@@ -114,6 +114,7 @@ test_fq_five = ForecastingQuestion(
 
 
 @pytest.mark.asyncio
+@pytest.mark.expensive
 async def test_consistent_forecaster_call_async(consistent_forecaster):
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {
@@ -129,6 +130,7 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
     ), "The probability should be a float with a non-extreme value"
 
 
+@pytest.mark.expensive
 def test_consistent_forecaster_call_sync(consistent_forecaster):
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
