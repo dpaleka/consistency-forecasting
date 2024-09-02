@@ -1313,11 +1313,12 @@ class ExpectedEvidenceChecker(Checker):
         ]
 
     def check_exact(self, answers: dict[str, Prob]) -> bool:
-        return all([a is not None for a in answers.values()]) and answers[
-            "P"
-        ] == answers["P_given_Q"] * answers["Q"] + answers["P_given_not_Q"] * (
-            1 - answers["Q"]
-        )
+        return answers in [
+            {"P": True, "Q": True, "P_given_Q": True, "P_given_not_Q": None},
+            {"P": True, "Q": False, "P_given_Q": None, "P_given_not_Q": True},
+            {"P": False, "Q": True, "P_given_Q": False, "P_given_not_Q": None},
+            {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
+        ]
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         a, b, c, d = (
