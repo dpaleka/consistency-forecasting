@@ -301,8 +301,6 @@ def process_check(
                                 tuples=batch_tuples,
                             )
                     case "PromptedToCons_Forecaster":  # Adam
-                        forecaster.prep_call(checker_tuples[0]["P"])
-
                         if is_async:
                             reset_global_semaphore()
                             results_batch = asyncio.run(
