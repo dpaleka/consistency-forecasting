@@ -456,6 +456,12 @@ def process_check(
     help="Path to the tuple file",
 )
 @click.option(
+    "--output_dir",
+    type=click.Path(),
+    required=False,
+    help=f"Path to the output directory. Will default to timestamped directory in {BASE_FORECASTS_OUTPUT_PATH} otherwise",
+)
+@click.option(
     "--eval_by_source",
     "-s",
     is_flag=True,
@@ -474,6 +480,7 @@ def main(
     is_async: bool,
     use_threads: bool,
     tuple_dir: str | None = None,
+    output_dir: str | None = None,
     eval_by_source: bool = False,
 ):
     if tuple_dir is None:
@@ -520,21 +527,19 @@ def main(
         most_recent_directory.mkdir(parents=True, exist_ok=True)
 
     timestamp_start_run = datetime.now()
-    output_directory = BASE_FORECASTS_OUTPUT_PATH / make_folder_name(
-        forecaster, model, timestamp_start_run
-    )
-    if not output_directory.exists():
-        output_directory.mkdir(parents=True, exist_ok=True)
-        print(f"Directory '{output_directory}' created.")
+    if output_dir is None:
+        print("Using timestamped output directory for forecast evaluation outputs")
+        output_directory = BASE_FORECASTS_OUTPUT_PATH / make_folder_name(
+            forecaster, model, timestamp_start_run
+        )
+        if not output_directory.exists():
+            output_directory.mkdir(parents=True, exist_ok=True)
+            print(f"Directory '{output_directory}' created.")
     else:
-        pass
-        # We do not actually care, for now
-        # user_input = input(
-        #    f"Directory '{output_directory}' already exists. Do you want to continue? (y/N): "
-        # )
-        # if user_input.lower() != "y":
-        #    print("Operation aborted by the user.")
-        #    exit(1)
+        output_directory = Path(output_dir)
+        if not output_directory.exists():
+            output_directory.mkdir(parents=True, exist_ok=True)
+            print(f"Directory '{output_directory}' created.")
 
     if run:
         assert load_dir is None, "LOAD_DIR must be None if RUN is True"

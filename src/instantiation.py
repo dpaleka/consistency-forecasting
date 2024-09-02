@@ -321,9 +321,9 @@ async def instantiate(
 @click.option(
     "--tuple_dir",
     "-t",
-    type=click.Path(exists=True),
+    type=str,
     default=TUPLES_PATH,
-    help="Directory to read tuples from.",
+    help="Directory to write tuples to.",
 )
 @click.option(
     "--seed",
@@ -350,6 +350,11 @@ def main(
     seed,
     use_instantiate_rel,
 ):
+    print(f"Tuple dir: {tuple_dir}")
+    tuple_dir = Path(tuple_dir)
+    if not tuple_dir.exists():
+        tuple_dir.mkdir(parents=True, exist_ok=True)
+
     checkers = choose_checkers(relevant_checks, tuple_dir)
 
     if use_instantiate_rel:
