@@ -27,9 +27,10 @@ class Forecaster(ABC):
         return {k: v for k, v in zip(keys, results)}
 
     def pre_call(self, fq: ForecastingQuestion, **kwargs) -> ForecastingQuestion:
-        fq.resolution = None
-        fq.metadata = None
-        return fq
+        fq_copy = fq.model_copy()
+        fq_copy.resolution = None
+        fq_copy.metadata = None
+        return fq_copy
 
     def call_full(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         fq = self.pre_call(fq, **kwargs)
