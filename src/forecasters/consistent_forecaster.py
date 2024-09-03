@@ -231,7 +231,7 @@ class ConsistentForecaster(Forecaster):
         only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
-    ) -> float | tuple[float, dict]:
+    ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -317,7 +317,7 @@ class ConsistentForecaster(Forecaster):
         only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
-    ) -> float | tuple[float, dict]:
+    ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
