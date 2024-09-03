@@ -38,6 +38,9 @@ class Forecast(BaseModel):
             raise ValueError("Probability must be between 0 and 1.")
         return v
 
+    def to_dict(self):
+        return self.dict()
+
 
 register_model_for_cache(Forecast)
 
