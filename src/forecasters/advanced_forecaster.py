@@ -125,11 +125,7 @@ class AdvancedForecaster(Forecaster):
     ) -> Forecast:
         question: str = fq.title
         resolution_criteria: str = fq.body
-        background_info: str = (
-            fq.metadata["background_info"]
-            if getattr(fq, "metadata", None) and "background_info" in fq.metadata
-            else ""
-        )  # AdvancedForecaster relevant article retrieval is allowed to use the background_info field if present
+        background_info: str = "N/A"  # call_full removes the `metadata` field. `background_info` is only present in Metaculus questions, and is generally not crucial for forecasting, only useful for AdvancedForecaster to retrieve relevant articles
 
         resolution_date: str = fq.resolution_date.strftime("%Y-%m-%d")
         created_date: str = (
