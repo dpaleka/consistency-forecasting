@@ -20,10 +20,7 @@ from itertools import product
 from abc import ABC, abstractmethod
 from typing import Type, Any, List, Self, Callable
 from pydantic import BaseModel, field_validator, create_model
-from common.datatypes import (
-    ForecastingQuestion,
-    Prob,
-)
+from common.datatypes import ForecastingQuestion, Prob, Forecast
 from common.utils import (
     write_jsonl_async_from_str,
     update_recursive,
@@ -589,11 +586,13 @@ class Checker(ABC):
             for line in data:
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
+
                 answers_: dict[
-                    str, tuple[Prob, dict] | Prob | None
+                    str, Forecast | tuple[Forecast, dict]
                 ] = forecaster.elicit(line_obj, include_metadata=True, **kwargs)
                 answers = {
-                    q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()
+                    q: a.prob if isinstance(a, Forecast) else a[0].prob
+                    for q, a in answers_.items()
                 }
                 if do_check:
                     result_without_line: dict[
@@ -652,7 +651,10 @@ class Checker(ABC):
                 max_concurrent_queries=10,
             )
             all_answers = [
-                {q: a[0] if isinstance(a, tuple) else a for q, a in answers_.items()}
+                {
+                    q: a.prob if isinstance(a, Forecast) else a[0].prob
+                    for q, a in answers_.items()
+                }
                 for answers_ in all_answers_
             ]
 

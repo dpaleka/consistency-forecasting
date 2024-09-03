@@ -3,10 +3,8 @@ from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
 
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Forecast
 from forecasters import BasicForecaster, COT_Forecaster
-from forecasters.consistent_forecaster import ConsistentForecaster
-from static_checks.Checker import NegChecker, CondCondChecker
 
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
 mock_response_list = ["0.03", "0.05", "0.02"]
@@ -38,13 +36,30 @@ def mock_forecasting_question():
     )
 
 
+actual_fq = ForecastingQuestion(
+    title="Will Manhattan have a skyscraper a mile tall by 2030?",
+    body=(
+        "Resolves YES if at any point before 2030, there is at least "
+        "one building in the NYC Borough of Manhattan (based on current "
+        "geographic boundaries) that is at least a mile tall."
+    ),
+    resolution_date="2030-01-01T00:00:00",
+    question_type="binary",
+    created_date=None,
+    data_source="manifold",
+    url="https://www.metaculus.com/questions/12345/",
+    metadata={"foo": "bar"},
+    resolution=None,
+)
+
+
 @patch("forecasters.basic_forecaster.answer_sync", return_value=mock_response)
 def test_basic_forecaster_call(
     mock_answer_sync, basic_forecaster, mock_forecasting_question
 ):
     expected_prob = mock_response.prob
-    prob = basic_forecaster.call(mock_forecasting_question)
-    assert prob == pytest.approx(
+    forecast = basic_forecaster.call_full(mock_forecasting_question)
+    assert forecast.prob == pytest.approx(
         expected_prob
     ), "The calculated probability does not match the expected value"
     mock_answer_sync.assert_called_once()
@@ -56,23 +71,34 @@ async def test_basic_forecaster_call_async(
     mock_answer, basic_forecaster, mock_forecasting_question
 ):
     expected_prob = mock_response.prob
-    prob = await basic_forecaster.call_async(mock_forecasting_question)
-    assert prob == pytest.approx(
+    forecast = await basic_forecaster.call_async_full(mock_forecasting_question)
+    assert forecast.prob == pytest.approx(
         expected_prob
     ), "The calculated probability does not match the expected value"
     mock_answer.assert_called_once()
 
 
-@pytest.fixture
-def consistent_forecaster():
-    basic_forecaster = BasicForecaster()
-    return ConsistentForecaster(
-        basic_forecaster,
-        checks=[
-            NegChecker(),
-            CondCondChecker(),
-        ],
-    )
+def test_basic_forecaster_actual_call(mock_forecasting_question):
+    # Create BasicForecaster instance
+    forecaster = BasicForecaster()
+
+    # Call the forecaster with actual prompts
+    forecast = forecaster.call_full(actual_fq)
+
+    # Print the forecast for manual inspection
+    print(f"\nForecast: {forecast}")
+
+    # Assert that we got a result
+    assert isinstance(
+        forecast, Forecast
+    ), "Expected a Forecast object, but got a different type"
+    assert isinstance(
+        forecast.prob, float
+    ), "Expected a float probability, but got a different type"
+    assert (
+        0 <= forecast.prob <= 1
+    ), f"Probability {forecast.prob} is not between 0 and 1"
+    assert forecast.metadata is None, "Expected metadata to be None"
 
 
 def test_cot_forecaster_actual_call(mock_forecasting_question):
@@ -88,40 +114,44 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
 
     # Call the forecaster with actual prompts
     forecaster = COT_Forecaster(preface=user_preface, examples=None)
-    prob, chain_of_thought = forecaster.call(mock_forecasting_question)
+    forecast = forecaster.call_full(mock_forecasting_question)
 
     # Print the chain of thought for manual inspection
-    print(f"\n{chain_of_thought=}")
-    print(f"{prob=}\n")
+    print(f"\n{forecast.metadata['chain_of_thought']=}")
+    print(f"{forecast.prob=}\n")
 
     # Assert that we got a result
     assert isinstance(
-        prob, float
+        forecast.prob, float
     ), "Expected a float probability, but got a different type"
-    assert 0 <= prob <= 1, f"Probability {prob} is not between 0 and 1"
+    assert (
+        0 <= forecast.prob <= 1
+    ), f"Probability {forecast.prob} is not between 0 and 1"
 
     # Verify that the chain of thought was captured and shows a change in opinion
     assert (
-        "initial estimate" in chain_of_thought.lower()
+        "initial estimate" in forecast.metadata["chain_of_thought"].lower()
     ), "Chain of thought doesn't mention an initial estimate"
     assert (
-        "counterarguments" in chain_of_thought.lower()
+        "counterarguments" in forecast.metadata["chain_of_thought"].lower()
     ), "Chain of thought doesn't mention counterarguments"
     assert (
-        "final" in chain_of_thought.lower()
+        "final" in forecast.metadata["chain_of_thought"].lower()
     ), "Chain of thought doesn't mention a final estimate"
 
     # assert that the chain of thought final answer changes
     # Extract the final probability from the chain of thought
     import re
 
-    cot_implied_prob_str = re.findall(r"\d+\.\d+", chain_of_thought)[-1]
+    cot_implied_prob_str = re.findall(
+        r"\d+\.\d+", forecast.metadata["chain_of_thought"]
+    )[-1]
     try:
         cot_implied_prob = float(cot_implied_prob_str)
         print(f"{cot_implied_prob=}")
         assert (
-            abs(cot_implied_prob - prob) < 1e-6
-        ), f"Final probability in chain of thought ({cot_implied_prob}) doesn't match returned probability ({prob})"
+            abs(cot_implied_prob - forecast.prob) < 1e-6
+        ), f"Final probability in chain of thought ({cot_implied_prob}) doesn't match returned probability ({forecast.prob})"
     except ValueError:
         pytest.fail(
             f"Failed to extract a valid final probability from the chain of thought. Last word was: {cot_implied_prob_str}"
