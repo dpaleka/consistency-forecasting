@@ -262,7 +262,7 @@ class Checker(ABC):
         outcome: dict[str, bool | None],
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
     ) -> float:
         """Arbitrage earned given a particular outcome, forcaster answers and
         arbitrageur_answers.
@@ -300,7 +300,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
     ) -> float:
         """Minimum arbitrage earned regardless of outcome, given forcaster answers
         and arbitrageur_answers."""
@@ -330,7 +330,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         scoring: dict[str, Callable[[Prob], float]] = 1,
-        euler=False,
+        euler=True,
         dt=5e-5,
         max_steps=1000,
         tmax=5,
@@ -375,9 +375,11 @@ class Checker(ABC):
                         (
                             scoring_derivatives[q](p[q])
                             if a == True  # noqa
-                            else -scoring_derivatives[q](1 - p[q])
-                            if a == False  # noqa
-                            else 0
+                            else (
+                                -scoring_derivatives[q](1 - p[q])
+                                if a == False  # noqa
+                                else 0
+                            )
                         )
                         for q, a in omega.items()
                     ]
@@ -408,11 +410,22 @@ class Checker(ABC):
                 for q in self.TupleFormat.model_fields:
                     p[q] += dp_dt[q] * dt * abs(d)
         else:
-            fun = lambda t, p: list(calc_derivs(p).values())  # noqa
+            fun = lambda t, p: list(  # noqa
+                [
+                    calc_derivs(p)[k] for k in self.TupleFormat.model_fields
+                ]  # DO NOT use values()
+            )
             event = lambda t, p: DET(p)  # noqa
             event.terminal = True
 
-            res = solve_ivp(fun, [0, tmax], list(answers.values()), events=[event])
+            res = solve_ivp(
+                fun,
+                [0, tmax],
+                list(
+                    [answers[k] for k in self.TupleFormat.model_fields]
+                ),  # DO NOT use values()
+                events=[event],
+            )
 
             p = dict(zip(self.TupleFormat.model_fields, res.y[:, -1]))
 
@@ -423,13 +436,13 @@ class Checker(ABC):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
         initial_guess: list[float] | str | None = None,
         euler=False,
         dt: float = 5e-5,
         max_steps: int = 1000,
         tmax=5,
-        methods: tuple[str] = ("shgo", "differential_evolution"),
+        methods: tuple[str] = ("de",),
     ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -453,7 +466,7 @@ class Checker(ABC):
                 root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
                     arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
                     arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
-            Defaults to ("shgo", "differential_evolution").
+            Defaults to ("de,").
 
         """
         if "de" in methods:
@@ -598,15 +611,15 @@ class Checker(ABC):
         raise NotImplementedError("Subclasses must implement this")
 
     def violation(
-        self, answers: dict[str, Any], force_pos=True, metric="default"
+        self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         if metric == "default":
-            v = self.arbitrage_violation(answers)
+            v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
-            v = self.frequentist_violation(answers)
+            v = self.frequentist_violation(answers, **kwargs)
         else:
             raise ValueError(f"Metric {metric} not implemented")
 
@@ -800,6 +813,10 @@ class Checker(ABC):
         return_just_log_weights=False,
         return_derivatives=False,
     ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
+        # handle None
+        if scoring is None:
+            scoring = 1.0
+
         # handle lists
         if isinstance(scoring, list):
             # fill missing values with last element in scoring function list
@@ -902,6 +919,7 @@ class NegChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
+        """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
         weights = self.get_scoring(
@@ -1152,6 +1170,23 @@ class AndOrChecker(Checker):
                 P=P.P, Q=Q.P, P_and_Q=P_and_Q.P_and_Q, P_or_Q=P_or_Q.P_or_Q
             )
         ]
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+        )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q, P_or_Q, P_and_Q = (
@@ -1460,12 +1495,18 @@ class ExpectedEvidenceChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
         initial_guess: List[float] | str | None = None,
-        methods: tuple[str] = ("shgo",),
+        euler=True,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("de",),
     ) -> tuple:
-        """just use shgo because this takes too long"""
-        return super().max_min_arbitrage(answers, scoring, initial_guess, methods)
+        """We're subclassing this because we need to use euler=True for this one"""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+        )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         a, b, c, d = (
@@ -1518,7 +1559,9 @@ class ConsequenceChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
+        """Subclassing this one to use the exact formula."""
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
+            kwargs["methods"] = ("shgo",)  # DE does not work for this one
             return super().max_min_arbitrage(answers, **kwargs)
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
@@ -1581,6 +1624,7 @@ class ParaphraseChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
+        """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
         weights = self.get_scoring(
