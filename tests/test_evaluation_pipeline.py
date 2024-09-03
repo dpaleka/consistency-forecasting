@@ -82,10 +82,11 @@ def expected_files(test_exist: bool = False):
 
 
 def test_pipeline_end_to_end():
-    starting_file = "src/data/fq/test/high_quality_questions_all_domains_test.jsonl"
+    starting_file = "src/data/other/high-quality-questions-all-domains.jsonl"
     assert Path(
         starting_file
     ).exists(), f"Starting file does not exist: {starting_file}"
+    print(f"Starting file: {starting_file}")
 
     output_files = expected_files(test_exist=False)
     print("\033[1mDeleting the following files:\033[0m")
