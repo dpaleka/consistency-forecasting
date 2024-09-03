@@ -1,7 +1,7 @@
 from common.utils import shallow_dict
 from .forecaster import Forecaster
 from .basic_forecaster import BasicForecaster
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Forecast
 from static_checks import (
     Checker,
     NegChecker,
@@ -231,7 +231,7 @@ class ConsistentForecaster(Forecaster):
         only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
-    ) -> float | tuple[float, dict]:
+    ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -306,8 +306,8 @@ class ConsistentForecaster(Forecaster):
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
-            return ans_P, metadata
-        return ans_P
+            return Forecast(prob=ans_P, metadata=metadata), metadata
+        return Forecast(prob=ans_P, metadata=metadata)
 
     async def call_async(
         self,
@@ -317,7 +317,7 @@ class ConsistentForecaster(Forecaster):
         only_arbitrage_if_fail=False,
         include_metadata=False,
         **kwargs,
-    ) -> float | tuple[float, dict]:
+    ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -393,8 +393,8 @@ class ConsistentForecaster(Forecaster):
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
         if include_metadata:
-            return ans_P, metadata
-        return ans_P
+            return Forecast(prob=ans_P, metadata=metadata), metadata
+        return Forecast(prob=ans_P, metadata=metadata)
 
     @classmethod
     def recursive(
