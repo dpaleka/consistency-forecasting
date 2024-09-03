@@ -325,11 +325,93 @@ class Checker(ABC):
             ]
         )
 
+    def de_method(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        dt=5e-5,
+        max_steps=1000,
+    ) -> tuple[dict[str, Prob], float]:
+        """
+        Use differential equations to find the best arbitrageur_answers.
+
+        Denote answers = p_i for question i, we will have a differential
+        equation for this.
+        Initialize p_i with `answers`.
+
+        Then we have a system of differential equations, given by the matrix
+
+        A = np.array(
+            [
+                [
+                    scoring_derivative(p_i) if omega[i] == True
+                    else -scoring_derivative(1 - p_i) if omega[i] == False
+                    else 0
+                ]
+                for omega in self.Omega
+            ]
+        )
+
+        We solve for p_i' = np.linalg.solve(A, [1, 1, ..., 1]) and update p_i and loop until
+        det(A) < 0.01.
+
+        """
+
+        p = answers.copy()
+
+        scoring_derivatives = self.get_scoring(
+            answers, scoring, return_derivatives=True
+        )
+
+        def MATRIX(p):
+            return np.array(
+                [
+                    [
+                        (
+                            scoring_derivatives[q](p[q])
+                            if a == True  # noqa
+                            else -scoring_derivatives[q](1 - p[q])
+                            if a == False  # noqa
+                            else 0
+                        )
+                        for q, a in omega.items()
+                    ]
+                    for omega in self.Omega
+                ]
+            )
+
+        def DET(p):
+            return np.linalg.det(MATRIX(p))
+
+        B = np.array([1] * len(self.Omega))
+
+        ps = [p]  # for tracing
+
+        def calc_derivs(p):
+            dp_dt_ = np.linalg.solve(MATRIX(p), B)
+            dp_dt = dict(zip(self.TupleFormat.model_fields, dp_dt_))
+            return dp_dt
+
+        for i in range(max_steps):
+            dp_dt = calc_derivs(p)
+            d = DET(p)
+            if abs(d) < 0.01:
+                break
+            for q in self.TupleFormat.model_fields:
+                p[q] += dp_dt[q] * dt * abs(d)
+            ps.append(p)
+
+        return p, self.min_arbitrage(
+            answers=answers, arbitrageur_answers=p, scoring=scoring
+        )
+
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
         scoring: dict[str, Callable[[Prob], float]] = np.log,
         initial_guess: list[float] | str | None = None,
+        dt: float = 5e-5,
+        max_steps: int = 1000,
         methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
@@ -339,7 +421,10 @@ class Checker(ABC):
             answers (dict[str, Prob]): Forecaster answers.
             scoring (dict[str, Callable[[Prob], float]], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
+            dt (float, optional): Step size for DE method. Defaults to 5e-5.
+            max_steps (int, optional): Maximum steps for DE method. Defaults to 1000.
             methods (tuple[str], optional): Optimization method. Options:
+                de -- differential equation method, see Checker.de_method
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
@@ -349,9 +434,13 @@ class Checker(ABC):
                 root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
                     arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
                     arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
-            Defaults to "shgo".
+            Defaults to ("shgo", "differential_evolution").
 
         """
+        if "de" in methods:
+            return self.de_method(
+                answers=answers, scoring=scoring, dt=dt, max_steps=max_steps
+            )
 
         x = answers.keys()
 
@@ -681,29 +770,53 @@ class Checker(ABC):
 
     @classmethod
     def get_scoring(
-        cls, answers: dict[str, Prob], scoring: Any, return_just_log_weights=False
+        cls,
+        answers: dict[str, Prob],
+        scoring: Any,
+        return_just_log_weights=False,
+        return_derivatives=False,
     ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
+        # handle lists
         if isinstance(scoring, list):
+            # fill missing values with last element in scoring function list
             if len(scoring) < len(answers):
                 scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
+
+            # cast to dict
             scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
+
+        # handle single items
         if not isinstance(scoring, dict):
             scoring = {q: scoring for q in answers.keys()}
+
+        # so far scoring could either be dict[str, Callable[[Prob], float]] or dict[str, float]
+        # i.e. either scoring_functions or scoring_weights. Now we calculate both.
         scoring_weights = {}
         scoring_functions = {}
+        scoring_derivatives = {}
         for key, scoring_item in scoring.items():
+            # if it's a number, it's a weight.
+            # we take the scoring function to be weight * log(x)
             if isinstance(scoring_item, (float, int)):
                 scoring_weights[key] = scoring_item
                 scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(
                     x
-                )  # stupid HACK
+                )  # stupid HACK bc lambda can't take a variable from the outer scope
+                scoring_derivatives[key] = lambda x, sf=scoring_item: sf / x
+
+            # if it's a callable, it's a scoring function
+            # cannot easily check if it's logarithmic, so we return None
             elif callable(scoring_item):
                 scoring_functions[key] = scoring_item
                 scoring_weights = None
+                scoring_derivatives[key] = None
             else:
                 raise ValueError(f"Scoring function {scoring_item} not recognized")
+
         if return_just_log_weights:
             return scoring_weights
+        if return_derivatives:
+            return scoring_derivatives
         return scoring_functions
 
     @classmethod
