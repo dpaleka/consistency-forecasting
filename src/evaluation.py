@@ -398,13 +398,13 @@ def process_check(
     "-c",
     "--config_path",
     type=click.Path(),
-    default=CONFIGS_DIR / "cheap_haiku.yaml",
+    default=CONFIGS_DIR / "cheap_gpt4o-mini.yaml",
     help="Path to the configuration file",
 )
 @click.option(
     "-m",
     "--model",
-    default="gpt-4o-mini",  # -2024-07-18
+    default=None,
     help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
 )
 @click.option("-r", "--run", is_flag=True, help="Run the forecaster")
@@ -471,7 +471,7 @@ def process_check(
 def main(
     forecaster_class: str,
     config_path: str,
-    model: str,
+    model: str | None,
     run: bool,
     load_dir: str,
     num_lines: int,
@@ -486,6 +486,17 @@ def main(
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
+
+    match forecaster_class:
+        case "AdvancedForecaster":
+            if model is not None:
+                raise ValueError(
+                    "The 'model' parameter should not be set when using AdvancedForecaster. Model configuration should be done through the config file and the 'config_path' parameter."
+                )
+            print(f"Using AdvancedForecaster config file: {config_path}")
+        case _:
+            assert model is not None, "Model must be specified for forecaster class"
+            print(f"Using model: {model}")
 
     checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
