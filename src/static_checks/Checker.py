@@ -15,6 +15,7 @@ from scipy.optimize import (
     brute,
     root,
 )
+from scipy.integrate import solve_ivp
 from pathlib import Path
 from itertools import product
 from abc import ABC, abstractmethod
@@ -329,8 +330,10 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         scoring: dict[str, Callable[[Prob], float]] = 1,
+        euler=False,
         dt=5e-5,
         max_steps=1000,
+        tmax=5,
     ) -> tuple[dict[str, Prob], float]:
         """
         Use differential equations to find the best arbitrageur_answers.
@@ -364,6 +367,8 @@ class Checker(ABC):
         )
 
         def MATRIX(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
             return np.array(
                 [
                     [
@@ -381,25 +386,35 @@ class Checker(ABC):
             )
 
         def DET(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
             return np.linalg.det(MATRIX(p))
 
         B = np.array([1] * len(self.Omega))
 
-        ps = [p]  # for tracing
-
         def calc_derivs(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
             dp_dt_ = np.linalg.solve(MATRIX(p), B)
             dp_dt = dict(zip(self.TupleFormat.model_fields, dp_dt_))
             return dp_dt
 
-        for i in range(max_steps):
-            dp_dt = calc_derivs(p)
-            d = DET(p)
-            if abs(d) < 0.01:
-                break
-            for q in self.TupleFormat.model_fields:
-                p[q] += dp_dt[q] * dt * abs(d)
-            ps.append(p)
+        if euler:
+            for _ in range(max_steps):
+                dp_dt = calc_derivs(p)
+                d = DET(p)
+                if abs(d) < 0.01:
+                    break
+                for q in self.TupleFormat.model_fields:
+                    p[q] += dp_dt[q] * dt * abs(d)
+        else:
+            fun = lambda t, p: list(calc_derivs(p).values())  # noqa
+            event = lambda t, p: DET(p)  # noqa
+            event.terminal = True
+
+            res = solve_ivp(fun, [0, tmax], list(answers.values()), events=[event])
+
+            p = dict(zip(self.TupleFormat.model_fields, res.y[:, -1]))
 
         return p, self.min_arbitrage(
             answers=answers, arbitrageur_answers=p, scoring=scoring
@@ -410,8 +425,10 @@ class Checker(ABC):
         answers: dict[str, Prob],
         scoring: dict[str, Callable[[Prob], float]] = np.log,
         initial_guess: list[float] | str | None = None,
+        euler=False,
         dt: float = 5e-5,
         max_steps: int = 1000,
+        tmax=5,
         methods: tuple[str] = ("shgo", "differential_evolution"),
     ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
@@ -423,6 +440,8 @@ class Checker(ABC):
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
             dt (float, optional): Step size for DE method. Defaults to 5e-5.
             max_steps (int, optional): Maximum steps for DE method. Defaults to 1000.
+            tmax (int | float, optional): Maximum time for DE method. Defaults to 5.
+            euler (bool, optional): Use Euler method for DE method. Defaults to False.
             methods (tuple[str], optional): Optimization method. Options:
                 de -- differential equation method, see Checker.de_method
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
@@ -439,7 +458,12 @@ class Checker(ABC):
         """
         if "de" in methods:
             return self.de_method(
-                answers=answers, scoring=scoring, dt=dt, max_steps=max_steps
+                answers=answers,
+                scoring=scoring,
+                dt=dt,
+                max_steps=max_steps,
+                tmax=tmax,
+                euler=euler,
             )
 
         x = answers.keys()
