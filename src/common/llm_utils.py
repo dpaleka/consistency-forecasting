@@ -834,7 +834,7 @@ async def get_embedding(
     model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[float]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
-    client, _ = get_client_pydantic(model, use_async=True)
+    client, _, _ = get_client_pydantic(model, use_async=True)
     response = await client.client.embeddings.create(input=text, model=embedding_model)
     return response.data[0].embedding
 
@@ -846,7 +846,7 @@ def get_embeddings_sync(
     model: str = "gpt-4o-mini-2024-07-18",
 ) -> list[list[float]]:
     # model is largely ignored because we currently can't use the same model for both the embedding and the completion
-    client, _ = get_client_pydantic(model, use_async=False)
+    client, _, _ = get_client_pydantic(model, use_async=False)
     response = client.client.embeddings.create(input=texts, model=embedding_model)
     return [e.embedding for e in response.data]
 
