@@ -211,6 +211,8 @@ async def main(
     concurrent_queries: int = 15,
 ):
     output_path = Path(f"{get_data_path()}/fq/{out_data_dir}/{out_file_name}")
+    if not output_path.parent.exists():
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
     if verification_level == "full":
         verification_suffix = ""
@@ -262,7 +264,10 @@ async def main(
     data_to_write = [fq.dict() for fq in forecasting_questions]
     for field in ["resolution_date", "created_date", "id"]:
         for data in data_to_write:
-            data[field] = str(data[field])
+            if data.get(field, None) is not None:
+                data[field] = str(data[field])
+            else:
+                data[field] = None
 
     await write_jsonl_async(
         output_path,
@@ -282,8 +287,6 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=f"{get_data_path()}/other/from_related.jsonl",
-        # default=f"{get_data_path()}/other/high-quality-questions-all-domains.jsonl",
         help="Path to the input file",
     )
     parser.add_argument(
@@ -291,14 +294,13 @@ if __name__ == "__main__":
         "-d",
         type=str,
         default="synthetic",
-        choices=["real", "synthetic"],
+        choices=["real", "synthetic", "test"],
         help="Data dir to write the output to",
     )
     parser.add_argument(
         "--out_file_name",
         "-o",
         type=str,
-        default="high-quality-questions--all-domains.jsonl",
         help="Name of the output file",
     )
     parser.add_argument(

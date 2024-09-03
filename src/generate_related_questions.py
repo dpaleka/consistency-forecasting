@@ -10,17 +10,6 @@ from common.llm_utils import answer
 from common.datatypes import SyntheticRelQuestion
 
 
-source_questions = [
-    (
-        "Will global average temperatures rise by more than 2 degrees Celsius above pre-industrial levels by 2040?"
-    ),
-    ("Will the United States have a female president before 2028?"),
-    ("Will the World Health Organization declare a new pandemic before 2025?"),
-    ("Will a team from Africa win the FIFA World Cup before 2040?"),
-    ("Will quantum computing be commercially available to the public before 2030?"),
-    ("Will NASA discover definitive evidence of life on another planet by 2035?"),
-]
-
 # - Consider alternate outcomes, timelines, or deeper implications that are still connected to the theme of the source question.
 prompt_without_date = """Objective: Generate a set of forecasting questions for a forecasting market site like Metaculus or PredictIt. I will provide a source question. 
 Your task is to generate {num_questions} new related questions that are logically related to the provided source question. 
@@ -157,6 +146,7 @@ def get_titles_from_fq(file_path, use_body=False):
                         titles.append({"title": data["title"]})
     except Exception as e:
         print(f"An error occurred: {e}")
+        raise e
     return titles
 
 
@@ -209,11 +199,8 @@ async def generate_questions(
     questions = get_titles_from_fq(input_file, use_body)
 
     print(f"len of questions: {len(questions)}")
-
-    if len(questions) == 0:
-        questions = source_questions
-
     questions = questions[:max_questions]
+    print(f"Using len of questions: {len(questions)}")
 
     all_questions = []
 

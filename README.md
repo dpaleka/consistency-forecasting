@@ -170,10 +170,12 @@ ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 - [`src/evaluation.py`](src/evaluation.py) runs forecasters on checks and scores them. 
 Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit methods.
 Please run `python src/evaluation.py --help` and read what it says before using this script.
-  - Run example: 
+  - Run example (TODO unclear if this is working): 
 ```
 python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_configs/cheap_haiku.yaml -num_lines 3 --relevant_checks all [--run] [--load_dir src/data/forecasts/...] [--async] 
 ```
+  - Run example on some directory: see the commands in [tests/test_evaluation_pipeline.py](tests/test_evaluation_pipeline.py). Those are working if the tests are passing.
+
 
 - [`src/reevaluation.py`](src/reevaluation.py) recomputes violation metrics from files of forecasts made with `src/evaluation.py`, 
 and aggregates metrics across multiple forecast files. The `forecasts/` directories it draws from are given in the file, edit them as needed.
