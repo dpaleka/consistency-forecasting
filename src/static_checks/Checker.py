@@ -596,6 +596,9 @@ class Checker(ABC):
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         try:
             return self.max_min_arbitrage(answers, **kwargs)[1]
         except ZeroDivisionError:
@@ -611,6 +614,9 @@ class Checker(ABC):
         self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         if metric == "default":
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
@@ -623,6 +629,9 @@ class Checker(ABC):
         return v
 
     def check(self, answers: dict[str, Any], metric: str = "default") -> bool:
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         if metric == "default":
             return bool(self.violation(answers) < self.default_tolerance)
         elif metric == "frequentist":
