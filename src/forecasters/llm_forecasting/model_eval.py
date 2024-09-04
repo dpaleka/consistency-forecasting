@@ -142,6 +142,8 @@ async def async_make_forecast(
     question,
     background_info,
     resolution_criteria,
+    resolution_date,
+    created_date,
     dates,
     retrieved_info,
     reasoning_prompt_templates,
@@ -180,6 +182,8 @@ async def async_make_forecast(
                 retrieved_info=retrieved_info,
                 background=background_info,
                 resolution_criteria=resolution_criteria,
+                resolution_date=resolution_date,
+                created_date=created_date,
                 dates=dates,
             )
         )

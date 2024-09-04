@@ -1,5 +1,10 @@
 from .forecaster import Forecaster
-from common.datatypes import ForecastingQuestion_stripped, ForecastingQuestion
+from common.datatypes import (
+    ForecastingQuestion_stripped,
+    ForecastingQuestion,
+    Forecast,
+    Prob,
+)
 from common.llm_utils import answer, answer_sync, Example
 
 
@@ -25,45 +30,30 @@ class BasicForecaster(Forecaster):
             )
         ]
 
-    def call(
-        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> float:
-        # Log the request details being sent to the OpenAI API
-        print("Sending the following request to the LLM API:")
-        print(f"Prompt: {sentence.__str__()}")
-        print(f"Preface: {self.preface}")
-        print(f"Examples: {self.examples}")
-        print(f"Response Model: {sentence.expected_answer_type()}")
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        print("AAA")
+        print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = answer_sync(
-            prompt=sentence.__str__(),
+            prompt=fq.to_str_forecast_mode(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
+            response_model=Prob,
             **kwargs,
         )
-        # Log the response from the OpenAI API
-        print(f"Received the following response from OpenAI API: {response}")
-        return response.prob
+        print(f"LLM API response: {response}")
+        return Forecast(prob=response.prob, metadata=None)
 
-    async def call_async(
-        self, sentence: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> float:
-        # Log the request details being sent to the OpenAI API
-        print("Sending the following request to the LLM API:")
-        print(f"Prompt: {sentence.__str__()}")
-        print(f"Preface: {self.preface}")
-        print(f"Examples: {self.examples}")
-        print(f"Response Model: {sentence.expected_answer_type()}")
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> float:
+        print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = await answer(
-            prompt=sentence.__str__(),
+            prompt=fq.to_str_forecast_mode(),
             preface=self.preface,
             examples=self.examples,
-            response_model=sentence.expected_answer_type(),
+            response_model=Prob,
             **kwargs,
         )
-        # Log the response from the OpenAI API
-        print(f"Received the following response from OpenAI API: {response}")
-        return response.prob
+        print(f"LLM API response: {response}")
+        return Forecast(prob=response.prob, metadata=None)
 
     def dump_config(self):
         return {

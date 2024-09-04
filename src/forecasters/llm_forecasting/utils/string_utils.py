@@ -29,6 +29,8 @@ def get_prompt(
     dates=None,
     background=None,
     resolution_criteria=None,
+    resolution_date=None,
+    created_date=None,
     num_keywords=None,
     retrieved_info=None,
     reasoning=None,
@@ -100,6 +102,10 @@ def get_prompt(
             mapping["summary"] = summary
         elif f == "DATA_SOURCE":
             mapping["data_source"] = data_source
+        elif f == "RESOLUTION_DATE":
+            mapping["resolution_date"] = resolution_date
+        elif f == "CREATED_DATE":
+            mapping["created_date"] = created_date
     return prompt_template.format(**mapping)
 
 

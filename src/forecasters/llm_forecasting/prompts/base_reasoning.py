@@ -8,8 +8,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -30,7 +32,15 @@ Instructions:
 
 5. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
@@ -44,8 +54,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -69,7 +81,15 @@ Instructions:
 
 6. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_2 = (
@@ -82,8 +102,11 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
+
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -92,7 +115,15 @@ We have retrieved the following information for this question:
 Think step by step: {{ Insert your step by step consideration }}
 Aggregating considerations: {{ Aggregate your considerations }}
 Answer: {{ Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_2_TOKENS = (
@@ -105,8 +136,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -126,7 +159,15 @@ Likely (60%-70%)
 Very Likely (70%-80%)
 Extremely Likely (80%-90%)
 Yes (90%-100%)""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_3 = (
@@ -139,8 +180,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -158,14 +201,24 @@ Instructions:
 
 4. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_0 = (
     """Question: {question}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 Question Background:
 {background}
@@ -198,15 +251,25 @@ Instructions:
 
 7. Output your final prediction (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_1 = (
     """Question: {question}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 Question Background:
 {background}
@@ -239,7 +302,15 @@ Instructions:
 
 7. Output your final prediction (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_2 = (
@@ -251,8 +322,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -279,7 +352,15 @@ Instructions:
 
 7. Output your final prediction (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_3 = (
@@ -291,8 +372,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -322,7 +405,15 @@ Instructions:
 
 7. Output your final answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_4 = (
@@ -335,8 +426,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -368,7 +461,15 @@ Instructions:
 
 7. Output your final answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_5 = (
@@ -381,8 +482,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -412,7 +515,15 @@ Instructions:
 
 7. Output your final answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_6 = (
@@ -425,8 +536,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -456,7 +569,15 @@ Instructions:
 
 7. Output your final answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 BINARY_SCRATCH_PAD_PROMPT_NEW_7 = (
@@ -469,8 +590,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -497,7 +620,15 @@ Instructions:
 
 6. Output your final answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
@@ -511,8 +642,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -522,7 +655,15 @@ Instructions:
 
 2. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
@@ -536,8 +677,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -553,7 +696,15 @@ Instructions:
 
 4. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
@@ -567,8 +718,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -592,7 +745,15 @@ Instructions:
 
 6. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
 
 
@@ -610,8 +771,10 @@ Question Background:
 Resolution Criteria:
 {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 We have retrieved the following information for this question:
 {retrieved_info}
@@ -635,5 +798,13 @@ Instructions:
 
 6. Output your answer (a number between 0 and 1) with an asterisk at the beginning and end of the decimal.
 {{ Insert your answer }}""",
-    ("QUESTION", "BACKGROUND", "RESOLUTION_CRITERIA", "DATES", "RETRIEVED_INFO"),
+    (
+        "QUESTION",
+        "BACKGROUND",
+        "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
+        "DATES",
+        "RETRIEVED_INFO",
+    ),
 )
