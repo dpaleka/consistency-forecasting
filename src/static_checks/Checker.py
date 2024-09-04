@@ -330,7 +330,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         scoring: dict[str, Callable[[Prob], float]] = 1,
-        euler=True,
+        euler=False,
         dt=5e-5,
         max_steps=1000,
         tmax=5,
@@ -1491,22 +1491,6 @@ class ExpectedEvidenceChecker(Checker):
             {"P": False, "Q": True, "P_given_Q": False, "P_given_not_Q": None},
             {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
         ]
-
-    def max_min_arbitrage(
-        self,
-        answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = 1,
-        initial_guess: List[float] | str | None = None,
-        euler=True,
-        dt: float = 0.00005,
-        max_steps: int = 1000,
-        tmax=5,
-        methods: tuple[str] = ("de",),
-    ) -> tuple:
-        """We're subclassing this because we need to use euler=True for this one"""
-        return super().max_min_arbitrage(
-            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
-        )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         a, b, c, d = (
