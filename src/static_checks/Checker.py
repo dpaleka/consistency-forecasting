@@ -713,13 +713,9 @@ class Checker(ABC):
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
 
-                answers_: dict[
-                    str, Forecast | tuple[Forecast, dict]
-                ] = forecaster.elicit(line_obj, **kwargs)
-                answers = {
-                    q: a.prob if isinstance(a, Forecast) else a[0].prob
-                    for q, a in answers_.items()
-                }
+                answers_: dict[str, Forecast] = forecaster.elicit(line_obj, **kwargs)
+
+                answers = {q: a.prob for q, a in answers_.items()}
                 if do_check:
                     result_without_line: dict[
                         str, Any
@@ -734,6 +730,7 @@ class Checker(ABC):
                     )
 
                 result = {"line": line, **result_without_line}
+
                 results.append(result)
                 writer.write(result)
 
@@ -774,11 +771,7 @@ class Checker(ABC):
                 max_concurrent_queries=10,
             )
             all_answers = [
-                {
-                    q: a.prob if isinstance(a, Forecast) else a[0].prob
-                    for q, a in answers_.items()
-                }
-                for answers_ in all_answers_
+                {q: a.prob for q, a in answers_.items()} for answers_ in all_answers_
             ]
 
             if do_check:
