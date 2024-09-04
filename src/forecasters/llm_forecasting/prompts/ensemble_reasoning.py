@@ -6,8 +6,10 @@ Background: {background}
 
 Resolution criteria: {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 I have retrieved the following information about this question.
 Retrieved Info:
@@ -34,6 +36,8 @@ Instructions:
         "QUESTION",
         "BACKGROUND",
         "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
         "RETRIEVED_INFO",
         "DATES",
         "BASE_REASONINGS",
@@ -49,8 +53,10 @@ Background: {background}
 
 Resolution criteria: {resolution_criteria}
 
+Resolution date: {resolution_date}
 Today's date: {date_begin}
 Question close date: {date_end}
+Question created date: {created_date}
 
 I have retrieved the following information about this question.
 Retrieved Info:
@@ -72,6 +78,8 @@ Instructions:
         "QUESTION",
         "BACKGROUND",
         "RESOLUTION_CRITERIA",
+        "RESOLUTION_DATE",
+        "CREATED_DATE",
         "RETRIEVED_INFO",
         "DATES",
         "BASE_REASONINGS",

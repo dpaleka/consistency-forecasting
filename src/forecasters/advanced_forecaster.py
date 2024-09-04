@@ -1,5 +1,5 @@
 from .forecaster import Forecaster
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Forecast
 from typing import Optional
 
 # llm_forecasting imports
@@ -14,6 +14,7 @@ import forecasters.llm_forecasting.ensemble as ensemble
 from forecasters.llm_forecasting.config.constants import DEFAULT_RETRIEVAL_CONFIG
 
 import asyncio
+from datetime import datetime
 from dataclasses import dataclass
 from common.datatypes import DictLikeDataclass
 
@@ -117,37 +118,37 @@ class AdvancedForecaster(Forecaster):
 
     async def call_async(
         self,
-        sentence: ForecastingQuestion,
-        today_date: Optional[str] = None,
+        fq: ForecastingQuestion,
+        forecaster_date: str | datetime | None = None,
         retrieval_interval_length: int = 30,
-        include_metadata=False,
         **kwargs,
-    ) -> float:
-        question = sentence.title
-        background_info = (
-            sentence.metadata["background_info"]
-            if getattr(sentence, "metadata", None)
-            and "background_info" in sentence.metadata
-            else ""
-        )
-        resolution_criteria = (
-            sentence.body
-        )  # resolution criteria and other info is in |body|
+    ) -> Forecast:
+        question: str = fq.title
+        resolution_criteria: str = fq.body
+        background_info: str = "N/A"  # call_full removes the `metadata` field. `background_info` is only present in Metaculus questions, and is generally not crucial for forecasting, only useful for AdvancedForecaster to retrieve relevant articles
 
-        if today_date is None:
-            today_date: str = get_todays_date()
-        else:
-            # formatted_date = today.strftime("%Y-%m-%d")
-            assert (
-                isinstance(today_date, str) and len(today_date) == 10
-            ), "today_date must be a string of the form 'YYYY-MM-DD'"
+        resolution_date: str = fq.resolution_date.strftime("%Y-%m-%d")
+        created_date: str = (
+            fq.created_date.strftime("%Y-%m-%d") if fq.created_date else "N/A"
+        )
+
+        if forecaster_date is None:
+            print("\033[1mUsing today's date as forecaster_date\033[0m")
+            forecaster_date = get_todays_date()
+        elif isinstance(forecaster_date, datetime):
+            forecaster_date = forecaster_date.strftime("%Y-%m-%d")
+
+        assert (
+            isinstance(forecaster_date, str) and len(forecaster_date) == 10
+        ), "forecaster_date must be a string of the form 'YYYY-MM-DD'"
 
         # If open date is set in data structure, change beginning of retrieval to question open date.
-        # Retrieve from [today's date - 1 month, today's date].
-        retrieval_dates = (
-            subtract_days_from_date(today_date, retrieval_interval_length),
-            today_date,
+        # Retrieve from [forecaster_date - 1 month, forecaster_date].
+        retrieval_dates: tuple[str, str] = (
+            subtract_days_from_date(forecaster_date, retrieval_interval_length),
+            forecaster_date,
         )
+
         (
             ranked_articles,
             all_articles,
@@ -168,11 +169,13 @@ class AdvancedForecaster(Forecaster):
         )
 
         close_date = "N/A"  # data doesn't have explicit close date, so set to N/A
-        today_to_close_date = [today_date, close_date]
+        today_to_close_date = [forecaster_date, close_date]
         ensemble_dict = await ensemble.meta_reason(
             question=question,
             background_info=background_info,
             resolution_criteria=resolution_criteria,
+            resolution_date=resolution_date,
+            created_date=created_date,
             today_to_close_date_range=today_to_close_date,
             retrieved_info=all_summaries,
             reasoning_prompt_templates=self.reasoning_config[
@@ -187,19 +190,23 @@ class AdvancedForecaster(Forecaster):
             meta_temperature=self.reasoning_config["AGGREGATION_TEMPERATURE"],
         )
 
-        return ensemble_dict["meta_prediction"]
+        return Forecast(prob=ensemble_dict["meta_prediction"], metadata=ensemble_dict)
 
     def call(
         self,
         sentence: ForecastingQuestion,
-        today_date: Optional[str] = None,
+        forecaster_date: Optional[str | datetime] = None,
         retrieval_interval_length: int = 30,
-        include_metadata=False,
         **kwargs,
-    ) -> float:
+    ) -> Forecast:
         # This won't work inside a Jupyter notebook or similar; but there you can use await
         return asyncio.run(
-            self.call_async(sentence, today_date, retrieval_interval_length, **kwargs)
+            self.call_async(
+                sentence,
+                forecaster_date,
+                retrieval_interval_length,
+                **kwargs,
+            )
         )
 
     def dump_config(self):

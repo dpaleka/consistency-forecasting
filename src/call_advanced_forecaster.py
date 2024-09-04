@@ -5,12 +5,14 @@ from uuid import uuid4
 from forecasters.advanced_forecaster import AdvancedForecaster
 from common.datatypes import ForecastingQuestion
 
+
 async def process_question(forecaster, question, idx=0):
     start_time = time.time()
-    prediction = await forecaster.call_async(question, idx=idx)
+    prediction = await forecaster.call_full_async(question, idx=idx)
     end_time = time.time()
     execution_time = end_time - start_time
     return question.title, prediction, execution_time
+
 
 async def measure_forecaster_performance():
     t00 = time.time()
@@ -34,15 +36,18 @@ async def measure_forecaster_performance():
             ("Cardano", 5),
             ("Dogecoin", 1),
             ("Ripple", 2),
-            #("Solana", 300),
-            #("Polkadot", 50),
-            #("Chainlink", 30),
-            #("Litecoin", 200),
-            #("Uniswap", 20)
+            # ("Solana", 300),
+            # ("Polkadot", 50),
+            # ("Chainlink", 30),
+            # ("Litecoin", 200),
+            # ("Uniswap", 20)
         ]
     ]
 
-    tasks = [process_question(forecaster, question,idx=idx) for idx, question in enumerate(questions)]
+    tasks = [
+        process_question(forecaster, question, idx=idx)
+        for idx, question in enumerate(questions)
+    ]
     results = await asyncio.gather(*tasks)
 
     for title, prediction, execution_time in results:
@@ -54,7 +59,10 @@ async def measure_forecaster_performance():
     total_time = sum(result[2] for result in results)
     average_time = total_time / len(results)
     total_time = time.time() - t00
-    print(f"Average execution time: {average_time:.2f} seconds, Total time: {total_time:.2f} seconds")
+    print(
+        f"Average execution time: {average_time:.2f} seconds, Total time: {total_time:.2f} seconds"
+    )
+
 
 # Run the async function
 asyncio.run(measure_forecaster_performance())

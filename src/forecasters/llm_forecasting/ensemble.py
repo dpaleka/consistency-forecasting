@@ -38,6 +38,8 @@ async def meta_reason(
     question,
     background_info,
     resolution_criteria,
+    resolution_date,
+    created_date: str | None,
     today_to_close_date_range,
     retrieved_info,
     reasoning_prompt_templates,
@@ -57,6 +59,8 @@ async def meta_reason(
         question (str): Forecast question to be answered.
         background_info (str): Background information of the question.
         resolution_criteria (str): Resolution criteria for the question.
+        resolution_date (str): The date by or at which the resolution criteria must be met.
+        created_date (str | None): The date when the question was created.
         retrieved_info (str): Retrieved articles from our news retrieval system
         (a concatenation of the article titles and summaries).
         today_to_close_date_range (str): A string containing the today's date
@@ -103,6 +107,9 @@ async def meta_reason(
         ), "weights must have the same length as reasoning_prompt_templates"
     all_base_reasonings = []
     all_base_reasoning_full_prompts = []
+    print(f"dates: {today_to_close_date_range}")
+    print(f"Created date: {created_date}")
+    print(f"Resolution date: {resolution_date}")
     for i, base_model_name in enumerate(base_model_names):
         (
             base_reasonings,
@@ -111,6 +118,8 @@ async def meta_reason(
             question=question,
             background_info=background_info,
             resolution_criteria=resolution_criteria,
+            resolution_date=resolution_date,
+            created_date=created_date,
             dates=today_to_close_date_range,
             retrieved_info=retrieved_info,
             reasoning_prompt_templates=reasoning_prompt_templates[i],
