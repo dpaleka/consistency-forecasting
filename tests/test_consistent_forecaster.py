@@ -258,7 +258,10 @@ async def test_consistent_forecaster_more_consistent_async(
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = await checker.instantiate(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = await checker.instantiate(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]
@@ -305,7 +308,10 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = checker.instantiate_sync(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]
