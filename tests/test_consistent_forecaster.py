@@ -175,7 +175,7 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 
     # TODO: not sure if I should have verify_before_instantiation=False here
     tup = await checker.instantiate(
-        bqs, verify_before_instantion=False, **instantiation_kwargs
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
     )
 
     if isinstance(tup, list):
