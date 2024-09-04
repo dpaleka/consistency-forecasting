@@ -41,6 +41,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -509,6 +510,9 @@ def main(
         case "ConsistentForecaster":
             forecaster = ConsistentForecaster(
                 hypocrite=BasicForecaster(),
+                checks=[
+                    NegChecker(),
+                ],
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )

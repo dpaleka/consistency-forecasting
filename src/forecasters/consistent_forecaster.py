@@ -263,12 +263,15 @@ class ConsistentForecaster(Forecaster):
             | {"elicited_prob": ans_P.prob}
             | {"elicitation_metadata": ans_P.metadata}
         )
+        ans_P = ans_P.prob  ###
+
         cons_tuples = self.instantiate_cons_tuples(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
             instantiation_kwargs=instantiation_kwargs,
             **kwargs,
         )
+
         P_weight = 1.0
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
@@ -281,9 +284,11 @@ class ConsistentForecaster(Forecaster):
                 | {"elicitation_metadata": hypocrite_answers[k].metadata}
                 for k in cons_tuple
             }
+
             hypocrite_answers = {k: v.prob for k, v in hypocrite_answers.items()}
 
             hypocrite_answers["P"] = ans_P
+            print("HYPOCRISY", hypocrite_answers)
             other = len(cons_tuple) - 1
             cons_answers, v = check.max_min_arbitrage(
                 hypocrite_answers, scoring=[P_weight] + [1.0] * other
@@ -291,6 +296,7 @@ class ConsistentForecaster(Forecaster):
             P_weight += 1.0 * other
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
+
         return Forecast(prob=ans_P, metadata=metadata)
 
     async def call_async(
@@ -333,6 +339,8 @@ class ConsistentForecaster(Forecaster):
             | {"elicited_prob": ans_P.prob}
             | {"elicitation_metadata": ans_P.metadata}
         )
+        ans_P = ans_P.prob  ###
+
         cons_tuples = await self.instantiate_cons_tuples_async(
             sentence,
             bq_func_kwargs=bq_func_kwargs,
