@@ -230,7 +230,7 @@ class ConsistentForecaster(Forecaster):
         instantiation_kwargs: dict = None,
         only_arbitrage_if_fail=False,
         **kwargs,
-    ) -> Forecast | tuple[Forecast, dict]:
+    ) -> Forecast:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
@@ -309,7 +309,7 @@ class ConsistentForecaster(Forecaster):
         instantiation_kwargs: dict = None,
         only_arbitrage_if_fail=False,
         **kwargs,
-    ) -> Forecast | tuple[Forecast, dict]:
+    ) -> Forecast:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
 
         Args:
