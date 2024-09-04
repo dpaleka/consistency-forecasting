@@ -117,12 +117,15 @@ test_fq_five = ForecastingQuestion(
 @pytest.mark.expensive
 async def test_consistent_forecaster_call_async(consistent_forecaster):
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {
-        "model": "gpt-4o-mini-2024-07-18"
-    }  # doesn't pass, unsure where to provide model
+    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     prob = await consistent_forecaster.call_async(
-        test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
+        test_fq_around_fifty_fifty,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
     )
+    prob = prob.prob
     print("Probability: ", prob)
 
     assert (
@@ -134,9 +137,14 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
 def test_consistent_forecaster_call_sync(consistent_forecaster):
     call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
+    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     prob = consistent_forecaster.call(
-        test_fq_around_fifty_fifty, bq_func_kwargs=bq_func_kwargs, **call_kwargs
+        test_fq_around_fifty_fifty,
+        bq_func_kwargs=bq_func_kwargs,
+        instantiation_kwargs=instantiation_kwargs,
+        **call_kwargs,
     )
+    prob = prob.prob
     print("Probability: ", prob)
     assert (
         isinstance(prob, float) and 0.1 <= prob <= 0.9
@@ -165,7 +173,10 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = await checker.instantiate(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = await checker.instantiate(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]
@@ -203,7 +214,10 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = checker.instantiate_sync(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]
@@ -244,7 +258,10 @@ async def test_consistent_forecaster_more_consistent_async(
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = await checker.instantiate(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = await checker.instantiate(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]
@@ -291,7 +308,10 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
     ]
     bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
 
-    tup = checker.instantiate_sync(bqs, **instantiation_kwargs)
+    # TODO: not sure if I should have verify_before_instantiation=False here
+    tup = checker.instantiate_sync(
+        bqs, verify_before_instantiation=False, **instantiation_kwargs
+    )
 
     if isinstance(tup, list):
         tup = tup[0]

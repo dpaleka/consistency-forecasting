@@ -40,7 +40,6 @@ from .checker_prompts import (
 TUPLE_VERIFY_SEED = 32
 
 load_dotenv()
-verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
@@ -198,14 +197,22 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
-            for _ in range(n_verification):
+        if verify_before_instantiation:
+            print("Base sentences:", base_sentences)
+            print(f"Instantiating with instantiator {self.__class__.__name__}")
+            for i in range(n_verification):
+                print(f"Instantiation attempt {i}")
                 output = self._instantiate_sync(base_sentences, **kwargs)
                 based_sentences = self.to_base_sentence_format_stripped(base_sentences)
-                if self.verify_sync(output, based_sentences).valid:
+                print(f"Verifying output: {output}")
+                verification = self.verify_sync(output, based_sentences, **kwargs)
+                print("Verification result:", verification)
+                if verification.valid:
                     return output
+            print("All attempts failed")
             return []
         else:
             return self._instantiate_sync(base_sentences, **kwargs)
@@ -232,15 +239,22 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
-            for _ in range(n_verification):
+        if verify_before_instantiation:
+            print("Base sentences:", base_sentences)
+            print(f"Instantiating with instantiator {self.__class__.__name__}")
+            for i in range(n_verification):
+                print(f"Instantiation attempt {i}")
                 output = await self._instantiate(base_sentences, **kwargs)
                 based_sentences = self.to_base_sentence_format_stripped(base_sentences)
-                verification = await self.verify(output, based_sentences)
+                print(f"Verifying output: {output}")
+                verification = await self.verify(output, based_sentences, **kwargs)
+                print("Verification result:", verification)
                 if verification.valid:
                     return output
+            print("All attempts failed")
             return []
         else:
             return await self._instantiate(base_sentences, **kwargs)
@@ -1481,9 +1495,10 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             for _ in range(n_verification):
                 output = self._instantiate_sync_by_type(
                     base_sentences, consequence_type=consequence_type, **kwargs
@@ -1503,9 +1518,10 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             for _ in range(n_verification):
                 output = await self._instantiate_by_type(
                     base_sentences, consequence_type=consequence_type, **kwargs
