@@ -695,4 +695,4 @@ if __name__ == "__main__":
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
-# python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 2 -k ParaphraseChecker
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 2 -k NegChecker
