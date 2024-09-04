@@ -727,12 +727,11 @@ class Checker(ABC):
                 else:
                     result_without_line = {}
 
-                for question, prob in answers.items():
-                    line[question]["elicited_prob"] = prob
-                    if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(
-                            answers_[question][1]
-                        )
+                for question, forecast in answers_.items():
+                    line[question]["elicited_prob"] = forecast.prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(
+                        forecast.metadata
+                    )
 
                 result = {"line": line, **result_without_line}
                 results.append(result)
@@ -791,12 +790,11 @@ class Checker(ABC):
             for line, answers_, answers, result_without_line in zip(
                 data, all_answers_, all_answers, results_without_line
             ):
-                for question, prob in answers.items():
-                    line[question]["elicited_prob"] = prob
-                    if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(
-                            answers_[question][1]
-                        )
+                for question, forecast in answers_.items():
+                    line[question]["elicited_prob"] = forecast.prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(
+                        forecast.metadata
+                    )
 
                 result = {"line": line, **result_without_line}
 
