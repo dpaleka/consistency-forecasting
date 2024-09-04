@@ -201,11 +201,14 @@ class MiniInstantiator(ABC):
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
-            for _ in range(n_verification):
+            for i in range(n_verification):
+                print(f"Instantiation attempt {i}")
                 output = self._instantiate_sync(base_sentences, **kwargs)
                 based_sentences = self.to_base_sentence_format_stripped(base_sentences)
+                print(f"Verifying output: {output}")
                 if self.verify_sync(output, based_sentences).valid:
                     return output
+            print("All attempts failed")
             return []
         else:
             return self._instantiate_sync(base_sentences, **kwargs)
