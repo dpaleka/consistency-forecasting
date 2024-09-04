@@ -229,7 +229,6 @@ class ConsistentForecaster(Forecaster):
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
         only_arbitrage_if_fail=False,
-        include_metadata=False,
         **kwargs,
     ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -258,9 +257,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = self.hypocrite.call(
-            sentence, include_metadata=include_metadata, **kwargs
-        )
+        ans_P = self.hypocrite.call(sentence, **kwargs)
         if isinstance(ans_P, tuple):
             ans_P, ans_P_metadata = ans_P
             metadata["P"] = (
@@ -280,9 +277,7 @@ class ConsistentForecaster(Forecaster):
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = self.hypocrite.elicit(
-                cons_tuple, include_metadata=include_metadata, **kwargs
-            )
+            hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
             if isinstance(next(iter(hypocrite_answers.values())), tuple):
                 metadata[check.__class__.__name__] = {
                     k: cons_tuple[k].model_dump()
@@ -305,8 +300,6 @@ class ConsistentForecaster(Forecaster):
             P_weight += 1.0 * other
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
-        if include_metadata:
-            return Forecast(prob=ans_P, metadata=metadata), metadata
         return Forecast(prob=ans_P, metadata=metadata)
 
     async def call_async(
@@ -315,7 +308,6 @@ class ConsistentForecaster(Forecaster):
         bq_func_kwargs: dict = None,
         instantiation_kwargs: dict = None,
         only_arbitrage_if_fail=False,
-        include_metadata=False,
         **kwargs,
     ) -> Forecast | tuple[Forecast, dict]:
         """Call ConsistentForecaster by sequentially arbitraging against checks.
@@ -344,9 +336,7 @@ class ConsistentForecaster(Forecaster):
 
         """
         metadata = {}
-        ans_P = await self.hypocrite.call_async(
-            sentence, include_metadata=include_metadata, **kwargs
-        )
+        ans_P = await self.hypocrite.call_async(sentence, **kwargs)
         if isinstance(ans_P, tuple):
             ans_P, ans_P_metadata = ans_P
             metadata["P"] = (
@@ -367,9 +357,7 @@ class ConsistentForecaster(Forecaster):
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(
-                cons_tuple, include_metadata=include_metadata, **kwargs
-            )
+            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
             if isinstance(next(iter(hypocrite_answers.values())), tuple):
                 metadata[check.__class__.__name__] = {
                     k: cons_tuple[k].model_dump()
@@ -392,8 +380,6 @@ class ConsistentForecaster(Forecaster):
             P_weight += 1.0 * (len(cons_tuple) - 1)
             if v > check.default_tolerance or not only_arbitrage_if_fail:
                 ans_P = cons_answers["P"]
-        if include_metadata:
-            return Forecast(prob=ans_P, metadata=metadata), metadata
         return Forecast(prob=ans_P, metadata=metadata)
 
     @classmethod

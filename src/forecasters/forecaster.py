@@ -40,15 +40,11 @@ class Forecaster(ABC):
         return self.call_async(fq, **kwargs)
 
     @abstractmethod
-    def call(
-        self, fq: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> Forecast:
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         pass
 
     @abstractmethod
-    async def call_async(
-        self, fq: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> Forecast:
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         pass
 
     @abstractmethod
