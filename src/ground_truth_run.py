@@ -14,7 +14,12 @@ from evaluation_utils.utils import (
     write_to_dirs,
 )
 from evaluation_utils.common_options import common_options
-from evaluation_utils.proper_scoring import proper_scoring_rule, scoring_functions
+from evaluation_utils.proper_scoring import (
+    proper_scoring_rule,
+    scoring_functions,
+    plot_calibration,
+    calculate_calibration,
+)
 
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 
@@ -87,6 +92,51 @@ def main(
         overwrite=True,
     )
     print(f"Results written to {output_filename}")
+
+    # Calculate and print summary statistics
+    total_score = sum(result["score"] for result in results)
+    average_score = total_score / len(results)
+    calibration_error_data: dict = calculate_calibration(
+        forecasting_questions, results, scoring_functions[scoring_rule]
+    )
+    calibration_error = calibration_error_data["calibration_error"]
+
+    summary = {
+        "total_questions": len(results),
+        "average_score": average_score,
+        "calibration_error": calibration_error,
+        "scoring_rule": scoring_rule,
+        "forecaster": forecaster.__class__.__name__,
+        "model": model,
+    }
+
+    print("\nGround Truth Summary:")
+    print(f"Total questions: {summary['total_questions']}")
+    print(f"Average {scoring_rule}: {summary['average_score']:.4f}")
+    print(f"Accuracy: {summary['accuracy']:.4f}")
+    print(f"Forecaster: {summary['forecaster']}")
+    print(f"Model: {summary['model']}")
+
+    # Write summary to file
+    summary_filename = "ground_truth_summary.json"
+    write_to_dirs(
+        results=[summary],
+        filename=summary_filename,
+        dirs_to_write=dirs_to_write,
+        overwrite=True,
+    )
+    print(f"\nSummary written to {summary_filename}")
+
+    # Plot calibration error
+    probs = [result["prob"] for result in results]
+    outcomes = [result["resolution"] for result in results]
+    to_plot = False
+    if to_plot:
+        plot = plot_calibration(probs, outcomes)
+        plot_filename = "calibration_plot.png"
+        for dir in dirs_to_write:
+            plot.savefig(dir / plot_filename)
+        print(f"Calibration plot written to {plot_filename}")
 
 
 if __name__ == "__main__":
