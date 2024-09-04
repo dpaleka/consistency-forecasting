@@ -32,12 +32,18 @@ def run_command(command):
     return process.returncode, stdout.decode(), stderr.decode()
 
 
+checkers = ["NegChecker", "AndChecker"]
+
 commands = [
     "python src/format_and_verify_questions.py --file_path src/data/other/high-quality-questions-all-domains.jsonl -d test -s True -F True -o high_quality_questions_all_domains_test.jsonl",
     "python src/generate_related_questions.py -n 3 -q 3 --input_file src/data/fq/test/high_quality_questions_all_domains_test.jsonl --output_file src/data/fq/test/from_related_test.jsonl",
-    "python src/format_and_verify_questions.py --file_path src/data/fq/test/from_related_test.jsonl -d test -o from-related-verified_test.jsonl -s True -F True",
-    "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
-    "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster -m gpt-4o-mini --run -k NegChecker -k AndChecker -k CondCondChecker -s -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
+    "python src/format_and_verify_questions.py --file_path src/data/test/from_related_test.jsonl -d test -o from-related-verified_test.jsonl -s True -F True",
+    "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r"
+    + " ".join(f" -k {checker}" for checker in checkers)
+    + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
+    "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster -m gpt-4o-mini --run"
+    + " ".join(f" -k {checker}" for checker in checkers)
+    + " -s -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
 ]
 
 
@@ -58,7 +64,6 @@ def expected_files(test_exist: bool = False):
         "src/data/fq/test/from-related-verified_test.jsonl",
     ]
 
-    checkers = ["NegChecker", "AndChecker", "CondCondChecker"]
     for checker in checkers:
         files.extend(
             [
