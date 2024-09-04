@@ -715,7 +715,7 @@ class Checker(ABC):
 
                 answers_: dict[
                     str, Forecast | tuple[Forecast, dict]
-                ] = forecaster.elicit(line_obj, include_metadata=True, **kwargs)
+                ] = forecaster.elicit(line_obj, **kwargs)
                 answers = {
                     q: a.prob if isinstance(a, Forecast) else a[0].prob
                     for q, a in answers_.items()
@@ -768,9 +768,7 @@ class Checker(ABC):
             ]
             print(validated_lines)
             print("Starting async elicitation")
-            elicit_func = functools.partial(
-                forecaster.elicit_async, include_metadata=True, **kwargs
-            )
+            elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers_ = await parallelized_call(
                 elicit_func,
                 validated_lines,

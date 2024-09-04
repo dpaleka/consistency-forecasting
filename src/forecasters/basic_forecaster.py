@@ -30,9 +30,7 @@ class BasicForecaster(Forecaster):
             )
         ]
 
-    def call(
-        self, fq: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> Forecast:
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         print("AAA")
         print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = answer_sync(
@@ -45,9 +43,7 @@ class BasicForecaster(Forecaster):
         print(f"LLM API response: {response}")
         return Forecast(prob=response.prob, metadata=None)
 
-    async def call_async(
-        self, fq: ForecastingQuestion, include_metadata=False, **kwargs
-    ) -> float:
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> float:
         print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = await answer(
             prompt=fq.to_str_forecast_mode(),
