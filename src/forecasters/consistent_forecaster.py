@@ -66,7 +66,9 @@ class ConsistentForecaster(Forecaster):
         ]
         self.base_data_path = base_data_path
         self.coerce_nonbinary_qs = coerce_nonbinary_qs
-        self.instantiation_kwargs = instantiation_kwargs or {}
+        self.instantiation_kwargs = {"verify_before_instantion": False} | (
+            instantiation_kwargs or {}
+        )
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
 

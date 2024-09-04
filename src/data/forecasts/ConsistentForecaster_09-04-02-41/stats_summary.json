@@ -1,5 +1,0 @@
-{
-    "NegChecker": {
-        "error": "'charmap' codec can't encode character '\\u02da' in position 221: character maps to <undefined>"
-    }
-}
