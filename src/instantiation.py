@@ -32,7 +32,7 @@ BASE_DATA_PATH: Path = (
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
 TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["ExpectedEvidenceChecker"]
+RELEVANT_CHECKS = ["NegChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]
 
 
