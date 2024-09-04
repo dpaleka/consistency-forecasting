@@ -197,10 +197,10 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
-        verify_before_instantion: bool = True,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             print("Base sentences:", base_sentences)
             print(f"Instantiating with instantiator {self.__class__.__name__}")
             for i in range(n_verification):
@@ -239,10 +239,10 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
-        verify_before_instantion: bool = True,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             print("Base sentences:", base_sentences)
             print(f"Instantiating with instantiator {self.__class__.__name__}")
             for i in range(n_verification):
@@ -1495,10 +1495,10 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
-        verify_before_instantion: bool = True,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             for _ in range(n_verification):
                 output = self._instantiate_sync_by_type(
                     base_sentences, consequence_type=consequence_type, **kwargs
@@ -1518,10 +1518,10 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
-        verify_before_instantion: bool = True,
+        verify_before_instantiation: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
-        if verify_before_instantion:
+        if verify_before_instantiation:
             for _ in range(n_verification):
                 output = await self._instantiate_by_type(
                     base_sentences, consequence_type=consequence_type, **kwargs
