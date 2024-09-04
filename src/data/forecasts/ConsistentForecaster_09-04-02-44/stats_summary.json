@@ -1,5 +1,0 @@
-{
-    "NegChecker": {
-        "error": "open() got an unexpected keyword argument 'encoding'"
-    }
-}

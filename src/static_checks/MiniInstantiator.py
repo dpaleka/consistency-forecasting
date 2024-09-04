@@ -40,7 +40,6 @@ from .checker_prompts import (
 TUPLE_VERIFY_SEED = 32
 
 load_dotenv()
-verify_before_instantion = os.getenv("VERIFY_BEFORE_INSTANTIATION", "False") == "True"
 write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 use_examples = os.getenv("USE_EXAMPLES", "False") == "True"
 verify_length = os.getenv("VERIFY_LENGTH", "False") == "True"
@@ -198,6 +197,7 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
+        verify_before_instantion: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
@@ -239,6 +239,7 @@ class MiniInstantiator(ABC):
         self,
         base_sentences: dict[str, ForecastingQuestion],
         n_verification: int = 3,
+        verify_before_instantion: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
@@ -1494,6 +1495,7 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
+        verify_before_instantion: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
@@ -1516,6 +1518,7 @@ class Consequence(MiniInstantiator):
         base_sentences: ForecastingQuestion,
         consequence_type: str,
         n_verification: int = 3,
+        verify_before_instantion: bool = True,
         **kwargs,
     ) -> Union["Self.OutputFormat", List["Self.OutputFormat"]]:
         if verify_before_instantion:
