@@ -213,178 +213,180 @@ def process_check(
     eval_by_source: bool,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
-    # try:
-    print("Checker: ", check_name)
-    with open(checkers[check_name].path, "r", encoding="utf-8") as f:
-        print(f"Path: {checkers[check_name].path}")
-        all_tuples = [json.loads(line) for line in f]
+    try:
+        print("Checker: ", check_name)
+        with open(checkers[check_name].path, "r", encoding="utf-8") as f:
+            print(f"Path: {checkers[check_name].path}")
+            all_tuples = [json.loads(line) for line in f]
 
-    if eval_by_source:
-        source_questions = {}
-        for tuple_data in all_tuples:
-            source_question = (
-                tuple_data["P"]["metadata"].get("source_question")
-                or tuple_data["P"]["title"]
-            )
-            source_id = tuple_data["P"]["metadata"].get("source_id")
-            if source_question not in source_questions:
-                source_questions[source_question] = {
-                    "tuples": [],
-                    "source_id": source_id,
-                }
-            if len(source_questions[source_question]["tuples"]) < tuples_per_source:
-                source_questions[source_question]["tuples"].append(tuple_data)
+        if eval_by_source:
+            source_questions = {}
+            for tuple_data in all_tuples:
+                source_question = (
+                    tuple_data["P"]["metadata"].get("source_question")
+                    or tuple_data["P"]["title"]
+                )
+                source_id = tuple_data["P"]["metadata"].get("source_id")
+                if source_question not in source_questions:
+                    source_questions[source_question] = {
+                        "tuples": [],
+                        "source_id": source_id,
+                    }
+                if len(source_questions[source_question]["tuples"]) < tuples_per_source:
+                    source_questions[source_question]["tuples"].append(tuple_data)
 
-        checker_tuples = [
-            tuple
-            for source_data in source_questions.values()
-            for tuple in source_data["tuples"]
-        ]
-    else:
-        checker_tuples = all_tuples[:num_lines]
+            checker_tuples = [
+                tuple
+                for source_data in source_questions.values()
+                for tuple in source_data["tuples"]
+            ]
+        else:
+            checker_tuples = all_tuples[:num_lines]
 
-    keys = [key for key in checker_tuples[0].keys() if key not in ["metadata"]]
-    print(f"Debug: keys: {keys}")
-    print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
+        keys = [key for key in checker_tuples[0].keys() if key not in ["metadata"]]
+        print(f"Debug: keys: {keys}")
+        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
 
-    dirs_to_write = [output_directory, most_recent_directory]
+        dirs_to_write = [output_directory, most_recent_directory]
 
-    if run:
-        # clear the file
-        print(f"Clearing {check_name}.jsonl")
-        for dir in dirs_to_write:
-            if Path(dir / f"{check_name}.jsonl").exists():
-                os.remove(dir / f"{check_name}.jsonl")
+        if run:
+            # clear the file
+            print(f"Clearing {check_name}.jsonl")
+            for dir in dirs_to_write:
+                if Path(dir / f"{check_name}.jsonl").exists():
+                    os.remove(dir / f"{check_name}.jsonl")
 
-        results = []
-        for start in range(0, len(checker_tuples), 5):
-            end = min(start + 5, len(checker_tuples))
-            batch_tuples = checker_tuples[start:end]
+            results = []
+            for start in range(0, len(checker_tuples), 5):
+                end = min(start + 5, len(checker_tuples))
+                batch_tuples = checker_tuples[start:end]
 
-            match forecaster_class:
-                case (
-                    "BasicForecaster"
-                    | "CoTForecaster"
-                    | "ConsistentForecaster"
-                    | "RecursiveConsistentForecaster"
-                ):
-                    if is_async:
-                        reset_global_semaphore()
-                        results_batch = asyncio.run(
-                            checkers[check_name].test(
+                match forecaster_class:
+                    case (
+                        "BasicForecaster"
+                        | "CoTForecaster"
+                        | "ConsistentForecaster"
+                        | "RecursiveConsistentForecaster"
+                    ):
+                        if is_async:
+                            reset_global_semaphore()
+                            results_batch = asyncio.run(
+                                checkers[check_name].test(
+                                    forecaster,
+                                    do_check=False,
+                                    tuples=batch_tuples,
+                                    model=model,
+                                )
+                            )
+                        else:
+                            results_batch = checkers[check_name].test_sync(
                                 forecaster,
                                 do_check=False,
                                 tuples=batch_tuples,
                                 model=model,
                             )
-                        )
-                    else:
-                        results_batch = checkers[check_name].test_sync(
-                            forecaster,
-                            do_check=False,
-                            tuples=batch_tuples,
-                            model=model,
-                        )
-                case "AdvancedForecaster":
-                    if is_async:
-                        reset_global_semaphore()
-                        results_batch = asyncio.run(
-                            checkers[check_name].test(
+                    case "AdvancedForecaster":
+                        if is_async:
+                            reset_global_semaphore()
+                            results_batch = asyncio.run(
+                                checkers[check_name].test(
+                                    forecaster,
+                                    do_check=False,
+                                    tuples=batch_tuples,
+                                )
+                            )
+                        else:
+                            results_batch = checkers[check_name].test_sync(
                                 forecaster,
                                 do_check=False,
                                 tuples=batch_tuples,
                             )
-                        )
-                    else:
-                        results_batch = checkers[check_name].test_sync(
-                            forecaster,
-                            do_check=False,
-                            tuples=batch_tuples,
-                        )
 
-            print(f"results_batch: {results_batch}")
-            print(f"len(results_batch): {len(results_batch)}")
-            print(f"len(batch_tuples): {len(batch_tuples)}")
-            assert len(results_batch) == len(
-                batch_tuples
-            ), "results must be of the same length as the batch"
-            assert all(validate_result(result, keys) for result in results_batch)
+                print(f"results_batch: {results_batch}")
+                print(f"len(results_batch): {len(results_batch)}")
+                print(f"len(batch_tuples): {len(batch_tuples)}")
+                assert len(results_batch) == len(
+                    batch_tuples
+                ), "results must be of the same length as the batch"
+                assert all(validate_result(result, keys) for result in results_batch)
 
-            write_to_dirs(results_batch, f"{check_name}.jsonl", dirs_to_write)
-            results.extend(results_batch)
+                write_to_dirs(results_batch, f"{check_name}.jsonl", dirs_to_write)
+                results.extend(results_batch)
 
-        print(f"Debug: Number of results after run: {len(results)}")
-    else:
-        with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
-            results = [json.loads(line) for line in f]
+            print(f"Debug: Number of results after run: {len(results)}")
+        else:
+            with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
+                results = [json.loads(line) for line in f]
 
-        results = results[: len(checker_tuples)]
-        assert all(validate_result(result, keys) for result in results)
-        print(f"Debug: Number of results loaded: {len(results)}")
+            results = results[: len(checker_tuples)]
+            assert all(validate_result(result, keys) for result in results)
+            print(f"Debug: Number of results loaded: {len(results)}")
 
-    print(f"Debug: Number of results: {len(results)}")
-    print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
+        print(f"Debug: Number of results: {len(results)}")
+        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
 
-    if len(results) != len(checker_tuples):
-        print("Warning: Number of results does not match number of checker_tuples")
-        print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
+        if len(results) != len(checker_tuples):
+            print("Warning: Number of results does not match number of checker_tuples")
+            print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
 
-    # Ensure results match checker_tuples
-    for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
-        for key in keys:
-            try:
-                assert result["line"][key]["id"] == checker_tuple[key]["id"], (
-                    f"ID mismatch for key {key} at index {i}: "
-                    f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+        # Ensure results match checker_tuples
+        for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
+            for key in keys:
+                try:
+                    assert result["line"][key]["id"] == checker_tuple[key]["id"], (
+                        f"ID mismatch for key {key} at index {i}: "
+                        f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                    )
+                    assert (
+                        result["line"][key]["title"] == checker_tuple[key]["title"]
+                    ), (
+                        f"Title mismatch for key {key} at index {i}: "
+                        f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+                    )
+                except AssertionError as e:
+                    print(f"Assertion failed: {str(e)}")
+                    print(f"Result: {result}")
+                    print(f"Checker tuple: {checker_tuple}")
+                    raise
+
+        data = [result["line"] for result in results]
+        all_answers = [
+            {key: result["line"][key]["elicited_prob"] for key in keys}
+            for result in results
+        ]
+        for line, answers, result in zip(data, all_answers, results):
+            violation_data = {}
+            for metric in metrics:
+                violation_data[metric] = checkers[check_name].check_from_elicited_probs(
+                    answers, metric
                 )
-                assert result["line"][key]["title"] == checker_tuple[key]["title"], (
-                    f"Title mismatch for key {key} at index {i}: "
-                    f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+            result.update(violation_data)
+
+        print(f"Debug: Calculating stats for {check_name}")
+        if eval_by_source:
+            stats = {"overall": get_stats(results, label=check_name), "by_source": {}}
+            for source, source_data in source_questions.items():
+                source_results = [
+                    r
+                    for r in results
+                    if r["line"]["P"]["metadata"].get("source_question") == source
+                    or r["line"]["P"]["title"] == source
+                ]
+                stats["by_source"][source] = get_stats(
+                    source_results, label=f"{check_name}_{source}"
                 )
-            except AssertionError as e:
-                print(f"Assertion failed: {str(e)}")
-                print(f"Result: {result}")
-                print(f"Checker tuple: {checker_tuple}")
-                raise
+                stats["by_source"][source]["source_id"] = source_data["source_id"]
+        else:
+            stats = {"overall": get_stats(results, label=check_name)}
 
-    data = [result["line"] for result in results]
-    all_answers = [
-        {key: result["line"][key]["elicited_prob"] for key in keys}
-        for result in results
-    ]
-    for line, answers, result in zip(data, all_answers, results):
-        violation_data = {}
-        for metric in metrics:
-            violation_data[metric] = checkers[check_name].check_from_elicited_probs(
-                answers, metric
-            )
-        result.update(violation_data)
+        print(f"Debug: Finished process_check for {check_name}")
+        return stats
+    except Exception as e:
+        print(f"Debug: Error in process_check for {check_name}: {str(e)}")
+        import traceback
 
-    print(f"Debug: Calculating stats for {check_name}")
-    if eval_by_source:
-        stats = {"overall": get_stats(results, label=check_name), "by_source": {}}
-        for source, source_data in source_questions.items():
-            source_results = [
-                r
-                for r in results
-                if r["line"]["P"]["metadata"].get("source_question") == source
-                or r["line"]["P"]["title"] == source
-            ]
-            stats["by_source"][source] = get_stats(
-                source_results, label=f"{check_name}_{source}"
-            )
-            stats["by_source"][source]["source_id"] = source_data["source_id"]
-    else:
-        stats = {"overall": get_stats(results, label=check_name)}
-
-    print(f"Debug: Finished process_check for {check_name}")
-    return stats
-    # except Exception as e:
-    #     print(f"Debug: Error in process_check for {check_name}: {str(e)}")
-    #     import traceback
-
-    #     traceback.print_exc()
-    #     return {"error": str(e)}
+        traceback.print_exc()
+        return {"error": str(e)}
 
 
 @click.command()
