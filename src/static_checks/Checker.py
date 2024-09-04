@@ -15,6 +15,7 @@ from scipy.optimize import (
     brute,
     root,
 )
+from scipy.integrate import solve_ivp
 from pathlib import Path
 from itertools import product
 from abc import ABC, abstractmethod
@@ -258,7 +259,7 @@ class Checker(ABC):
         outcome: dict[str, bool | None],
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
     ) -> float:
         """Arbitrage earned given a particular outcome, forcaster answers and
         arbitrageur_answers.
@@ -296,7 +297,7 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         arbitrageur_answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
     ) -> float:
         """Minimum arbitrage earned regardless of outcome, given forcaster answers
         and arbitrageur_answers."""
@@ -322,13 +323,124 @@ class Checker(ABC):
             ]
         )
 
+    def de_method(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        euler=False,
+        dt=5e-5,
+        max_steps=1000,
+        tmax=5,
+    ) -> tuple[dict[str, Prob], float]:
+        """
+        Use differential equations to find the best arbitrageur_answers.
+
+        Denote answers = p_i for question i, we will have a differential
+        equation for this.
+        Initialize p_i with `answers`.
+
+        Then we have a system of differential equations, given by the matrix
+
+        A = np.array(
+            [
+                [
+                    scoring_derivative(p_i) if omega[i] == True
+                    else -scoring_derivative(1 - p_i) if omega[i] == False
+                    else 0
+                ]
+                for omega in self.Omega
+            ]
+        )
+
+        We solve for p_i' = np.linalg.solve(A, [1, 1, ..., 1]) and update p_i and loop until
+        det(A) < 0.01.
+
+        """
+
+        p = answers.copy()
+
+        scoring_derivatives = self.get_scoring(
+            answers, scoring, return_derivatives=True
+        )
+
+        def MATRIX(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
+            return np.array(
+                [
+                    [
+                        (
+                            scoring_derivatives[q](p[q])
+                            if a == True  # noqa
+                            else (
+                                -scoring_derivatives[q](1 - p[q])
+                                if a == False  # noqa
+                                else 0
+                            )
+                        )
+                        for q, a in omega.items()
+                    ]
+                    for omega in self.Omega
+                ]
+            )
+
+        def DET(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
+            return np.linalg.det(MATRIX(p))
+
+        B = np.array([1] * len(self.Omega))
+
+        def calc_derivs(p):
+            if not isinstance(p, dict):
+                p = dict(zip(self.TupleFormat.model_fields, p))
+            dp_dt_ = np.linalg.solve(MATRIX(p), B)
+            dp_dt = dict(zip(self.TupleFormat.model_fields, dp_dt_))
+            return dp_dt
+
+        if euler:
+            for _ in range(max_steps):
+                dp_dt = calc_derivs(p)
+                d = DET(p)
+                if abs(d) < 0.01:
+                    break
+                for q in self.TupleFormat.model_fields:
+                    p[q] += dp_dt[q] * dt * abs(d)
+        else:
+            fun = lambda t, p: list(  # noqa
+                [
+                    calc_derivs(p)[k] for k in self.TupleFormat.model_fields
+                ]  # DO NOT use values()
+            )
+            event = lambda t, p: DET(p)  # noqa
+            event.terminal = True
+
+            res = solve_ivp(
+                fun,
+                [0, tmax],
+                list(
+                    [answers[k] for k in self.TupleFormat.model_fields]
+                ),  # DO NOT use values()
+                events=[event],
+            )
+
+            p = dict(zip(self.TupleFormat.model_fields, res.y[:, -1]))
+
+        return p, self.min_arbitrage(
+            answers=answers, arbitrageur_answers=p, scoring=scoring
+        )
+
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
-        scoring: dict[str, Callable[[Prob], float]] = np.log,
+        scoring: dict[str, Callable[[Prob], float]] = 1,
         initial_guess: list[float] | str | None = None,
-        methods: tuple[str] = ("shgo", "differential_evolution"),
-    ) -> float:
+        euler=False,
+        dt: float = 5e-5,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("de",),
+    ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
 
@@ -336,7 +448,12 @@ class Checker(ABC):
             answers (dict[str, Prob]): Forecaster answers.
             scoring (dict[str, Callable[[Prob], float]], optional): Scoring function. Defaults to np.log.
             initial_guess (list[float] | str | None, optional): Initial guess for the optimization. Defaults to None.
+            dt (float, optional): Step size for DE method. Defaults to 5e-5.
+            max_steps (int, optional): Maximum steps for DE method. Defaults to 1000.
+            tmax (int | float, optional): Maximum time for DE method. Defaults to 5.
+            euler (bool, optional): Use Euler method for DE method. Defaults to False.
             methods (tuple[str], optional): Optimization method. Options:
+                de -- differential equation method, see Checker.de_method
                 Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
                 basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker
                 brute -- some syntax error
@@ -346,9 +463,18 @@ class Checker(ABC):
                 root -- instead of maximizing min_arbitrage, it finds the values of arbitrageur_answers at which
                     arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
                     arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
-            Defaults to "shgo".
+            Defaults to ("de,").
 
         """
+        if "de" in methods:
+            return self.de_method(
+                answers=answers,
+                scoring=scoring,
+                dt=dt,
+                max_steps=max_steps,
+                tmax=tmax,
+                euler=euler,
+            )
 
         x = answers.keys()
 
@@ -482,15 +608,15 @@ class Checker(ABC):
         raise NotImplementedError("Subclasses must implement this")
 
     def violation(
-        self, answers: dict[str, Any], force_pos=True, metric="default"
+        self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         if metric == "default":
-            v = self.arbitrage_violation(answers)
+            v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
                 v = max(0, v)
         elif metric == "frequentist":
-            v = self.frequentist_violation(answers)
+            v = self.frequentist_violation(answers, **kwargs)
         else:
             raise ValueError(f"Metric {metric} not implemented")
 
@@ -683,29 +809,57 @@ class Checker(ABC):
 
     @classmethod
     def get_scoring(
-        cls, answers: dict[str, Prob], scoring: Any, return_just_log_weights=False
+        cls,
+        answers: dict[str, Prob],
+        scoring: Any,
+        return_just_log_weights=False,
+        return_derivatives=False,
     ) -> dict[str, Callable[[Prob], float]] | dict[str, float] | None:
+        # handle None
+        if scoring is None:
+            scoring = 1.0
+
+        # handle lists
         if isinstance(scoring, list):
+            # fill missing values with last element in scoring function list
             if len(scoring) < len(answers):
                 scoring = scoring + [scoring[-1]] * (len(answers) - len(scoring))
+
+            # cast to dict
             scoring = {q: scoring[i] for i, q in enumerate(answers.keys())}
+
+        # handle single items
         if not isinstance(scoring, dict):
             scoring = {q: scoring for q in answers.keys()}
+
+        # so far scoring could either be dict[str, Callable[[Prob], float]] or dict[str, float]
+        # i.e. either scoring_functions or scoring_weights. Now we calculate both.
         scoring_weights = {}
         scoring_functions = {}
+        scoring_derivatives = {}
         for key, scoring_item in scoring.items():
+            # if it's a number, it's a weight.
+            # we take the scoring function to be weight * log(x)
             if isinstance(scoring_item, (float, int)):
                 scoring_weights[key] = scoring_item
                 scoring_functions[key] = lambda x, sf=scoring_item: sf * np.log(
                     x
-                )  # stupid HACK
+                )  # stupid HACK bc lambda can't take a variable from the outer scope
+                scoring_derivatives[key] = lambda x, sf=scoring_item: sf / x
+
+            # if it's a callable, it's a scoring function
+            # cannot easily check if it's logarithmic, so we return None
             elif callable(scoring_item):
                 scoring_functions[key] = scoring_item
                 scoring_weights = None
+                scoring_derivatives[key] = None
             else:
                 raise ValueError(f"Scoring function {scoring_item} not recognized")
+
         if return_just_log_weights:
             return scoring_weights
+        if return_derivatives:
+            return scoring_derivatives
         return scoring_functions
 
     @classmethod
@@ -767,6 +921,7 @@ class NegChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
+        """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
         weights = self.get_scoring(
@@ -1018,6 +1173,23 @@ class AndOrChecker(Checker):
             )
         ]
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+        )
+
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         P, Q, P_or_Q, P_and_Q = (
             answers["P"],
@@ -1233,6 +1405,114 @@ class CondChecker(Checker):
         # )
 
 
+class ExpectedEvidenceChecker(Checker):
+    num_base_questions = 2
+
+    class TupleFormat(BaseModel):
+        P: ForecastingQuestion
+        Q: ForecastingQuestion
+        P_given_Q: ForecastingQuestion
+        P_given_not_Q: ForecastingQuestion
+
+        @field_validator("P", "Q")
+        def check_question_type_binary(cls, value):
+            if value.question_type != "binary":
+                raise ValueError("Question type must be binary")
+            return value
+
+        @field_validator("P_given_Q", "P_given_not_Q")
+        def check_question_type_condbinary(cls, value):
+            if value.question_type != "conditional_binary":
+                raise ValueError("Question type must be conditional binary")
+            return value
+
+    def instantiate_sync(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> List["Self.TupleFormat"]:
+        P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+        Q = Trivial().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        P_given_Q = Conditional().instantiate_sync(
+            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
+        )
+        not_Q = Neg().instantiate_sync({"P": base_sentences["Q"]}, **kwargs)
+        if (
+            isinstance(P_given_Q, list)
+            or isinstance(not_Q, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
+        P_given_not_Q = Conditional().instantiate_sync(
+            {"P": not_Q.not_P, "Q": base_sentences["P"]}, **kwargs
+        )
+        if isinstance(P_given_not_Q, list):
+            return []
+        return [
+            self.TupleFormat(
+                P=P.P,
+                Q=Q.P,
+                P_given_Q=P_given_Q.Q_given_P,
+                P_given_not_Q=P_given_not_Q.Q_given_P,
+            )
+        ]
+
+    async def instantiate(
+        self, base_sentences: dict[str, ForecastingQuestion], **kwargs
+    ) -> List["Self.TupleFormat"]:
+        P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
+        Q = await Trivial().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        P_given_Q = await Conditional().instantiate(
+            {"P": base_sentences["Q"], "Q": base_sentences["P"]}, **kwargs
+        )
+        not_Q = await Neg().instantiate({"P": base_sentences["Q"]}, **kwargs)
+        if (
+            isinstance(P_given_Q, list)
+            or isinstance(not_Q, list)
+            or isinstance(P, list)
+            or isinstance(Q, list)
+        ):
+            return []
+        P_given_not_Q = await Conditional().instantiate(
+            {"P": not_Q.not_P, "Q": base_sentences["P"]}, **kwargs
+        )
+        if isinstance(P_given_not_Q, list):
+            return []
+        return [
+            self.TupleFormat(
+                P=P.P,
+                Q=Q.P,
+                P_given_Q=P_given_Q.Q_given_P,
+                P_given_not_Q=P_given_not_Q.Q_given_P,
+            )
+        ]
+
+    def check_exact(self, answers: dict[str, Prob]) -> bool:
+        return answers in [
+            {"P": True, "Q": True, "P_given_Q": True, "P_given_not_Q": None},
+            {"P": True, "Q": False, "P_given_Q": None, "P_given_not_Q": True},
+            {"P": False, "Q": True, "P_given_Q": False, "P_given_not_Q": None},
+            {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
+        ]
+
+    def frequentist_violation(self, answers: dict[str, Any]) -> float:
+        a, b, c, d = (
+            answers["P"],
+            answers["P_given_Q"],
+            answers["P_given_not_Q"],
+            answers["Q"],
+        )
+        denom = (
+            a * (1 - a)
+            + d**2 * b * (1 - b)
+            + (1 - d) ** 2 * c * (1 - c)
+            + (b - c) ** 2 * d * (1 - d)
+        )
+        denom = (denom + self.frequentist_hparams["beta"]) ** 0.5
+        num = abs(a - b * d - c * (1 - d))
+        v = num / denom
+        return v
+
+
 class ConsequenceChecker(Checker):
     num_base_questions = 1
 
@@ -1265,7 +1545,9 @@ class ConsequenceChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
-        if kwargs:
+        """Subclassing this one to use the exact formula."""
+        if self.must_compute_arbitrage_numerically(answers, **kwargs):
+            kwargs["methods"] = ("shgo",)  # DE does not work for this one
             return super().max_min_arbitrage(answers, **kwargs)
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
@@ -1328,6 +1610,7 @@ class ParaphraseChecker(Checker):
         answers: dict[str, Prob],
         **kwargs,
     ) -> float:
+        """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             return super().max_min_arbitrage(answers, **kwargs)
         weights = self.get_scoring(
@@ -1531,6 +1814,7 @@ checker_classes = [
     ("ConsequenceChecker", ConsequenceChecker),
     ("ParaphraseChecker", ParaphraseChecker),
     ("CondCondChecker", CondCondChecker),
+    ("ExpectedEvidenceChecker", ExpectedEvidenceChecker),
 ]
 
 
