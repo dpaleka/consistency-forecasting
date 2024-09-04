@@ -178,7 +178,7 @@ I will provide three questions: P, Q, and Q_given_P. Each question has a title a
 - Q is another statement or proposition.
 - Q_given_P represents the conditional probability of Q given P, denoting how likely Q is to occur if P is true.
 
-Your task is to validate whether the relationships between P, Q, and Q_given_P are logically consistent and plausible.
+Your task is to validate whether Q_given_P is indeed the conditional question "Given P, then Q". Be careful that it is not e.g. the reverse conditional question "Given Q, then P".
 
 Example 1:
 P:
@@ -193,11 +193,48 @@ Q_given_P:
   Title: If it rains in New York City tomorrow, will there be a thunderstorm?
   Body: Resolves YES if, given that it rains in Central Park tomorrow (as defined in P), there is at least one instance of thunder heard in Central Park within the same 24-hour period. Resolves NO if it rains but no thunder is heard. Resolves INVALID if it doesn't rain.
 
-reasoning: The relationship between P, Q, and Q_given_P is logically consistent. P asks about rain, Q asks about a thunderstorm, and Q_given_P correctly represents the conditional probability of a thunderstorm given that it rains. The body of Q_given_P appropriately specifies that it resolves INVALID if the condition (rain) doesn't occur.
+reasoning: The relationship between P, Q, and Q_given_P is correct. P asks about rain, Q asks about a thunderstorm, and Q_given_P correctly represents the conditional probability of a thunderstorm given that it rains. The body of Q_given_P appropriately specifies that it resolves INVALID if the condition (rain) doesn't occur.
 
 valid: True
 
+
 Example 2:
+P:
+  Title: Will it rain in New York City tomorrow?
+  Body: Resolves YES if there is measurable precipitation in Central Park, New York City, within the 24-hour period starting at 00:00 local time tomorrow. Resolves NO otherwise.
+
+Q:
+  Title: Will there be a thunderstorm in New York City tomorrow?
+  Body: Resolves YES if there is at least one instance of thunder heard in Central Park, New York City, within the 24-hour period starting at 00:00 local time tomorrow. Resolves NO otherwise.
+
+Q_given_P:
+  Title: If it rains in New York City tomorrow, will there be a thunderstorm?
+  Body: Resolves YES if, given that it rains in Central Park tomorrow (as defined in P), there is at least one instance of thunder heard in Central Park within the same 24-hour period. Resolves NO if it rains but no thunder is heard. Resolves NO if it doesn't rain.
+
+reasoning: Q_given_P should resolve INVALID if it doesn't rain, not NO. Thus it is not the correct conditional question.
+
+valid: False
+
+
+Example 3:
+P:
+  Title: Will Iran develop nuclear weapons by 2030?
+  Body: Resolves YES if Iran successfully tests a nuclear weapon before January 1, 2030. Resolves NO otherwise.
+
+Q:
+  Title: Will Donald Trump be re-elected as the President of the United States in 2024?
+  Body: Resolves YES if Donald Trump wins the 2024 US presidential election and assumes office. Resolves NO otherwise.
+
+Q_given_P:
+  Title: Given that Donald Trump is re-elected as President of the United States in 2024, will Iran develop nuclear weapons by 2030?
+  Body: Resolves YES if, in the scenario where Donald Trump wins the 2024 US presidential election and assumes office, Iran successfully tests a nuclear weapon before January 1, 2030. Resolves NO if Trump is re-elected but Iran doesn't develop nuclear weapons. Resolves INVALID if Trump is not re-elected.
+
+reasoning: This is the reverse conditional question. Q_given_P should have P (Iran developing nuclear weapons) as the condition and Q (Trump being re-elected) as the outcome. Not the reverse.
+
+valid: True
+
+
+Example 4:
 P:
   Title: Will the S&P 500 close above 4000 points next Friday?
   Body: Resolves YES if the S&P 500 index closes above 4000 points next Friday. Resolves NO otherwise.
@@ -210,7 +247,7 @@ Q_given_P:
   Title: If the S&P 500 closes above 4000 points next Friday, will the US dollar strengthen against the euro?
   Body: Resolves YES if, given that the S&P 500 closes above 4000 points next Friday, the US dollar strengthens against the euro compared to the previous day's closing rate. Resolves NO if the S&P 500 closes above 4000 but the dollar doesn't strengthen. Resolves INVALID if the S&P 500 doesn't close above 4000.
 
-reasoning: While P and Q_given_P are logically related, Q is unrelated to both P and Q_given_P. Q asks about the NASDAQ index, while Q_given_P introduces a new concept about the US dollar-euro exchange rate. This makes the relationship between P, Q, and Q_given_P inconsistent.
+reasoning: The relationship between P, Q, and Q_given_P is not logically correct. Q_given_P should be about the NASDAQ index, not the US dollar.
 
 valid: False
 

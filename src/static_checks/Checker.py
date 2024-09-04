@@ -596,6 +596,9 @@ class Checker(ABC):
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         try:
             return self.max_min_arbitrage(answers, **kwargs)[1]
         except ZeroDivisionError:
@@ -611,6 +614,9 @@ class Checker(ABC):
         self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         if metric == "default":
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
@@ -623,6 +629,9 @@ class Checker(ABC):
         return v
 
     def check(self, answers: dict[str, Any], metric: str = "default") -> bool:
+        for k, v in answers.items():
+            if isinstance(v, Forecast):
+                answers[k] = v.prob
         if metric == "default":
             return bool(self.violation(answers) < self.default_tolerance)
         elif metric == "frequentist":
@@ -713,13 +722,9 @@ class Checker(ABC):
                 print(f"START\nline: {line}\n")
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
 
-                answers_: dict[
-                    str, Forecast | tuple[Forecast, dict]
-                ] = forecaster.elicit(line_obj, include_metadata=True, **kwargs)
-                answers = {
-                    q: a.prob if isinstance(a, Forecast) else a[0].prob
-                    for q, a in answers_.items()
-                }
+                answers_: dict[str, Forecast] = forecaster.elicit(line_obj, **kwargs)
+
+                answers = {q: a.prob for q, a in answers_.items()}
                 if do_check:
                     result_without_line: dict[
                         str, Any
@@ -727,14 +732,14 @@ class Checker(ABC):
                 else:
                     result_without_line = {}
 
-                for question, prob in answers.items():
-                    line[question]["elicited_prob"] = prob
-                    if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(
-                            answers_[question][1]
-                        )
+                for question, forecast in answers_.items():
+                    line[question]["elicited_prob"] = forecast.prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(
+                        forecast.metadata
+                    )
 
                 result = {"line": line, **result_without_line}
+
                 results.append(result)
                 writer.write(result)
 
@@ -768,20 +773,14 @@ class Checker(ABC):
             ]
             print(validated_lines)
             print("Starting async elicitation")
-            elicit_func = functools.partial(
-                forecaster.elicit_async, include_metadata=True, **kwargs
-            )
+            elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers_ = await parallelized_call(
                 elicit_func,
                 validated_lines,
                 max_concurrent_queries=10,
             )
             all_answers = [
-                {
-                    q: a.prob if isinstance(a, Forecast) else a[0].prob
-                    for q, a in answers_.items()
-                }
-                for answers_ in all_answers_
+                {q: a.prob for q, a in answers_.items()} for answers_ in all_answers_
             ]
 
             if do_check:
@@ -793,12 +792,11 @@ class Checker(ABC):
             for line, answers_, answers, result_without_line in zip(
                 data, all_answers_, all_answers, results_without_line
             ):
-                for question, prob in answers.items():
-                    line[question]["elicited_prob"] = prob
-                    if isinstance(answers_[question], tuple):
-                        line[question]["elicitation_metadata"] = make_json_serializable(
-                            answers_[question][1]
-                        )
+                for question, forecast in answers_.items():
+                    line[question]["elicited_prob"] = forecast.prob
+                    line[question]["elicitation_metadata"] = make_json_serializable(
+                        forecast.metadata
+                    )
 
                 result = {"line": line, **result_without_line}
 
