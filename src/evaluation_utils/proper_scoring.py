@@ -3,6 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from common.datatypes import ForecastingQuestion, Forecast
+from matplotlib.figure import Figure
 
 
 def log_score(probability: float, outcome: bool) -> float:
@@ -42,6 +43,7 @@ def proper_scoring_rule(
         ValueError: If the forecasting question's resolution is not available.
     """
     if forecasting_question.resolution is None:
+        print(f"{forecasting_question = }")
         raise ValueError(
             "The forecasting question must have a resolution to calculate the score."
         )
@@ -53,17 +55,12 @@ def proper_scoring_rule(
 
 
 def calculate_calibration(
-    forecasting_questions: list[ForecastingQuestion],
-    forecasts: list[Forecast],
+    outcomes: list[bool],
+    probs: list[float],
     num_bins: int = 10,
 ) -> dict[str, Any]:
     """
     Calculate calibration metrics for a list of forecasts and corresponding questions.
-
-    Args:
-        forecasting_questions (List[ForecastingQuestion]): List of forecasting questions.
-        forecasts (List[Forecast]): List of forecasts corresponding to the questions.
-        num_bins (int): Number of bins to use for calibration calculation. Default is 10.
 
     Returns:
         Dict[str, Any]: A dictionary containing calibration metrics:
@@ -73,15 +70,14 @@ def calculate_calibration(
             - 'num_samples': List of number of samples in each bin
             - 'calibration_error': Overall calibration error (lower is better)
     """
-    if len(forecasting_questions) != len(forecasts):
-        raise ValueError("The number of questions and forecasts must be the same.")
+    print(f"{len(outcomes)=}, {len(probs)=}")
+    if len(outcomes) != len(probs):
+        raise ValueError("The number of outcomes and probabilities must be the same.")
 
     # Sort forecasts and questions by forecast probability
-    sorted_pairs = sorted(
-        zip(forecasts, forecasting_questions), key=lambda x: x[0].prob
-    )
-    sorted_probs = [f.prob for f, _ in sorted_pairs]
-    sorted_outcomes = [q.resolution for _, q in sorted_pairs]
+    sorted_pairs = sorted(zip(probs, outcomes), key=lambda x: x[0])
+    sorted_probs = [p for p, _ in sorted_pairs]
+    sorted_outcomes = [q for _, q in sorted_pairs]
 
     # Create bins
     bins = np.linspace(0, 1, num_bins + 1)
@@ -120,12 +116,53 @@ def calculate_calibration(
     }
 
 
-def plot_calibration(
-    probs: list[float],
-    outcomes: list[bool],
-) -> plt.figure:
-    # make the calibration plot
-    raise NotImplementedError
+def get_calibration_points(probs, outcomes):
+    points = [1, 3, 5] + list(range(10, 100, 10)) + [95, 97, 99]
+    prob_buckets = {p: 0 for p in points}
+    count_buckets = {p: 0 for p in points}
+
+    for prob, outcome in zip(probs, outcomes):
+        raw_p = prob * 100
+
+        p = min(points, key=lambda x: abs(x - raw_p))
+
+        if outcome:
+            raw_p = prob * 100
+
+        p = min(points, key=lambda x: abs(x - raw_p))
+
+        if outcome:
+            prob_buckets[p] += 1
+        count_buckets[p] += 1
+
+    buckets = {
+        p: prob_buckets[p] / count_buckets[p] if count_buckets[p] else None
+        for p in points
+    }
+    return buckets
+
+
+def get_xy(prob_buckets: dict[float, float]) -> list[dict[str, float]]:
+    return [
+        {"x": p / 100, "y": prob_buckets[p]}
+        for p in prob_buckets
+        if prob_buckets[p] is not None
+    ]
+
+
+def plot_calibration(probs: list[float], outcomes: list[bool]) -> Figure:
+    buckets = get_calibration_points(probs, outcomes)
+    points = get_xy(buckets)
+
+    fig, ax = plt.subplots()
+    ax.plot([0, 1], [0, 1], "k--")
+    ax.scatter([p["x"] for p in points], [p["y"] for p in points], color="blue")
+
+    ax.set_xlabel("Predicted probability")
+    ax.set_ylabel("Observed frequency")
+    ax.set_title("Calibration Plot")
+
+    return fig
 
 
 # Example usage:

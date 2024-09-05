@@ -66,6 +66,22 @@ def main(
         data = [json.loads(line) for line in f]
 
     forecasting_questions = [ForecastingQuestion.model_validate(line) for line in data]
+    print(f"Loaded {len(forecasting_questions)} forecasting questions")
+
+    data, forecasting_questions = zip(
+        *[
+            (line, fq)
+            for line, fq in zip(data, forecasting_questions)
+            if fq.resolution is not None
+        ]
+    )
+    assert len(data) == len(
+        forecasting_questions
+    ), "Data and forecasting questions have different lengths"
+    print(f"Filtered to {len(forecasting_questions)} questions with resolutions")
+
+    num_lines = min(num_lines, len(forecasting_questions))
+    print(f"Running on {num_lines} questions")
 
     results = []
     for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
@@ -97,7 +113,9 @@ def main(
     total_score = sum(result["score"] for result in results)
     average_score = total_score / len(results)
     calibration_error_data: dict = calculate_calibration(
-        forecasting_questions, results, scoring_functions[scoring_rule]
+        [fq.resolution for fq in forecasting_questions[:num_lines]],
+        [result["prob"] for result in results],
+        num_bins=10,
     )
     calibration_error = calibration_error_data["calibration_error"]
 
@@ -113,24 +131,19 @@ def main(
     print("\nGround Truth Summary:")
     print(f"Total questions: {summary['total_questions']}")
     print(f"Average {scoring_rule}: {summary['average_score']:.4f}")
-    print(f"Accuracy: {summary['accuracy']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
     print(f"Model: {summary['model']}")
 
     # Write summary to file
     summary_filename = "ground_truth_summary.json"
-    write_to_dirs(
-        results=[summary],
-        filename=summary_filename,
-        dirs_to_write=dirs_to_write,
-        overwrite=True,
-    )
-    print(f"\nSummary written to {summary_filename}")
+    for dir in dirs_to_write:
+        json.dump(summary, open(dir / summary_filename, "w"), indent=4)
+        print(f"\nSummary written to {dir / summary_filename}")
 
     # Plot calibration error
     probs = [result["prob"] for result in results]
     outcomes = [result["resolution"] for result in results]
-    to_plot = False
+    to_plot = True
     if to_plot:
         plot = plot_calibration(probs, outcomes)
         plot_filename = "calibration_plot.png"
