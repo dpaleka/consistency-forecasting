@@ -37,6 +37,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
 metrics = ["default", "frequentist"]
 
@@ -421,6 +422,8 @@ def main(
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
+    if not tuple_dir.exists():
+        assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
 
     forecaster = load_forecaster(forecaster_class, config_path, model)
 
@@ -566,3 +569,4 @@ if __name__ == "__main__":
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
+# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 2 -k NegChecker

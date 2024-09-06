@@ -12,7 +12,7 @@ from forecasters import (
 import json
 
 from forecasters.consistent_forecaster import ConsistentForecaster
-from static_checks.Checker import ParaphraseChecker, NegChecker
+from static_checks.Checker import NegChecker
 
 
 def write_to_dirs(
@@ -54,6 +54,9 @@ def load_forecaster(
         case "ConsistentForecaster":
             return ConsistentForecaster(
                 hypocrite=BasicForecaster(),
+                checks=[
+                    NegChecker(),
+                ],
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )
@@ -61,7 +64,10 @@ def load_forecaster(
             return ConsistentForecaster.recursive(
                 depth=4,
                 hypocrite=BasicForecaster(),
-                checks=[ParaphraseChecker(), NegChecker()],
+                checks=[
+                    NegChecker(),
+                    # ParaphraseChecker(),
+                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
                 instantiation_kwargs={"model": model},
                 bq_func_kwargs={"model": model},
             )
