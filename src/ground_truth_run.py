@@ -13,9 +13,11 @@ from evaluation_utils.utils import (
     create_output_directory,
     write_to_dirs,
 )
+from common.utils import round_floats
 from evaluation_utils.common_options import common_options
 from evaluation_utils.proper_scoring import (
-    proper_scoring_rule,
+    proper_score,
+    decompose_brier_score,
     scoring_functions,
     plot_calibration,
     calculate_calibration,
@@ -86,7 +88,16 @@ def main(
     results = []
     for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
         forecast = forecaster.call_full(fq)
-        score = proper_scoring_rule(fq, forecast, scoring_functions[scoring_rule])
+        log_score = proper_score(
+            probs=[forecast.prob],
+            outcomes=[fq.resolution],
+            scoring_function=scoring_functions["log_score"],
+        )
+        brier_score = proper_score(
+            probs=[forecast.prob],
+            outcomes=[fq.resolution],
+            scoring_function=scoring_functions["brier_score"],
+        )
         assert line == make_json_serializable(
             fq.to_dict()
         ), "line and make_json_serializable(fq.to_dict()) are not equal"
@@ -96,7 +107,8 @@ def main(
                 "forecast": make_json_serializable(forecast.to_dict()),
                 "prob": forecast.prob,
                 "resolution": fq.resolution,
-                "score": score,
+                "log_score": log_score,
+                "brier_score": brier_score,
             }
         )
 
@@ -110,34 +122,44 @@ def main(
     print(f"Results written to {output_filename}")
 
     # Calculate and print summary statistics
-    total_score = sum(result["score"] for result in results)
-    average_score = total_score / len(results)
+    total_log_score = sum(result["log_score"] for result in results)
+    total_brier_score = sum(result["brier_score"] for result in results)
+    average_log_score = total_log_score / len(results)
+    average_brier_score = total_brier_score / len(results)
+
     calibration_error_data: dict = calculate_calibration(
         [fq.resolution for fq in forecasting_questions[:num_lines]],
         [result["prob"] for result in results],
-        num_bins=10,
     )
     calibration_error = calibration_error_data["calibration_error"]
 
+    brier_score_decomposition = decompose_brier_score(
+        [result["prob"] for result in results],
+        [fq.resolution for fq in forecasting_questions[:num_lines]],
+    )
+
     summary = {
         "total_questions": len(results),
-        "average_score": average_score,
+        "average_log_score": average_log_score,
+        "average_brier_score": average_brier_score,
+        "brier_score_decomposition": brier_score_decomposition,
         "calibration_error": calibration_error,
-        "scoring_rule": scoring_rule,
+        "calibration_error_data": calibration_error_data,
         "forecaster": forecaster.__class__.__name__,
         "model": model,
     }
 
     print("\nGround Truth Summary:")
     print(f"Total questions: {summary['total_questions']}")
-    print(f"Average {scoring_rule}: {summary['average_score']:.4f}")
+    print(f"Average Log Score: {summary['average_log_score']:.4f}")
+    print(f"Average Brier Score: {summary['average_brier_score']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
     print(f"Model: {summary['model']}")
 
     # Write summary to file
     summary_filename = "ground_truth_summary.json"
     for dir in dirs_to_write:
-        json.dump(summary, open(dir / summary_filename, "w"), indent=4)
+        json.dump(round_floats(summary), open(dir / summary_filename, "w"), indent=4)
         print(f"\nSummary written to {dir / summary_filename}")
 
     # Plot calibration error
@@ -145,11 +167,12 @@ def main(
     outcomes = [result["resolution"] for result in results]
     to_plot = True
     if to_plot:
-        plot = plot_calibration(probs, outcomes)
-        plot_filename = "calibration_plot.png"
-        for dir in dirs_to_write:
-            plot.savefig(dir / plot_filename)
-        print(f"Calibration plot written to {plot_filename}")
+        for spacing in ["logit", "linear"]:
+            plot = plot_calibration(probs, outcomes, spacing=spacing)
+            plot_filename = f"calibration_plot_{spacing}.png"
+            for dir in dirs_to_write:
+                plot.savefig(dir / plot_filename)
+            print(f"Calibration plot written to {plot_filename}")
 
 
 if __name__ == "__main__":
