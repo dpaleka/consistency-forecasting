@@ -86,6 +86,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.final_fq_gen_model_name,
             args.final_fq_verification_model_name,
             args.news_source,
+            args.be_lax_in_res_checking,
         )
 
 

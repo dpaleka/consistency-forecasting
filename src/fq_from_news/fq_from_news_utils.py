@@ -179,6 +179,7 @@ def _final_forecasting_questions_save_path(
     num_pages: int,
     num_articles: int,
     final_fq_gen_model_name: str,
+    be_lax_in_resolution_checking: bool,
     should_exist: bool = False,
 ) -> str:
     """
@@ -195,6 +196,7 @@ def _final_forecasting_questions_save_path(
             num_pages,
             num_articles,
             final_fq_gen_model_name,
+            be_lax_in_resolution_checking,
         )
     )
     if not should_exist and os.path.exists(final_fq_save_path):
@@ -278,7 +280,12 @@ async def generate_final_forecasting_questions(
     :returns: None
     """
     final_fq_save_path = _final_forecasting_questions_save_path(
-        start_date, end_date, num_pages, num_articles, final_fq_gen_model_name
+        start_date,
+        end_date,
+        num_pages,
+        num_articles,
+        final_fq_gen_model_name,
+        be_lax_in_resolution_checking,
     )
 
     rough_fq_save_path = _rough_forecasting_data_save_path(
@@ -332,6 +339,7 @@ def _final_verified_forecasting_questions_save_path(
     num_articles: int,
     final_fq_verification_model_name: str,
     news_source: str,
+    was_lax_in_resolution_checking: bool,
 ) -> str:
     """
     Returns the path to save the final fq data.
@@ -344,10 +352,15 @@ def _final_verified_forecasting_questions_save_path(
     if num_articles == -1 or num_articles == float("inf"):
         num_articles = "all"
 
+    if was_lax_in_resolution_checking:
+        lax_str = "lax_res_checking"
+    else:
+        lax_str = "strict_res_checking"
+
     final_fq_verification_model_name = final_fq_verification_model_name.replace(
         "/", "__"
     ).replace("\\", "__")
-    news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+    news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
     # TODO - refactor for non News API things
     final_verfied_fq_save_path = os.path.join(
@@ -379,6 +392,7 @@ async def verify_final_forecasting_questions(
     final_fq_gen_model_name: str,
     final_fq_verification_model_name: str,
     news_source: str,
+    was_lax_in_resolution_checking: bool,
 ) -> None:
     """
     Verifies the generated final forecasting questions and saved them to the ./data/fq/synthetic directory.
@@ -391,6 +405,7 @@ async def verify_final_forecasting_questions(
         num_pages,
         num_articles,
         final_fq_gen_model_name,
+        was_lax_in_resolution_checking,
         should_exist=True,
     )
 
@@ -401,6 +416,7 @@ async def verify_final_forecasting_questions(
         num_articles,
         final_fq_verification_model_name,
         news_source,
+        was_lax_in_resolution_checking,
     )
 
     final_unverified_fqs = load_questions(final_fq_save_path)

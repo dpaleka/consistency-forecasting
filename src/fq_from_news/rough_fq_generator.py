@@ -106,7 +106,7 @@ class NewsApiRoughForecastingQuestionGenerator:
         To reject an article, you may return the following forecasting question with an empty title and body as the reason for rejection: 
         {example_rejected_fq}
 
-        Here are examples of "proper" forecasting questions: 
+        Here are examples of "proper" forecasting questions formed using articles:
             Example 1:
                 {example_fq_1}
             Example 2:
@@ -117,21 +117,42 @@ class NewsApiRoughForecastingQuestionGenerator:
     }
 
     example_fq_1 = {
-        "title": "Will a significant political figure publicly endorse a theory related to string theory's implications for the universe by July 2024?",
-        "body": "This question will resolve as YES if, by July 31, 2024, a significant political figure publicly endorses a theory related to string theory's implications for the universe. A \"significant political figure\" is defined as a current or former head of state, government, or a member of the executive cabinet of a G20 nation. The endorsement must be explicit, relating directly to string theory's implications for the universe, and must be made in a public forum, such as an official speech, published article, or a verified social media post. The endorsement must be reported by at least two reputable news organizations (BBC, The Guardian, New York Times, Washington Post). In the event of ambiguous statements, the resolution will be based on the consensus interpretation by these reporting news organizations. This question resolves as YES upon confirmation of such an endorsement.",
-        "resolution": True,
+        "article": {
+            "article_description": "Rudy Giuliani has agreed to a last-minute deal to end his personal bankruptcy case and pay about $400,000 to a financial adviser hired by his creditors. The agreement was filed Wednesday in federal Bankruptcy Court in White Plains, New York. A federal judge t…",
+            "article_title": "Rudy Giuliani agrees to deal to end his bankruptcy case, pay creditors' financial adviser $400k",
+            "article_content": "Rudy Giuliani has agreed to a last-minute deal to end his personal bankruptcy case and pay about $400,000 to a financial adviser hired by his creditors, avoiding a potential deep-dive into the former… [+4026 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will Rudy Giuliani pay over $300,000 to a financial adviser as part of a bankruptcy settlement by July 2024?",
+            "body": "This question resolves as YES if, by July 31, 2024, it is confirmed that Rudy Giuliani has paid over $300,000 to a financial adviser as part of a settlement to end his personal bankruptcy case. The payment amount should be over $300,000 to account for potential minor adjustments. The confirmation must come from official court documents or statements from involved parties reported by at least two reputable news sources. If the payment is not made the question resolves as NO.",
+            "resolution": True,
+        },
     }
 
     example_fq_2 = {
-        "title": "Will a First Crystal Tier Market be made by August 2024?",
-        "body": 'Resolves YES immediately when someone creates a Crystal tier market in 2024 (which currently costs 1 million Mana to make).\n\nResolves NO if no such market is created before September 1, 2024 (UTC time) or Manifold entirely scraps the tier system for creating questions (minor modifications don\'t alter the outcome, see below).\n\nImportant edge cases:\n\nFor the purposes of this market if Manifold alters the tier system prices, any questions created with a tier that has a creation cost of between 500k Mana and 2M Mana, inclusive, will be considered equivalent to the "Crystal tier" market.\n\nAny changes to the tier name will not be considered consequential (only the creation cost).',
-        "resolution": False,
+        "article": {
+            "article_description": "The South Carolina Supreme Court has ruled the state's death penalty is legal. All five justices agreed with at least part of the ruling, opening the door to restart executions in a state that hasn’t put an inmate to death since 2011. South Carolina's death p…",
+            "article_title": "South Carolina Supreme Court rules state death penalty including firing squad is legal",
+            "article_content": "COLUMBIA, S.C. (AP) The South Carolina Supreme Court ruled Wednesday that the states death penalty, which now includes a firing squad as well as lethal injection and the electric chair, is legal.\r\nAl… [+4476 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will the South Carolina Supreme Court overturn the legality of the death penalty by July 2024?",
+            "body": "This question resolves as YES if SOuth Carolina's Supreme Court deems the death penalty to be illegal by July 31, 2024. The proposal must be officially annnounced and reported by reputable news sources.",
+            "resolution": False,
+        },
     }
 
     example_fq_3 = {
-        "title": "Will the TIME 100 Most Influential Companies of 2024 list actually come out in May 2024 as promised?",
-        "body": 'This page has just said "2024 HONOREES ANNOUNCED IN MAY" for ages now. I\'ve been checking every day for my market, @/Joshua/what-will-be-time-magazines-100-mos-1ccb89e7e3a1 \n\nThe FAQ says:\n\n[image]This market closes at 11:59 PM PT on Friday, May 31, 2024. If the list is published before market close, resolves YES. If not, resolves NO.',
-        "resolution": True,
+        "article": {
+            "article_description": "Chipmaker Intel says it is cutting 15% of its massive workforce — about 15,000 jobs — as it tries to turn its business around to compete with more successful rivals like Nvidia and AMD. The Santa Clara, California-based company said Thursday it is also suspen…",
+            "article_title": "Intel to lay off more than 15% of its workforce as it cuts costs to try to turn its business around",
+            "article_content": "Chipmaker Intel says it is cutting 15% of its huge workforce about 15,000 jobs as it tries to turn its business around to compete with more successful rivals like Nvidia and AMD.\r\nIn a memo to staff,… [+4460 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will Intel propose to lay off more than 15% of its workforce by August 2024?",
+            "body": "This question will resolve as YES if Intel announces laying off more than 15% of its workforce by August 31, 2024. The layoffs must be explicitly announced by Intel through official statements or reports from at least two reputable news organizations such as BBC, The Guardian, New York Times, or Washington Post.",
+            "resolution": True,
+        },
     }
 
     example_rejected_fq = {
