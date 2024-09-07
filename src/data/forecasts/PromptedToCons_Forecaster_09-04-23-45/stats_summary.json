@@ -1,0 +1,32 @@
+{
+    "NegChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "AndChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "OrChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "AndOrChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "ButChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "CondChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "ConsequenceChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "ParaphraseChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "CondCondChecker": {
+        "error": "'Prob' object has no attribute 'metadata'"
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "[Errno 2] No such file or directory: '/Users/ashen/Desktop/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl'"
+    }
+}
