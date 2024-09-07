@@ -58,3 +58,22 @@ def last_datetime_of_month(dt: datetime) -> datetime:
     last_day = calendar.monthrange(dt.year, dt.month)[1]
     # Create a datetime object for the last day of the month at 23:59:59
     return datetime(dt.year, dt.month, last_day, 23, 59, 59)
+
+
+def format_news_range_date(date: datetime):
+    months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
+    month_name = months[date.month - 1]
+    return f"{month_name}-{date.day}-{date.year}"
