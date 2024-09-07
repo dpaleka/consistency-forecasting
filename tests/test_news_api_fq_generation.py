@@ -57,7 +57,6 @@ def run_pipeline_command(command):
 
 
 commands = [
-    "python -m spacy download en_core_web_sm",
     """
     python src/generate_fqs_from_news.py \
     --start-date 2024-09-01 --end-date 2024-09-04 \
