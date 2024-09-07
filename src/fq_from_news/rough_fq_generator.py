@@ -2,7 +2,10 @@ import json
 import os
 from datetime import datetime
 from common.llm_utils import answer_sync, answer
+from common.datatypes import ValidationResult
+from common.path_utils import get_src_path
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution_list
+from .date_utils import format_news_range_date
 
 
 class NewsApiRoughForecastingQuestionGenerator:
@@ -11,151 +14,147 @@ class NewsApiRoughForecastingQuestionGenerator:
     to prune out questions that do not guidelines for forming FQs such as the Navalny Problem.
     """
 
-    news_api_rough_fq_save_dir = (
-        "./data/news_feed_fq_generation/news_api/rough_forecasting_question_data"
+    news_api_rough_fq_save_dir = os.path.join(
+        get_src_path(),
+        "data/news_feed_fq_generation/news_api/rough_forecasting_question_data",
     )
     # Create the save path directory
     os.makedirs(news_api_rough_fq_save_dir, exist_ok=True)
 
-    preface = """
-    You are tasked with generating forecasting (prediction) questions that must have a definitive YES or NO answer based on past events. These questions should be crafted to avoid biases (recency, confirmation, anchoring, availability) and must be clear, unbiased, and free from any trivial or misleading elements. Ensure the questions are not influenced by sensitive matters such as religion, politics, gender, or race. Avoid using subjective terms like "significant" and reject questions that do not meet these criteria.
+    news_validation_prompt = {
+        "preface": """
+        You are an AI agent responsible for evaluating news articles to determine their suitability for generating forecasting (prediction) questions that can be answered with a definitive YES or NO. Assess each article against the following criteria to ensure clarity, relevance, and factual accuracy:
 
-    The resolution for each question should be definitive and unchanging from the current date until the specified resolution date in the month of {month_name}, {year}. Given that the forecaster will assume the current date is set in the past, prefer to use concrete events from the articles to form your questions.
+        1. **Clarity of Content**: Is the information presented clearly and straightforwardly? Reject articles that are overly convoluted or difficult to understand.
 
-    Questions that are too specific or biased, such as those referencing politically charged scenarios or highly detailed contexts, should be avoided. Make reasonable approximations when necessary to ensure that questions remain robust and unbiased.
-    """
+        2. **Focus on Definitive Events**: Does the article discuss concrete events that have occurred or are planned? Evaluate articles referencing past events based on their clarity and context.
 
-    prompt = """
-    A forecasting question consists of three main components: the title, the body, and the resolution. A forecasting question is considered "proper" if it adheres to the following guidelines for each component:
+        3. **Contextual Relevance**: Does the article provide adequate context for the events discussed? While some background gaps are acceptable, the article should allow for a reasonable understanding of the events.
 
-    1. **Title**:
-    - **Definitive Answers**: The title must suggest a question that has a clear YES or NO answer based on news articles about past events, leaving no room for speculation.
-    - **Bias Prevention**: The title must be designed to avoid biases and should not be guessable by simple algorithms exploiting recency, confirmation, anchoring, or availability heuristics.
-    - **Avoid Internal Biases**: The title must be free from biases related to religion, politics, gender, race, or other sensitive matters. Avoid politically biased scenarios, such as indictments of former presidents for political reasons.
-    - **Clarity and Precision**: The title should be straightforward and precise, avoiding any ambiguity or clues that could lead to obvious answers through pattern recognition or simplistic heuristics. Avoid subjective terms like "significant."
-    - **Resolution Date**: The resolution date must be the month and year as "by {month_name}, {year}?". Ensure that the resolution remains accurate for all foreseeable futures up to this date.
-    - **Definitiveness**: The resolution must be definitive, meaning that it can be confirmed as either YES or NO based on the news feed. Ensure the answer is not subject to interpretation or speculation.
-    - **Scope**: The scope of the question must be exactly verified by the exact words given in the source article. Do not make any questions that are derivatory. 
+        4. **Specificity of Information**: Is the information detailed enough to formulate precise forecasting questions? Reject articles that are too vague to support clear predictions.
 
-    2. **Body**:
-    - **Disambiguation**: The body of the question must be articulated with the highest degree of precision. Avoid any unnecessary details that could influence the resolution, and ensure that there is no detectable link between the "resolution" and the "news".
-    - **Avoid Specific Knowledge**: The body should not rely on specific knowledge that could disadvantage certain models or participants. Avoid overly specific details that simple forecasters could exploit. Make reasonable approximations if necessary.
-    - **Context**: Ensure that the body of the question does not provide contextual information that could lead to a predictable or simplistic resolution. The body can only expand on the date given in the forecasting question's title and does not have any additional information from the article. Moreover, the resolution date given in the body should use the resolution date given in the question title.
+        5. **Binary Resolution Potential**: Does the article imply a resolution that can be confirmed as TRUE (YES) or FALSE (NO)? Articles may contain subjective elements but should lead to a binary outcome.
 
-    3. **Resolution**:
-    - **Binary**: The resolution of the question is marked as `True` if the question resolves to Yes and is marked as `False` if it resolves to No.
-    - **No Intermediate Changes**: The resolution should not have changed by the end of the resolution date. The resolution must remain correct for all foreseeable futures until the resolution date of the month and year.
-    - **Concrete Events**: Form questions only from concrete events that have occurred and not from opinions or proclamations. Ensure no possibility of the question resolving between the current date and the resolution date’s month.
+        6. **Avoidance of Sensitive Topics**: Does the article steer clear of sensitive subjects like religion, politics, gender, or race? Reject articles that may introduce significant bias.
 
-    **Additional Guidelines**:
-    - **Quantity**: Create as many high-quality forecasting questions as possible while adhering to the above criteria.
-    - **Numerical Values**: If the question refers to a numerical value, ask for resolutions of that value either crossing or being under a threshold. Use a rough threshold that does not invoke numerical biases.
-    - **Avoiding Predictability**: The specificity of details should not make the question predictable. Make reasonable approximations to avoid such issues.
-    - **Avoid Subjective Terms**: Ensure that the title and body do not use subjective terms like "significant" which can lead to ambiguity.
-    - **Avoid Politically Biased Scenarios**: Avoid questions related to politically biased scenarios, such as indictments or actions of former presidents for political reasons. Use concrete events and avoid politically sensitive topics.
+        7. **Completeness of Information**: Does the article provide sufficient detail to create multiple high-quality forecasting questions? Brief articles are acceptable as long as they contain enough information.
 
-    **Examples of Questions That Should NOT Be Used**:
+        8. **Numerical Clarity**: If applicable, does the article present clear thresholds or metrics for numerical data? Some ambiguity is acceptable, but numerical references should be understandable.
 
-    1. **Rejected Question**: Will the next United Nations Climate Change Conference result in an agreement on carbon emissions?
-    - **Reason**: The terms of the agreement are vague, multiple agreements could be reached, and it lacks a resolution date.
+        9. **Sufficiency for Definitive Resolution**: Does the article provide enough information to formulate forecasting questions that yield definitive resolutions from the current date until the specified resolution date in {month_name}, {year}? Ensure the content supports actionable predictions based on concrete events, assuming the current date is {pose_date}.
 
-    2. **Rejected Question**: Will a new variant of COVID-19 cause global disruptions in the next 12 months?
-    - **Reason**: "Disruptions" is subjective, and the resolution date is relative, not based on the publication date.
+        10. **Truncated Information**: Truncated information is NOT a cause for rejection. Accept articles that can form prediction questions, even if they reference past events not covered by the LLM's knowledge.
 
-    3. **Rejected Question**: Will the next G20 summit lead to a major international agreement on digital currency regulations?
-    - **Reason**: "Major" is subjective, the summit date is unspecified, and it lacks a resolution date.
+        An article that meets most of these criteria is considered "complete" and suitable for generating forecasting questions, even if it contains minor ambiguities or references past events that may not be fully known.
+        """,
+        "prompt": """
+        Please evaluate the following news article based on the established criteria for completeness: 
+        {source_article}
 
-    4. **Rejected Question**: Will Donald Trump attack the U.S. criminal justice system after his historic guilty verdict?
-    - **Reason**: "Attack" is subjective, "historic" is not exact, and it is predictable.
+        Based on your assessment, determine if the article is "complete" and suitable for generating forecasting questions. Provide a brief justification for your decision.
+        """,
+    }
 
-    5. **Rejected Question**: Will Hunter Biden be arrested following his charges for possession?
-    - **Reason**: It is common for arrests to follow charges, making it predictable, and the possession item is unspecified.
+    rough_fq_generation_prompt = {
+        "preface": """
+        You are tasked with generating forecasting questions that can be answered with a definitive YES or NO based on the provided news articles. Ensure each question is clear, unambiguous, and free from sensitive topics like religion, politics, or gender. Avoid subjective terms like "significant."
 
-    6. **Rejected Question**: Will a higher court in Pakistan uphold the death sentence of a Christian man by the end of <month> 2024?
-    - **Reason**: The question is overly specific and biased due to religious references. The specific use of "the" rather than "a" makes it too detailed.
+        Questions must have a resolution that remains definitive from the current date until {month_name}, {year}. Assume that the current date (`current_date`) is {pose_date} and provide sufficient information for questions that refer to events that may not have occurred as of this date.
+        
+        Use concrete events from the articles, providing necessary context. Do not include any information indicating the question was formed on the current date (`current_date`) or using the article.
 
-    7. **Rejected Question**: Will Hurricane Beryl make landfall in Tulum by the end of this week?
-    - **Reason**: The question is overly specific due to the hurricane's name, making it predictable. An alternate question could be: "Will a hurricane make landfall in Tulum by <month>, 2024?"
+        Aim for a diverse, clear, and objective set of questions.
+        """,
+        "prompt": """
+        Consider the following news article: 
+        {source_article}
 
-    8. **Rejected Question**: Will the NFL be liable for over $4 billion in damages for violating antitrust laws in distributing out-of-market Sunday afternoon games by the end of <month>, 2024?
-    - **Reason**: The specificity regarding the amount and reason for damages makes it too predictable. An alternate question could be: "Will the NFL be liable for damages for violating antitrust laws this month?"
+        The reason this news article was chosen is: {article_validation_reason}
 
-    9. **Rejected Question**: Will a former president be granted absolute immunity for his core constitutional powers by the end of July?
-    - **Reason**: The question is overly specific regarding the terms of immunity, making it predictable. Moreover, the resolution year is not defined. 
+        You are to create **multiple** forecasting questions based on the valid news articles provided. Each forecasting question consists of a title, a body, and a resolution. Follow these guidelines closely:
 
-    10. **Rejected Question**: Will Tarmo Peltokoski start his term as music director of the Hong Kong Philharmonic in the July 2024 session?
-        - **Reason**: The specificity of the Philharmonic makes it too detailed. An alternate question could be: "Will Tarmo Peltokoski start his term as music director of a major orchestra in the July 2024 session"
+        ## Title Guidelines
+        - **Definitive Answers:** Formulate a question that has a clear YES or NO answer based on the article.
+        - **Sensitivity:** Exclude references to sensitive topics such as religion, politics, gender, or race.
+        - **Clarity:** Be straightforward and precise, avoiding ambiguity.
+        - **Resolution Date:** Specify the resolution date as "by {month_name}, {year}?"
+        - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
+        - **Named Entities:** Include at least one named entity (BUt at most three) from the article to enhance specificity.
+        - **Article Usage:** Use "a" instead of "the" to enhance predictability.
+        - **Planned Events:** Frame questions about announced but incomplete events as proposals or announcements, explicitly avoiding questions about the completion of these events.
 
-    11. **Rejected Question**: Will the far-right party gain a significant number of seats in the French legislative elections this month?
-        - **Reason**: "Significant" is subjective and could be interpreted differently, making it ambiguous. Moreover, it says "this month" rather than the concrete resolution date as the exact month and year. 
+        ## Body Guidelines
+        - **Disambiguation:** Be precise and avoid unnecessary details that could influence the resolution.
+        - **Context:** Expand only on the question title's date; do not include additional information or dates from the article.
+        - **Focus on Relevance:** Include only information that directly supports the question title.
+        - **Article Usage:** Use "a" instead of "the" to enhance predictability.
 
-    12. **Rejected Question**: Will an appeals court reject Garth Drabinsky's antitrust lawsuit against Actors'  by July 2024?
-        - **Reason**: The specificity about the parties involved and the nature of the lawsuit makes it too predictable.
+        ## Resolution Guidelines
+        - **Binary:** Mark the resolution as True for YES and False for NO.
+        - **Stability:** The resolution must remain unchanged by the end of the resolution date.
+        - **Definitiveness:** Ensure the resolution can be confirmed as YES or NO based on the article.
 
-    13. **Rejected Question**: Will a woman cast her ballot in the second round of the legislative elections in France this month?
-        - **Reason**: It is predictable as women will cast ballots due to universal suffrage. Moreover, it says "this month" rather than the concrete resolution date as the exact month and year. 
+        ## General Guidelines
+        - **Specific Knowledge:** Avoid relying on specific knowledge that might disadvantage participants.
+        - **No Reference to the Article:** Do NOT refer to the article in the question's title and body. The forecaster should not understand that the question was formed using an article.
+        - **Named Events:** The question should not refer to any specific named events that you (the AI Agent) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
+        - **Numerical Values:** Use clear thresholds for numerical questions and avoid complex calculations.
+        - **Predictability:** Ensure details do not make the question predictable; use reasonable approximations and ambiguity such as rough thresholds and describing the events rather than naming them.
+        - **Avoid Overly Specific Questions:** Do not reference more than three distinct entities from the source article.
+        - **Do Not Fabricate Information:** Base questions solely on the provided article.
 
-    14. **Rejected Question**: Will voters at a Paris polling station be acutely aware of the political situation in France by July 2024?
-        - **Reason**: "Acute awareness" is subjective and cannot be objectively measured.
+        A forecasting question that adheres to these guidelines is considered "proper." Please generate the questions accordingly.
 
-    15. **Rejected Question**: Will Steve Bannon report to a federal prison in Connecticut to serve his sentence by the end of by July 2024?
-        - **Reason**: The specificity of the prison location makes it predictable. An alternate question could be: "Will Steve Bannon report to a federal prison to serve a sentence by July 2024?"
+        To reject an article, you may return the following forecasting question with an empty title and body as the reason for rejection: 
+        {example_rejected_fq}
 
-    16. **Rejected Question**: Will Archbishop Carlo Maria Vigano be excommunicated by the Vatican this month?
-        - **Reason**: The specificity of the Archbishop makes it too detailed. Alternative questions could be: "Will an Archbishop be excommunicated by the Vatican by July 2024?"
-
-    **Create as many high-quality forecasting questions as possible, ensuring they meet all criteria outlined. The goal is to generate questions that are objective, challenging, and free from biases while remaining clear and definitive in their expected outcomes.**
-
-
-    Here are examples of "proper" forecasting questions with title and body:
-        Example 1:
-        ```JSON
-        {example_fq_1}
-        ```
-        Example 2:
-        ```JSON
-        {example_fq_2}
-        ```
-        Example 3:
-        ```JSON
-        {example_fq_3}
-        ```
-
-    **You must reject the article if you cannot form a "proper" forecasting question from it.**
-    To reject a article, you may return the following forecasting question with an empty title and body as the reason for rejection as follows:
-    ```JSON
-    {example_rejected_fq}
-    ```
-
-    For this task, the format of the news article given to you will be:
-    ```JSON
-    {article_description}
-    ```
-
-    Generate a "proper" forecasting questions from the following source article. Reject it if you cannot generate a "proper" forecasting question. In case of rejection, you only return one forecasting question. 
-    ```JSON
-    {source_article}
-    ```
-
-    Think carefully, aptly and adequately to either form "proper" forecasting questions (multiple if possible) from the source article or reject it.
-    """
+        Here are examples of "proper" forecasting questions formed using articles:
+            Example 1:
+                {example_fq_1}
+            Example 2:
+                {example_fq_2}
+            Example 3:
+                {example_fq_3}
+        """,
+    }
 
     example_fq_1 = {
-        "title": "Will a significant political figure publicly endorse a theory related to string theory's implications for the universe by July 2024?",
-        "body": "This question will resolve as YES if, by July 31, 2024, a significant political figure publicly endorses a theory related to string theory's implications for the universe. A \"significant political figure\" is defined as a current or former head of state, government, or a member of the executive cabinet of a G20 nation. The endorsement must be explicit, relating directly to string theory's implications for the universe, and must be made in a public forum, such as an official speech, published article, or a verified social media post. The endorsement must be reported by at least two reputable news organizations (BBC, The Guardian, New York Times, Washington Post). In the event of ambiguous statements, the resolution will be based on the consensus interpretation by these reporting news organizations. This question resolves as YES upon confirmation of such an endorsement.",
-        "resolution": True,
+        "article": {
+            "article_description": "Rudy Giuliani has agreed to a last-minute deal to end his personal bankruptcy case and pay about $400,000 to a financial adviser hired by his creditors. The agreement was filed Wednesday in federal Bankruptcy Court in White Plains, New York. A federal judge t…",
+            "article_title": "Rudy Giuliani agrees to deal to end his bankruptcy case, pay creditors' financial adviser $400k",
+            "article_content": "Rudy Giuliani has agreed to a last-minute deal to end his personal bankruptcy case and pay about $400,000 to a financial adviser hired by his creditors, avoiding a potential deep-dive into the former… [+4026 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will Rudy Giuliani pay over $300,000 to a financial adviser as part of a bankruptcy settlement by July 2024?",
+            "body": "This question resolves as YES if, by July 31, 2024, it is confirmed that Rudy Giuliani has paid over $300,000 to a financial adviser as part of a settlement to end his personal bankruptcy case. The payment amount should be over $300,000 to account for potential minor adjustments. The confirmation must come from official court documents or statements from involved parties reported by at least two reputable news sources. If the payment is not made the question resolves as NO.",
+            "resolution": True,
+        },
     }
 
     example_fq_2 = {
-        "title": "Will a First Crystal Tier Market be made by August 2024?",
-        "body": 'Resolves YES immediately when someone creates a Crystal tier market in 2024 (which currently costs 1 million Mana to make).\n\nResolves NO if no such market is created before September 1, 2024 (UTC time) or Manifold entirely scraps the tier system for creating questions (minor modifications don\'t alter the outcome, see below).\n\nImportant edge cases:\n\nFor the purposes of this market if Manifold alters the tier system prices, any questions created with a tier that has a creation cost of between 500k Mana and 2M Mana, inclusive, will be considered equivalent to the "Crystal tier" market.\n\nAny changes to the tier name will not be considered consequential (only the creation cost).',
-        "resolution": False,
+        "article": {
+            "article_description": "The South Carolina Supreme Court has ruled the state's death penalty is legal. All five justices agreed with at least part of the ruling, opening the door to restart executions in a state that hasn’t put an inmate to death since 2011. South Carolina's death p…",
+            "article_title": "South Carolina Supreme Court rules state death penalty including firing squad is legal",
+            "article_content": "COLUMBIA, S.C. (AP) The South Carolina Supreme Court ruled Wednesday that the states death penalty, which now includes a firing squad as well as lethal injection and the electric chair, is legal.\r\nAl… [+4476 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will the South Carolina Supreme Court overturn the legality of the death penalty by July 2024?",
+            "body": "This question resolves as YES if SOuth Carolina's Supreme Court deems the death penalty to be illegal by July 31, 2024. The proposal must be officially annnounced and reported by reputable news sources.",
+            "resolution": False,
+        },
     }
 
     example_fq_3 = {
-        "title": "Will the TIME 100 Most Influential Companies of 2024 list actually come out in May 2024 as promised?",
-        "body": 'This page has just said "2024 HONOREES ANNOUNCED IN MAY" for ages now. I\'ve been checking every day for my market, @/Joshua/what-will-be-time-magazines-100-mos-1ccb89e7e3a1 \n\nThe FAQ says:\n\n[image]This market closes at 11:59 PM PT on Friday, May 31, 2024. If the list is published before market close, resolves YES. If not, resolves NO.',
-        "resolution": True,
+        "article": {
+            "article_description": "Chipmaker Intel says it is cutting 15% of its massive workforce — about 15,000 jobs — as it tries to turn its business around to compete with more successful rivals like Nvidia and AMD. The Santa Clara, California-based company said Thursday it is also suspen…",
+            "article_title": "Intel to lay off more than 15% of its workforce as it cuts costs to try to turn its business around",
+            "article_content": "Chipmaker Intel says it is cutting 15% of its huge workforce about 15,000 jobs as it tries to turn its business around to compete with more successful rivals like Nvidia and AMD.\r\nIn a memo to staff,… [+4460 chars]",
+        },
+        "forecasting_question": {
+            "title": "Will Intel propose to lay off more than 15% of its workforce by August 2024?",
+            "body": "This question will resolve as YES if Intel announces laying off more than 15% of its workforce by August 31, 2024. The layoffs must be explicitly announced by Intel through official statements or reports from at least two reputable news organizations such as BBC, The Guardian, New York Times, or Washington Post.",
+            "resolution": True,
+        },
     }
 
     example_rejected_fq = {
@@ -164,21 +163,17 @@ class NewsApiRoughForecastingQuestionGenerator:
         "resolution": False,
     }
 
-    article_description = {
-        "title": "The headline or title of the article. - you may use this to get context about the forecasting question that you are going to form.",
-        "description": "A description or snippet from the article. - you should use this to form the forecasting question",
-        "content": "The unformatted content of the article, where available. This is truncated to 200 chars. - you may use this to form the forecasting question",
-    }
-
-    def _prompt_and_preface_formation(
-        article: dict, end_date: datetime
+    @classmethod
+    def _article_validation_prompt_and_preface_formation(
+        cls, article: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
-        Forms the forecasting prompt and preface based on the given article and end date.
+        Forms the forecasting prompt and preface for validating whether an article can be used for forming FQs.
 
         Args:
             article (dict): Dictionary containing article information with keys 'title', 'description', and 'content'.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
@@ -188,33 +183,65 @@ class NewsApiRoughForecastingQuestionGenerator:
             "description": article["description"],
             "content": article["content"],
         }
-        forecasting_preface = NewsApiRoughForecastingQuestionGenerator.preface.format(
-            month_name=end_date.strftime("%B"), year=end_date.strftime("%Y")
+        forecasting_preface = cls.news_validation_prompt["preface"].format(
+            month_name=end_date.strftime("%B"),
+            year=end_date.strftime("%Y"),
+            pose_date=pose_date.strftime("%B %d, %Y"),
         )
-        forecasting_prompt = NewsApiRoughForecastingQuestionGenerator.prompt.format(
+        forecasting_prompt = cls.news_validation_prompt["prompt"].format(
             source_article=json.dumps(formatted_article, indent=4),
-            example_fq_1=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_1, indent=4
-            ),
-            example_fq_2=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_2, indent=4
-            ),
-            example_fq_3=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_fq_3, indent=4
-            ),
-            article_description=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.article_description, indent=4
-            ),
-            example_rejected_fq=json.dumps(
-                NewsApiRoughForecastingQuestionGenerator.example_rejected_fq, indent=4
-            ),
             month_name=end_date.strftime("%B"),
             year=end_date.strftime("%Y"),
         )
 
         return forecasting_preface, forecasting_prompt
 
+    @classmethod
+    def _rough_fq_generation_prompt_and_preface_formation(
+        cls,
+        article: dict,
+        end_date: datetime,
+        pose_date: datetime,
+        article_validation_reason: str,
+    ) -> tuple[str, str]:
+        """
+        Forms the forecasting prompt and preface for generating the rough forecasting question.
+
+        Args:
+            article (dict): Dictionary containing article information with keys 'title', 'description', and 'content'.
+            end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
+            article_validation_reason (str): reason why the article was validated in the earlier step.
+
+        Returns:
+            tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
+        """
+        formatted_article = {
+            "title": article["title"],
+            "description": article["description"],
+            "content": article["content"],
+        }
+        forecasting_preface = cls.rough_fq_generation_prompt["preface"].format(
+            month_name=end_date.strftime("%B"),
+            year=end_date.strftime("%Y"),
+            pose_date=pose_date.strftime("%B %d, %Y"),
+        )
+        forecasting_prompt = cls.rough_fq_generation_prompt["prompt"].format(
+            source_article=json.dumps(formatted_article, indent=4),
+            example_fq_1=json.dumps(cls.example_fq_1, indent=4),
+            example_fq_2=json.dumps(cls.example_fq_2, indent=4),
+            example_fq_3=json.dumps(cls.example_fq_3, indent=4),
+            example_rejected_fq=json.dumps(cls.example_rejected_fq, indent=4),
+            month_name=end_date.strftime("%B"),
+            year=end_date.strftime("%Y"),
+            article_validation_reason=article_validation_reason,
+        )
+
+        return forecasting_preface, forecasting_prompt
+
+    @classmethod
     def _form_rough_fq_from_llm_return_val(
+        cls,
         article: dict,
         generated_stripped_forecasting_questions: ForecastingQuestion_stripped_with_resolution_list,
     ) -> list:
@@ -261,8 +288,48 @@ class NewsApiRoughForecastingQuestionGenerator:
         return rough_forecasting_questions
 
     @classmethod
+    async def validate_articles_for_fq_generation(
+        cls, article: dict, model_name: str, end_date: datetime, pose_date: datetime
+    ) -> dict:
+        """
+        Class method to validate whether the article is good enough to create the forecasting question.
+
+        Args:
+            article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
+            model_name (str): The model used to generate the rough forecasting question.
+            end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
+
+        Returns:
+            dict: containing information about whether the article is good enough to create the forecasting questions
+        """
+        (
+            forecasting_preface,
+            forecasting_prompt,
+        ) = cls._article_validation_prompt_and_preface_formation(
+            article, end_date, pose_date
+        )
+
+        news_article_validation_result: ValidationResult = await answer(
+            prompt=forecasting_prompt,
+            preface=forecasting_preface,
+            model=model_name,
+            response_model=ValidationResult,
+        )
+
+        return {
+            "article": article,
+            "validation_result": news_article_validation_result.valid,
+            "validation_reasoning": news_article_validation_result.reasoning,
+        }
+
+    @classmethod
     async def article_to_rough_forecasting_question(
-        cls, article: dict, model_name: str, end_date: datetime
+        cls,
+        article_valid_information: dict,
+        model_name: str,
+        end_date: datetime,
+        pose_date: datetime,
     ) -> list[dict]:
         """
         Class method to create rough forecasting question data from a given article asynchronously.
@@ -271,6 +338,7 @@ class NewsApiRoughForecastingQuestionGenerator:
             article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
             model_name (str): The model used to generate the rough forecasting question.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             list[dict]: A list of dictionaries containing either rejected or accepted rough forecasting questions.
@@ -278,7 +346,12 @@ class NewsApiRoughForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(article, end_date)
+        ) = cls._rough_fq_generation_prompt_and_preface_formation(
+            article_valid_information["article"],
+            end_date,
+            pose_date,
+            article_valid_information["validation_reasoning"],
+        )
 
         generated_stripped_forecasting_questions = await answer(
             prompt=forecasting_prompt,
@@ -288,12 +361,13 @@ class NewsApiRoughForecastingQuestionGenerator:
         )
 
         return cls._form_rough_fq_from_llm_return_val(
-            article, generated_stripped_forecasting_questions
+            article_valid_information["article"],
+            generated_stripped_forecasting_questions,
         )
 
     @classmethod
     def article_to_rough_forecasting_question_sync(
-        cls, article: dict, model_name: str, end_date: datetime
+        cls, article: dict, model_name: str, end_date: datetime, pose_date: datetime
     ) -> list[dict]:
         """
         Class method to create rough forecasting question data from a given article synchronously.
@@ -302,14 +376,18 @@ class NewsApiRoughForecastingQuestionGenerator:
             article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
             model_name (str): The model used to generate the rough forecasting question.
             end_date (datetime): The end date used to set context for the forecasting question.
+            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
 
         Returns:
             list[dict]: A list of dictionaries containing either rejected or accepted rough forecasting questions.
         """
+        raise NotImplementedError
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._prompt_and_preface_formation(article, end_date)
+        ) = cls._rough_fq_generation_prompt_and_preface_formation(
+            article, end_date, pose_date
+        )
 
         generated_stripped_forecasting_questions = answer_sync(
             prompt=forecasting_prompt,
@@ -322,7 +400,9 @@ class NewsApiRoughForecastingQuestionGenerator:
             article, generated_stripped_forecasting_questions
         )
 
+    @classmethod
     def article_to_rough_forecasting_question_download_path(
+        cls,
         start_date: datetime,
         end_date: datetime,
         num_pages: int,
@@ -347,9 +427,45 @@ class NewsApiRoughForecastingQuestionGenerator:
         if num_articles == -1 or num_articles == float("inf"):
             num_articles = "all"
 
-        news_save_file_name = f"rough_fq_using_{model_name}_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        model_name = model_name.replace("/", "__").replace("\\", "__")
+        news_save_file_name = f"rough_fq_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
-            NewsApiRoughForecastingQuestionGenerator.news_api_rough_fq_save_dir,
+            cls.news_api_rough_fq_save_dir,
+            news_save_file_name,
+        )
+
+    @classmethod
+    def validated_news_articles_save_path(
+        cls,
+        start_date: datetime,
+        end_date: datetime,
+        num_pages: int,
+        num_articles: int,
+        model_name: str,
+    ) -> str:
+        """
+        File path to save the validation results for the news articles
+
+        Args:
+            start_date (datetime): Start date for downloading news.
+            end_date (datetime): End date for downloading news.
+            num_pages (int): Number of pages of news that were downloaded.
+            num_articles (int): Number of articles in use.
+            model_name (str): The model used to generate the rough forecasting questions.
+
+        Returns:
+            str: File path for saving news articles data
+        """
+        if num_pages == -1:
+            num_pages = "all"
+        if num_articles == -1 or num_articles == float("inf"):
+            num_articles = "all"
+
+        model_name = model_name.replace("/", "__").replace("\\", "__")
+        news_save_file_name = f"validated_news_articles_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+
+        return os.path.join(
+            cls.news_api_rough_fq_save_dir,
             news_save_file_name,
         )
