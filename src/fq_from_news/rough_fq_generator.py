@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from common.llm_utils import answer_sync, answer
 from common.datatypes import ValidationResult
+from common.path_utils import get_src_path
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution_list
 from .date_utils import format_news_range_date
 
@@ -13,8 +14,9 @@ class NewsApiRoughForecastingQuestionGenerator:
     to prune out questions that do not guidelines for forming FQs such as the Navalny Problem.
     """
 
-    news_api_rough_fq_save_dir = (
-        "./data/news_feed_fq_generation/news_api/rough_forecasting_question_data"
+    news_api_rough_fq_save_dir = os.path.join(
+        get_src_path(),
+        "data/news_feed_fq_generation/news_api/rough_forecasting_question_data",
     )
     # Create the save path directory
     os.makedirs(news_api_rough_fq_save_dir, exist_ok=True)

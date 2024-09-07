@@ -3,6 +3,7 @@ import os
 import asyncio
 from common.datatypes import ForecastingQuestion
 from common.utils import write_jsonl, append_question, load_questions, load_jsonl
+from common.path_utils import get_src_path
 from question_generators.question_formatter import verify_question
 from .final_fq_generator import NewsApiFinalForecastingQuestionGenerator
 from .rough_fq_generator import NewsApiRoughForecastingQuestionGenerator
@@ -325,7 +326,9 @@ async def generate_final_forecasting_questions(
 # *************************************************************************************************************************
 def _final_verified_questions_save_dir(news_source):
     if news_source == "NewsAPI":
-        dir_path = "./data/fq/synthetic/news_api_generated_fqs"
+        dir_path = os.path.join(
+            get_src_path(), "data/fq/synthetic/news_api_generated_fqs"
+        )
     else:
         raise ValueError("Not a valid news source")
     os.makedirs(dir_path, exist_ok=True)

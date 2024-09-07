@@ -5,6 +5,7 @@ from uuid import uuid4
 import pytz
 from common.datatypes import ForecastingQuestion
 from common.llm_utils import answer_sync, answer
+from common.path_utils import get_src_path
 from .fq_from_news_datatypes import (
     ForecastingQuestion_stripped_with_resolution,
     ForecastingQuestionGroundTruthResolutionStrict,
@@ -19,8 +20,9 @@ class NewsApiFinalForecastingQuestionGenerator:
     and parse them to either accept, reject or improve them and then convert them into ForecastingQuestions
     """
 
-    news_api_final_fq_save_dir = (
-        "./data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions"
+    news_api_final_fq_save_dir = os.path.join(
+        get_src_path(),
+        "data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions",
     )
     # Create the save path directory
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)

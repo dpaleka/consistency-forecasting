@@ -6,11 +6,14 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from tqdm import tqdm
 import spacy
+from common.path_utils import get_src_path
 
 load_dotenv()
 
 # Constants
-NEWS_API_DATA_DUMP_DIR = "./data/news_feed_fq_generation/news_api/news_feed_data_dump"
+NEWS_API_DATA_DUMP_DIR = os.path.join(
+    get_src_path(), "data/news_feed_fq_generation/news_api/news_feed_data_dump"
+)
 NEWS_API_DOMAINS = [
     "apnews.com",
     "bloomberg.com",
