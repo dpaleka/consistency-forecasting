@@ -37,7 +37,7 @@ checkers = ["NegChecker", "AndChecker"]
 commands = [
     "python src/format_and_verify_questions.py --file_path src/data/other/high-quality-questions-all-domains.jsonl -d test -s True -F True -o high_quality_questions_all_domains_test.jsonl",
     "python src/generate_related_questions.py -n 3 -q 3 --input_file src/data/fq/test/high_quality_questions_all_domains_test.jsonl --output_file src/data/fq/test/from_related_test.jsonl",
-    "python src/format_and_verify_questions.py --file_path src/data/test/from_related_test.jsonl -d test -o from-related-verified_test.jsonl -s True -F True",
+    "python src/format_and_verify_questions.py --file_path src/data/fq/test/from_related_test.jsonl -d test -o from-related-verified_test.jsonl -s True -F True",
     "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
