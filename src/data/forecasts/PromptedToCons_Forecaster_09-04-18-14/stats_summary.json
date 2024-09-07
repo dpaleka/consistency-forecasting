@@ -1,0 +1,32 @@
+{
+    "NegChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "AndChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "OrChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "AndOrChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "ButChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "CondChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "ConsequenceChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "ParaphraseChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "CondCondChecker": {
+        "error": "'float' object has no attribute 'prob'"
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "[Errno 2] No such file or directory: '/Users/ashen/Desktop/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl'"
+    }
+}

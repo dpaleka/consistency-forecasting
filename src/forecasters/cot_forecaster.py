@@ -107,7 +107,7 @@ class CoT_multistep_Forecaster(Forecaster):
         examples=None,
         include_metadata=False,
         **kwargs,
-    ) -> float:
+    ) -> Forecast:
         self.steps = len(user_prompts_lists)
         assert self.steps >= 1, "Must have at least one step"
 
@@ -157,7 +157,7 @@ class CoT_multistep_Forecaster(Forecaster):
             "chain_of_thought": "\n\n".join(
                 [m["content"] for m in messages if m["role"] == "assistant"]
             ),
-            "prob": response.prob,
+            "response": response,
         }
 
         if include_metadata:
@@ -170,7 +170,7 @@ class CoT_multistep_Forecaster(Forecaster):
 
         self.result = result
 
-        return result["prob"]
+        return result["response"]
 
     async def call_async(
         self,
@@ -178,7 +178,7 @@ class CoT_multistep_Forecaster(Forecaster):
         examples=None,
         include_metadata=False,
         **kwargs,
-    ) -> float:
+    ) -> Forecast:
         self.steps = len(user_prompts_lists)
         assert self.steps >= 1, "Must have at least one step"
 
@@ -228,7 +228,7 @@ class CoT_multistep_Forecaster(Forecaster):
             "chain_of_thought": "\n\n".join(
                 [m["content"] for m in messages if m["role"] == "assistant"]
             ),
-            "prob": response.prob,
+            "response": response,
         }
 
         if include_metadata:
@@ -241,7 +241,7 @@ class CoT_multistep_Forecaster(Forecaster):
 
         self.result = result
 
-        return result["prob"]
+        return result["response"]
 
     def dump_config(self):
         return {
