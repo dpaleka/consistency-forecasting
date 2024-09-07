@@ -25,25 +25,25 @@ class NewsApiFinalForecastingQuestionGenerator:
     # Create the save path directory
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
 
-    initial_prompt = {
+    rough_fq_validation_prompt = {
         "preface": """
-        You are an expert in validating forecasting (prediction) questions based on news articles. Your task is to verify that each question adheres to the established guidelines. Ensure that questions are based on concrete events, with the forecaster assuming the current date is {pose_date}. The resolution date for the questions should be set as {month_name}, {year}.
+        You are an expert in validating and rephrasing forecasting (prediction) questions based on news articles. Your task is to ensure that each question adheres to the established guidelines and to enhance the phrasing of valid questions. It is important to note that while we are formulating these questions after knowing the resolutions, the forecaster will assume they are answering them as of the `pose_date`, which is {pose_date}. The resolution date for the questions should be set as {month_name}, {year}.
 
-        The forecaster will assume the current date is the `pose_date`, which is {pose_date}. If context or event names would not be apparent at the `pose_date`, provide sufficient context within the body to avoid revealing that the question was formed later. The simplest litmus test is to check whether you know of the event based solely on your training data.
+        If context or event names may not be clear at the `pose_date`, provide sufficient context within the body of the question to avoid revealing that the question was created after the fact. The simplest litmus test is to determine whether the event can be recognized based solely on your training data.
         """,
         "prompt": """
-        ## Guidelines for Validating Forecasting Questions
+        ## Guidelines for Validating and Rephrasing Forecasting Questions
 
         ### 1. **Relevance to Article Content**:
         - The question's title and body **must** refer to factual events or announcements stated in the source article and should NOT extrapolate beyond the article's content.
-        - The resolution must be accurate in the context of the news article.
+        - The resolution must be accurate within the context of the news article.
 
         ### 2. **No Irrelevant Dates**:
         - Reject questions that reference any date or time from the article other than the resolution date specified in the question title.
         - Reject questions that mention the given `pose_date`.
 
         ### 3. **Named Events**:
-        - The question should not refer to specific named events that you (the expert) may not be aware of. Such events would only be named after the `pose_date`, and forecasters would have no information about them.
+        - The question should not refer to specific named events that you (the expert) may not be aware of, as such events would only be named after the `pose_date`, leaving forecasters without information about them.
 
         ### 4. **No Reference to Articles**:
         - The title and body should NOT indicate that the question was formed using news content or refer to any articles.
@@ -73,7 +73,10 @@ class NewsApiFinalForecastingQuestionGenerator:
         - Questions should not be easily guessed using common sense or simplistic reasoning. If you can answer the question correctly using just the question title and no other information, reject it.
         - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
 
-        ## Validation Process:
+        ### 11. **Enhanced Predictability**:
+        - Use "a" instead of "the" while phrasing questions. Remember that we are forming questions in the future while the forecaster assumes they are answering them as of the given `pose_date`.
+
+        ## Validation and Rephrasing Process:
 
         1. **Validation**:
         - Validate the forecasting question and return its "Final Form." A question is valid if it mostly follows the above guidelines.
@@ -81,6 +84,9 @@ class NewsApiFinalForecastingQuestionGenerator:
         2. **Rejection**:
         - If the question violates any of the guidelines, reject it. The rejected form is: 
             {example_rejected_fq}
+
+        3. **Rephrasing**:
+        - For valid questions, rephrase them to enhance clarity, specificity, and adherence to the guidelines while maintaining the original intent.
 
         Data will be given to you in the following form:
             {rough_fq_data_desc}
@@ -96,7 +102,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             Example 3:
                 {example_fq_3}
 
-        Carefully validate the following forecasting question:
+        Carefully validate and rephrase the following forecasting question:
             {source_rough_fq_data}
         """,
     }
@@ -223,7 +229,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         }
 
     @classmethod
-    def _initial_prompt_and_preface_formation(
+    def _rough_fq_validation_prompt_and_preface_formation(
         cls, rough_fq_data: dict, end_date: datetime, pose_date: datetime
     ) -> tuple[str, str]:
         """
@@ -237,12 +243,12 @@ class NewsApiFinalForecastingQuestionGenerator:
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
         """
-        forecasting_preface = cls.initial_prompt["preface"].format(
+        forecasting_preface = cls.rough_fq_validation_prompt["preface"].format(
             month_name=end_date.strftime("%B"),
             year=end_date.strftime("%Y"),
             pose_date=pose_date.strftime("%B %d, %Y"),
         )
-        forecasting_prompt = cls.initial_prompt["prompt"].format(
+        forecasting_prompt = cls.rough_fq_validation_prompt["prompt"].format(
             source_rough_fq_data=rough_fq_data,
             example_fq_1=json.dumps(cls.example_fq_1, indent=4),
             example_fq_2=json.dumps(cls.example_fq_2, indent=4),
@@ -318,6 +324,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             data_source="synthetic",
             url=None,
             resolution_date=last_datetime_of_month(end_date),
+            created_date=pose_date,
             metadata={
                 "article_information": {
                     "article_url": rough_fq_data["articleUrl"],
@@ -353,10 +360,11 @@ class NewsApiFinalForecastingQuestionGenerator:
         Returns:
             ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
         """
+        raise NotImplementedError("Use async!")
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._initial_prompt_and_preface_formation(
+        ) = cls._rough_fq_validation_prompt_and_preface_formation(
             cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
         )
 
@@ -385,7 +393,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         (
             forecasting_preface,
             forecasting_prompt,
-        ) = cls._initial_prompt_and_preface_formation(
+        ) = cls._rough_fq_validation_prompt_and_preface_formation(
             cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
         )
 
@@ -523,6 +531,7 @@ class NewsApiFinalForecastingQuestionGenerator:
         num_pages: int,
         num_articles: int,
         model_name: str,
+        be_lax_in_resolution_checking: bool,
     ) -> str:
         """
         File path to save the final forecasting questions.
@@ -533,6 +542,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             num_pages (int): Number of pages of news that were downloaded.
             num_articles (int): Number of articles in use.
             model_name (str): The model being used to create the final forecasting questions.
+            be_lax_in_resolution_checking (bool): Whether to be lax in resolution checking
 
         Returns:
             str: File path for saving the final forecasting questions.
@@ -542,8 +552,13 @@ class NewsApiFinalForecastingQuestionGenerator:
         if num_articles == -1 or num_articles == float("inf"):
             num_articles = "all"
 
+        if be_lax_in_resolution_checking:
+            lax_str = "lax_res_checking"
+        else:
+            lax_str = "strict_res_checking"
+
         model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"final_fq_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        news_save_file_name = f"final_fq_using_{model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
             cls.news_api_final_fq_save_dir,
