@@ -78,8 +78,8 @@ class NewsApiRoughForecastingQuestionGenerator:
         - **Sensitivity:** Exclude references to sensitive topics such as religion, politics, gender, or race.
         - **Clarity:** Be straightforward and precise, avoiding ambiguity.
         - **Resolution Date:** Specify the resolution date as "by {month_name}, {year}?"
-        - **Context:** Provide sufficient context if event names may not be clear at the `pose_date`.
-        - **Named Entities:** Include at least one named entity (BUt at most three) from the article to enhance specificity.
+        - **Context:** Provide sufficient context if event names may not be clear at the `current_date`.
+        - **Named Entities:** Include at least one named entity (But at most four) from the article to enhance specificity.
         - **Article Usage:** Use "a" instead of "the" to enhance predictability.
         - **Planned Events:** Frame questions about announced but incomplete events as proposals or announcements, explicitly avoiding questions about the completion of these events.
 
