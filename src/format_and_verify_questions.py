@@ -11,7 +11,7 @@ import fq_verification.question_verifier as question_verifier
 import fq_generation.fq_body_generator as fq_body_generator
 from common.utils import write_jsonl_async, recombine_filename
 from common.llm_utils import parallelized_call
-from common.path_utils import get_data_path, get_scripts_path
+from common.path_utils import get_data_path
 from simple_parsing import ArgumentParser
 from pathlib import Path
 
@@ -271,11 +271,6 @@ async def main(
 
     await write_jsonl_async(
         output_path,
-        data_to_write,
-        append=not overwrite,
-    )
-    await write_jsonl_async(
-        f"{get_scripts_path()}/pipeline/{out_file_name}",
         data_to_write,
         append=not overwrite,
     )

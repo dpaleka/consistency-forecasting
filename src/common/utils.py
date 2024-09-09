@@ -75,6 +75,12 @@ def write_jsonl(path: str, data: List[dict], append: bool = False):
             writer.write(item)
 
 
+def load_jsonl(path: str) -> list[dict]:
+    with open(path, "r") as f:
+        jsonl_content = f.read()
+    return [json.loads(jline) for jline in jsonl_content.splitlines()]
+
+
 def write_jsonl_from_str(path: str, data: List[str], append: bool = False):
     with open(path, "a" if append else "w") as file:
         for item in data:
@@ -121,6 +127,11 @@ def write_questions(questions: list[ForecastingQuestion], path: str):
             f.write(f"{q.model_dump_json()}\n")
 
 
+def append_question(question: ForecastingQuestion, path: str):
+    with open(path, "a") as f:
+        f.write(f"{question.model_dump_json()}\n")
+
+
 def update_recursive(source, overrides):
     for key, value in overrides.items():
         if isinstance(value, dict) and key in source and isinstance(source[key], dict):
@@ -153,7 +164,13 @@ def recombine_filename(filename: Path, suffix: str) -> Path:
     current_suffix = filename.suffix
     return filename.with_name(f"{filename.stem}{suffix}").with_suffix(current_suffix)
 
-  
+
+def shorten_model_name(model_name: str) -> str:
+    if "/" in model_name:
+        return model_name.split("/")[-1]
+    return model_name
+
+
 def delist(item):
     if isinstance(item, list):
         return item[0]
