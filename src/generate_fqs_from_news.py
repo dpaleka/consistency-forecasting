@@ -30,6 +30,7 @@ def generate_forecasting_questions_from_news_sync(articles_download_path, args):
             args.num_pages,
             args.num_articles,
             args.rough_fq_gen_model_name,
+            args.pose_date,
         )
 
     # Generating the final forecasting questions
@@ -60,6 +61,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.num_pages,
             args.num_articles,
             args.rough_fq_gen_model_name,
+            args.pose_date,
         )
 
     # Generating the final forecasting questions
@@ -72,6 +74,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.rough_fq_gen_model_name,
             args.final_fq_gen_model_name,
             args.pose_date,
+            args.be_lax_in_res_checking,
         )
 
     if args.verify_fqs:
@@ -83,6 +86,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.final_fq_gen_model_name,
             args.final_fq_verification_model_name,
             args.news_source,
+            args.be_lax_in_res_checking,
         )
 
 
@@ -134,6 +138,11 @@ def main(args: argparse.Namespace) -> None:
         args.final_fq_verification_model_name = args.model_name
 
     if args.sync:
+        raise RuntimeError(
+            "Added to ensure that the user understands that\
+                           some functionality may be missing."
+        )
+        # Not a warning as it's not visible due to large output after this warning
         generate_forecasting_questions_from_news_sync(
             processed_news_articles_path, args
         )
@@ -185,6 +194,14 @@ def get_args() -> argparse.Namespace:
         final forecasting questions.
         """,
         default="",
+    )
+
+    # Resolution checking
+    parser.add_argument(
+        "-lax",
+        "--be-lax-in-res-checking",
+        action="store_true",
+        help="Should the Final Generator be lax while checking the resolution",
     )
 
     # Sync enabling argument (cannot be used with verify)
@@ -293,6 +310,7 @@ def get_args() -> argparse.Namespace:
             help="The threshold used to designate an article as a duplicate while processing",
             default=0.25,
         )
+
     else:
         raise NotImplementedError("Sentinel scraping has not been implemented yet")
 

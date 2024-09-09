@@ -488,6 +488,8 @@ def main(
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
+    if not tuple_dir.exists():
+        assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
 
     match forecaster_class:
         case "AdvancedForecaster":
