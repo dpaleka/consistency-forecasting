@@ -150,8 +150,6 @@ def calculate_calibration(
     # Create bins
     bins = get_bucket_anchors(num_bins)
     bin_indices = assign_bins(sorted_probs, bins)
-    print(f"{bins=}")
-    print(f"{bin_indices=}")
 
     bin_accuracies = []
     bin_confidences = []
@@ -159,7 +157,6 @@ def calculate_calibration(
 
     for i in range(len(bins)):
         bin_mask = np.array(bin_indices) == i
-        print(f"{bin_mask=}")
         bin_outcomes = np.array(sorted_outcomes)[bin_mask]
         bin_probs = np.array(sorted_probs)[bin_mask]
 
@@ -177,7 +174,6 @@ def calculate_calibration(
     calibration_error = np.mean(
         [abs(bin_accuracies[i] - bin_confidences[i]) for i in valid_bins]
     )
-    print(f"{valid_bins=}")
     print(f"{bin_accuracies=}")
     print(f"{calibration_error=}")
 

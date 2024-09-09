@@ -7,7 +7,7 @@ import logging
 
 from common.path_utils import get_data_path
 from common.utils import make_json_serializable
-from common.datatypes import ForecastingQuestion
+from common.datatypes import ForecastingQuestion, Forecast
 from evaluation_utils.utils import (
     load_forecaster,
     create_output_directory,
@@ -39,18 +39,11 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
     required=True,
     help="Path to the input JSONL file containing Forecasting Questions",
 )
-@click.option(
-    "--scoring_rule",
-    type=click.Choice(list(scoring_functions.keys())),
-    default="log_score",
-    help="Scoring rule to use for evaluation",
-)
 def main(
     forecaster_class: str,
     config_path: str,
     model: str | None,
     input_file: str,
-    scoring_rule: str,
     num_lines: int,
     run: bool,
     load_dir: str | None = None,
@@ -58,6 +51,17 @@ def main(
     output_dir: str | None = None,
 ):
     forecaster = load_forecaster(forecaster_class, config_path, model)
+    # Print arguments
+    print("Arguments:")
+    print(f"  forecaster_class: {forecaster_class}")
+    print(f"  config_path: {config_path}")
+    print(f"  model: {model}")
+    print(f"  input_file: {input_file}")
+    print(f"  num_lines: {num_lines}")
+    print(f"  run: {run}")
+    print(f"  load_dir: {load_dir}")
+    print(f"  is_async: {is_async}")
+    print(f"  output_dir: {output_dir}")
 
     output_directory, most_recent_directory = create_output_directory(
         forecaster, model, BASE_FORECASTS_OUTPUT_PATH, output_dir
@@ -80,14 +84,46 @@ def main(
     assert len(data) == len(
         forecasting_questions
     ), "Data and forecasting questions have different lengths"
-    print(f"Filtered to {len(forecasting_questions)} questions with resolutions")
+    print(
+        f"Filtered to {len(forecasting_questions)}/{len(data)} questions with resolutions"
+    )
 
     num_lines = min(num_lines, len(forecasting_questions))
-    print(f"Running on {num_lines} questions")
-
     results = []
-    for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
-        forecast = forecaster.call_full(fq)
+    if run:
+        print(f"Running on {num_lines} questions")
+
+        forecasts = []
+        for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
+            forecast = forecaster.call_full(fq)
+            forecasts.append(forecast)
+    else:
+        if (
+            load_dir is None
+            or not (
+                (load_dir := Path(load_dir)) / "ground_truth_results.jsonl"
+            ).exists()
+        ):
+            raise ValueError(
+                "load_dir must be provided and must contain ground_truth_results.jsonl"
+            )
+
+        with open(load_dir / "ground_truth_results.jsonl", "r", encoding="utf-8") as f:
+            results_loaded = [json.loads(line) for line in f]
+            forecasts = [
+                Forecast.model_validate(results_loaded[i]["forecast"])
+                for i in range(num_lines)
+            ]
+            for i in range(num_lines):
+                print(forecasting_questions[i].title)
+                assert (
+                    forecasting_questions[i].title
+                    == results_loaded[i]["question"]["title"]
+                ), "Questions do not match"
+
+    for line, fq, forecast in zip(
+        data[:num_lines], forecasting_questions[:num_lines], forecasts
+    ):
         log_score = proper_score(
             probs=[forecast.prob],
             outcomes=[fq.resolution],
