@@ -4,6 +4,7 @@ from datetime import datetime
 from uuid import uuid4
 import pytz
 from common.datatypes import ForecastingQuestion
+from common.utils import shorten_model_name
 from common.llm_utils import answer_sync, answer
 from common.path_utils import get_src_path
 from .fq_from_news_datatypes import (
@@ -22,7 +23,7 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     news_api_final_fq_save_dir = os.path.join(
         get_src_path(),
-        "data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions",
+        "data/news_feed_fq_generation/news_api/final_unverified",
     )
     # Create the save path directory
     os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
@@ -560,7 +561,7 @@ class NewsApiFinalForecastingQuestionGenerator:
             lax_str = "strict_res_checking"
 
         model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"final_fq_using_{model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        news_save_file_name = f"final_fq__{shorten_model_name(model_name)}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
             cls.news_api_final_fq_save_dir,

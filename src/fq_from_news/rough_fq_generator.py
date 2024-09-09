@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+from common.utils import shorten_model_name
 from common.llm_utils import answer_sync, answer
 from common.datatypes import ValidationResult
 from common.path_utils import get_src_path
@@ -428,7 +429,7 @@ class NewsApiRoughForecastingQuestionGenerator:
             num_articles = "all"
 
         model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"rough_fq_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        news_save_file_name = f"rough_fq__{shorten_model_name(model_name)}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
             cls.news_api_rough_fq_save_dir,
@@ -463,7 +464,7 @@ class NewsApiRoughForecastingQuestionGenerator:
             num_articles = "all"
 
         model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"validated_news_articles_using_{model_name}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+        news_save_file_name = f"validated_news_articles__{shorten_model_name(model_name)}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
         return os.path.join(
             cls.news_api_rough_fq_save_dir,
