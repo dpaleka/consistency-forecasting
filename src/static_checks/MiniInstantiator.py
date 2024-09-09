@@ -25,7 +25,6 @@ from common.datatypes import (
     VerificationResult,
 )
 from common.perscache import register_models_for_cache
-from fq_verification.question_verifier import verify_full_question
 from .checker_prompts import (
     neg_verification_prompt,
     and_verification_prompt,
@@ -319,20 +318,20 @@ class MiniInstantiator(ABC):
         if output is None:
             return VerificationResult(valid=False, reasoning="Output is None")
 
-        # Check if any attribute of output has type ForecastingQuestion
-        forecasting_question = None
-        for attr_name, attr_value in output.__dict__.items():
-            if isinstance(attr_value, ForecastingQuestion):
-                forecasting_question = attr_value
-                break
+        # # Check if any attribute of output has type ForecastingQuestion
+        # forecasting_question = None
+        # for attr_name, attr_value in output.__dict__.items():
+        #     if isinstance(attr_value, ForecastingQuestion):
+        #         forecasting_question = attr_value
+        #         break
 
-        # If a ForecastingQuestion is found, call verify_full_question on it
-        if forecasting_question:
-            full_question_verification = await verify_full_question(
-                forecasting_question, **kwargs
-            )
-            if not full_question_verification.valid:
-                return full_question_verification
+        # # If a ForecastingQuestion is found, call verify_full_question on it
+        # if forecasting_question:
+        #     full_question_verification = await verify_full_question(
+        #         forecasting_question, **kwargs
+        #     )
+        #     if not full_question_verification.valid:
+        #         return full_question_verification
 
         prompt = self._verification_prompt(output, base_sentences)
         if verify_length and not self.verify_length(output, base_sentences):
