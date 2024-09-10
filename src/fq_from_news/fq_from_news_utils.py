@@ -363,7 +363,7 @@ def _final_verified_forecasting_questions_save_path(
     final_fq_verification_model_name = final_fq_verification_model_name.replace(
         "/", "__"
     ).replace("\\", "__")
-    news_save_file_name = f"verified_final_fq_using_{final_fq_verification_model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+    news_save_file_name = f"verified_final_fq_{final_fq_verification_model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
 
     # TODO - refactor for non News API things
     final_verfied_fq_save_path = os.path.join(

@@ -164,7 +164,13 @@ def recombine_filename(filename: Path, suffix: str) -> Path:
     current_suffix = filename.suffix
     return filename.with_name(f"{filename.stem}{suffix}").with_suffix(current_suffix)
 
-  
+
+def shorten_model_name(model_name: str) -> str:
+    if "/" in model_name:
+        return model_name.split("/")[-1]
+    return model_name
+
+
 def delist(item):
     if isinstance(item, list):
         return item[0]
