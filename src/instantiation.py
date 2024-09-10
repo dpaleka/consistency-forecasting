@@ -17,15 +17,15 @@ import random
 import itertools
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"
-# BASE_DATA_PATH: Path = (
-#     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
-# )
-
+MODEL = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
-    get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
+    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
+
+# BASE_DATA_PATH: Path = (
+#     get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
+# )
 # BASE_DATA_PATH: Path = (
 #     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
