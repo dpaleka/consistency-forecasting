@@ -236,8 +236,9 @@ def process_check(
                     os.remove(dir / f"{check_name}.jsonl")
 
             results = []
-            for start in range(0, len(checker_tuples), 5):
-                end = min(start + 5, len(checker_tuples))
+            batch_size = 5
+            for start in range(0, len(checker_tuples), batch_size):
+                end = min(start + batch_size, len(checker_tuples))
                 batch_tuples = checker_tuples[start:end]
 
                 match forecaster_class:

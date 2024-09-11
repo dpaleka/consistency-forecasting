@@ -4,9 +4,12 @@ import json
 from pathlib import Path
 import click
 import logging
+import asyncio
+import functools
 
 from common.path_utils import get_data_path
 from common.utils import make_json_serializable
+from common.llm_utils import parallelized_call, reset_global_semaphore
 from common.datatypes import ForecastingQuestion, Forecast
 from evaluation_utils.utils import (
     load_forecaster,
@@ -92,11 +95,23 @@ def main(
     results = []
     if run:
         print(f"Running on {num_lines} questions")
+        assert load_dir is None, "load_dir must be None when run is True"
 
         forecasts = []
-        for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
-            forecast = forecaster.call_full(fq)
-            forecasts.append(forecast)
+        if is_async:
+            batch_size = 10
+            for start in range(0, len(forecasting_questions), batch_size):
+                end = min(start + batch_size, len(forecasting_questions))
+                batch_tuples = forecasting_questions[start:end]
+                reset_global_semaphore()
+                call_func = functools.partial(forecaster.call_async_full, model=model)
+                results_batch = asyncio.run(parallelized_call(call_func, batch_tuples))
+                forecasts.extend(results_batch)
+
+        else:
+            for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
+                forecast = forecaster.call_full(fq, model=model)
+                forecasts.append(forecast)
     else:
         if (
             load_dir is None
@@ -105,7 +120,7 @@ def main(
             ).exists()
         ):
             raise ValueError(
-                "load_dir must be provided and must contain ground_truth_results.jsonl"
+                "if --run argument is not set, load_dir must be provided and must contain ground_truth_results.jsonl"
             )
 
         with open(load_dir / "ground_truth_results.jsonl", "r", encoding="utf-8") as f:
@@ -143,8 +158,8 @@ def main(
                 "forecast": make_json_serializable(forecast.to_dict()),
                 "prob": forecast.prob,
                 "resolution": fq.resolution,
-                "log_score": log_score,
-                "brier_score": brier_score,
+                "log_score": round_floats(log_score, precision=4),
+                "brier_score": round_floats(brier_score, precision=4),
             }
         )
 

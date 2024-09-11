@@ -36,9 +36,9 @@ class Forecaster(ABC):
         fq = self.pre_call(fq, **kwargs)
         return self.call(fq, **kwargs)
 
-    def call_async_full(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+    async def call_async_full(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         fq = self.pre_call(fq, **kwargs)
-        return self.call_async(fq, **kwargs)
+        return await self.call_async(fq, **kwargs)
 
     @abstractmethod
     def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
