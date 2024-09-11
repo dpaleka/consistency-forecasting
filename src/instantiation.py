@@ -17,22 +17,22 @@ import random
 import itertools
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"
-# BASE_DATA_PATH: Path = (
-#     get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
-# )
-
+MODEL = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
-    get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
+    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
 )
+
+# BASE_DATA_PATH: Path = (
+#     get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
+# )
 # BASE_DATA_PATH: Path = (
 #     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "tuples_source/"
+TUPLES_PATH: Path = get_data_path() / "tuples/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["CondChecker"]
+RELEVANT_CHECKS = ["ExpectedEvidenceChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]
 
 
@@ -289,8 +289,8 @@ async def instantiate(
 
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
-@click.option("--n_relevance", default=10, help="Number of relevance samples.")
-@click.option("--n_write", default=2, help="Number of writes.")
+@click.option("--n_relevance", default=50, help="Number of relevance samples.")
+@click.option("--n_write", default=20, help="Number of writes.")
 @click.option(
     "--n_source_questions",
     default=-1,
