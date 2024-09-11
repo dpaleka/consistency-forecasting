@@ -1,3 +1,6 @@
+from costly import costly
+
+
 import os
 import sys
 
@@ -523,10 +526,12 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         self.generate_all_questions(ForecastingQuestion)
         self.generate_user_prompts(self.forecasting_questions)
 
+    @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
         return super().call(self.user_prompts, self.examples, include_metadata)
 
+    @costly()
     def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
         return super().call_async(self.user_prompts, self.examples, include_metadata)
