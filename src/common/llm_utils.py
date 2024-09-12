@@ -175,7 +175,10 @@ def get_async_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    return instructor.from_openai(_client)
+    mode = (
+        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
+    )
+    return instructor.from_openai(_client, mode=mode)
 
 
 @singleton_constructor
@@ -191,7 +194,10 @@ def get_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    return instructor.from_openai(_client)
+    mode = (
+        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
+    )
+    return instructor.from_openai(_client, mode=mode)
 
 
 @singleton_constructor

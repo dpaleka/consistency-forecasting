@@ -6,7 +6,7 @@ from common.llm_utils import (
     answer,
     answer_sync,
 )  # Adjust the import based on your script's structure
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserInfo(BaseModel):
@@ -127,3 +127,41 @@ async def test_answer_sync_async():
     )
     assert isinstance(result, PlainText) and len(result.text) > 0
     print(f"Generated question: {result.text}")
+
+
+class TestResponse(BaseModel):
+    name: str = Field(..., description="The name of the person")
+    age: int = Field(..., description="The age of the person")
+
+
+register_model_for_cache(TestResponse)
+
+
+def test_openai_json_strict(monkeypatch):
+    # Set up the environment
+    # remember the original value of OPENAI_JSON_STRICT
+    original_openai_json_strict = os.getenv("OPENAI_JSON_STRICT", "False")
+    monkeypatch.setenv("OPENAI_JSON_STRICT", "True")
+    monkeypatch.setenv(
+        "OPENAI_API_KEY", os.getenv("OPENAI_API_KEY")
+    )  # Ensure API key is set
+
+    # Define the prompt
+    prompt = "Generate a person with a name and age."
+
+    # Test with strict JSON mode
+    response = answer_sync(
+        prompt=prompt, model="gpt-4o-mini-2024-07-18", response_model=TestResponse
+    )
+    assert isinstance(response, TestResponse)
+    assert isinstance(response.name, str)
+    assert isinstance(response.age, int)
+
+    response = answer_sync(
+        prompt=prompt, model="gpt-4o-mini-2024-07-18", response_model=PlainText
+    )
+    assert isinstance(response, PlainText)
+    assert isinstance(response.text, str)
+
+    # restore the original value of OPENAI_JSON_STRICT
+    os.environ["OPENAI_JSON_STRICT"] = original_openai_json_strict
