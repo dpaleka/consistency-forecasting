@@ -1,3 +1,4 @@
+import time
 from typing import Dict
 import json
 import asyncio
@@ -5,7 +6,7 @@ from common.utils import write_jsonl_async
 from perplexity_resolver import resolve_question
 
 
-async def process_question(question: Dict, retry: bool = False) -> Dict:
+async def process_question(question: Dict, retry: bool = False, i = 0) -> Dict:
     """
     Process a single question with error handling and retry.
     :param question: A dictionary containing the question data
@@ -14,6 +15,9 @@ async def process_question(question: Dict, retry: bool = False) -> Dict:
     """
     try:
         response = await resolve_question(question["body"], question["title"])
+        print(f"retry = {retry}, response {i}: {response}")
+        print("0-0-0-0-0-0-0-0-0-0-0-0-000")
+        print("0-0-0-0-0-0-0-0-0-0-0-0-000")
         result = question.copy()
         result["chain_of_thought"] = response.chain_of_thought
         result["can_resolve_question"] = response.can_resolve_question
@@ -28,7 +32,7 @@ async def process_question(question: Dict, retry: bool = False) -> Dict:
         print(f"Error processing question: {e}")
         if not retry:
             print("Retrying once...")
-            return await process_question(question, retry=True)
+            return await process_question(question, retry=True, i=i)
         else:
             print("Failed after retry, ignoring this question.")
             return None
@@ -49,7 +53,7 @@ async def process_jsonl_file(
         # Read input JSONL file
         with open(input_file, "r") as f:
             questions = [json.loads(line) for line in f]
-        questions = questions[:20]
+        questions = questions[:200]
 
         # Process questions concurrently using asyncio.gather
         results = await asyncio.gather(
@@ -74,10 +78,12 @@ async def process_jsonl_file(
 
 async def main():
     # Example usage of process_jsonl_file
+    t0 = time.time()
     input_file = "src/data/news_feed_fq_generation/news_api/final_unverified/final_fq__claude-3.5-sonnet_lax_res_checking_from_July-1-2024_to_July-31-2024_num_pages_1_num_articles_all.jsonl"
-    # input_file = "src/data/fq/synthetic/from-related-verified.jsonl"
-    output_file = "src/output_results.jsonl"
+    input_file = "src/input_file.jsonl"
+    output_file = "src/output_results_5.jsonl"
     await process_jsonl_file(input_file, output_file)
+    print(f"time taken: {time.time() - t0}")
 
 
 if __name__ == "__main__":
