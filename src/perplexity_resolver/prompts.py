@@ -52,7 +52,7 @@ In the following text there is the answer given by the resolver to a forecasting
 You must find the appropriate values for the fields: 
 - chain_of_thought: A string with the reasoning of the resolver.
 - can_resolve_question: A boolean value, True if the question can be resolved, False otherwise.
-- answer (Optional): A boolean value, True if the answer to the question is positive, False if it is negative. This field should be empty if can_resolve_question is False. But it never should be empty if can_resolve_question is True.
+- answer (Optional): A boolean value, True if the answer to the question is positive, False if it is negative. This field should be empty if can_resolve_question is False. If can_resolve_question is True, this field should be filled, either with True or False.
 
 Question:
 {question_title}
@@ -119,6 +119,27 @@ This question will resolve as Yes if, by December 31, 2026, a single commercial 
 </resolver_output>
 """
 
+perplexity_resolve_example_4 = """
+Forecasting Question:
+Will Spain win 4 or more gold medals in the 2024 Summer Olympics in Paris?
+Details:
+This question will resolve positively if Spain wins 4 or more gold medals during the 2024 Summer Olympics in Paris. It will resolve negatively if Spain wins 3 or fewer gold medals. The final count will be based on the official medal tally at the conclusion of the Games.
+<resolver_output>
+<chain_of_thought>
+Based on current information:
+1. Spain won 3 gold medals in the 2020 Tokyo Olympics (held in 2021).
+2. Spain has shown improvement in several sports, including swimming and athletics, since the last Olympics.
+3. The Spanish Olympic Committee has increased funding and support for elite athletes in preparation for Paris 2024.
+4. Spain traditionally performs well in team sports like handball and water polo, which could contribute to their gold medal count.
+5. Historical data shows Spain's gold medal count has fluctuated between 3 and 7 in recent Summer Olympics.
+Given these factors, it's reasonable to predict that Spain could improve upon their 2020 performance and reach or exceed 4 gold medals.
+CopySources: Official Olympic records, Spanish Olympic Committee reports, and recent sports performance data.
+</chain_of_thought>
+<can_resolve_question>true</can_resolve_question>
+<answer>true</answer>
+</resolver_output>
+"""
+
 # Prompt for Perplexity to resolve forecasting questions
 perplexity_resolve_prompt = """
 You are provided with a forecasting question and additional details.
@@ -129,7 +150,7 @@ Provide your analysis and answer in the following XML structure:
 
 <resolver_output>
   <chain_of_thought>
-    [Provide your step-by-step reasoning here, including analysis of the available information and any relevant sources.]
+    [Provide your step-by-step reasoning here, including analysis of the available information and any relevant sources. Cite the fragments of information that are relevant]
   </chain_of_thought>
   <can_resolve_question>
     [Insert 'true' if the question can be resolved, 'false' if it cannot]
@@ -153,8 +174,12 @@ Ensure your chain_of_thought provides a comprehensive analysis, and include cita
 {example_3}
 <example>
 
+<example>
+{example_4}
+<example>
+
 Analyze the following forecasting question and provide your response in XML format. Remember the task is to search for relevant information and determine if the question can be resolved based on the available data.
-If there is not enough information or the resolution may change in the future, indicate that the question cannot be resolved.
+If there is not enough information or the resolution may change in the future, indicate that the question cannot be resolved. If the question can be resolved, answer should be either true or false.
 
 Forecasting Question:
 {question_title}
