@@ -11,13 +11,13 @@ from common.path_utils import get_data_path
 from common.utils import make_json_serializable
 from common.llm_utils import parallelized_call, reset_global_semaphore
 from common.datatypes import ForecastingQuestion, Forecast
+from forecasters.create import make_forecaster
 from evaluation_utils.utils import (
-    load_forecaster,
     create_output_directory,
     write_to_dirs,
 )
 from common.utils import round_floats
-from evaluation_utils.common_options import common_options
+from evaluation_utils.common_options import common_options, get_forecaster_config
 from evaluation_utils.proper_scoring import (
     proper_score,
     decompose_brier_score,
@@ -43,9 +43,10 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
     help="Path to the input JSONL file containing Forecasting Questions",
 )
 def main(
-    forecaster_class: str,
-    config_path: str,
-    model: str | None,
+    forecaster_class: str | None,
+    custom_path: str | None,
+    config_path: str | None,
+    forecaster_options: list[str] | None,
     input_file: str,
     num_lines: int,
     run: bool,
@@ -53,12 +54,19 @@ def main(
     is_async: bool = False,
     output_dir: str | None = None,
 ):
-    forecaster = load_forecaster(forecaster_class, config_path, model)
+    forecaster_config = get_forecaster_config(config_path, forecaster_options)
+
+    forecaster = make_forecaster(
+        forecaster_class=forecaster_class,
+        custom_path=custom_path,
+        forecaster_config=forecaster_config,
+    )
+
     # Print arguments
     print("Arguments:")
     print(f"  forecaster_class: {forecaster_class}")
-    print(f"  config_path: {config_path}")
-    print(f"  model: {model}")
+    print(f"  custom_path: {custom_path}")
+    print(f"  forecaster_config: {forecaster_config}")
     print(f"  input_file: {input_file}")
     print(f"  num_lines: {num_lines}")
     print(f"  run: {run}")
@@ -67,7 +75,7 @@ def main(
     print(f"  output_dir: {output_dir}")
 
     output_directory, most_recent_directory = create_output_directory(
-        forecaster, model, BASE_FORECASTS_OUTPUT_PATH, output_dir
+        forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
     )
     dirs_to_write = [output_directory, most_recent_directory]
 
@@ -104,13 +112,13 @@ def main(
                 end = min(start + batch_size, len(forecasting_questions))
                 batch_tuples = forecasting_questions[start:end]
                 reset_global_semaphore()
-                call_func = functools.partial(forecaster.call_async_full, model=model)
+                call_func = functools.partial(forecaster.call_async_full)
                 results_batch = asyncio.run(parallelized_call(call_func, batch_tuples))
                 forecasts.extend(results_batch)
 
         else:
             for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
-                forecast = forecaster.call_full(fq, model=model)
+                forecast = forecaster.call_full(fq)
                 forecasts.append(forecast)
     else:
         if (
@@ -197,7 +205,7 @@ def main(
         "calibration_error": calibration_error,
         "calibration_error_data": calibration_error_data,
         "forecaster": forecaster.__class__.__name__,
-        "model": model,
+        "forecaster_config": forecaster_config,
     }
 
     print("\nGround Truth Summary:")
@@ -205,7 +213,7 @@ def main(
     print(f"Average Log Score: {summary['average_log_score']:.4f}")
     print(f"Average Brier Score: {summary['average_brier_score']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
-    print(f"Model: {summary['model']}")
+    print(f"Forecaster Config: {summary['forecaster_config']}")
 
     # Write summary to file
     summary_filename = "ground_truth_summary.json"
@@ -232,5 +240,5 @@ if __name__ == "__main__":
     # Example run command
 print("Example run command:")
 print(
-    "python ground_truth_run.py --forecaster_class BasicForecaster --config_path path/to/config.json --model gpt-3.5-turbo --input_file path/to/input.jsonl --scoring_rule log_score --output_dir path/to/output"
+    "python ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file path/to/input.jsonl --output_dir path/to/output"
 )

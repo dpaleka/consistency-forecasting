@@ -41,9 +41,10 @@ commands = [
     "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
-    "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster -m gpt-4o-mini --run"
+    "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster --forecaster_options model=gpt-4o-mini --run"
     + " ".join(f" -k {checker}" for checker in checkers)
-    + " -s -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
+    + " --eval_by_source -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
+    # python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster --forecaster_options model=gpt-4o-mini --run -k NegChecker -k AndChecker -k CondCondChecker -s -t 5
 ]
 
 

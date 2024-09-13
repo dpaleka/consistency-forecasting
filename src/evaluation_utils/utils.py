@@ -1,18 +1,10 @@
-import yaml
 from pathlib import Path
 from datetime import datetime
-from typing import Any
 
 from forecasters import (
     Forecaster,
-    AdvancedForecaster,
-    BasicForecaster,
-    COT_Forecaster,
 )
 import json
-
-from forecasters.consistent_forecaster import ConsistentForecaster
-from static_checks.Checker import NegChecker
 
 
 def write_to_dirs(
@@ -32,56 +24,6 @@ def write_to_dirs(
                     f.write(json.dumps(result) + "\n")
 
 
-def load_forecaster(
-    forecaster_class: str, config_path: str | None, model: str | None
-) -> Forecaster:
-    match forecaster_class:
-        case "AdvancedForecaster":
-            if model is not None:
-                raise ValueError(
-                    "The 'model' parameter should not be set when using AdvancedForecaster. Model configuration should be done through the config file and the 'config_path' parameter."
-                )
-            print(f"Using AdvancedForecaster config file: {config_path}")
-        case _:
-            assert model is not None, "Model must be specified for forecaster class"
-            print(f"Using model: {model}")
-
-    match forecaster_class:
-        case "BasicForecaster":
-            return BasicForecaster()
-        case "COT_Forecaster":
-            return COT_Forecaster()
-        case "ConsistentForecaster":
-            return ConsistentForecaster(
-                hypocrite=BasicForecaster(),
-                checks=[
-                    NegChecker(),
-                ],
-                instantiation_kwargs={"model": model},
-                bq_func_kwargs={"model": model},
-            )
-        case "RecursiveConsistentForecaster":
-            return ConsistentForecaster.recursive(
-                depth=4,
-                hypocrite=BasicForecaster(),
-                checks=[
-                    NegChecker(),
-                    # ParaphraseChecker(),
-                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
-                instantiation_kwargs={"model": model},
-                bq_func_kwargs={"model": model},
-            )
-        case "AdvancedForecaster":
-            assert (
-                config_path is not None
-            ), "Config path must be provided for AdvancedForecaster"
-            with open(config_path, "r", encoding="utf-8") as f:
-                config: dict[str, Any] = yaml.safe_load(f)
-            return AdvancedForecaster(**config)
-        case _:
-            raise ValueError(f"Invalid forecaster class: {forecaster_class}")
-
-
 def validate_load_directory(
     run: bool, load_dir: str | None, most_recent_directory: Path
 ) -> Path:
@@ -99,7 +41,7 @@ def validate_load_directory(
 
 
 def create_output_directory(
-    forecaster: Forecaster, model: str | None, base_path: Path, output_dir: str | None
+    forecaster: Forecaster, base_path: Path, output_dir: str | None
 ) -> tuple[Path, Path]:
     most_recent_directory = base_path / f"A_{forecaster.__class__.__name__}_most_recent"
     most_recent_directory.mkdir(parents=True, exist_ok=True)
@@ -107,6 +49,7 @@ def create_output_directory(
     if output_dir is None:
         timestamp = datetime.now()
         folder_name = (
+            # dirty hack: we explicitly don't round the seconds because we want the neighboring runs to write to the same dir
             f"{forecaster.__class__.__name__}_{timestamp.strftime('%m-%d-%H-%M')}"
         )
         output_directory = base_path / folder_name
