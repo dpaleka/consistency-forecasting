@@ -7,6 +7,7 @@ src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
 src/data/forecasts/A_*_most_recent/
 src/data/forecasts/*_test/
+src/data/forecasts/test*/
 scripts/references/
 src/*see_eval.txt
 .vscode/settings.json
