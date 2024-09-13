@@ -772,6 +772,8 @@ class Checker(ABC):
                 self.get_line_obj(line) for line in data
             ]
             print(validated_lines)
+            # TODO: what's going on here? what happens if some lines are not validated?
+
             print("Starting async elicitation")
             elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers_ = await parallelized_call(
