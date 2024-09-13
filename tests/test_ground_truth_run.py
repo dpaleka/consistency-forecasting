@@ -12,7 +12,7 @@ def run_command(command):
 
 
 commands = [
-    "python src/ground_truth_run.py --forecaster_class BasicForecaster --model gpt-4o-mini --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --num_lines 8 --run --async --output_dir src/data/forecasts/test_output",
+    "python src/ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --num_lines 8 --run --async --output_dir src/data/forecasts/test_output",
 ]
 
 

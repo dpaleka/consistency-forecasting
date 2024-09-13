@@ -81,6 +81,11 @@ def try_load_tuple(line: str) -> dict[str, ForecastingQuestion] | None:
 
 
 class LoadForecaster(Forecaster):
+    def __init__(self, load_dir: Path):
+        self.load_dir = load_dir
+        self.data: dict[str, Forecast] = self.load_data()
+        print(f"Loaded {len(self.data)} forecasts from {self.load_dir}")
+
     def hash_key_info_from_fq(self, fq: ForecastingQuestion) -> str:
         return fq.to_str_forecast_mode()
 
@@ -122,11 +127,6 @@ class LoadForecaster(Forecaster):
                         f"Invalid file format for {path}: neither a ForecastingQuestion nor a valid tuple of ForecastingQuestions"
                     )
         return data
-
-    def __init__(self, load_dir: Path):
-        self.load_dir = load_dir
-        self.data: dict[str, Forecast] = self.load_data()
-        print(f"Loaded {len(self.data)} forecasts from {self.load_dir}")
 
     def call(self, fq: ForecastingQuestion, **kwargs) -> Optional[Forecast]:
         return self.data.get(self.hash_key_info_from_fq(fq), None)
