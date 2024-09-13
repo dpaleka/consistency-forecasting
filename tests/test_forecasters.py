@@ -156,3 +156,103 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
         pytest.fail(
             f"Failed to extract a valid final probability from the chain of thought. Last word was: {cot_implied_prob_str}"
         )
+
+
+def test_crowd_forecaster():
+    from forecasters import CrowdForecaster, Forecaster
+
+    # Create mock forecasters
+    forecaster1 = MagicMock(spec=Forecaster)
+    forecaster2 = MagicMock(spec=Forecaster)
+
+    # Define mock responses
+    mock_fq = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Test Crowd Forecast",
+        body="Test Body",
+        question_type="binary",
+        resolution_date=datetime(2025, 1, 1),
+        data_source="synthetic",
+        url="http://example.com",
+        metadata={"topics": ["crowd_test"]},
+        resolution=None,
+    )
+    probs = [0.6, 0.8]
+    weights = [1, 2]
+    forecast1 = Forecast(prob=probs[0])
+    forecast2 = Forecast(prob=probs[1])
+
+    forecaster1.call.return_value = forecast1
+    forecaster2.call.return_value = forecast2
+
+    # Initialize CrowdForecaster
+    crowd_forecaster = CrowdForecaster(
+        forecasters=[forecaster1, forecaster2], method="mean", weights=weights
+    )
+
+    # Call CrowdForecaster
+    combined_forecast = crowd_forecaster.call(mock_fq)
+    print(f"\n{combined_forecast.prob=:.3f}")
+
+    # Assert combined probability
+    assert (
+        combined_forecast.prob
+        == pytest.approx((probs[0] * weights[0] + probs[1] * weights[1]) / sum(weights))
+    ), "Combined probability should be the weighted mean of the individual probabilities"
+    assert combined_forecast.metadata["probs"] == [probs[0], probs[1]]
+
+    forecaster1.call.assert_called_once_with(mock_fq)
+    forecaster2.call.assert_called_once_with(mock_fq)
+
+
+def test_crowd_forecaster_extremize():
+    from forecasters import CrowdForecaster, Forecaster
+
+    # Create mock forecasters
+    forecaster1 = MagicMock(spec=Forecaster)
+    forecaster2 = MagicMock(spec=Forecaster)
+    forecaster3 = MagicMock(spec=Forecaster)
+
+    # Define mock responses
+    mock_fq = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Test Crowd Forecast",
+        body="Test Body",
+        question_type="binary",
+        resolution_date=datetime(2025, 1, 1),
+        data_source="synthetic",
+        url="http://example.com",
+    )
+    forecast1 = Forecast(prob=0.8)
+    forecast2 = Forecast(prob=0.8)
+    forecast3 = Forecast(prob=0.8)
+
+    forecaster1.call.return_value = forecast1
+    forecaster2.call.return_value = forecast2
+    forecaster3.call.return_value = forecast3
+
+    # Initialize CrowdForecaster
+    crowd_forecaster = CrowdForecaster(
+        forecasters=[forecaster1, forecaster2, forecaster3],
+        method="mean",
+        extremize_alpha=1.5,
+    )
+
+    combined_forecast = crowd_forecaster.call(mock_fq)
+    print(f"\n{combined_forecast.prob=:.3f}")
+    assert (
+        combined_forecast.prob < 1
+    ), "Combined extremizedprobability should be less than 1"
+    assert (
+        combined_forecast.prob > 0.8
+    ), "Combined extremized probability should be greater than 0.8"
+
+    assert combined_forecast.metadata["probs"] == [
+        forecast1.prob,
+        forecast2.prob,
+        forecast3.prob,
+    ]
+
+    forecaster1.call.assert_called_once_with(mock_fq)
+    forecaster2.call.assert_called_once_with(mock_fq)
+    forecaster3.call.assert_called_once_with(mock_fq)
