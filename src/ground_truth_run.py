@@ -107,11 +107,12 @@ def main(
 
         forecasts = []
         if is_async:
-            batch_size = 10
-            for start in range(0, len(forecasting_questions), batch_size):
-                end = min(start + batch_size, len(forecasting_questions))
+            batch_size = 5
+            for start in range(0, num_lines, batch_size):
+                end = min(start + batch_size, num_lines)
                 batch_tuples = forecasting_questions[start:end]
                 reset_global_semaphore()
+                print(f"Running on {len(batch_tuples)} questions")
                 call_func = functools.partial(forecaster.call_async_full)
                 results_batch = asyncio.run(parallelized_call(call_func, batch_tuples))
                 forecasts.extend(results_batch)
