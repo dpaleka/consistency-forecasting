@@ -124,7 +124,11 @@ def main(args: argparse.Namespace) -> None:
 
     # Process the articles
     processed_news_articles_path = process_news(
-        args.start_date, args.end_date, args.num_pages, args.news_new_threshold
+        args.start_date,
+        args.end_date,
+        args.num_pages,
+        args.news_new_threshold,
+        args.processsed_news_save_directory,
     )
 
     # If asked to only download news, return here
@@ -286,6 +290,14 @@ def get_args() -> argparse.Namespace:
         type=str,
         help="""
         Directory where to store the verified FQ data. If left empty, defaults to `data/fq/synthetic/news_api_generated_fqs`
+        """,
+        default="",
+    )
+    parser.add_argument(
+        "--processsed-news-save-directory",
+        type=str,
+        help="""
+        Directory where to store the processed news. If left empty, defaults to `data/news_feed_fq_generation/news_api/news_feed_data_dump`
         """,
         default="",
     )
