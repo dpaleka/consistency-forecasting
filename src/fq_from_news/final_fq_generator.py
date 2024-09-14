@@ -30,145 +30,124 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     rough_fq_validation_prompt = {
         "preface": """
-        You are an expert in validating and rephrasing forecasting (prediction) questions based on news articles. Your task is to ensure that each question adheres to the established guidelines and to enhance the phrasing of valid questions. It is important to note that while we are formulating these questions after knowing the resolutions, the forecaster will assume they are answering them as of the `pose_date`, which is {pose_date}. The resolution date for the questions should be set as {month_name}, {year}.
+You are an expert in validating and rephrasing forecasting (prediction) questions based on news articles. A forecasting question consists of a title, body and resolution.
 
-        If context or event names may not be clear at the `pose_date`, provide sufficient context within the body of the question to avoid revealing that the question was created after the fact. The simplest litmus test is to determine whether the event can be recognized based solely on your training data.
-        """,
+Your task is to ensure that each question adheres to the established guidelines and to enhance the phrasing of valid questions. It is important to note that while we are formulating these questions after knowing the resolutions, the forecaster will assume they are answering them as of {pose_date}. The resolution date for the questions should be set as {month_name}, {year}.
+
+Guidelines to be followed are:
+
+1. **Forecaster’s Context**:
+   - The forecaster’s present date is set to **{pose_date}**, so all questions must be framed as if this is the current date. Although the articles may reference future events, your questions must be phrased in a way that the forecaster cannot detect the actual date of question creation.
+
+2. **Clarity & Precision**:
+   - Each question must be **clear**, **specific**, and **unambiguous**.
+   - Avoid subjective terms like "significant" or any similar ambiguity.
+   - Do not reference sensitive topics from religion, politics, or gender.
+
+3. **No Temporal Hints**:
+   - Do **not** include any information or context that implies the question was created after **{pose_date}**.
+   - Ensure no indication that the article is used to inform the question, keeping the creation date fully hidden.
+
+4. **Resolution Period**:
+   - The resolution of each question must remain definitive and applicable from the current date until **{month_name}, {year}**.
+   - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
+
+5. **Factual Basis**:
+	- Questions should be directly supported by the article content and not include fabricated information.
+""",
         "prompt": """
-        ## Guidelines for Validating and Rephrasing Forecasting Questions
+You are tasked with the following steps:
 
-        ### 1. **Relevance to Article Content**:
-        - The question's title and body **must** refer to factual events or announcements stated in the source article and should NOT extrapolate beyond the article's content.
-        - The resolution must be accurate within the context of the news article.
+1. **Validation**:
+   - Check if the forecasting question adheres to the provided guidelines. A question is valid if it aligns with the guidelines.
 
-        ### 2. **No Irrelevant Dates**:
-        - Reject questions that reference any date or time from the article other than the resolution date specified in the question title.
-        - Reject questions that mention the given `pose_date`.
+2. **Rejection**:
+   - Reject the question if it violates any guidelines. The rejected form should be: 
+     {example_rejected_fq}
 
-        ### 3. **Named Events**:
-        - The question should not refer to specific named events that you (the expert) may not be aware of, as such events would only be named after the `pose_date`, leaving forecasters without information about them.
+3. **Rephrasing**:
+   - For valid questions, rephrase them to enhance clarity, specificity, and compliance with the guidelines while retaining the original intent. Do NOT add any new information that wasn't included in the original question.
 
-        ### 4. **No Reference to Articles**:
-        - The title and body should NOT indicate that the question was formed using news content or refer to any articles.
-        - Ensure there is no discernible knowledge of the `pose_date` in the question's title and body.
+**Data Provided**:
+   - {rough_fq_data_desc}
 
-        ### 5. **Factual Basis**:
-        - The question should refer to events directly inferred from and supported by the article content.
-        - Do not accept questions containing fabricated information not present in the article.
+**High-Quality Forecasting Question Examples**:
+    - Example 1: 
+        {example_fq_1}
+    - Example 2: 
+        {example_fq_2}
+    - Example 3: 
+        {example_fq_3}
+    - Example 4: 
+        {example_fq_4}
+    - Example 5: 
+        {example_fq_5}
 
-        ### 6. **Definitive Answers**:
-        - Questions should yield a clear YES or NO answer based on factual information.
-        - The resolution should align with this information, treating True as "Yes" and False as "No."
-        - Ensure the resolution remains valid for most potential scenarios up to the specified resolution date.
-
-        ### 7. **Question Body**:
-        - The body should prompt a clear YES or NO resolution, avoiding overly specific details or easily inferred predictions.
-        - Provide adequate context without leading to predictable answers.
-
-        ### 8. **Future Accuracy**:
-        - Ensure the question remains accurate for most foreseeable futures up to the resolution date.
-        - Questions based on specific events are permissible, even if they may resolve between the forecaster's `pose_date` and the resolution date's month.
-
-        ### 9. **Avoid Overly Specific Questions**:
-        - Questions should not depend on specific knowledge that could disadvantage certain models or participants. Reject questions that refer to more than three specific details from the article.
-
-        ### 10. **Avoid Obvious Answers**:
-        - Questions should not be easily guessed using common sense or simplistic reasoning. If you can answer the question correctly using just the question title and no other information, reject it.
-        - Strive for a level of complexity that challenges the forecaster while remaining grounded in factual events.
-
-        ### 11. **Enhanced Predictability**:
-        - Use "a" instead of "the" while phrasing questions. Remember that we are forming questions in the future while the forecaster assumes they are answering them as of the given `pose_date`.
-
-        ## Validation and Rephrasing Process:
-
-        1. **Validation**:
-        - Validate the forecasting question and return its "Final Form." A question is valid if it mostly follows the above guidelines.
-
-        2. **Rejection**:
-        - If the question violates any of the guidelines, reject it. The rejected form is: 
-            {example_rejected_fq}
-
-        3. **Rephrasing**:
-        - For valid questions, rephrase them to enhance clarity, specificity, and adherence to the guidelines while maintaining the original intent.
-
-        Data will be given to you in the following form:
-            {rough_fq_data_desc}
-
-        You must return the "Final Form" of the forecasting question, defined as:
-            {final_fq_form}
-
-        Here are examples of forecasting questions in their "Final Form":
-            Example 1:
-                {example_fq_1}
-            Example 2:
-                {example_fq_2}
-            Example 3:
-                {example_fq_3}
-
-        Carefully validate and rephrase the following forecasting question:
-            {source_rough_fq_data}
-        """,
+**Task**:
+   - Carefully validate and rephrase the following forecasting question:
+     {source_rough_fq_data}
+""",
     }
 
     resolution_checker_prompt_strict = {
         "preface": """
-        You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
+You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
 
-        When evaluating a forecasting question, keep the following principles in mind:
-        - The resolution should be based on the factual information present in the news article.
-        - Your assessment should be made from the perspective of the article's publication date, not any other date.
-        - Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
-        - Use the `None` option **only** if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO. If the article provides any relevant context or information that can lead to a definitive answer, choose either `True` or `False`.
-        """,
+When evaluating a forecasting question, keep the following principles in mind:
+- The resolution should be based on the factual information present in the news article.
+- Your assessment should be made from the perspective of the article's publication date, not any other date.
+- Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
+- Use the `None` option if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO. If the article provides any relevant context or information that can lead to a definitive answer, choose either `True` or `False`.
+""",
         "prompt": """
-        Consider the following news article:
-            Title: {article_title}
-            Description: {article_description}
-            Content: {article_content}
-            Date: {article_date}
+Consider the following news article:
+    Title: {article_title}
+    Description: {article_description}
+    Content: {article_content}
+    Date: {article_date}
 
-        Now, consider this forecasting question: {question_title}
+Now, consider this forecasting question: {question_title}
 
-        For additional context, use the following information to disambiguate the question:
-            {question_body}
+For additional context, use the following information to disambiguate the question:
+    {question_body}
 
-        Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
-        1. `True` if the answer to the question can be reasonably inferred as YES.
-        2. `False` if the answer to the question can be reasonably inferred as NO.
-        3. `None` if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO.
+Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
+1. `True` if the answer to the question can be reasonably inferred as YES.
+2. `False` if the answer to the question can be reasonably inferred as NO.
+3. `None` if there is absolutely no information in the article that allows for a reasonable inference of either YES or NO.
 
-        Please provide a brief justification for your answer, citing specific details from the article that support your reasoning.
-        """,
+Please provide a brief justification for your answer, citing specific details from the article that support your reasoning.
+""",
     }
 
     resolution_checker_prompt_lax = {
         "preface": """
-        You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
+You are an AI agent tasked with verifying the resolution of forecasting questions based solely on the content of a provided news article. Your role is crucial in ensuring that the resolutions are definitive and accurately reflect the information available at the time the question was posed.
 
-        When evaluating a forecasting question, keep the following principles in mind:
-        - The resolution should be based on the factual information present in the news article.
-        - Your assessment should be made from the perspective of the article's publication date, not any other date.
-        - Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
-        - You must provide an answer of either `True` or `False`. If the article does not provide sufficient information to definitively determine an answer, choose the option that aligns more closely with the context or implications presented in the article.
-        """,
+When evaluating a forecasting question, keep the following principles in mind:
+- The resolution should be based on the factual information present in the news article.
+- Your assessment should be made from the perspective of the article's publication date, not any other date.
+- Reasonable inferences are acceptable, but do not fabricate details or speculate beyond what is stated in the article.
+- You must provide an answer of either `True` or `False`. If the article does not provide sufficient information to definitively determine an answer, choose the option that aligns more closely with the context or implications presented in the article.
+""",
         "prompt": """
-        Consider the following news article:
-            Title: {article_title}
-            Description: {article_description}
-            Content: {article_content}
-            Date: {article_date}
+Consider the following news article:
+    Title: {article_title}
+    Description: {article_description}
+    Content: {article_content}
+    Date: {article_date}
 
-        Now, consider this forecasting question: {question_title}
+Now, consider this forecasting question: {question_title}
 
-        For additional context, use the following information to disambiguate the question:
-            {question_body}
+For additional context, use the following information to disambiguate the question:
+    {question_body}
 
-        Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
-        1. `True` if the answer to the question can be reasonably inferred as YES.
-        2. `False` if the answer to the question can be reasonably inferred as NO.
+Your task is to determine the resolution of the question based solely on the factual information present in the news article, assuming the article's publication date is the current date. Return:
+1. `True` if the answer to the question can be reasonably inferred as YES.
+2. `False` if the answer to the question can be reasonably inferred as NO.
 
-        Please provide a brief justification for your answer, citing specific details from the article that support your reasoning. If you find the information ambiguous, select the answer that best fits the context provided in the article.
-        """,
+Please provide a brief justification for your answer, citing specific details from the article that support your reasoning. If you find the information ambiguous, select the answer that best fits the context provided in the article.
+""",
     }
 
     rough_fq_data_desc = {
@@ -193,21 +172,68 @@ class NewsApiFinalForecastingQuestionGenerator:
     }
 
     example_fq_1 = {
-        "title": "Will a significant political figure publicly endorse a theory related to string theory's implications for the universe by July 2024?",
-        "body": "This question will resolve as YES if, by July 31, 2024, a significant political figure publicly endorses a theory related to string theory's implications for the universe. A \"significant political figure\" is defined as a current or former head of state, government, or a member of the executive cabinet of a G20 nation. The endorsement must be explicit, relating directly to string theory's implications for the universe, and must be made in a public forum, such as an official speech, published article, or a verified social media post. The endorsement must be reported by at least two reputable news organizations (BBC, The Guardian, New York Times, Washington Post). In the event of ambiguous statements, the resolution will be based on the consensus interpretation by these reporting news organizations. This question resolves as YES upon confirmation of such an endorsement.",
-        "resolution": True,
-    }
-
-    example_fq_2 = {
-        "title": "Will a First Crystal Tier Market be made by August 2024?",
-        "body": 'Resolves YES immediately when someone creates a Crystal tier market in 2024 (which currently costs 1 million Mana to make).\n\nResolves NO if no such market is created before September 1, 2024 (UTC time) or Manifold entirely scraps the tier system for creating questions (minor modifications don\'t alter the outcome, see below).\n\nImportant edge cases:\n\nFor the purposes of this market if Manifold alters the tier system prices, any questions created with a tier that has a creation cost of between 500k Mana and 2M Mana, inclusive, will be considered equivalent to the "Crystal tier" market.\n\nAny changes to the tier name will not be considered consequential (only the creation cost).',
+        "title": "Will a major cryptocurrency be named after a cricket term by July 2025?",
+        "body": 'This question will resolve as Yes if, by 31 July, 2025, a cryptocurrency that is ranked within the top 100 by market \
+            capitalization according to a recognized cryptocurrency market analysis platform (e.g., CoinMarketCap, CoinGecko) is named after a \
+            cricket term. The term must be widely recognized within the cricket community and must directly relate to the sport (e.g., "Wicket", \
+            "Bowler", "Century"). The naming of the cryptocurrency must be intentional, with clear references to its cricket-related origin in its \
+            official documentation or announcements by its creators. In the event of multiple cryptocurrencies meeting these criteria, the question will \
+            resolve as Yes if at least one of them is within the top 100 by market capitalization. This question resolves as NO if no such cryptocurrency \
+            exists by the specified date.',
         "resolution": False,
     }
 
-    example_fq_3 = {
-        "title": "Will the TIME 100 Most Influential Companies of 2024 list actually come out in May 2024 as promised?",
-        "body": 'This page has just said "2024 HONOREES ANNOUNCED IN MAY" for ages now. I\'ve been checking every day for my market, @/Joshua/what-will-be-time-magazines-100-mos-1ccb89e7e3a1 \n\nThe FAQ says:\n\n[image]This market closes at 11:59 PM PT on Friday, May 31, 2024. If the list is published before market close, resolves YES. If not, resolves NO.',
+    example_fq_2 = {
+        "title": "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by December 2025?",
+        "body": 'This question will resolve as Yes if, by December 31, 2025, a Formula 1 Grand Prix is officially announced and \
+            scheduled to take place in a country that, at the time of the announcement, is under international sanctions by the United Nations, \
+            the European Union, the United States, or any other major international body recognized for imposing sanctions.\n\nFor the purpose of \
+            this question, "international sanctions" refer to financial, trade, or other sanctions imposed by international bodies or coalitions\
+            of countries against a nation for political, economic, or human rights reasons. The sanctions must be widely reported and recognized by \
+            reputable news sources (BBC, The Guardian, New York Times, Washington Post).\n\nIn the event of a Grand Prix being announced in a \
+            country that later has sanctions lifted before the race occurs, the question will still resolve as Yes if the sanctions were in place \
+            at the time of the announcement. Temporary or partial lifting of sanctions for the event does not affect the resolution.\n\nThis question does \
+            not consider unofficial or speculative announcements. Confirmation must come from the Formula 1 organization or the sanctioned country\'s government.',
         "resolution": True,
+    }
+
+    example_fq_3 = {
+        "title": "Will South Korea become the leader in global digital governance by December 2030?",
+        "body": "This question will resolve as Yes if, by December 31, 2030, South Korea is recognized as the global leader in digital governance. \
+            Recognition must come from at least two of the following authoritative sources: the United Nations, the World Bank, the Digital Nations \
+            (formerly known as the D5), or a consensus among at least three major technology-focused publications (e.g., Wired, TechCrunch, The Verge). \
+            Criteria for leadership in digital governance include but are not limited to: - Implementation of advanced digital services across government \
+            sectors. - Adoption of cutting-edge technologies in public administration. - Demonstrable impact of digital governance on improving public \
+            services and citizen engagement. - Leadership in international digital policy discussions and agreements. In the event of a tie or close \
+            competition with another nation, the question will resolve as Yes only if South Korea is clearly distinguished as the leader by the majority \
+            of the aforementioned sources. Edge cases, such as temporary leadership positions or recognition in a single aspect of digital governance, \
+            do not meet the resolution criteria.",
+        "resolution": False,
+    }
+
+    example_fq_4 = {
+        "title": "Will the NFL host a game in a country currently under international sanctions by November 2025?",
+        "body": "This question will resolve as Yes if, by November 30, 2025, the National Football League (NFL) has officially hosted a regular season \
+            or playoff game in a country that, at the time of the game, is under international sanctions by the United Nations, the European Union, \
+            the United States, or any other major international body. The game must be part of the official NFL season schedule, and not a pre-season \
+            or exhibition game. Confirmation must come from an official NFL announcement or credible news reports from at least three major news organizations \
+            (e.g., ESPN, BBC, The New York Times, The Washington Post). In the event that sanctions are lifted on a country after the announcement of the game \
+            but before the game itself, the question will still resolve as Yes if the sanctions were in place at the time of the announcement. \
+            Temporary or partial sanctions specifically targeting individuals or entities within the country do not qualify; the sanctions must be \
+            country-wide.",
+        "resolution": True,
+    }
+
+    example_fq_5 = {
+        "title": "Will Russia develop a new vaccine for a global pandemic that is over 90% effective by December 2030?",
+        "body": "This question will resolve as Yes if, by December 31, 2030, Russia has developed a new vaccine that is confirmed to be over \
+            90% effective against a global pandemic virus. The vaccine's effectiveness must be verified through Phase 3 clinical trial results \
+            published in a peer-reviewed medical journal or officially announced by the World Health Organization (WHO) or the Russian Ministry of Health. \
+            The pandemic in question must be recognized as such by the WHO at the time of the vaccine's development. In the event of multiple vaccines being \
+            developed, only the first to meet these criteria will be considered for resolution. The vaccine must be designed for human use. In the absence \
+            of direct confirmation from the WHO or the Russian Ministry of Health, credible reports from at least three major news organizations \
+            (BBC, The Guardian, Reuters, Bloomberg, New York Times, Washington Post) are sufficient for resolution.",
+        "resolution": False,
     }
 
     @classmethod
@@ -256,6 +282,8 @@ class NewsApiFinalForecastingQuestionGenerator:
             example_fq_1=json.dumps(cls.example_fq_1, indent=4),
             example_fq_2=json.dumps(cls.example_fq_2, indent=4),
             example_fq_3=json.dumps(cls.example_fq_3, indent=4),
+            example_fq_4=json.dumps(cls.example_fq_4, indent=4),
+            example_fq_5=json.dumps(cls.example_fq_5, indent=4),
             example_rejected_fq=json.dumps(cls.example_rejected_fq, indent=4),
             rough_fq_data_desc=json.dumps(cls.rough_fq_data_desc, indent=4),
             final_fq_form=json.dumps(cls.final_fq_form, indent=4),
