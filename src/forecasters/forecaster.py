@@ -11,6 +11,14 @@ import asyncio
 import json
 
 
+def truncate_str(s: str, max_len: int = 80) -> str:
+    pref, suf = int(max_len * 0.75), int(max_len * 0.25)
+    if len(s) > max_len:
+        return s[:pref] + "..." + s[-suf:]
+    else:
+        return s
+
+
 class Forecaster(ABC):
     def elicit(
         self, fqs: BaseModel | dict[str, ForecastingQuestion], **kwargs
@@ -62,27 +70,31 @@ class Forecaster(ABC):
         pass
 
 
-def try_load_tuple(line: str) -> dict[str, ForecastingQuestion] | None:
+def try_load_tuple(
+    line_dict: dict[str, Any],
+) -> dict[str, dict[str, Forecast | ForecastingQuestion]] | None:
     """
-    {"key1": FQ, "key2": FQ, ..., "keyN": FQ, "metadata": {...}}
-    Load the FQs
+    {"line": {"key1": {"question": FQ, "forecast": F},
+              "key2": {"question": FQ, "forecast": F}, ..., "keyN": {"question": FQ, "forecast": F}},
+    "metadata": {...}}
+    Load the FQss
     """
     ret = {}
     try:
-        data = json.loads(line)
-        for k, v in data.items():
-            if k == "metadata":
-                continue
-            else:
-                ret[k] = ForecastingQuestion.model_validate_json(v)
+        for k, v in line_dict["line"].items():
+            ret[k] = {
+                "question": ForecastingQuestion.model_validate(v["question"]),
+                "forecast": Forecast.model_validate(v["forecast"]),
+            }
         return ret
-    except json.JSONDecodeError:
+    except Exception as e:
+        print(f"Could not load tuple: {e}")
         return None
 
 
 class LoadForecaster(Forecaster):
-    def __init__(self, load_dir: Path):
-        self.load_dir = load_dir
+    def __init__(self, load_dir: str):
+        self.load_dir: Path = Path(load_dir)
         self.data: dict[str, Forecast] = self.load_data()
         print(f"Loaded {len(self.data)} forecasts from {self.load_dir}")
 
@@ -91,37 +103,54 @@ class LoadForecaster(Forecaster):
 
     def load_data(self) -> dict[str, Forecast]:
         data: dict[str, Forecast] = {}
+        SKIP_FILENAMES = ["config.jsonl"]
         for path in self.load_dir.iterdir():
-            if path.suffix != ".jsonl":
+            if path.suffix != ".jsonl" or path.name in SKIP_FILENAMES:
                 continue
+
             print(f"Loading forecasts from {path}")
             with open(path, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                is_fq = False
-                is_tuple = False
+                is_fq, is_tuple = False, False
+
                 try:
-                    fq = ForecastingQuestion.model_validate_json(lines[0])
+                    line_dict = json.loads(lines[0])
+                except json.JSONDecodeError as e:
+                    print(f"Could not read first line of {path}: {e}")
+                    continue
+
+                try:
+                    fq = ForecastingQuestion.model_validate(line_dict["question"])
                     is_fq = True
-                except json.JSONDecodeError:
+                except Exception as e:
+                    print(f"Could not load FQ: {e}")
                     is_fq = False
-                    if try_load_tuple(lines) is not None:
+                    if try_load_tuple(line_dict) is not None:
                         is_tuple = True
 
                 if is_fq:
+                    print(
+                        "Loading forecasts from file with a single ForecastingQuestion per line"
+                    )
                     for line in lines:
-                        fq = ForecastingQuestion.model_validate_json(line)
+                        line_dict = json.loads(line)
+                        fq = ForecastingQuestion.model_validate(line_dict["question"])
                         hashed_fq = self.hash_key_info_from_fq(fq)
-                        forecast = Forecast.model_validate_json(line)
+                        forecast = Forecast.model_validate(line_dict["forecast"])
                         data[hashed_fq] = forecast
                 elif is_tuple:
+                    print(
+                        "Loading forecasts from file with a tuple of ForecastingQuestions per line"
+                    )
                     for line in lines:
-                        tuple = try_load_tuple(line)
+                        line_dict = json.loads(line)
+                        tuple: dict[str, dict[str, Any]] = try_load_tuple(line_dict)
                         assert (
                             tuple is not None
                         ), "If the first line of a file is a valid tuple, all lines must be valid tuples."
-                        for k, v in tuple.fq_dict.items():
-                            hashed_fq = self.hash_key_info_from_fq(v)
-                            data[hashed_fq] = tuple.metadata
+                        for k, v in tuple.items():
+                            hashed_fq = self.hash_key_info_from_fq(v["question"])
+                            data[hashed_fq] = v["forecast"]
                 else:
                     raise ValueError(
                         f"Invalid file format for {path}: neither a ForecastingQuestion nor a valid tuple of ForecastingQuestions"
@@ -129,10 +158,16 @@ class LoadForecaster(Forecaster):
         return data
 
     def call(self, fq: ForecastingQuestion, **kwargs) -> Optional[Forecast]:
-        return self.data.get(self.hash_key_info_from_fq(fq), None)
+        forecast = self.data.get(self.hash_key_info_from_fq(fq), None)
+        if forecast is None:
+            raise ValueError(f"No forecast found for {truncate_str(fq.title)}")
+        return forecast
 
     async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Optional[Forecast]:
-        return self.data.get(self.hash_key_info_from_fq(fq), None)
+        forecast = self.data.get(self.hash_key_info_from_fq(fq), None)
+        if forecast is None:
+            raise ValueError(f"No forecast found for {truncate_str(fq.title)}")
+        return forecast
 
     def dump_config(self) -> dict[str, Any]:
         return {"load_dir": str(self.load_dir)}
