@@ -2,6 +2,13 @@
 
 A module that provides functionality for generating Forecasting Questions using downloaded news.
 
+## Stages within the pipeline
+
+1. _News Processing_: Downloads and processes (consolidates, duplicate removal) from NewsAPI.
+2. _Rough FQ Generation_: Generates the intermediate version of the forecasting question which is further refined.
+3. _Final FQ Generation_: Rephrases the question and validates its resolution using the source news article.
+4. _FQ Verification_: Verifies the generated FQs using the common verification module.
+
 ## Usage
 
 The entry point into the utilities described here is the [`src/generate_fqs_from_news.py`](../generate_fqs_from_news.py) script.
@@ -24,7 +31,7 @@ python generate_fqs_from_news.py \
 
 If you wish to be slightly leninent in the resolution checking (generated more number of final forecasting questions), add the `-lax` argument.
 
-If you had already run the entire command once before without the `-lax` argument, the rough FQs would already have been generated. Following this, you may generate the FQs using
+If you had already run the entire command once before _without_ the `-lax` argument, the rough FQs would already have been generated. Following this, you may generate the final FQs using:
 
 1. Generate the unverified final questions:
 
@@ -34,7 +41,8 @@ If you had already run the entire command once before without the `-lax` argumen
     --rough-fq-gen-model-name gpt-4o-2024-05-13 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
     --final-fq-verification-model-name gpt-4o-2024-05-13 \
-    --only-gen-final
+    --only-gen-final \
+    -lax
     ```
 
 2. Generate the verfied final questions:
@@ -45,7 +53,8 @@ If you had already run the entire command once before without the `-lax` argumen
     --rough-fq-gen-model-name gpt-4o-2024-05-13 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
     --final-fq-verification-model-name gpt-4o-2024-05-13 \
-    --only-verify-fq
+    --only-verify-fq \
+    -lax
     ```
 
 #### Generating FQs for a given date range
