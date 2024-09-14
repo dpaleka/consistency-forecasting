@@ -184,4 +184,9 @@ and aggregates metrics across multiple forecast files. The `forecasts/` director
 
 - [`src/playground.py`](src/playground.py) various testing and playing around.
 
+- [`src/generate_fqs_from_news.py`](src/generate_fqs_from_news.py) generates FQs with ground-truth resolution using NewsAPI scraped data
+  - Usage has been described in [`src/fq_from_news/README.md`](src/fq_from_news/README.md)
+
+- [`src/generate_fqs_using_reference_class.py`](src/generate_fqs_using_reference_class.py) Creates new forecasting questions from some source FQs following the same there and structure as the original questions.
+
 This does not include the ones already mentioned in previous sections (feedback form, tests).
