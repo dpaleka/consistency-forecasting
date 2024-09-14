@@ -7,7 +7,16 @@ from common.path_utils import get_src_path
 from question_generators.question_formatter import verify_question
 from .final_fq_generator import NewsApiFinalForecastingQuestionGenerator
 from .rough_fq_generator import NewsApiRoughForecastingQuestionGenerator
-from .date_utils import format_news_range_date
+
+
+# *************************************************************************************************************************
+#                                                   Common Utils
+# *************************************************************************************************************************
+
+
+def set_save_directories(rough_fq_save_directory: str, final_fq_save_directory: str):
+    NewsApiRoughForecastingQuestionGenerator.set_save_directory(rough_fq_save_directory)
+    NewsApiFinalForecastingQuestionGenerator.set_save_directory(final_fq_save_directory)
 
 
 # *************************************************************************************************************************
@@ -324,11 +333,14 @@ async def generate_final_forecasting_questions(
 # *************************************************************************************************************************
 #                                                   Verified Final FQ Generation
 # *************************************************************************************************************************
-def _final_verified_questions_save_dir(news_source):
+def _final_verified_questions_save_dir(news_source, given_directory_path):
     if news_source == "NewsAPI":
-        dir_path = os.path.join(
-            get_src_path(), "data/fq/synthetic/news_api_generated_fqs"
-        )
+        if given_directory_path is None or len(given_directory_path.strip()) == 0:
+            dir_path = os.path.join(
+                get_src_path(), "data/fq/synthetic/news_api_generated_fqs"
+            )
+        else:
+            dir_path = given_directory_path
     else:
         raise ValueError("Not a valid news source")
     os.makedirs(dir_path, exist_ok=True)
@@ -343,6 +355,7 @@ def _final_verified_forecasting_questions_save_path(
     final_fq_verification_model_name: str,
     news_source: str,
     was_lax_in_resolution_checking: bool,
+    verified_fq_save_directory: str,
 ) -> str:
     """
     Returns the path to save the final fq data.
@@ -350,25 +363,39 @@ def _final_verified_forecasting_questions_save_path(
 
     :returns: str
     """
-    if num_pages == -1:
-        num_pages = "all"
-    if num_articles == -1 or num_articles == float("inf"):
-        num_articles = "all"
+    num_pages_str = "all" if num_pages == -1 else str(num_pages)
+    num_articles_str = (
+        "all"
+        if num_articles == -1 or num_articles == float("inf")
+        else str(num_articles)
+    )
 
-    if was_lax_in_resolution_checking:
-        lax_str = "lax_res_checking"
-    else:
-        lax_str = "strict_res_checking"
+    lax_str = (
+        "lax_res_checking" if was_lax_in_resolution_checking else "strict_res_checking"
+    )
 
-    final_fq_verification_model_name = final_fq_verification_model_name.replace(
+    final_fq_verification_model_name_cleaned = final_fq_verification_model_name.replace(
         "/", "__"
     ).replace("\\", "__")
-    news_save_file_name = f"verified_final_fq_{final_fq_verification_model_name}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
+
+    start_date_str = start_date.strftime("%Y-%m-%d")
+    end_date_str = end_date.strftime("%Y-%m-%d")
+
+    directory_structure = os.path.join(
+        _final_verified_questions_save_dir(news_source, verified_fq_save_directory),
+        final_fq_verification_model_name_cleaned,
+        f"{start_date_str}_to_{end_date_str}",
+        f"num_pages_{num_pages_str}",
+        f"num_articles_{num_articles_str}",
+    )
+
+    os.makedirs(directory_structure, exist_ok=True)
+    news_save_file_name = f"{lax_str}_fqs.jsonl"
 
     # TODO - refactor for non News API things
     final_verfied_fq_save_path = os.path.join(
-        _final_verified_questions_save_dir(news_source),
-        news_save_file_name,
+        _final_verified_questions_save_dir(news_source, verified_fq_save_directory),
+        os.path.join(directory_structure, news_save_file_name),
     )
     if os.path.exists(final_verfied_fq_save_path):
         raise RuntimeError(
@@ -396,6 +423,7 @@ async def verify_final_forecasting_questions(
     final_fq_verification_model_name: str,
     news_source: str,
     was_lax_in_resolution_checking: bool,
+    verified_fq_save_directory: str,
 ) -> None:
     """
     Verifies the generated final forecasting questions and saved them to the ./data/fq/synthetic directory.
@@ -420,6 +448,7 @@ async def verify_final_forecasting_questions(
         final_fq_verification_model_name,
         news_source,
         was_lax_in_resolution_checking,
+        verified_fq_save_directory,
     )
 
     final_unverified_fqs = load_questions(final_fq_save_path)
