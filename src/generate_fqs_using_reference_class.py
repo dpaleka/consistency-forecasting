@@ -16,79 +16,117 @@ from fq_from_news.date_utils import parse_date
 
 class BinaryFQReferenceClassSpanner:
     preface = """
-    You are an AI assistant tasked with generating unbiased forecasting questions based on a given example. Your role is to create new questions that belong to the same reference class as the provided question, maintaining similar thematic and structural elements.
+    You are an AI assistant tasked with generating unbiased, high-quality forecasting questions based on a provided example. Create new questions that align with the thematic and structural elements of the example question, i.e., span the reference class of the example question.
 
-    ### Key Guidelines:
+    ## Key Guidelines:
 
-    1. **Resolution Criteria**: Questions must have a definitive outcome from the current date until the resolution date. Assume the current date is {pose_date}, and generate questions with adequate context so that they remain answerable based on known events as of this date.
+    1. **Resolution Criteria**: Questions must have a definitive outcome from the current date until the resolution date. Assume the current date is {pose_date}. Ensure questions are answerable based on events known as of this date.
 
-    2. **Avoid Time-Specific Indicators**: Do not reference the date of question formation or mention the source forecasting question in your output.
+    2. **Avoid Time-Specific Indicators**: Do not reference the date of question formation or the example question in your output.
 
-    ### Definition of Reference Class:
-    A reference class refers to a group of similar entities or events that share common characteristics, helping you frame new questions in a consistent thematic and structural manner.
+    ## Reference Class:
+    A reference class is a group of entities or events that share common traits, used as a benchmark to inform and guide the analysis of new situations or questions. This approach enhances consistency and accuracy in decision-making by providing a relevant context for comparison.
 
-    ### Forecasting Question Structure:
+	## Forecasting Question Structure:
+	- **Title**: A clear, concise question with a YES or NO answer.
+	- **Body**: Provide context directly supporting the question, avoiding ambiguity and excess information.
+	
+		### Title Guidelines:
+		- **Definitive**: Must elicit a YES or NO answer.
+		- **Neutral**: Avoid sensitive topics like politics, religion, or race.
+		- **Clarity**: Ensure straightforward and precise wording.
+		
+		### Body Guidelines:
+		- **Disambiguation**: Provide information that directly supports the title.
+		- **Relevance**: Focus on essential information.
+		
+		### Resolution Guidelines:
+		- **Binary Outcome**: Must resolve to YES or NO.
+		- **Stable Outcome**: Remains unresolved from the current date to the resolution date.
 
-    - **Title**: A concise question with a clear YES or NO answer.
-    - **Body**: Additional context or details supporting the question, avoiding ambiguity and unnecessary information.
-
-    ### Title Guidelines:
-    - **Definitive**: The title must elicit a YES or NO answer.
-    - **Neutral**: Avoid sensitive or biased topics such as religion, politics, race, or gender.
-    - **Clarity**: Titles must be straightforward and precise, avoiding ambiguity.
-    - **Named Entities**: Include at least one named entity, but no more than four, for specificity.
-
-    ### Body Guidelines:
-    - **Disambiguation**: Include only information directly supporting the title, avoiding overly detailed or confusing content.
-    - **Relevance**: Focus on information essential to resolving the question.
-
-    ### Resolution Guidelines:
-    - **Binary**: The question must resolve to either YES or NO.
-    - **Stable Outcome**: The question must remain unresolved from the current date to the resolution date.
-
-    ### General Rules:
-    - **Avoid Specific Knowledge**: The question should not rely on specific post-current-date events.
-    - **Named Events**: The question should avoid referring to events not known as of the current date.
-    - **Numerical Values**: Use clear thresholds for numerical questions, avoiding complex calculations.
-
-    ### Example Forecasting Questions:
-    1. **Title**: "Will a significant political figure endorse a theory related to string theory by July 2024?"
-    **Body**: This question resolves as YES if a notable figure publicly endorses string theory by July 31, 2024, based on reports by at least two reputable outlets (e.g., BBC, NY Times).
-
-    2. **Title**: "Will a First Crystal Tier Market be created by August 2024?"
-    **Body**: Resolves YES if a Crystal-tier market is created before August 2024, or if Manifold adjusts the tier system with similar costs.
-
-    3. **Title**: "Will TIME's 100 Most Influential Companies list be released in May 2024?"
-    **Body**: Resolves YES if the list is published by May 31, 2024. Otherwise, it resolves NO.
+		### General Rules:
+		- **Avoid Specific Knowledge**: Do not rely on events post-current-date.
+		- **Named Events**: Avoid referring to events not known as of the current date.
+		- **Numerical Values**: Use clear thresholds, avoiding complex calculations.
     """
+
+    # example_high_quality_fq_1 = {
+    #     "title": "Will a major cryptocurrency be named after a cricket term by July 2025?",
+    #     "body": 'This question will resolve as Yes if, by 31 July, 2025, a cryptocurrency that is ranked within the top 100 by market \
+    #         capitalization according to a recognized cryptocurrency market analysis platform (e.g., CoinMarketCap, CoinGecko) is named after a \
+    #         cricket term. The term must be widely recognized within the cricket community and must directly relate to the sport (e.g., "Wicket", \
+    #         "Bowler", "Century"). The naming of the cryptocurrency must be intentional, with clear references to its cricket-related origin in its \
+    #         official documentation or announcements by its creators. In the event of multiple cryptocurrencies meeting these criteria, the question will \
+    #         resolve as Yes if at least one of them is within the top 100 by market capitalization. This question resolves as NO if no such cryptocurrency \
+    #         exists by the specified date.',
+    # }
+
+    # example_high_quality_fq_2 = {
+    #     "title": "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by December 2025?",
+    #     "body": 'This question will resolve as Yes if, by December 31, 2025, a Formula 1 Grand Prix is officially announced and \
+    #         scheduled to take place in a country that, at the time of the announcement, is under international sanctions by the United Nations, \
+    #         the European Union, the United States, or any other major international body recognized for imposing sanctions.\n\nFor the purpose of \
+    #         this question, "international sanctions" refer to financial, trade, or other sanctions imposed by international bodies or coalitions\
+    #         of countries against a nation for political, economic, or human rights reasons. The sanctions must be widely reported and recognized by \
+    #         reputable news sources (BBC, The Guardian, New York Times, Washington Post).\n\nIn the event of a Grand Prix being announced in a \
+    #         country that later has sanctions lifted before the race occurs, the question will still resolve as Yes if the sanctions were in place \
+    #         at the time of the announcement. Temporary or partial lifting of sanctions for the event does not affect the resolution.\n\nThis question does \
+    #         not consider unofficial or speculative announcements. Confirmation must come from the Formula 1 organization or the sanctioned country\'s government.',
+    # }
+
+    # example_high_quality_fq_3 = {
+    #     "title": "Will South Korea become the leader in global digital governance by December 2030?",
+    #     "body": "This question will resolve as Yes if, by December 31, 2030, South Korea is recognized as the global leader in digital governance. \
+    #         Recognition must come from at least two of the following authoritative sources: the United Nations, the World Bank, the Digital Nations \
+    #         (formerly known as the D5), or a consensus among at least three major technology-focused publications (e.g., Wired, TechCrunch, The Verge). \
+    #         Criteria for leadership in digital governance include but are not limited to: - Implementation of advanced digital services across government \
+    #         sectors. - Adoption of cutting-edge technologies in public administration. - Demonstrable impact of digital governance on improving public \
+    #         services and citizen engagement. - Leadership in international digital policy discussions and agreements. In the event of a tie or close \
+    #         competition with another nation, the question will resolve as Yes only if South Korea is clearly distinguished as the leader by the majority \
+    #         of the aforementioned sources. Edge cases, such as temporary leadership positions or recognition in a single aspect of digital governance, \
+    #         do not meet the resolution criteria.",
+    # }
 
     prompt = """
-    ### Steps for Generating New Questions Using the Reference Class:
+    ### Steps for Generating New Questions:
 
-    1. **Analyze the Original Question**: Begin by examining the provided question.
-        {source_forecasting_question}
-    
-    2. **Define the Reference Class**: Identify key elements of the original question’s context:
-    - Subject matter (e.g., economic indicators, legal rulings).
-    - Geographical scope (e.g., specific countries, regions).
-    - Event type (e.g., elections, corporate mergers).
-    - Domain (e.g., technology, agriculture).
-    - Importance of entities (e.g., multinational corporations).
-    - Time sensitivity and scale (e.g., rapid developments, large-scale events).
+    1. **Analyze the Original Question**: Carefully review the provided example question.
+    {source_forecasting_question}
 
-    3. **Generate New Questions**: Using the reference class, create questions with definitive YES or NO outcomes, while adjusting multiple classes (e.g., changing location or subject matter) to avoid bias. Maintain the same resolution date.
+    2. **Define the Reference Class**: Break down the key components of the original question, focusing on:
+    - **Subject Matter**: (e.g., economic trends, geopolitical events)
+    - **Geographical Scope**: (e.g., specific countries, regions)
+    - **Event Type**: (e.g., elections, technological breakthroughs)
+    - **Domain**: (e.g., finance, technology, governance)
+    - **Entity Importance**: (e.g., global organizations, industry leaders)
+    - **Time Sensitivity**: (e.g., rapid or large-scale developments)
 
-    Here is an example forecasting question:
-    - **Title**: "Will Colorado hold a referendum on enshrining abortion rights by July 2024?"
-    - **Body**: Resolves YES if a referendum on abortion rights is held and reported by at least two reputable sources by July 31, 2024.
+    3. **Generate New Questions**: Create questions that yield a definitive YES or NO answer, while ensuring diversity across multiple elements like **location**, **subject matter**, and **entities** to avoid any potential bias. {num_entities_spanning_sub_prompt} All questions should keep the same resolution date as the original example.
 
-    Example question titles by varying classes:
-    - "Will California hold a referendum on regulating the gig economy by July 2024?"
-    - "Will Nevada hold a referendum on stricter water laws by July 2024?"
-    - "Will Texas hold a referendum on raising property tax exemptions by July 2024?"
+    ### Example variations over a title:
+    - **Original Title**: "Will South Korea become the leader in global digital governance by December 2030?"
+    {example_variations_sub_prompt}
 
-    Your task is to generate at least {num_questions} new forecasting questions based on the same reference class.
+    Your task is to generate at least {num_questions} unique new forecasting questions that remain within the reference class but reflect variation across dimensions to ensure unbiased forecasting.
     """
+
+    num_entities_spanning_sub_prompts = {
+        "multiple": "When varying elements, ensure that **multiple classes** are changed simultaneously (e.g., adjusting both geographical scope and subject matter) to maintain neutrality.",
+        "single": "When varying elements, ensure that **only one class** (e.g., geographical scope, subject matter, or event type) is changed from the original question to maintain consistency with the reference class.",
+    }
+
+    example_variations_sub_prompts = {
+        "multiple": """
+        - **New Title**: "Will the European Union implement a unified digital currency by December 2030?"
+        - **New Title**: "Will China surpass the U.S. in total AI research publications by December 2030?"
+        - **New Title**: "Will Japan become the top exporter of autonomous vehicle technology by December 2030?"
+        """,
+        "single": """
+        - **New Title**: "Will the European Union become the leader in global digital governance by December 2030?" (Only the location has changed while the rest of the question remains the same)
+        - **New Title**: "Will South Korea surpass all other countries in the number of AI research publications by December 2030?" (Only the achievement has changed while the rest of the question remains the same)
+        - **New Title**: "Will Japan become the leader in global digital governance by December 2030?" (Only the location has changed while the rest of the question remains the same)    
+        """,
+    }
 
     @classmethod
     def _create_fq_from_stripped_fq(
@@ -120,6 +158,7 @@ class BinaryFQReferenceClassSpanner:
         model_name: str,
         num_questions: int,
         pose_date: datetime,
+        spanning_type: str,
     ) -> list[ForecastingQuestion]:
         """
         Class method to create the final ForecastingQuestion from rough forecasting question data asynchronously.
@@ -129,6 +168,7 @@ class BinaryFQReferenceClassSpanner:
             model_name (str): The model being used to create the rough forecasting question.
             num_questions (int): Minimum number of questions to generate for the given FQ
             pose_date (datetime): The question creattion date
+            spanning_type (str): whether "multiple" or "single"
 
         Returns:
             list[ForecastingQuestion]: List of generated FQs
@@ -141,10 +181,18 @@ class BinaryFQReferenceClassSpanner:
             forecasting_preface,
             forecasting_prompt,
         ) = (
-            cls.preface.format(pose_date=pose_date.strftime("%B %d, %Y")),
+            cls.preface.format(
+                pose_date=pose_date.strftime("%B %d, %Y"),
+            ),
             cls.prompt.format(
                 num_questions=num_questions,
                 source_forecasting_question=source_fq.cast_stripped(),
+                num_entities_spanning_sub_prompt=cls.num_entities_spanning_sub_prompts[
+                    spanning_type
+                ],
+                example_variations_sub_prompt=cls.example_variations_sub_prompts[
+                    spanning_type
+                ],
             ),
         )
 
@@ -178,14 +226,14 @@ def get_args() -> argparse.Namespace:
         "--model-name",
         type=str,
         help="Model used to generate the new FQs",
-        default="anthropic/claude-3.5-sonnet",
+        default="gpt-4o-2024-05-13",
     )
 
     parser.add_argument(
         "--num-questions",
         type=int,
         help="Minimum number of question to be generated per given FQ",
-        default=5,
+        default=3,
     )
 
     parser.add_argument(
@@ -208,16 +256,25 @@ def get_args() -> argparse.Namespace:
         default=datetime(2023, 10, 1),
     )
 
+    parser.add_argument(
+        "--span-multiple",
+        action="store_true",
+        help="""
+        Set to span multiple entities in the spanned FQs
+        """,
+        default=False,
+    )
+
     args = parser.parse_args()
 
     return args
 
 
-def _get_final_save_path(source_fqs_path, generated_fqs_save_path):
+def _get_final_save_path(source_fqs_path, generated_fqs_save_path, span_type):
     if generated_fqs_save_path is None or len(generated_fqs_save_path.strip()) == 0:
         directory, filename = os.path.split(source_fqs_path)
         name, _ = os.path.splitext(filename)
-        new_filename = f"{name}-ref-class-spanned.jsonl"
+        new_filename = f"{name}-ref-class-spanned-{span_type}.jsonl"
         new_path = os.path.join(directory, new_filename)
         return new_path
 
@@ -232,8 +289,12 @@ async def main(args: argparse.Namespace) -> None:
 
     :returns: None
     """
+    span_type = "single"
+    if args.span_multiple:
+        span_type = "multiple"
+
     generated_fqs_save_path = _get_final_save_path(
-        args.source_fqs_path, args.gen_fqs_save_path
+        args.source_fqs_path, args.gen_fqs_save_path, span_type
     )
     if os.path.exists(generated_fqs_save_path):
         raise RuntimeError(f"Save path {generated_fqs_save_path} already exists!")
@@ -242,7 +303,11 @@ async def main(args: argparse.Namespace) -> None:
     for source_fq in load_questions(args.source_fqs_path):
         tasks.append(
             BinaryFQReferenceClassSpanner.generate_spanned_fqs(
-                source_fq, args.model_name, args.num_questions, args.pose_date
+                source_fq,
+                args.model_name,
+                args.num_questions,
+                args.pose_date,
+                span_type,
             )
         )
 
