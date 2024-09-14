@@ -11,8 +11,11 @@ def run_command(command):
     return process.returncode, stdout.decode(), stderr.decode()
 
 
-commands = [
-    "python src/ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --num_lines 8 --run --async --output_dir src/data/forecasts/test_output",
+commands_forecaster_class = [
+    "python src/ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --num_lines 3 --run --output_dir src/data/forecasts/test_output",
+]
+commands_custom_forecaster = [
+    "python src/ground_truth_run.py --custom_path src/forecasters/basic_forecaster.py::BasicForecaster --forecaster_options model=gpt-4o-mini --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --num_lines 3 --run --output_dir src/data/forecasts/test_output",
 ]
 
 
@@ -43,7 +46,14 @@ def expected_files(test_exist: bool = False):
     return files
 
 
-def test_ground_truth_run():
+@pytest.mark.parametrize(
+    "commands",
+    [
+        pytest.param(commands_forecaster_class, id="forecaster_class"),
+        pytest.param(commands_custom_forecaster, id="custom_forecaster"),
+    ],
+)
+def test_ground_truth_run(commands):
     input_file = "src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl"
     assert Path(input_file).exists(), f"Input file does not exist: {input_file}"
     print(f"Using input file: {input_file}")

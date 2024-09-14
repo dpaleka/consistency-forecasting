@@ -32,9 +32,12 @@ def common_options(f):
         click.option(
             "-p",
             "--custom_path",
-            type=click.Path(),
+            type=str,
             default=None,
-            help="Path to the custom forecaster Python module. Has to contain exactly one Forecaster subclass. Only used when forecaster_class is None.",
+            help="Either: "
+            "(1) Path to the custom forecaster Python module (e.g. `src/forecasters/custom_forecaster.py`). Has to contain exactly one Forecaster subclass. "
+            "(2) Path to the custom forecaster Python module, then `::`, then the class name (e.g. `src.forecasters.custom_forecaster.py::CustomForecaster1`). "
+            "Only used when forecaster_class is None.",
         ),
         click.option(
             "-c",

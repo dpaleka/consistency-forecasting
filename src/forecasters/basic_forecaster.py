@@ -1,4 +1,4 @@
-from .forecaster import Forecaster
+from forecasters.forecaster import Forecaster
 from common.datatypes import (
     ForecastingQuestion_stripped,
     ForecastingQuestion,
@@ -70,8 +70,8 @@ class BasicForecaster(Forecaster):
 
 
 class BasicForecasterWithExamples(BasicForecaster):
-    def __init__(self, preface: str = None, examples: list = None):
-        super().__init__(preface=preface)
+    def __init__(self, model: str, preface: str = None, examples: list = None):
+        super().__init__(model=model, preface=preface)
         self.examples = examples or [
             Example(
                 user=ForecastingQuestion_stripped(

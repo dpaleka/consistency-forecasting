@@ -28,7 +28,7 @@ fq = ForecastingQuestion(
 
 #%%
 # Run BasicForecaster
-basic_forecaster = BasicForecaster()
+basic_forecaster = BasicForecaster(model="gpt-4o-mini")
 
 # Print logging module current setup
 import logging
@@ -42,6 +42,7 @@ print(f"Logging formatter: {logging.getLogger().handlers[0].formatter if logging
 sync_result = basic_forecaster.call_full(fq)
 print(f"Synchronous BasicForecaster result: {sync_result}")
 
+exit()
 #%%
 cf = ConsistentForecaster(
     BasicForecaster(),
