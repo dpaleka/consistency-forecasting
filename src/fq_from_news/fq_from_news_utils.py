@@ -394,8 +394,7 @@ def _final_verified_forecasting_questions_save_path(
 
     # TODO - refactor for non News API things
     final_verfied_fq_save_path = os.path.join(
-        _final_verified_questions_save_dir(news_source, verified_fq_save_directory),
-        os.path.join(directory_structure, news_save_file_name),
+        os.path.join(directory_structure, news_save_file_name)
     )
     if os.path.exists(final_verfied_fq_save_path):
         raise RuntimeError(
