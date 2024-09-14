@@ -66,7 +66,7 @@ def append_violation(
     checker: Checker, tuple: dict[str, Any], metric=None
 ) -> dict[str, Any]:
     assert "line" in tuple
-    answers = {name: fq["elicited_prob"] for name, fq in tuple["line"].items()}
+    answers = {name: fq["forecast"]["prob"] for name, fq in tuple["line"].items()}
     print(f"Computing violation for {answers} ...")
     if "violations" not in tuple:
         tuple["violations"] = {}
@@ -336,7 +336,7 @@ if __name__ == "__main__":
         "-x", "--reset", action="store_true", help="Reset all appended violations"
     )
     args = parser.parse_args()
-    
+
     RECALC: bool = args.recalculate
 
     print(f"Recalculating violations: {RECALC}")
@@ -354,13 +354,13 @@ if __name__ == "__main__":
         metrics = args.metrics
     else:
         metrics = ["default", "frequentist"]
-    
+
     if args.forecasters:
         forecasters = args.forecasters
     else:
-        forecasters = ['adv', 'gpt_3_5', 'gpt_4o', 'cf_gpt_4omini']
+        forecasters = ["adv", "gpt_3_5", "gpt_4o", "cf_gpt_4omini"]
     paths = {k: v for k, v in paths.items() if k in forecasters}
-    
+
     if args.checkers:
         checkers = {k: v for k, v in checkers.items() if k in args.checkers}
 
@@ -373,35 +373,49 @@ if __name__ == "__main__":
             ]
         )
         exit()
-        
+
     for forecaster, paths in paths.items():
         checker_viols, checker_checks = append_violations_all(
             paths, metrics=metrics, recalc=RECALC, write=True
         )
-        print(get_stats_from_paths(paths, metrics=metrics, write=f"stats_{forecaster}.json"))
-        
+        print(
+            get_stats_from_paths(
+                paths, metrics=metrics, write=f"stats_{forecaster}.json"
+            )
+        )
+
         # neaten up before plotting
         checker_viols.pop("AndChecker", None)
         checker_viols.pop("ConsequenceChecker", None)
         keys_to_rename = [k for k in checker_viols.keys() if k.endswith("Checker")]
         for k in keys_to_rename:
             checker_viols[k.replace("Checker", "")] = checker_viols.pop(k)
-        
+
         # plot:
         for checker, viols in checker_viols.items():
             for metric, v in viols.items():
-                fig_path = get_data_path() / "figs" / f"{metric}_separate" / f"{forecaster}_{metric}_{checker}.png"
+                fig_path = (
+                    get_data_path()
+                    / "figs"
+                    / f"{metric}_separate"
+                    / f"{forecaster}_{metric}_{checker}.png"
+                )
                 if metric == "frequentist":
                     plot(v, cap=1.0).save(fig_path)
                 else:
                     plot(v, cap=0.1).save(fig_path)
         for metric in metrics:
-            fig_path = get_data_path() / "figs" / f"{metric}_all" / f"{forecaster}_{metric}_all.png"
+            fig_path = (
+                get_data_path()
+                / "figs"
+                / f"{metric}_all"
+                / f"{forecaster}_{metric}_all.png"
+            )
             if metric == "frequentist":
                 plot_all(checker_viols, metric=metric, cap=1.0, ymax=10).save(fig_path)
             else:
                 plot_all(checker_viols, metric=metric, cap=0.1).save(fig_path)
-        
-        
+
+
 # Example usage:
 # python reevaluation.py -m default frequentist -f adv gpt_3_5 gpt_4o cf_gpt_4omini_sample -c NegChecker AndChecker OrChecker AndOrChecker ButChecker CondChecker ConsequenceChecker ParaphraseChecker CondCondChecker -r

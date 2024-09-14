@@ -98,8 +98,11 @@ def validate_result(result: dict, keys: list[str]) -> bool:
     for key in keys:
         assert key in result["line"], f"line must contain a '{key}' key"
         assert (
-            "elicited_prob" in result["line"][key]
-        ), f"line[{key}] must contain an 'elicited_prob' key"
+            "forecast" in result["line"][key]
+        ), f"line[{key}] must contain an 'forecast' key"
+        assert (
+            "prob" in result["line"][key]["forecast"]
+        ), f"line[{key}]['forecast'] must contain a 'prob' key"
     return True
 
 
@@ -189,6 +192,7 @@ def process_check(
             all_tuples = [json.loads(line) for line in f]
 
         if eval_by_source:
+            # TODO does this ignore num_lines? if yes, raise if num_lines is not None
             source_questions = {}
             for tuple_data in all_tuples:
                 source_question = (
@@ -278,15 +282,19 @@ def process_check(
         for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
             for key in keys:
                 try:
-                    assert result["line"][key]["id"] == checker_tuple[key]["id"], (
+                    assert (
+                        result["line"][key]["question"]["id"]
+                        == checker_tuple[key]["id"]
+                    ), (
                         f"ID mismatch for key {key} at index {i}: "
-                        f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                        f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
                     )
                     assert (
-                        result["line"][key]["title"] == checker_tuple[key]["title"]
+                        result["line"][key]["question"]["title"]
+                        == checker_tuple[key]["title"]
                     ), (
                         f"Title mismatch for key {key} at index {i}: "
-                        f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+                        f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
                     )
                 except AssertionError as e:
                     print(f"Assertion failed: {str(e)}")
@@ -296,7 +304,7 @@ def process_check(
 
         data = [result["line"] for result in results]
         all_answers = [
-            {key: result["line"][key]["elicited_prob"] for key in keys}
+            {key: result["line"][key]["forecast"]["prob"] for key in keys}
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
@@ -314,8 +322,9 @@ def process_check(
                 source_results = [
                     r
                     for r in results
-                    if r["line"]["P"]["metadata"].get("source_question") == source
-                    or r["line"]["P"]["title"] == source
+                    if r["line"]["P"]["question"]["metadata"].get("source_question")
+                    == source
+                    or r["line"]["P"]["question"]["title"] == source
                 ]
                 stats["by_source"][source] = get_stats(
                     source_results, label=f"{check_name}_{source}"

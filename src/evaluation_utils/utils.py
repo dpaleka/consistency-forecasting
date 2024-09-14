@@ -57,5 +57,5 @@ def create_output_directory(
         output_directory = Path(output_dir)
 
     output_directory.mkdir(parents=True, exist_ok=True)
-    print(f"Directory '{output_directory}' created or already exists.")
+    print(f"Using output directory: '{output_directory}'")
     return output_directory, most_recent_directory
