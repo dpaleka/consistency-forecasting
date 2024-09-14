@@ -9,7 +9,9 @@ from pathlib import Path
 from typing import Any
 
 
-def make_custom_forecaster(custom_path: str, **kwargs) -> Forecaster:
+def make_custom_forecaster(
+    custom_path: str, class_name: str | None, forecaster_config: dict[str, Any] | None
+) -> Forecaster:
     if not custom_path:
         raise ValueError("custom_path must be provided for Custom forecaster.")
 
@@ -33,14 +35,17 @@ def make_custom_forecaster(custom_path: str, **kwargs) -> Forecaster:
         and cls is not Forecaster
     ]
 
+    print(f"Custom classes found in file: {custom_classes}")
     if not custom_classes:
         raise ValueError("No subclass of Forecaster found in the custom module.")
-    if len(custom_classes) > 1:
-        raise ValueError(
-            "Multiple Forecaster subclasses found; please provide only one."
-        )
+    if class_name:
+        custom_classes = [
+            cls for cls in custom_classes if cls.__qualname__ == class_name
+        ]
+    if len(custom_classes) != 1:
+        raise ValueError("Expected exactly one Forecaster subclass.")
 
-    return custom_classes[0](**kwargs)  # Instantiate the custom forecaster
+    return custom_classes[0](**forecaster_config)  # Instantiate the custom forecaster
 
 
 def make_predefined_forecaster(
@@ -91,7 +96,11 @@ def make_forecaster(
         assert (
             forecaster_class is None
         ), "forecaster_class must be None for Custom forecaster."
-        return make_custom_forecaster(custom_path, forecaster_config)
+        if "::" in custom_path:
+            custom_path, class_name = custom_path.split("::")
+        return make_custom_forecaster(
+            custom_path, class_name, forecaster_config=forecaster_config
+        )
     else:
         assert (
             forecaster_class is not None
