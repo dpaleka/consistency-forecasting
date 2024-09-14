@@ -87,44 +87,61 @@ class BinaryFQReferenceClassSpanner:
     #         do not meet the resolution criteria.",
     # }
 
-    prompt = """
-    ### Steps for Generating New Questions:
+    prompt = {
+        "single": """
+        ### Steps for Generating New Questions:
 
-    1. **Analyze the Original Question**: Carefully review the provided example question.
-    {source_forecasting_question}
+        1. **Analyze the Original Question**: Review the provided example forecasting question in detail.
+        {source_forecasting_question}
 
-    2. **Define the Reference Class**: Break down the key components of the original question, focusing on:
-    - **Subject Matter**: (e.g., economic trends, geopolitical events)
-    - **Geographical Scope**: (e.g., specific countries, regions)
-    - **Event Type**: (e.g., elections, technological breakthroughs)
-    - **Domain**: (e.g., finance, technology, governance)
-    - **Entity Importance**: (e.g., global organizations, industry leaders)
-    - **Time Sensitivity**: (e.g., rapid or large-scale developments)
+        2. **Identify Key Components**: Decompose the original question into the following essential components:
+        - **Subject Matter** (e.g., economic trends, technological advancements)
+        - **Geographical Scope** (e.g., specific countries, regions)
+        - **Event Type** (e.g., elections, policy decisions, innovations)
+        - **Domain** (e.g., finance, technology, governance)
+        - **Entity Importance** (e.g., prominent organizations, influential individuals)
+        - **Time Sensitivity** (e.g., time-bound predictions, rapid developments)
 
-    3. **Generate New Questions**: Create questions that yield a definitive YES or NO answer, while ensuring diversity across multiple elements like **location**, **subject matter**, and **entities** to avoid any potential bias. {num_entities_spanning_sub_prompt} All questions should keep the same resolution date as the original example.
+        3. **Generate New Questions**: Create questions that yield a definitive YES or NO answer, ensuring that only **one class** (such as geographical scope, subject matter, or event type) is altered per variation while maintaining consistency with the original reference class. Each question should have the same resolution date as the original.
 
-    ### Example variations over a title:
-    - **Original Title**: "Will South Korea become the leader in global digital governance by December 2030?"
-    {example_variations_sub_prompt}
+        ### Example Variations by Changing Only One Class:
 
-    Your task is to generate at least {num_questions} unique new forecasting questions that remain within the reference class but reflect variation across dimensions to ensure unbiased forecasting.
-    """
+        - **Original Title**: "Will South Korea become the leader in global digital governance by December 2030?"
 
-    num_entities_spanning_sub_prompts = {
-        "multiple": "When varying elements, ensure that **multiple classes** are changed simultaneously (e.g., adjusting both geographical scope and subject matter) to maintain neutrality.",
-        "single": "When varying elements, ensure that **only one class** (e.g., geographical scope, subject matter, or event type) is changed from the original question to maintain consistency with the reference class.",
-    }
+        #### Variation by Geographical Scope:
+        - **New Title**: "Will the European Union become the leader in global digital governance by December 2030?" (Only location has changed)
 
-    example_variations_sub_prompts = {
+        #### Variation by Achievement:
+        - **New Title**: "Will South Korea surpass all other countries in the number of AI research publications by December 2030?" (Only the achievement has changed)
+
+        #### Variation by Location:
+        - **New Title**: "Will Japan become the leader in global digital governance by December 2030?" (Only the location has changed)
+
+        Your task is to generate at least {num_questions} unique forecasting questions, ensuring that each new question reflects variation along only **one dimension** from the original. This ensures consistency with the reference class.
+        """,
         "multiple": """
+        ### Steps for Generating New Questions:
+
+        1. **Analyze the Original Question**: Carefully review the provided example question.
+        {source_forecasting_question}
+
+        2. **Define the Reference Class**: Break down the key components of the original question, focusing on:
+        - **Subject Matter**: (e.g., economic trends, geopolitical events)
+        - **Geographical Scope**: (e.g., specific countries, regions)
+        - **Event Type**: (e.g., elections, technological breakthroughs)
+        - **Domain**: (e.g., finance, technology, governance)
+        - **Entity Importance**: (e.g., global organizations, industry leaders)
+        - **Time Sensitivity**: (e.g., rapid or large-scale developments)
+
+        3. **Generate New Questions**: Create questions that yield a definitive YES or NO answer, while ensuring diversity across multiple elements like **location**, **subject matter**, and **entities** to avoid any potential bias. When varying elements, ensure that **multiple classes** are changed simultaneously (e.g., adjusting both geographical scope and subject matter) to maintain neutrality. All questions should keep the same resolution date as the original example.
+
+        ### Example variations over a title:
+        - **Original Title**: "Will South Korea become the leader in global digital governance by December 2030?"
         - **New Title**: "Will the European Union implement a unified digital currency by December 2030?"
         - **New Title**: "Will China surpass the U.S. in total AI research publications by December 2030?"
         - **New Title**: "Will Japan become the top exporter of autonomous vehicle technology by December 2030?"
-        """,
-        "single": """
-        - **New Title**: "Will the European Union become the leader in global digital governance by December 2030?" (Only the location has changed while the rest of the question remains the same)
-        - **New Title**: "Will South Korea surpass all other countries in the number of AI research publications by December 2030?" (Only the achievement has changed while the rest of the question remains the same)
-        - **New Title**: "Will Japan become the leader in global digital governance by December 2030?" (Only the location has changed while the rest of the question remains the same)    
+
+        Your task is to generate at least {num_questions} unique new forecasting questions that remain within the reference class but reflect variation across dimensions to ensure unbiased forecasting.
         """,
     }
 
@@ -184,15 +201,9 @@ class BinaryFQReferenceClassSpanner:
             cls.preface.format(
                 pose_date=pose_date.strftime("%B %d, %Y"),
             ),
-            cls.prompt.format(
+            cls.prompt[spanning_type].format(
                 num_questions=num_questions,
                 source_forecasting_question=source_fq.cast_stripped(),
-                num_entities_spanning_sub_prompt=cls.num_entities_spanning_sub_prompts[
-                    spanning_type
-                ],
-                example_variations_sub_prompt=cls.example_variations_sub_prompts[
-                    spanning_type
-                ],
             ),
         )
 
@@ -230,6 +241,7 @@ def get_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-n",
         "--num-questions",
         type=int,
         help="Minimum number of question to be generated per given FQ",
@@ -257,6 +269,7 @@ def get_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
+        "-m",
         "--span-multiple",
         action="store_true",
         help="""
