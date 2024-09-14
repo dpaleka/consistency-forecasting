@@ -9,7 +9,8 @@ from common.llm_utils import answer, answer_sync, Example
 
 
 class COT_Forecaster(Forecaster):
-    def __init__(self, preface: str = None, examples: list = None):
+    def __init__(self, model: str, preface: str = None, examples: list = None):
+        self.model = model
         self.preface = preface or (
             "You are an informed and well-calibrated forecaster. I need you to give me "
             "your best probability estimate for the following sentence or question resolving YES. "
@@ -40,6 +41,7 @@ class COT_Forecaster(Forecaster):
     def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = answer_sync(
+            model=self.model,
             prompt=fq.to_str_forecast_mode(),
             preface=self.preface,
             examples=self.examples,
@@ -54,6 +56,7 @@ class COT_Forecaster(Forecaster):
     async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = await answer(
+            model=self.model,
             prompt=fq.to_str_forecast_mode(),
             preface=self.preface,
             examples=self.examples,
@@ -67,6 +70,7 @@ class COT_Forecaster(Forecaster):
 
     def dump_config(self):
         return {
+            "model": self.model,
             "preface": self.preface,
             "examples": [
                 {"user": e.user.model_dump_json(), "assistant": e.assistant}
@@ -77,6 +81,7 @@ class COT_Forecaster(Forecaster):
     @classmethod
     def load_config(cls, config):
         return cls(
+            model=config["model"],
             preface=config["preface"],
             examples=[
                 Example(

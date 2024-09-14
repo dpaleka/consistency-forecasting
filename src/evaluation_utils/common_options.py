@@ -1,5 +1,7 @@
 import click
 from pathlib import Path
+from typing import Any
+import yaml
 
 from common.path_utils import get_src_path, get_data_path
 
@@ -12,21 +14,43 @@ def common_options(f):
         click.option(
             "-f",
             "--forecaster_class",
-            default="AdvancedForecaster",
-            help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster, RecursiveConsistentForecaster.",
+            default=None,
+            type=click.Choice(
+                [
+                    "BasicForecaster",
+                    "COT_Forecaster",
+                    "AdvancedForecaster",
+                    "ConsistentForecaster",
+                    "RecursiveConsistentForecaster",
+                    "LoadForecaster",
+                    "CrowdForecaster",
+                    "Custom",
+                ]
+            ),
+            help="Forecaster to use.",
+        ),
+        click.option(
+            "-p",
+            "--custom_path",
+            type=str,
+            default=None,
+            help="Either: "
+            "(1) Path to the custom forecaster Python module (e.g. `src/forecasters/custom_forecaster.py`). Has to contain exactly one Forecaster subclass. "
+            "(2) Path to the custom forecaster Python module, then `::`, then the class name (e.g. `src.forecasters.custom_forecaster.py::CustomForecaster1`). "
+            "Only used when forecaster_class is None.",
         ),
         click.option(
             "-c",
             "--config_path",
             type=click.Path(),
-            default=CONFIGS_DIR / "cheap_gpt4o-mini.yaml",
-            help="Path to the configuration file",
+            default=None,
+            help="Path to the configuration file. Can be used for all forecasters. Do not use the --model option when using this.",
         ),
         click.option(
-            "-m",
-            "--model",
-            default=None,
-            help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
+            "-o",
+            "--forecaster_options",
+            multiple=True,
+            help="Additional options for the forecaster in the format key=value. Can be used multiple times. These options will be passed as kwargs when creating the forecaster. Overrides options in config_path.",
         ),
         click.option("-r", "--run", is_flag=True, help="Run the forecaster"),
         click.option(
@@ -59,3 +83,35 @@ def common_options(f):
     for option in reversed(options):
         f = option(f)
     return f
+
+
+def parse_forecaster_options(options: list[str]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for option in options:
+        key, value = option.split("=")
+        try:
+            result[key] = int(value)
+        except ValueError:
+            try:
+                result[key] = float(value)
+            except ValueError:
+                result[key] = value
+    return result
+
+
+def get_forecaster_config(
+    config_path: str | None, forecaster_options: list[str] | None
+) -> dict[str, Any]:
+    if config_path is not None:
+        with open(config_path, "r", encoding="utf-8") as f:
+            forecaster_config: dict[str, Any] = yaml.safe_load(f)
+    else:
+        forecaster_config = {}
+
+    if forecaster_options is not None:
+        forecaster_options_dict = parse_forecaster_options(forecaster_options)
+
+        # override config with forecaster_options
+        forecaster_config.update(forecaster_options_dict)
+
+    return forecaster_config

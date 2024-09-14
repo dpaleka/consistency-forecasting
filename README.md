@@ -167,6 +167,7 @@ ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 
 - [`src/instantiation.py`](src/instantiation.py) Runs instantiation. Takes a JSONL file (a list of ForecastingQuestions), and writes multiple JSONL files (each a list of QuestionTuples) into `src/data/tuples`.
 
+### Forecasting and evaluationg
 - [`src/evaluation.py`](src/evaluation.py) runs forecasters on checks and scores them. 
 Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit methods.
 Please run `python src/evaluation.py --help` and read what it says before using this script.
@@ -176,10 +177,23 @@ python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_con
 ```
   - Run example on some directory: see the commands in [tests/test_evaluation_pipeline.py](tests/test_evaluation_pipeline.py). Those are working if the tests are passing.
 
-
 - [`src/reevaluation.py`](src/reevaluation.py) recomputes violation metrics from files of forecasts made with `src/evaluation.py`, 
 and aggregates metrics across multiple forecast files. The `forecasts/` directories it draws from are given in the file, edit them as needed.
 
+- [`src/ground_truth_run.py`](src/ground_truth_run.py) runs the ground truth forecasting evaluation pipeline end-to-end.
+See the commands in [tests/test_ground_truth_run.py](tests/test_ground_truth_run.py), or just run something like:
+```
+python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --num_lines 10 --run --async
+```
+
+Any Python class that inherits from `Forecaster` can be used as a forecaster in both `src/evaluation.py` and `src/ground_truth_run.py`.
+For example:
+```
+python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --custom_path src/forecasters/basic_forecaster.py::BasicForecasterWithExamples --forecaster_options model=gpt-4o-mini --num_lines 10 --run --async
+```
+
+
+### Misc
 - [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Writes to `src/data/forecasts/stats_*.jsonl`.
 
 - [`src/playground.py`](src/playground.py) various testing and playing around.
