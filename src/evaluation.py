@@ -3,35 +3,32 @@ import io
 import os
 import json
 import asyncio
-from datetime import datetime
 from pathlib import Path
 import click
 import logging
 import functools
 import concurrent.futures
 
-
 from forecasters import Forecaster
 from static_checks.Checker import (
     Checker,
     choose_checkers,
 )
-from common.path_utils import get_data_path, get_src_path
+from common.path_utils import get_data_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
+from forecasters.create import make_forecaster
 from evaluation_utils.utils import (
-    load_forecaster,
     create_output_directory,
     validate_load_directory,
     write_to_dirs,
 )
-from evaluation_utils.common_options import common_options
+from evaluation_utils.common_options import common_options, get_forecaster_config
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 
 # BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
-CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
@@ -96,18 +93,16 @@ def get_stats(results: dict, label: str = "") -> dict:
     return ret
 
 
-def make_folder_name(forecaster: Forecaster, model: str, timestamp: datetime) -> str:
-    # dirty hack: we explicitly don't round the seconds because we want the neighboring runs to write to the same dir
-    return f"{forecaster.__class__.__name__}_{timestamp.strftime('%m-%d-%H-%M')}"
-
-
-def validate_result(result: dict, keys: list[str]) -> None:
+def validate_result(result: dict, keys: list[str]) -> bool:
     assert "line" in result, "results must contain a 'line' key"
     for key in keys:
         assert key in result["line"], f"line must contain a '{key}' key"
         assert (
-            "elicited_prob" in result["line"][key]
-        ), f"line[{key}] must contain an 'elicited_prob' key"
+            "forecast" in result["line"][key]
+        ), f"line[{key}] must contain an 'forecast' key"
+        assert (
+            "prob" in result["line"][key]["forecast"]
+        ), f"line[{key}]['forecast'] must contain a 'prob' key"
     return True
 
 
@@ -180,7 +175,6 @@ def process_check(
     check_name: str,
     checkers: dict[str, Checker],
     forecaster: Forecaster,
-    model: str,
     num_lines: int,
     tuples_per_source: int,
     is_async: bool,
@@ -188,7 +182,6 @@ def process_check(
     most_recent_directory: Path,
     load_dir: Path,
     run: bool,
-    forecaster_class: str,
     eval_by_source: bool,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
@@ -199,6 +192,7 @@ def process_check(
             all_tuples = [json.loads(line) for line in f]
 
         if eval_by_source:
+            # TODO does this ignore num_lines? if yes, raise if num_lines is not None
             source_questions = {}
             for tuple_data in all_tuples:
                 source_question = (
@@ -241,46 +235,21 @@ def process_check(
                 end = min(start + batch_size, len(checker_tuples))
                 batch_tuples = checker_tuples[start:end]
 
-                match forecaster_class:
-                    case (
-                        "BasicForecaster"
-                        | "CoTForecaster"
-                        | "ConsistentForecaster"
-                        | "RecursiveConsistentForecaster"
-                    ):
-                        if is_async:
-                            reset_global_semaphore()
-                            results_batch = asyncio.run(
-                                checkers[check_name].test(
-                                    forecaster,
-                                    do_check=False,
-                                    tuples=batch_tuples,
-                                    model=model,
-                                )
-                            )
-                        else:
-                            results_batch = checkers[check_name].test_sync(
-                                forecaster,
-                                do_check=False,
-                                tuples=batch_tuples,
-                                model=model,
-                            )
-                    case "AdvancedForecaster":
-                        if is_async:
-                            reset_global_semaphore()
-                            results_batch = asyncio.run(
-                                checkers[check_name].test(
-                                    forecaster,
-                                    do_check=False,
-                                    tuples=batch_tuples,
-                                )
-                            )
-                        else:
-                            results_batch = checkers[check_name].test_sync(
-                                forecaster,
-                                do_check=False,
-                                tuples=batch_tuples,
-                            )
+                if is_async:
+                    reset_global_semaphore()
+                    results_batch = asyncio.run(
+                        checkers[check_name].test(
+                            forecaster,
+                            do_check=False,
+                            tuples=batch_tuples,
+                        )
+                    )
+                else:
+                    results_batch = checkers[check_name].test_sync(
+                        forecaster,
+                        do_check=False,
+                        tuples=batch_tuples,
+                    )
 
                 print(f"results_batch: {results_batch}")
                 print(f"len(results_batch): {len(results_batch)}")
@@ -313,15 +282,19 @@ def process_check(
         for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
             for key in keys:
                 try:
-                    assert result["line"][key]["id"] == checker_tuple[key]["id"], (
+                    assert (
+                        result["line"][key]["question"]["id"]
+                        == checker_tuple[key]["id"]
+                    ), (
                         f"ID mismatch for key {key} at index {i}: "
-                        f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                        f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
                     )
                     assert (
-                        result["line"][key]["title"] == checker_tuple[key]["title"]
+                        result["line"][key]["question"]["title"]
+                        == checker_tuple[key]["title"]
                     ), (
                         f"Title mismatch for key {key} at index {i}: "
-                        f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+                        f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
                     )
                 except AssertionError as e:
                     print(f"Assertion failed: {str(e)}")
@@ -331,7 +304,7 @@ def process_check(
 
         data = [result["line"] for result in results]
         all_answers = [
-            {key: result["line"][key]["elicited_prob"] for key in keys}
+            {key: result["line"][key]["forecast"]["prob"] for key in keys}
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
@@ -349,8 +322,9 @@ def process_check(
                 source_results = [
                     r
                     for r in results
-                    if r["line"]["P"]["metadata"].get("source_question") == source
-                    or r["line"]["P"]["title"] == source
+                    if r["line"]["P"]["question"]["metadata"].get("source_question")
+                    == source
+                    or r["line"]["P"]["question"]["title"] == source
                 ]
                 stats["by_source"][source] = get_stats(
                     source_results, label=f"{check_name}_{source}"
@@ -406,11 +380,12 @@ def process_check(
     help="Evaluate consistency scores per source question",
 )
 def main(
-    forecaster_class: str,
-    config_path: str,
-    model: str | None,
+    forecaster_class: str | None,
+    custom_path: str | None,
+    config_path: str | None,
+    forecaster_options: list[str] | None,
     run: bool,
-    load_dir: str,
+    load_dir: str | None,
     num_lines: int,
     tuples_per_source: int,
     relevant_checks: list[str],
@@ -420,18 +395,35 @@ def main(
     output_dir: str | None = None,
     eval_by_source: bool = False,
 ):
+    forecaster_config = get_forecaster_config(config_path, forecaster_options)
+
+    forecaster = make_forecaster(
+        forecaster_class=forecaster_class,
+        custom_path=custom_path,
+        forecaster_config=forecaster_config,
+    )
+
+    # Print arguments
+    print("Arguments:")
+    print(f"  forecaster_class: {forecaster_class}")
+    print(f"  custom_path: {custom_path}")
+    print(f"  forecaster_config: {forecaster_config}")
+    print(f"  num_lines: {num_lines}")
+    print(f"  run: {run}")
+    print(f"  load_dir: {load_dir}")
+    print(f"  is_async: {is_async}")
+    print(f"  output_dir: {output_dir}")
+
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
     if not tuple_dir.exists():
         assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
 
-    forecaster = load_forecaster(forecaster_class, config_path, model)
-
     checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
     output_directory, most_recent_directory = create_output_directory(
-        forecaster, model, BASE_FORECASTS_OUTPUT_PATH, output_dir
+        forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
     )
 
     load_dir = validate_load_directory(run, load_dir, most_recent_directory)
@@ -444,7 +436,7 @@ def main(
         "forecaster_class": forecaster.__class__.__name__,
         "forecaster": forecaster.dump_config(),
         "checkers": [checker.dump_config() for name, checker in checkers.items()],
-        "model": model,
+        "forecaster_config": forecaster_config,
         "is_async": is_async,
         "use_threads": use_threads,
         "run": run,
@@ -471,7 +463,6 @@ def main(
                 process_check,
                 checkers=checkers,
                 forecaster=forecaster,
-                model=model,
                 num_lines=num_lines,
                 tuples_per_source=tuples_per_source,
                 is_async=is_async,
@@ -479,7 +470,6 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
-                forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
             )
             all_stats = {
@@ -494,7 +484,6 @@ def main(
                 check_name=check_name,
                 checkers=checkers,
                 forecaster=forecaster,
-                model=model,
                 num_lines=num_lines,
                 tuples_per_source=tuples_per_source,
                 is_async=is_async,
@@ -502,7 +491,6 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
-                forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
             )
             all_stats[check_name] = stats
@@ -562,7 +550,7 @@ if __name__ == "__main__":
     main()
 
 # run the script with the following command:
-# python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
