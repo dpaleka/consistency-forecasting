@@ -104,6 +104,13 @@ class ForecastingQuestion_stripped(BaseModel):
 
 register_model_for_cache(ForecastingQuestion_stripped)
 
+
+class ForecastingQuestion_stripped_list(BaseModel):
+    questions: list[ForecastingQuestion_stripped]
+
+
+register_model_for_cache(ForecastingQuestion_stripped_list)
+
 exp_answer_types = {
     "default": {"binary": Prob, "conditional_binary": Prob},
     "cot": {"binary": Prob_cot, "conditional_binary": Prob_cot},
