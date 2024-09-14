@@ -4,7 +4,6 @@ from datetime import datetime
 from uuid import uuid4
 import pytz
 from common.datatypes import ForecastingQuestion
-from common.utils import shorten_model_name
 from common.llm_utils import answer_sync, answer
 from common.path_utils import get_src_path
 from .fq_from_news_datatypes import (
@@ -12,7 +11,7 @@ from .fq_from_news_datatypes import (
     ForecastingQuestionGroundTruthResolutionStrict,
     ForecastingQuestionGroundTruthResolutionLax,
 )
-from .date_utils import last_datetime_of_month, format_news_range_date
+from .date_utils import last_datetime_of_month
 
 
 class NewsApiFinalForecastingQuestionGenerator:
@@ -21,12 +20,20 @@ class NewsApiFinalForecastingQuestionGenerator:
     and parse them to either accept, reject or improve them and then convert them into ForecastingQuestions
     """
 
-    news_api_final_fq_save_dir = os.path.join(
+    news_api_final_fq_default_save_dir = os.path.join(
         get_src_path(),
         "data/news_feed_fq_generation/news_api/final_unverified",
     )
-    # Create the save path directory
-    os.makedirs(news_api_final_fq_save_dir, exist_ok=True)
+
+    @classmethod
+    def set_save_directory(cls, directory_path: str):
+        if directory_path is None or len(directory_path.strip()) == 0:
+            cls.news_api_final_fq_save_dir = cls.news_api_final_fq_default_save_dir
+        else:
+            cls.news_api_final_fq_save_dir = directory_path
+
+        # Create the save path directory
+        os.makedirs(cls.news_api_final_fq_save_dir, exist_ok=True)
 
     rough_fq_validation_prompt = {
         "preface": """
@@ -578,20 +585,34 @@ Please provide a brief justification for your answer, citing specific details fr
         Returns:
             str: File path for saving the final forecasting questions.
         """
-        if num_pages == -1:
-            num_pages = "all"
-        if num_articles == -1 or num_articles == float("inf"):
-            num_articles = "all"
-
-        if be_lax_in_resolution_checking:
-            lax_str = "lax_res_checking"
-        else:
-            lax_str = "strict_res_checking"
-
-        model_name = model_name.replace("/", "__").replace("\\", "__")
-        news_save_file_name = f"final_fq__{shorten_model_name(model_name)}_{lax_str}_from_{format_news_range_date(start_date)}_to_{format_news_range_date(end_date)}_num_pages_{num_pages}_num_articles_{num_articles}.jsonl"
-
-        return os.path.join(
-            cls.news_api_final_fq_save_dir,
-            news_save_file_name,
+        num_pages_str = "all" if num_pages == -1 else str(num_pages)
+        num_articles_str = (
+            "all"
+            if num_articles == -1 or num_articles == float("inf")
+            else str(num_articles)
         )
+
+        lax_str = (
+            "lax_res_checking"
+            if be_lax_in_resolution_checking
+            else "strict_res_checking"
+        )
+
+        model_name_cleaned = model_name.replace("/", "__").replace("\\", "__")
+
+        start_date_str = start_date.strftime("%Y-%m-%d")
+        end_date_str = end_date.strftime("%Y-%m-%d")
+
+        directory_structure = os.path.join(
+            cls.news_api_final_fq_save_dir,
+            model_name_cleaned,
+            f"{start_date_str}_to_{end_date_str}",
+            f"num_pages_{num_pages_str}",
+            f"num_articles_{num_articles_str}",
+        )
+
+        os.makedirs(directory_structure, exist_ok=True)
+
+        news_save_file_name = f"{lax_str}_fqs.jsonl"
+
+        return os.path.join(directory_structure, news_save_file_name)

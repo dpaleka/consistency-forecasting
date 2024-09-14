@@ -8,6 +8,7 @@ from fq_from_news.news_processing_utils import (
     process_news,
 )
 from fq_from_news.fq_from_news_utils import (
+    set_save_directories,
     generate_rough_forecasting_data,
     generate_final_forecasting_questions,
     generate_rough_forecasting_data_sync,
@@ -21,6 +22,7 @@ load_dotenv()
 
 
 def generate_forecasting_questions_from_news_sync(articles_download_path, args):
+    raise NotImplementedError
     # Generating the rough intermediate forecasting questions
     if args.gen_rough:
         generate_rough_forecasting_data_sync(
@@ -52,6 +54,9 @@ def generate_forecasting_questions_from_news_sync(articles_download_path, args):
 
 
 async def generate_forecasting_questions(articles_download_path, args):
+    # Set the save directories for rough and final FQ generation
+    set_save_directories(args.rough_fq_save_directory, args.final_fq_save_directory)
+
     # Generating the rough intermediate forecasting questions
     if args.gen_rough:
         await generate_rough_forecasting_data(
@@ -87,6 +92,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.final_fq_verification_model_name,
             args.news_source,
             args.be_lax_in_res_checking,
+            args.verified_fq_save_directory,
         )
 
 
@@ -256,6 +262,32 @@ def get_args() -> argparse.Namespace:
         Set to True to only verify the final forecasting questions using the common FQ verifier.
         """,
         default=False,
+    )
+
+    # Save directories
+    parser.add_argument(
+        "--rough-fq-save-directory",
+        type=str,
+        help="""
+        Directory where to store the rough FQ data. If left empty, defaults to `data/news_feed_fq_generation/news_api/rough_forecasting_question_data`
+        """,
+        default="",
+    )
+    parser.add_argument(
+        "--final-fq-save-directory",
+        type=str,
+        help="""
+        Directory where to store the final unverified FQ data. If left empty, defaults to `data/news_feed_fq_generation/news_api/final_unverified`
+        """,
+        default="",
+    )
+    parser.add_argument(
+        "--verified-fq-save-directory",
+        type=str,
+        help="""
+        Directory where to store the verified FQ data. If left empty, defaults to `data/fq/synthetic/news_api_generated_fqs`
+        """,
+        default="",
     )
 
     args, _ = parser.parse_known_args()
