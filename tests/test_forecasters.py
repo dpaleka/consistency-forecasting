@@ -14,6 +14,8 @@ from common.llm_utils import (
 from common.datatypes import ForecastingQuestion, Forecast
 from forecasters import BasicForecaster, COT_Forecaster, CoT_ForecasterTextBeforeParsing
 
+default_small_model = "gpt-4o-mini-2024-07-18"
+
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
 mock_response_list = ["0.03", "0.05", "0.02"]
 mock_response = MagicMock(prob=0.09)
@@ -26,7 +28,7 @@ mock_cot_response = MagicMock(
 @pytest.fixture
 def basic_forecaster():
     examples = [mock_q_and_a]
-    return BasicForecaster(preface="Test preface")
+    return BasicForecaster(preface="Test preface", model=default_small_model)
 
 
 @pytest.fixture
@@ -88,7 +90,7 @@ async def test_basic_forecaster_call_async(
 
 def test_basic_forecaster_actual_call(mock_forecasting_question):
     # Create BasicForecaster instance
-    forecaster = BasicForecaster()
+    forecaster = BasicForecaster(model=default_small_model)
 
     # Call the forecaster with actual prompts
     forecast = forecaster.call_full(actual_fq)
@@ -121,7 +123,9 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
     )
 
     # Call the forecaster with actual prompts
-    forecaster = COT_Forecaster(preface=user_preface, examples=None)
+    forecaster = COT_Forecaster(
+        preface=user_preface, examples=None, model=default_small_model
+    )
     forecast = forecaster.call_full(mock_forecasting_question)
 
     # Print the chain of thought for manual inspection
