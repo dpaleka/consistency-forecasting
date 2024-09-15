@@ -2,9 +2,17 @@ import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
+from common.llm_utils import (
+    query_api_chat_sync,
+    query_api_chat,
+    query_parse_last_response_into_format_sync,
+    query_parse_last_response_into_format,
+    query_api_chat_native,
+    query_api_chat_sync_native,
+)
 
 from common.datatypes import ForecastingQuestion, Forecast
-from forecasters import BasicForecaster, COT_Forecaster
+from forecasters import BasicForecaster, COT_Forecaster, CoT_ForecasterTextBeforeParsing
 
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
 mock_response_list = ["0.03", "0.05", "0.02"]
@@ -256,3 +264,57 @@ def test_crowd_forecaster_extremize():
     forecaster1.call.assert_called_once_with(mock_fq)
     forecaster2.call.assert_called_once_with(mock_fq)
     forecaster3.call.assert_called_once_with(mock_fq)
+
+
+@pytest.fixture
+def cot_forecaster_text_before_parsing():
+    return CoT_ForecasterTextBeforeParsing(
+        model="gpt-4o-2024-08-06", examples=None, parsing_model="gpt-4o-mini-2024-07-18"
+    )
+
+
+@pytest.mark.asyncio
+@patch("common.llm_utils.query_api_chat_native", wraps=query_api_chat_native)
+@patch(
+    "common.llm_utils.query_parse_last_response_into_format",
+    wraps=query_parse_last_response_into_format,
+)
+@patch("common.llm_utils.query_api_chat", wraps=query_api_chat)
+async def test_cot_forecaster_text_before_parsing_actual_call_async(
+    mock_query_api_chat_native,
+    mock_query_parse_last_response_into_format,
+    mock_query_api_chat,
+    cot_forecaster_text_before_parsing,
+):
+    # Actual async call with mocks that wrap the actual LLM calls
+    forecast = await cot_forecaster_text_before_parsing.call_async(actual_fq)
+    assert isinstance(forecast, Forecast)
+    assert isinstance(forecast.prob, float)
+    assert 0 <= forecast.prob <= 1
+    assert "chain_of_thought" in forecast.metadata
+    assert mock_query_api_chat_native.call_count == 1
+    assert mock_query_parse_last_response_into_format.call_count == 1
+    assert mock_query_api_chat.call_count == 1
+
+
+@patch("common.llm_utils.query_api_chat_sync_native", wraps=query_api_chat_sync_native)
+@patch(
+    "common.llm_utils.query_parse_last_response_into_format_sync",
+    wraps=query_parse_last_response_into_format_sync,
+)
+@patch("common.llm_utils.query_api_chat_sync", wraps=query_api_chat_sync)
+def test_cot_forecaster_text_before_parsing_actual_call_sync(
+    mock_query_api_chat_sync_native,
+    mock_query_parse_last_response_into_format_sync,
+    mock_query_api_chat_sync,
+    cot_forecaster_text_before_parsing,
+):
+    # Actual sync call with mocks that wrap the actual LLM calls
+    forecast = cot_forecaster_text_before_parsing.call(actual_fq)
+    assert isinstance(forecast, Forecast)
+    assert isinstance(forecast.prob, float)
+    assert 0 <= forecast.prob <= 1
+    assert "chain_of_thought" in forecast.metadata
+    assert mock_query_api_chat_sync_native.call_count == 1
+    assert mock_query_parse_last_response_into_format_sync.call_count == 1
+    assert mock_query_api_chat_sync.call_count == 1
