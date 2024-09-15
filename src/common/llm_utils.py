@@ -464,6 +464,10 @@ def _o1_message_params_transform(messages, options):
         o1_messages.append(
             {"role": "assistant", "content": "System message acknowledged"}
         )
+        o1_messages.extend(messages[1:])
+    else:
+        o1_messages.extend(messages)
+
     options["temperature"] = 1
     return o1_messages, options
 
@@ -532,7 +536,7 @@ async def query_api_chat(
         options["max_tokens"] = options.get("max_tokens", 1024)
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     response, completion = await client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -573,7 +577,7 @@ async def query_api_chat_native(
     )
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
@@ -633,7 +637,7 @@ def query_api_chat_sync(
         options["max_tokens"] = options.get("max_tokens", 1024)
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     response, completion = client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -673,7 +677,7 @@ def query_api_chat_sync_native(
     )
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = client.chat(
@@ -773,8 +777,8 @@ async def answer(
     options = default_options | kwargs  # override defaults with kwargs
 
     if os.getenv("VERBOSE") == "True":
-        print(f"options: {options}")
-        print(f"messages: {messages}")
+        print(f"{options=}, {len(messages)=}")
+
     async with global_llm_semaphore:
         if with_parsing:
             return await query_api_chat_with_parsing(messages=messages, **options)
@@ -846,13 +850,10 @@ async def query_parse_last_response_into_format(
             "role": "user",
             "content": (
                 "Now parse the latest response into the specified Pydantic model:\n\n"
-                f"{response_model.model_json_schema()}"
+                f"{response_model.model_fields=}"
             ),
         },
     ]
-
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Running structured call to parse the output")
 
     parsed_response = await query_api_chat(
         messages=parsing_messages,
@@ -878,12 +879,10 @@ def query_parse_last_response_into_format_sync(
             "role": "user",
             "content": (
                 "Now parse the latest response into the specified Pydantic model:\n\n"
-                f"{response_model.model_json_schema()}"
+                f"{response_model.model_fields=}"
             ),
         },
     ]
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Running structured call to parse the output")
 
     response = query_api_chat_sync(
         messages=parsing_messages,
@@ -892,7 +891,6 @@ def query_parse_last_response_into_format_sync(
         model=model,
         **kwargs,
     )
-    print(f"Parsed response: {response}")
     return response
 
 
@@ -900,8 +898,8 @@ def system_message_addition_for_parsing(response_model: BaseModel) -> str:
     return f"""\
 Note: unless explicitly stated in the prompt, do not worry about the exact formatting of the output.
 There will be an extra step that will summarize your output into the final answer format.
-For context, the final answer format is:
-{response_model.model_json_schema()}\n
+For context, the final answer format is described by the following Pydantic model:
+{response_model.model_fields=}\n
 Again, just try to answer the question as best as you can, with all the necessary information; the output will be cleaned up in the final step.
 """
 
@@ -918,9 +916,6 @@ async def query_api_chat_with_parsing(
     """
     Runs a native call using the specified model, then parses the output into the desired Pydantic model.
     """
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Running native call to the specified model")
-
     system_message_addition = system_message_addition_for_parsing(response_model)
     if messages[0]["role"] != "system":
         messages = [{"role": "system", "content": system_message_addition}] + messages
@@ -938,6 +933,7 @@ async def query_api_chat_with_parsing(
         print(f"Native output: {native_output}")
 
     messages.append({"role": "assistant", "content": native_output})
+
     parsed_response = await query_parse_last_response_into_format(
         messages=messages,
         response_model=response_model,
@@ -945,6 +941,9 @@ async def query_api_chat_with_parsing(
         model=parsing_model,
         **kwargs,
     )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Parsed response: {parsed_response}")
+
     return parsed_response
 
 
@@ -960,8 +959,7 @@ def query_api_chat_sync_with_parsing(
     """
     Runs a native call using the specified model, then parses the output into the desired Pydantic model.
     """
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Running native call to the specified model")
+    system_message_addition = system_message_addition_for_parsing(response_model)
 
     system_message_addition = system_message_addition_for_parsing(response_model)
 
@@ -984,6 +982,8 @@ def query_api_chat_sync_with_parsing(
         model=parsing_model,
         **kwargs,
     )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Parsed response: {parsed_response}")
     return parsed_response
 
 
