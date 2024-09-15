@@ -20,16 +20,23 @@ def run_command(command):
 
 checkers = ["NegChecker", "AndChecker"]
 
+starting_file = "src/data/other/high-quality-questions-all-domains.jsonl"  # has to be in this question stage instead of full FQs because of how the first part of the pipeline works. if we want to use full FQs here, start from the second step of the pipeline (verified FQs)
+
 commands = [
-    "python src/format_and_verify_questions.py --file_path src/data/other/high-quality-questions-all-domains.jsonl -d test -s True -F True -o high_quality_questions_all_domains_test.jsonl",
-    "python src/generate_related_questions.py -n 3 -q 3 --input_file src/data/fq/test/high_quality_questions_all_domains_test.jsonl --output_file src/data/fq/test/from_related_test.jsonl",
+    f"python src/format_and_verify_questions.py --file_path {starting_file} -d test -s True -F True -o verified_questions_test.jsonl",
+    #
+    "python src/generate_related_questions.py -n 3 -q 3 --input_file src/data/fq/test/verified_questions_test.jsonl --output_file src/data/fq/test/from_related_test.jsonl",
+    #
     "python src/format_and_verify_questions.py --file_path src/data/fq/test/from_related_test.jsonl -d test -o from-related-verified_test.jsonl -s True -F True",
+    #
     "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
+    #
     "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster --forecaster_options model=gpt-4o-mini --run"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --eval_by_source -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
+    #
     "python src/evaluation.py --tuple_dir src/data/tuples_test -f LoadForecaster --forecaster_options load_dir=src/data/forecasts/BasicForecaster_test --run"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --eval_by_source -t 5 --output_dir src/data/forecasts/LoadForecaster_test",
@@ -48,7 +55,7 @@ def run_pipeline_command(command):
 
 def expected_files(test_exist: bool = False):
     files = [
-        "src/data/fq/test/high_quality_questions_all_domains_test.jsonl",
+        "src/data/fq/test/verified_questions_test.jsonl",
         "src/data/fq/test/from_related_test.jsonl",
         "src/data/fq/test/from-related-verified_test.jsonl",
     ]
@@ -88,7 +95,6 @@ def expected_files(test_exist: bool = False):
 
 
 def test_pipeline_end_to_end():
-    starting_file = "src/data/other/high-quality-questions-all-domains.jsonl"
     assert Path(
         starting_file
     ).exists(), f"Starting file does not exist: {starting_file}"
