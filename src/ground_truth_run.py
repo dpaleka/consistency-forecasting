@@ -8,7 +8,7 @@ import asyncio
 import functools
 
 from common.path_utils import get_data_path
-from common.utils import make_json_serializable
+from common.utils import make_json_serializable, compare_dicts
 from common.llm_utils import parallelized_call, reset_global_semaphore
 from common.datatypes import ForecastingQuestion, Forecast
 from forecasters.create import make_forecaster
@@ -25,6 +25,7 @@ from evaluation_utils.proper_scoring import (
     plot_calibration,
     calculate_calibration,
 )
+
 
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 
@@ -157,9 +158,16 @@ def main(
             outcomes=[fq.resolution],
             scoring_function=scoring_functions["brier_score"],
         )
-        assert line == make_json_serializable(
-            fq.to_dict()
-        ), "line and make_json_serializable(fq.to_dict()) are not equal"
+
+        assert (
+            (
+                line_fq_differences := compare_dicts(
+                    line, make_json_serializable(fq.to_dict())
+                )
+            )
+            == []
+        ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
+
         results.append(
             {
                 "question": line,
