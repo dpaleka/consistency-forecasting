@@ -717,6 +717,7 @@ async def answer(
     preface: Optional[str] = None,
     examples: Optional[List[Example]] = None,
     prepare_messages_func=prepare_messages,
+    with_parsing: bool = False,
     **kwargs,
 ) -> BaseModel:
     messages = prepare_messages_func(prompt, preface, examples)
@@ -731,7 +732,10 @@ async def answer(
         print(f"options: {options}")
         print(f"messages: {messages}")
     async with global_llm_semaphore:
-        return await query_api_chat(messages=messages, **options)
+        if with_parsing:
+            return await query_api_chat_with_parsing(messages=messages, **options)
+        else:
+            return await query_api_chat(messages=messages, **options)
 
 
 @logfire.instrument("answer_sync", extract_args=True)
@@ -740,6 +744,7 @@ def answer_sync(
     preface: str | None = None,
     examples: list[Example] | None = None,
     prepare_messages_func=prepare_messages,
+    with_parsing: bool = False,
     **kwargs,
 ) -> BaseModel:
     messages = prepare_messages_func(prompt, preface, examples)
@@ -748,7 +753,10 @@ def answer_sync(
         "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
-    return query_api_chat_sync(messages=messages, **options)
+    if with_parsing:
+        return query_api_chat_sync_with_parsing(messages=messages, **options)
+    else:
+        return query_api_chat_sync(messages=messages, **options)
 
 
 @pydantic_cache
@@ -779,6 +787,160 @@ def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
         print("Text:", text, "\nResponse:", response_text)
 
     return response_text
+
+
+@logfire.instrument("query_parse_last_response_into_format", extract_args=True)
+async def query_parse_last_response_into_format(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    parsing_messages = messages + [
+        {
+            "role": "user",
+            "content": (
+                "Now parse the latest response into the specified Pydantic model:\n\n"
+                f"{response_model.model_json_schema()}"
+            ),
+        },
+    ]
+
+    if verbose or os.getenv("VERBOSE") == "True":
+        print("Running structured call to parse the output")
+
+    parsed_response = await query_api_chat(
+        messages=parsing_messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+
+    return parsed_response
+
+
+@logfire.instrument("query_parse_last_response_into_format_sync", extract_args=True)
+def query_parse_last_response_into_format_sync(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    parsing_messages = messages + [
+        {
+            "role": "user",
+            "content": (
+                "Now parse the latest response into the specified Pydantic model:\n\n"
+                f"{response_model.model_json_schema()}"
+            ),
+        },
+    ]
+    if verbose or os.getenv("VERBOSE") == "True":
+        print("Running structured call to parse the output")
+
+    response = query_api_chat_sync(
+        messages=parsing_messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+    print(f"Parsed response: {response}")
+    return response
+
+
+def system_message_addition_for_parsing(response_model: BaseModel) -> str:
+    return f"""\
+Note: unless explicitly stated in the prompt, do not worry about the exact formatting of the output.
+There will be an extra step that will summarize your output into the final answer format.
+For context, the final answer format is:
+{response_model.model_json_schema()}\n
+Again, just try to answer the question as best as you can, with all the necessary information; the output will be cleaned up in the final step.
+"""
+
+
+@logfire.instrument("query_api_chat_with_parsing", extract_args=True)
+async def query_api_chat_with_parsing(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    parsing_model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    """
+    Runs a native call using the specified model, then parses the output into the desired Pydantic model.
+    """
+    if verbose or os.getenv("VERBOSE") == "True":
+        print("Running native call to the specified model")
+
+    system_message_addition = system_message_addition_for_parsing(response_model)
+    if messages[0]["role"] != "system":
+        messages = [{"role": "system", "content": system_message_addition}] + messages
+    else:
+        messages[0]["content"] += "\n\n" + system_message_addition
+
+    native_output: str = await query_api_chat_native(
+        messages=messages,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Native output: {native_output}")
+
+    messages.append({"role": "assistant", "content": native_output})
+    parsed_response = await query_parse_last_response_into_format(
+        messages=messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=parsing_model,
+        **kwargs,
+    )
+    return parsed_response
+
+
+@logfire.instrument("query_api_chat_sync_with_parsing", extract_args=True)
+def query_api_chat_sync_with_parsing(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    parsing_model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    """
+    Runs a native call using the specified model, then parses the output into the desired Pydantic model.
+    """
+    if verbose or os.getenv("VERBOSE") == "True":
+        print("Running native call to the specified model")
+
+    system_message_addition = system_message_addition_for_parsing(response_model)
+
+    if messages[0]["role"] != "system":
+        messages = [{"role": "system", "content": system_message_addition}] + messages
+    else:
+        messages[0]["content"] += "\n\n" + system_message_addition
+
+    native_output: str = query_api_chat_sync_native(
+        messages=messages, verbose=verbose, model=model, **kwargs
+    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Native output: {native_output}")
+
+    messages.append({"role": "assistant", "content": native_output})
+    parsed_response = query_parse_last_response_into_format_sync(
+        messages=messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=parsing_model,
+        **kwargs,
+    )
+    return parsed_response
 
 
 async def parallelized_call(

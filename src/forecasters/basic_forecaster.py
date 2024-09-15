@@ -8,14 +8,17 @@ from common.datatypes import (
 from common.llm_utils import answer, answer_sync, Example
 
 
+BASIC_FORECASTER_PREFACE = (
+    "You are an informed and well-calibrated forecaster. I need you to give me "
+    "your best probability estimate for the following sentence or question resolving YES. "
+    "Your answer should be a float between 0 and 1, with nothing else in your response."
+)
+
+
 class BasicForecaster(Forecaster):
     def __init__(self, model: str, preface: str = None, examples: list = None):
         self.model = model
-        self.preface = preface or (
-            "You are an informed and well-calibrated forecaster. I need you to give me "
-            "your best probability estimate for the following sentence or question resolving YES. "
-            "Your answer should be a float between 0 and 1, with nothing else in your response."
-        )
+        self.preface = preface or BASIC_FORECASTER_PREFACE
         self.examples = examples or []
 
     def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:

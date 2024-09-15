@@ -5,6 +5,7 @@ from common.perscache import register_model_for_cache
 from common.llm_utils import (
     answer,
     answer_sync,
+    query_api_chat_with_parsing,
 )  # Adjust the import based on your script's structure
 from pydantic import BaseModel, Field
 
@@ -165,3 +166,46 @@ def test_openai_json_strict(monkeypatch):
 
     # restore the original value of OPENAI_JSON_STRICT
     os.environ["OPENAI_JSON_STRICT"] = original_openai_json_strict
+
+
+class IntResponseModel(BaseModel):
+    reasoning: str
+    answer_polynomial: int
+
+
+register_model_for_cache(IntResponseModel)
+
+
+# New tests for query_api_chat_with_parsing
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "model",
+    [
+        "meta-llama/llama-3-405b-instruct",
+        "anthropic/claude-3.5-sonnet",
+    ],
+)
+async def test_query_api_chat_with_parsing(model):
+    original_use_openrouter = os.getenv("USE_OPENROUTER", "False")
+    os.environ["USE_OPENROUTER"] = "True"
+
+    messages = [
+        {
+            "role": "user",
+            "content": "Using Fermat's theorem, find the remainder of 3^47 when it is divided by 23. Think step by step.",
+        }
+    ]
+
+    response_model = IntResponseModel
+
+    response = await query_api_chat_with_parsing(
+        messages=messages,
+        response_model=response_model,
+        model=model,
+        parsing_model="gpt-4o-mini-2024-07-18",
+    )
+    assert response is not None
+    print(response)
+    assert isinstance(response, response_model)
+    assert response.answer_polynomial == (3**47) % 23
+    os.environ["USE_OPENROUTER"] = original_use_openrouter
