@@ -1,6 +1,14 @@
 from .forecaster import Forecaster, LoadForecaster, CrowdForecaster
-from .basic_forecaster import BasicForecaster
-from .cot_forecaster import COT_Forecaster
+from .basic_forecaster import (
+    BasicForecaster,
+    BasicForecasterWithExamples,
+    BasicForecasterTextBeforeParsing,
+)
+from .cot_forecaster import (
+    CoT_Forecaster,
+    CoT_ForecasterWithExamples,
+    CoT_ForecasterTextBeforeParsing,
+)
 from .advanced_forecaster import AdvancedForecaster
 from .consistent_forecaster import ConsistentForecaster
 from static_checks import NegChecker
@@ -54,8 +62,16 @@ def make_predefined_forecaster(
     match forecaster_class:
         case "BasicForecaster":
             return BasicForecaster(**forecaster_config)
-        case "COT_Forecaster":
-            return COT_Forecaster(**forecaster_config)
+        case "BasicForecasterWithExamples":
+            return BasicForecasterWithExamples(**forecaster_config)
+        case "BasicForecasterTextBeforeParsing":
+            return BasicForecasterTextBeforeParsing(**forecaster_config)
+        case "CoT_Forecaster":
+            return CoT_Forecaster(**forecaster_config)
+        case "CoT_ForecasterWithExamples":
+            return CoT_ForecasterWithExamples(**forecaster_config)
+        case "CoT_ForecasterTextBeforeParsing":
+            return CoT_ForecasterTextBeforeParsing(**forecaster_config)
         case "ConsistentForecaster":
             return ConsistentForecaster(
                 hypocrite=BasicForecaster(**forecaster_config),
@@ -105,17 +121,18 @@ def make_forecaster(
         assert (
             forecaster_class is not None
         ), "forecaster_class must be provided for predefined forecaster."
-        match forecaster_class:
-            case (
-                "BasicForecaster"
-                | "COT_Forecaster"
-                | "ConsistentForecaster"
-                | "RecursiveConsistentForecaster"
-            ):
-                assert (
-                    "model" in forecaster_config
-                ), "Model must be specified for forecaster class"
-                print(f"Using model: {forecaster_config['model']}")
-            case _:
-                pass
+
+        if any(
+            name_root in forecaster_class
+            for name_root in [
+                "BasicForecaster",
+                "CoT_Forecaster",
+                "ConsistentForecaster",
+                "RecursiveConsistentForecaster",
+            ]
+        ):
+            assert (
+                "model" in forecaster_config
+            ), f"Model must be specified for forecaster class {forecaster_class}"
+            print(f"Using model: {forecaster_config['model']}")
         return make_predefined_forecaster(forecaster_class, forecaster_config)

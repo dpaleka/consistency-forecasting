@@ -304,6 +304,7 @@ def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
 def is_openai(model: str) -> bool:
     keywords = [
         "ft:gpt",
+        "o1",
         "gpt-4o-mini",
         "gpt-4",
         "gpt-3.5",
@@ -339,6 +340,9 @@ def get_provider(model: str) -> str:
     if os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False":
         return "openrouter"
     elif is_openai(model):
+        print(
+            f"Using OpenAI provider for model {model}, key {os.getenv('OPENAI_API_KEY')}"
+        )
         return "openai"
     elif is_perplexity_ai(model):
         return "perplexity"
@@ -453,6 +457,26 @@ def _mistral_message_transform(messages):
     return mistral_messages
 
 
+def _o1_message_params_transform(messages, options):
+    o1_messages = []
+    if messages[0]["role"] == "system":
+        o1_messages.append({"role": "user", "content": messages[0]["content"]})
+        o1_messages.append(
+            {"role": "assistant", "content": "System message acknowledged"}
+        )
+    options["temperature"] = 1
+    return o1_messages, options
+
+
+def supports_system_message(model: str, client_name: str) -> bool:
+    """
+    There might be other models that don't support system messages; check if there is an error when running the code.
+    """
+    if "o1" in model:
+        return False
+    return True
+
+
 ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
     "claude-3.5-sonnet": "claude-3-5-sonnet-20240620",
     "claude-3-opus": "claude-3-opus-20240229",
@@ -498,6 +522,11 @@ async def query_api_chat(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
@@ -536,6 +565,11 @@ async def query_api_chat_native(
     options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
     )
 
     if verbose or os.getenv("VERBOSE") == "True":
@@ -589,6 +623,11 @@ def query_api_chat_sync(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
@@ -626,6 +665,11 @@ def query_api_chat_sync_native(
     options["model"] = final_model_name
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
+    )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
     )
 
     if verbose or os.getenv("VERBOSE") == "True":

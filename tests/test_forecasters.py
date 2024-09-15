@@ -12,7 +12,7 @@ from common.llm_utils import (
 )
 
 from common.datatypes import ForecastingQuestion, Forecast
-from forecasters import BasicForecaster, COT_Forecaster, CoT_ForecasterTextBeforeParsing
+from forecasters import BasicForecaster, CoT_Forecaster, CoT_ForecasterTextBeforeParsing
 
 default_small_model = "gpt-4o-mini-2024-07-18"
 
@@ -123,7 +123,7 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
     )
 
     # Call the forecaster with actual prompts
-    forecaster = COT_Forecaster(
+    forecaster = CoT_Forecaster(
         preface=user_preface, examples=None, model=default_small_model
     )
     forecast = forecaster.call_full(mock_forecasting_question)

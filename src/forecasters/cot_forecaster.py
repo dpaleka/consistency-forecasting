@@ -15,7 +15,7 @@ COT_FORECASTER_PREFACE = (
 )
 
 
-class COT_Forecaster(Forecaster):
+class CoT_Forecaster(Forecaster):
     def __init__(
         self, model: str, preface: str | None = None, examples: list | None = None
     ):
@@ -97,13 +97,13 @@ COT_FORECASTER_EXAMPLE: Example = Example(
 )
 
 
-class CoT_ForecasterWithExamples(COT_Forecaster):
+class CoT_ForecasterWithExamples(CoT_Forecaster):
     def __init__(self, model: str, preface: str = None, examples: list = None):
         super().__init__(model, preface, examples)
         self.examples = examples or [COT_FORECASTER_EXAMPLE]
 
 
-class CoT_ForecasterTextBeforeParsing(COT_Forecaster):
+class CoT_ForecasterTextBeforeParsing(CoT_Forecaster):
     def __init__(
         self,
         model: str,
