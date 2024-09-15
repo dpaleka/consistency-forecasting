@@ -7,6 +7,19 @@ from common.path_utils import get_src_path, get_data_path
 
 CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
+PREDEFINED_FORECASTER_CLASSES = [
+    "BasicForecaster",
+    "BasicForecasterWithExamples",
+    "BasicForecasterTextBeforeParsing",
+    "CoT_Forecaster",
+    "CoT_ForecasterWithExamples",
+    "CoT_ForecasterTextBeforeParsing",
+    "AdvancedForecaster",
+    "ConsistentForecaster",
+    "RecursiveConsistentForecaster",
+    "LoadForecaster",
+    "CrowdForecaster",
+]
 
 
 def common_options(f):
@@ -15,18 +28,7 @@ def common_options(f):
             "-f",
             "--forecaster_class",
             default=None,
-            type=click.Choice(
-                [
-                    "BasicForecaster",
-                    "COT_Forecaster",
-                    "AdvancedForecaster",
-                    "ConsistentForecaster",
-                    "RecursiveConsistentForecaster",
-                    "LoadForecaster",
-                    "CrowdForecaster",
-                    "Custom",
-                ]
-            ),
+            type=click.Choice(PREDEFINED_FORECASTER_CLASSES),
             help="Forecaster to use.",
         ),
         click.option(

@@ -88,3 +88,65 @@ class BasicForecasterWithExamples(BasicForecaster):
                 assistant="0.03",
             )
         ]
+
+
+class BasicForecasterTextBeforeParsing(BasicForecaster):
+    def __init__(
+        self,
+        model: str,
+        preface: str | None = None,
+        examples: list | None = None,
+        parsing_model: str = "gpt-4o-mini-2024-07-18",
+    ):
+        super().__init__(model=model, preface=preface, examples=examples)
+        self.parsing_model = parsing_model
+
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        print(f"LLM API request: {fq.to_str_forecast_mode()}...")
+        response = answer_sync(
+            prompt=fq.to_str_forecast_mode(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=Prob,
+            model=self.model,
+            with_parsing=True,
+            parsing_model=self.parsing_model,
+            **kwargs,
+        )
+        print(f"LLM API response: {response}")
+        return Forecast(prob=response.prob, metadata=None)
+
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        print(f"LLM API request: {fq.to_str_forecast_mode()}...")
+        response = await answer(
+            prompt=fq.to_str_forecast_mode(),
+            preface=self.preface,
+            examples=self.examples,
+            response_model=Prob,
+            model=self.model,
+            with_parsing=True,
+            parsing_model=self.parsing_model,
+            **kwargs,
+        )
+        print(f"LLM API response: {response}")
+        return Forecast(prob=response.prob, metadata=None)
+
+    def dump_config(self):
+        config = super().dump_config()
+        config["parsing_model"] = self.parsing_model
+        return config
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            model=config["model"],
+            preface=config["preface"],
+            examples=[
+                Example(
+                    user=ForecastingQuestion_stripped.load_model_json(e["user"]),
+                    assistant=e["assistant"],
+                )
+                for e in config["examples"]
+            ],
+            parsing_model=config.get("parsing_model", "gpt-4o-mini-2024-07-18"),
+        )
