@@ -3,25 +3,16 @@ src/data/test/*.jsonl
 src/data/test/*/*.jsonl
 src/data/fq/test/*
 src/data/tuples_test/
+src/data/news_api_test/
 src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
 src/data/forecasts/A_*_most_recent/
 src/data/forecasts/*_test/
+src/data/forecasts/test*/
 scripts/references/
 src/*see_eval.txt
 .vscode/settings.json
 *.log
-
-# Tests for NewsAPI -> FQ generation
-src/data/fq/synthetic/news_api_generated_fqs/verified_final_fq_using_gpt-4o-2024-05-13_lax_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
-src/data/fq/synthetic/news_api_generated_fqs/verified_final_fq_using_gpt-4o-2024-05-13_strict_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
-src/data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions/final_fq_using_anthropic__claude-3.5-sonnet_lax_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
-src/data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions/final_fq_using_anthropic__claude-3.5-sonnet_strict_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
-src/data/news_feed_fq_generation/news_api/news_feed_data_dump/consolidated_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl
-src/data/news_feed_fq_generation/news_api/news_feed_data_dump/processed_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl
-src/data/news_feed_fq_generation/news_api/rough_forecasting_question_data/rough_fq_using_gpt-4o-2024-05-13_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
-src/data/news_feed_fq_generation/news_api/rough_forecasting_question_data/validated_news_articles_using_gpt-4o-2024-05-13_from_September-1-2024_to_September-1-2024_num_pages_1_num_articles_all.jsonl
-src/data/news_feed_fq_generation/news_api/rough_forecasting_question_data/validated_news_articles_using_gpt-4o-2024-05-13_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl
 
 # Local
 *.code-workspace

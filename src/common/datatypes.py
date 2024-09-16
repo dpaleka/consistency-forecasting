@@ -38,6 +38,9 @@ class Forecast(BaseModel):
             raise ValueError("Probability must be between 0 and 1.")
         return v
 
+    def to_dict(self):
+        return self.dict()
+
 
 register_model_for_cache(Forecast)
 
@@ -113,6 +116,13 @@ class ForecastingQuestion_stripped(BaseModel):
 
 
 register_model_for_cache(ForecastingQuestion_stripped)
+
+
+class ForecastingQuestion_stripped_list(BaseModel):
+    questions: list[ForecastingQuestion_stripped]
+
+
+register_model_for_cache(ForecastingQuestion_stripped_list)
 
 exp_answer_types = {
     "default": {"binary": Prob, "conditional_binary": Prob},
@@ -306,6 +316,15 @@ class QuestionGenerationResponse3(BaseModel):
 
 
 register_model_for_cache(QuestionGenerationResponse3)
+
+
+class ResolverOutput(BaseModel):
+    chain_of_thought: str
+    can_resolve_question: bool
+    answer: Optional[bool]
+
+
+register_model_for_cache(ResolverOutput)
 
 ### end Pydantic models ###
 

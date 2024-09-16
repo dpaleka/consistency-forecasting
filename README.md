@@ -155,18 +155,29 @@ ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 
 ## Entry points to the code
 
-- `scripts/pipeline/{DATASOURCE}/scrape_questions.sh` runs pipeline to scrape the given DATASOURCE for questions and stores them in `{DATASOURCE}_cleaned_formatted.jsonl`.  By defalt the questions scraped will resolve in more than 30 days and less than 10 years.  To change this, adjust the arg params given to the {DATASOURCE}.py file.  For example [`scripts/pipeline/metaculus/scrape_questions.sh`](scripts/pipeline/metaculus/scrape_questions.sh) will retrieve data from metacluls.
-
-- [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions from topics.
-  
-- [`src/generate_related_questions.py`](src/generate_related_questions.py) Generates "raw" synthetic questions from source questions.
-
 - [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
 
-- [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions. Does not write anything.
+- [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions, in the sense of having the correct data types. Does not write anything.
 
+- [`scripts/pipeline/scrape_question.py`](scripts/pipeline/scrape_question.py) runs pipeline to scrape a given data source for questions resolving in a given range, process and optionally verify them, and store them in `src/data/fq/real/`.  It is highly recommended to check the options given in the script before running it. Any part of this pipeline can be skipped, which is particularly useful if the data has already been scraped. Example command:
+```
+python scrape_question.py -d manifold -s 20240501 -e 20240815 -n 500 -o cleaned_formatted -m gpt-4o-2024-08-06 --verification_level none --skip scrape
+```
+
+### Synthetic FQ generation
+- [`src/generate_topic_questions.py`](src/generate_topic_questions.py) Generates "raw" synthetic questions from topics. Note: this script has to have `OPENAI_JSON_STRICT=False` in `.env` to work if using OpenAI, because the datatype is too complex for OpenAI's strict JSON mode.
+  
+- [`src/generate_related_questions.py`](src/generate_related_questions.py) Generates "raw" synthetic questions from source questions. See [`tests/test_evaluation_pipeline.py`](tests/test_evaluation_pipeline.py) for an example command.
+
+- [`src/generate_fqs_from_news.py`](src/generate_fqs_from_news.py) generates FQs with ground-truth resolution using NewsAPI scraped data
+  - Usage has been described in [`src/fq_from_news/README.md`](src/fq_from_news/README.md)
+
+- [`src/generate_fqs_using_reference_class.py`](src/generate_fqs_using_reference_class.py) Creates new forecasting questions from some source FQs following the same there and structure as the original questions.
+
+### Tuple instantiation
 - [`src/instantiation.py`](src/instantiation.py) Runs instantiation. Takes a JSONL file (a list of ForecastingQuestions), and writes multiple JSONL files (each a list of QuestionTuples) into `src/data/tuples`.
 
+### Forecasting and evaluation
 - [`src/evaluation.py`](src/evaluation.py) runs forecasters on checks and scores them. 
 Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit methods.
 Please run `python src/evaluation.py --help` and read what it says before using this script.
@@ -176,12 +187,25 @@ python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_con
 ```
   - Run example on some directory: see the commands in [tests/test_evaluation_pipeline.py](tests/test_evaluation_pipeline.py). Those are working if the tests are passing.
 
-
 - [`src/reevaluation.py`](src/reevaluation.py) recomputes violation metrics from files of forecasts made with `src/evaluation.py`, 
 and aggregates metrics across multiple forecast files. The `forecasts/` directories it draws from are given in the file, edit them as needed.
 
+- [`src/ground_truth_run.py`](src/ground_truth_run.py) runs the ground truth forecasting evaluation pipeline end-to-end.
+See the commands in [tests/test_ground_truth_run.py](tests/test_ground_truth_run.py), or just run something like:
+```
+python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --num_lines 10 --run --async
+```
+
+Any Python class that inherits from `Forecaster` can be used as a forecaster in both `src/evaluation.py` and `src/ground_truth_run.py`.
+For example:
+```
+python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --custom_path src/forecasters/basic_forecaster.py::BasicForecasterWithExamples --forecaster_options model=gpt-4o-mini --num_lines 10 --run --async
+```
+
+### Misc
 - [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Writes to `src/data/forecasts/stats_*.jsonl`.
 
 - [`src/playground.py`](src/playground.py) various testing and playing around.
 
-This does not include the ones already mentioned in previous sections (feedback form, tests).
+
+This list not include the entry points already mentioned in previous sections (feedback form, tests).

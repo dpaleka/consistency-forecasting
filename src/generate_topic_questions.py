@@ -4,7 +4,7 @@ import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
 from common.datatypes import QuestionGenerationResponse3
-from question_generators.utils import deduplicate
+from fq_generation.utils import deduplicate
 import json
 from common.llm_utils import answer
 import random
