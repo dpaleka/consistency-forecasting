@@ -164,7 +164,7 @@ class ForecastingQuestion(BaseModel):
     def __str__(self) -> str:
         return self.cast_stripped().model_dump_json()
 
-    def to_str_forecast_mode(self, mode="default") -> str:
+    def to_dict_forecast_mode(self, mode="default") -> dict:
         return_dict = {
             "title": self.title,
             "body": self.body,
@@ -173,7 +173,10 @@ class ForecastingQuestion(BaseModel):
         if self.created_date:
             return_dict["created_date"] = str(self.created_date)
 
-        return str(return_dict)
+        return return_dict
+
+    def to_str_forecast_mode(self, mode="default") -> str:
+        return str(self.to_dict_forecast_mode(mode=mode))
 
     def to_dict(self):
         return self.dict()
