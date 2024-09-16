@@ -144,6 +144,7 @@ def update_recursive(source, overrides):
 def normalize_date_format(date: str) -> Optional[datetime]:
     for fmt in (
         "%Y-%m-%d %H:%M:%S",  # 2029-12-31 00:00:00
+        "%Y-%m-%dT%H:%M:%S",  # 2029-12-31T00:00:00
         "%Y-%m-%d",  # 2029-12-31
         "%Y-%m-%dT%H:%M:%SZ",  # 2029-12-31T00:00:00Z
         "%d/%m/%Y",  # 31/12/2029
@@ -157,6 +158,31 @@ def normalize_date_format(date: str) -> Optional[datetime]:
         f"\033[1mWARNING:\033[0m Date format invalid and cannot be normalized: {date=}"
     )
     return None
+
+
+def compare_dicts(dict1, dict2, path=""):
+    differences = []
+    for key in set(dict1.keys()) | set(dict2.keys()):
+        current_path = f"{path}.{key}" if path else key
+        if key not in dict1:
+            differences.append(f"Key '{current_path}' missing in first dict")
+        elif key not in dict2:
+            differences.append(f"Key '{current_path}' missing in second dict")
+        elif isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+            differences.extend(compare_dicts(dict1[key], dict2[key], current_path))
+        elif dict1[key] != dict2[key]:
+            if isinstance(dict1[key], str) and isinstance(dict2[key], str):
+                try:
+                    date1 = normalize_date_format(dict1[key])
+                    date2 = normalize_date_format(dict2[key])
+                    if date1 == date2:
+                        continue
+                except ValueError:
+                    pass
+            differences.append(f"Mismatch for key '{current_path}':")
+            differences.append(f"  First dict:  {dict1[key]}")
+            differences.append(f"  Second dict: {dict2[key]}")
+    return differences
 
 
 def recombine_filename(filename: Path, suffix: str) -> Path:

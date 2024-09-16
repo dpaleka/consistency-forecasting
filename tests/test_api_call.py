@@ -5,8 +5,9 @@ from common.perscache import register_model_for_cache
 from common.llm_utils import (
     answer,
     answer_sync,
+    query_api_chat_with_parsing,
 )  # Adjust the import based on your script's structure
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class UserInfo(BaseModel):
@@ -127,3 +128,84 @@ async def test_answer_sync_async():
     )
     assert isinstance(result, PlainText) and len(result.text) > 0
     print(f"Generated question: {result.text}")
+
+
+class TestResponse(BaseModel):
+    name: str = Field(..., description="The name of the person")
+    age: int = Field(..., description="The age of the person")
+
+
+register_model_for_cache(TestResponse)
+
+
+def test_openai_json_strict(monkeypatch):
+    # Set up the environment
+    # remember the original value of OPENAI_JSON_STRICT
+    original_openai_json_strict = os.getenv("OPENAI_JSON_STRICT", "False")
+    monkeypatch.setenv("OPENAI_JSON_STRICT", "True")
+    monkeypatch.setenv(
+        "OPENAI_API_KEY", os.getenv("OPENAI_API_KEY")
+    )  # Ensure API key is set
+
+    # Define the prompt
+    prompt = "Generate a person with a name and age."
+
+    # Test with strict JSON mode
+    response = answer_sync(
+        prompt=prompt, model="gpt-4o-mini-2024-07-18", response_model=TestResponse
+    )
+    assert isinstance(response, TestResponse)
+    assert isinstance(response.name, str)
+    assert isinstance(response.age, int)
+
+    response = answer_sync(
+        prompt=prompt, model="gpt-4o-mini-2024-07-18", response_model=PlainText
+    )
+    assert isinstance(response, PlainText)
+    assert isinstance(response.text, str)
+
+    # restore the original value of OPENAI_JSON_STRICT
+    os.environ["OPENAI_JSON_STRICT"] = original_openai_json_strict
+
+
+class IntResponseModel(BaseModel):
+    reasoning: str
+    answer_polynomial: int
+
+
+register_model_for_cache(IntResponseModel)
+
+
+# New tests for query_api_chat_with_parsing
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "model",
+    [
+        "meta-llama/llama-3-405b-instruct",
+        "anthropic/claude-3.5-sonnet",
+    ],
+)
+async def test_query_api_chat_with_parsing(model):
+    original_use_openrouter = os.getenv("USE_OPENROUTER", "False")
+    os.environ["USE_OPENROUTER"] = "True"
+
+    messages = [
+        {
+            "role": "user",
+            "content": "Using Fermat's theorem, find the remainder of 3^47 when it is divided by 23. Think step by step.",
+        }
+    ]
+
+    response_model = IntResponseModel
+
+    response = await query_api_chat_with_parsing(
+        messages=messages,
+        response_model=response_model,
+        model=model,
+        parsing_model="gpt-4o-mini-2024-07-18",
+    )
+    assert response is not None
+    print(response)
+    assert isinstance(response, response_model)
+    assert response.answer_polynomial == (3**47) % 23
+    os.environ["USE_OPENROUTER"] = original_use_openrouter
