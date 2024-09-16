@@ -224,11 +224,22 @@ def main(
         [fq.resolution for fq in forecasting_questions[:num_lines]],
     )
 
+    resolutions = [fq.resolution for fq in forecasting_questions[:num_lines]]
+    avg_resolution = sum(resolutions) / len(resolutions)
+    tuned_brier_baseline = sum(
+        (resolution - avg_resolution) ** 2 for resolution in resolutions
+    ) / len(resolutions)
+    tuned_brier_baseline_scaled = scale_brier_score(tuned_brier_baseline)
+
     summary = {
         "total_questions": len(results),
-        "avg_brier_score_scaled": avg_brier_score_scaled,
+        "avg_brier_score_scaled": round_floats(avg_brier_score_scaled, precision=1),
         "avg_brier_score": avg_brier_score,
         "avg_log_score": avg_log_score,
+        "tuned_brier_baseline": tuned_brier_baseline,
+        "tuned_brier_baseline_scaled": round_floats(
+            tuned_brier_baseline_scaled, precision=1
+        ),
         "forecaster": forecaster.__class__.__name__,
         "forecaster_config": forecaster_config,
         "brier_score_decomposition": brier_score_decomposition,
@@ -238,8 +249,10 @@ def main(
 
     print("\nGround Truth Summary:")
     print(f"Total questions: {summary['total_questions']}")
-    print(f"Average Brier Score Scaled: {summary['avg_brier_score_scaled']:.4f}")
+    print(f"Average Brier Score Scaled: {summary['avg_brier_score_scaled']:.1f}")
     print(f"Average Brier Score: {summary['avg_brier_score']:.4f}")
+    print(f"Tuned Brier Baseline Scaled: {summary['tuned_brier_baseline_scaled']:.1f}")
+    print(f"Tuned Brier Baseline: {summary['tuned_brier_baseline']:.4f}")
     print(f"Average Log Score: {summary['avg_log_score']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
     print(f"Forecaster Config: {summary['forecaster_config']}")
