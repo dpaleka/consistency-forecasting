@@ -12,7 +12,12 @@ from common.llm_utils import (
 )
 
 from common.datatypes import ForecastingQuestion, Forecast
-from forecasters import BasicForecaster, COT_Forecaster, CoT_ForecasterTextBeforeParsing
+from forecasters import (
+    BasicForecaster,
+    CoT_Forecaster,
+    BasicForecasterTextBeforeParsing,
+    CoT_ForecasterTextBeforeParsing,
+)
 
 default_small_model = "gpt-4o-mini-2024-07-18"
 
@@ -123,7 +128,7 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
     )
 
     # Call the forecaster with actual prompts
-    forecaster = COT_Forecaster(
+    forecaster = CoT_Forecaster(
         preface=user_preface, examples=None, model=default_small_model
     )
     forecast = forecaster.call_full(mock_forecasting_question)
@@ -271,6 +276,13 @@ def test_crowd_forecaster_extremize():
 
 
 @pytest.fixture
+def basic_forecaster_text_before_parsing():
+    return BasicForecasterTextBeforeParsing(
+        model="gpt-4o-2024-08-06", examples=None, parsing_model="gpt-4o-mini-2024-07-18"
+    )
+
+
+@pytest.fixture
 def cot_forecaster_text_before_parsing():
     return CoT_ForecasterTextBeforeParsing(
         model="gpt-4o-2024-08-06", examples=None, parsing_model="gpt-4o-mini-2024-07-18"
@@ -278,47 +290,69 @@ def cot_forecaster_text_before_parsing():
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "forecaster_fixture",
+    ["basic_forecaster_text_before_parsing", "cot_forecaster_text_before_parsing"],
+)
 @patch("common.llm_utils.query_api_chat_native", wraps=query_api_chat_native)
 @patch(
     "common.llm_utils.query_parse_last_response_into_format",
     wraps=query_parse_last_response_into_format,
 )
 @patch("common.llm_utils.query_api_chat", wraps=query_api_chat)
-async def test_cot_forecaster_text_before_parsing_actual_call_async(
+async def test_forecaster_text_before_parsing_actual_call_async(
     mock_query_api_chat_native,
     mock_query_parse_last_response_into_format,
     mock_query_api_chat,
-    cot_forecaster_text_before_parsing,
+    forecaster_fixture,
+    request,
 ):
-    # Actual async call with mocks that wrap the actual LLM calls
-    forecast = await cot_forecaster_text_before_parsing.call_async(actual_fq)
+    forecaster = request.getfixturevalue(forecaster_fixture)
+
+    # Mocks wrap the actual LLM calls
+    forecast = await forecaster.call_async(actual_fq)
     assert isinstance(forecast, Forecast)
     assert isinstance(forecast.prob, float)
     assert 0 <= forecast.prob <= 1
-    assert "chain_of_thought" in forecast.metadata
+    if isinstance(forecaster, CoT_ForecasterTextBeforeParsing):
+        assert "chain_of_thought" in forecast.metadata
     assert mock_query_api_chat_native.call_count == 1
     assert mock_query_parse_last_response_into_format.call_count == 1
     assert mock_query_api_chat.call_count == 1
+    mock_query_api_chat_native.reset_mock()
+    mock_query_parse_last_response_into_format.reset_mock()
+    mock_query_api_chat.reset_mock()
 
 
+@pytest.mark.parametrize(
+    "forecaster_fixture",
+    ["basic_forecaster_text_before_parsing", "cot_forecaster_text_before_parsing"],
+)
 @patch("common.llm_utils.query_api_chat_sync_native", wraps=query_api_chat_sync_native)
 @patch(
     "common.llm_utils.query_parse_last_response_into_format_sync",
     wraps=query_parse_last_response_into_format_sync,
 )
 @patch("common.llm_utils.query_api_chat_sync", wraps=query_api_chat_sync)
-def test_cot_forecaster_text_before_parsing_actual_call_sync(
+def test_forecaster_text_before_parsing_actual_call_sync(
     mock_query_api_chat_sync_native,
     mock_query_parse_last_response_into_format_sync,
     mock_query_api_chat_sync,
-    cot_forecaster_text_before_parsing,
+    forecaster_fixture,
+    request,
 ):
-    # Actual sync call with mocks that wrap the actual LLM calls
-    forecast = cot_forecaster_text_before_parsing.call(actual_fq)
+    forecaster = request.getfixturevalue(forecaster_fixture)
+
+    # Mocks wrap the actual LLM calls
+    forecast = forecaster.call(actual_fq)
     assert isinstance(forecast, Forecast)
     assert isinstance(forecast.prob, float)
     assert 0 <= forecast.prob <= 1
-    assert "chain_of_thought" in forecast.metadata
+    if isinstance(forecaster, CoT_ForecasterTextBeforeParsing):
+        assert "chain_of_thought" in forecast.metadata
     assert mock_query_api_chat_sync_native.call_count == 1
     assert mock_query_parse_last_response_into_format_sync.call_count == 1
     assert mock_query_api_chat_sync.call_count == 1
+    mock_query_api_chat_sync_native.reset_mock()
+    mock_query_parse_last_response_into_format_sync.reset_mock()
+    mock_query_api_chat_sync.reset_mock()
