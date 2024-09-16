@@ -39,6 +39,27 @@ def brier_score(probability: float, outcome: bool) -> float:
     return (probability - int(outcome)) ** 2
 
 
+def scale_brier_score(brier_score: float) -> float:
+    """
+    Scale the Brier score linearly where:
+    .25 is mapped to 0,
+    .00 is mapped to 100
+    allow negative scores for worse than random
+
+    Args:
+        brier_score (float): The original Brier score to be scaled
+
+    Returns:
+        float: The scaled Brier score
+    """
+    assert 0 <= brier_score <= 1
+
+    # Perform linear interpolation
+    scaled_score = 100 * (0.25 - brier_score) / 0.25
+
+    return round(scaled_score, 2)
+
+
 def decompose_brier_score(
     probs: list[float], outcomes: list[bool], num_bins: int | None = None
 ) -> dict[str, float]:
