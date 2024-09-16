@@ -14,10 +14,10 @@ class BaselineForecaster(Forecaster):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> float:
-        return 0.5
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        return Forecast(prob=0.5, metadata={})
 
-    def call(self, fq: ForecastingQuestion, **kwargs) -> float:
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         return asyncio.run(self.call_async(fq, **kwargs))
 
     def dump_config(self) -> dict[str, Any]:
@@ -72,8 +72,8 @@ Today's date is {today_date} or later. You can search for events that have happe
 The question has resolved before your knowledge cutoff date; if there is evidence of a certain event happening, you should be able to find it.
 Please do not make up events that have not been observed. 
 
-If you are really unsure whether something has happened, output a probability between 0 and 1.
-This should not happen often.
+If you are really unsure on the resolution of the question, output a probability between 0 and 1 based on your reasoning.
+This should happen very rarely, about once in 50 questions.
 
 Think everything through step-by-step before coming to a conclusion.
 """
