@@ -132,26 +132,25 @@ def gen_or_tuple(og_question_1, og_question_2):
 
 DEFAULT_PROMPTS = [
     """
-    GENREAL: Output your general reasoning and thought process.  Here you can be as detailed as you want mentioning the reasoning of your predictions as well as how / why each prediction obeys the given consistency rules.  For each prediction you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.  
-    """,
-    """PROB: Output your probability estimates of each of the variables (P, Q, not_P etc).  Here, ONLY output the labels and its associated predictions and NOTHING ELSE. Your output MUST look like and be formatted like the following.
-    P: 0.xx
-    not_P: 0.xx
-    P_or_Q: 0.xx
+    GENERAL: Output your general reasoning and thought process.  Here you can be as detailed as you want, mentioning the reasoning of your predictions and how / why each prediction obeys the given consistency rules.  For each prediction, you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.    """,
+    """PROB: Output your probability estimates of each of the variables (P, Q, not_P, etc.).  Here, ONLY output the labels and their associated predictions and NOTHING ELSE. Your output MUST look and be formatted as follows.
+    P: 0.xx,
+    not_P: 0.xx,
+    P_or_Q: 0.xx,
     ...""",
-    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print out the mathematical rule and the associated numbers associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. Your output MUST look like and be formatted like the following.
-    neg: P = 1- not_P, EQUATION is EVALUATION
-    andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION
-    and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION
+    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print the mathematical rule and the associated numbers associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. Your output MUST look and be formatted as follows.
+    neg: P = 1- not_P, EQUATION is EVALUATION, 
+    andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION, 
+    and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION,
     ...
-    {ALL consistency checks passed!} OR {failed_check_1, failed_check_2 ... consistency checks failed!}""",
-    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occured before.
+    {ALL consistency checks passed!} OR {failed_check_1, failed_check_2 ... consistency checks failed!""",
+    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occurred before.
         Note that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes  
         your correction needs to ENSURE that it still passes other consistency checks too.
         If there were no violations found then simply output the same dict again.  Your output MUST look like and be formatted like the following.
-        P: 0.xx
-        not_P: 0.xx
-        P_or_Q: 0.xx
+        P: 0.xx,
+        not_P: 0.xx,
+        P_or_Q: 0.xx,
         ...""",
     "FLOAT: Now just output your probability estimate of P and nothing else as a decimal!",
 ]
@@ -268,7 +267,7 @@ example_consistent = [
     },
     {
         "role": "assistant",
-        "content": "P: Historically the united States has had a pretty strong showing in the olympics, winning by far the most gold medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty high at 0.73\nnot_P: Historically the united States has had a pretty strong showing in the olympics, winning by far the most gold medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty low at 0.27\npara_P: Historically the united States has had a pretty strong showing in the olympics, winning by far the most gold medals and most medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty high at 0.73\nQ: Recently there have been some geo-political tensions brewing between China and the US regarding technolody, Taiwan, and politics.  However, generally we live in a peaceful and interconnected world where people want to generally avoid war.  Accounting for these assumptions, I would guess 0.33\nP_and_Q: I think that these two events (US topping the Paris olympics and a US - China armed conflict leading to 100 deaths) are mostly independent events.  Therefore we can intially guesss this as P * Q = 0.73 * 0.33 = 0.24.  However, perhaps there is some negative correlation with these events where if the US does not top the medal count, China could perceive the country as a little weaker and therefore more likely to provoke militarily.  Therefore we can make a small adjustment to 0.23\nP_or_Q: We can calculate this as the probability that P + Q - P_and_Q, which is 0.83\nQ_and_not_P: I think that these two events (US - China armed conflict leading to 100 deaths and the US not topping olmpics tables) are mostly independent events.  Therefore we can intially guesss this as Q * not_P = 0.33 * 0.27 = 0.09.  However, perhaps there is some positive correlation with these events where if the US does not top the medal count, China could perceive the country as a little weaker and therefore more likely to provoke militarily.  Therefore we can make a small adjustment to 0.10\nQ_given_P: I think that these two events (US topping the Paris olympics and a US - China armed conflict leading to 100 deaths) are mostly independent events.  Therefore as a base case, we can guess Q_given_P is just Q = 0.33.  We can provide a slight adjustment downwards due to there being small negative correlation with these events at 0.32",
+        "content": "P: Historically the united States has had a pretty strong showing in the Olympics, winning by far the most gold medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty high at 0.73\nnot_P: Historically the united States has had a pretty strong showing in the Olympics, winning by far the most gold medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty low at 0.27\npara_P: Historically the united States has had a pretty strong showing in the Olympics, winning by far the most gold medals and most medals.  However, in the past, other countries such as China have also been pretty competitive and even overtook the US in gold medals in 2008.  Overall I would say the probability is pretty high at 0.73\nQ: Recently there have been some Geo-political tensions brewing between China and the US regarding technology, Taiwan, and politics.  However, generally we live in a peaceful and interconnected world where people want to generally avoid war.  Accounting for these assumptions, I would guess 0.33\nP_and_Q: I think that these two events (US topping the Paris Olympics and a US - China armed conflict leading to 100 deaths) are mostly independent events.  Therefore we can initially guess this as P * Q = 0.73 * 0.33 = 0.24.  However, perhaps there is some negative correlation with these events where if the US does not top the medal count, China could perceive the country as a little weaker and therefore more likely to provoke militarily.  Therefore we can make a small adjustment to 0.23\nP_or_Q: We can calculate this as the probability that P + Q - P_and_Q, which is 0.83\nQ_and_not_P: I think that these two events (US - China armed conflict leading to 100 deaths and the US not topping Olympics tables) are mostly independent events.  Therefore we can initially guess this as Q * not_P = 0.33 * 0.27 = 0.09.  However, perhaps there is some positive correlation with these events where if the US does not top the medal count, China could perceive the country as a little weaker and therefore more likely to provoke militarily.  Therefore we can make a small adjustment to 0.10\nQ_given_P: I think that these two events (US topping the Paris Olympics and a US - China armed conflict leading to 100 deaths) are mostly independent events.  Therefore as a base case, we can guess Q_given_P is just Q = 0.33.  We can provide a slight adjustment downwards due to there being small negative correlation with these events at 0.32",
     },
     {
         "role": "user",
@@ -464,25 +463,24 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             }
 
         DEFAULT_PREFACE = """
-            You are an informed and well-calibrated forecaster. I need you to give me the best probability estimate of the following events or questions resolving YES rounded to two decimals.
-            The questions can be labelled with "P", "Q", or logical combination of such events, for example "Q_given_P", "not_P", Q_and_P" etc.
-            I will also provide you a list of consistency rules that your probability estimates must obey.
+            You are an informed and well-calibrated forecaster. You need to give me the best probability estimate of the following events or questions resolving YES rounded to two decimals.
+            The questions can be labeled with "P", "Q", or logical combination of such events, for example "Q_given_P", "not_P", Q_and_P" etc.
+            I will also provide you with a list of consistency rules that your probability estimates must obey.
             The CONSISTENCY RULES are as follows: {}
 
-            Additionally, leading every input may be an additional command.  Depending on what this command is, structure your response in that wai.
+            In addition, leading every input may be an additional command.  Depending on what this command is, structure your response in that way.
             QUESTIONS: This will be followed by the dict of questions to evaluate.  You must ONLY output "RECEIVED" and NOTHING ELSE.
-            GENERAL: You may output anything you want.
+            GENERAL: You may output whatever you want.
             PROB: You must ONLY output your probability estimates for each variable given to you previously in the following format: 
                     P: 0.xx
                     not_P: 0.xx
                     ...
 
-            CHECK:  You must ONLY output the each check from CONSISTENCY RULES and an evaluation of whether the check is passed in the format below.  At the end comment on whether all checks passed, or which ones failed.
+            CHECK: You must only output each check from CONSISTENCY RULES and an evaluation of whether the check is passed in the format below.  In the end, comment on whether all checks passed or which ones failed.
                     check_name: mathematical_rule, substitute_variables is evaluation_true_false
-
-
-            FLOAT:  You must ONLY output a float and NOTHING ELSE.
-            """.format(str(self.consistency_checks))
+            FLOAT: You must ONLY output a float and NOTHING ELSE.""".format(
+            str(self.consistency_checks)
+        )
 
         self.preface = preface or DEFAULT_PREFACE
         self.user_prompts = user_prompts or DEFAULT_PROMPTS
@@ -526,6 +524,7 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         self.generate_all_questions(ForecastingQuestion)
         self.generate_user_prompts(self.forecasting_questions)
 
+    """
     @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
@@ -534,7 +533,40 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
     @costly()
     def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
-        return super().call_async(self.user_prompts, self.examples, include_metadata)
+        return super().call_async(self.user_prompts, self.examples, include_metadata)"""
+
+    @costly()
+    def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
+        try:
+            self.prep_call(ForecastingQuestion)
+            result = super().call(self.user_prompts, self.examples, include_metadata)
+            with open("adam_run_good.txt", "a") as f:
+                f.write(str(ForecastingQuestion) + "\n")
+                f.write(str(self.forecasting_questions) + "\n")
+            return result
+        except Exception as e:
+            with open("adam_run_bad.txt", "a") as f:
+                f.write(str(ForecastingQuestion) + "\n")
+                f.write(str(self.forecasting_questions) + "\n")
+            raise e
+
+    @costly()
+    def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
+        try:
+            self.prep_call(ForecastingQuestion)
+
+            result = super().call_async(
+                self.user_prompts, self.examples, include_metadata
+            )
+            with open("adam_run_good.txt", "a") as f:
+                f.write(str(ForecastingQuestion) + "\n")
+                f.write(str(self.forecasting_questions) + "\n")
+            return result
+        except Exception as e:
+            with open("adam_run_bad.txt", "a") as f:
+                f.write(str(ForecastingQuestion) + "\n")
+                f.write(str(self.forecasting_questions) + "\n")
+            raise e
 
     def dump_config(self):
         return {
