@@ -6,6 +6,7 @@ import click
 import logging
 import asyncio
 import functools
+from tqdm import tqdm
 
 from common.path_utils import get_data_path
 from common.utils import make_json_serializable, compare_dicts
@@ -33,6 +34,37 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+
+
+def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
+    log_score = proper_score(
+        probs=[forecast.prob],
+        outcomes=[fq.resolution],
+        scoring_function=scoring_functions["log_score"],
+    )
+    brier_score = proper_score(
+        probs=[forecast.prob],
+        outcomes=[fq.resolution],
+        scoring_function=scoring_functions["brier_score"],
+    )
+
+    assert (
+        (
+            line_fq_differences := compare_dicts(
+                line, make_json_serializable(fq.to_dict())
+            )
+        )
+        == []
+    ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
+
+    return {
+        "question": line,
+        "forecast": make_json_serializable(forecast.to_dict()),
+        "prob": forecast.prob,
+        "resolution": fq.resolution,
+        "log_score": round_floats(log_score, precision=4),
+        "brier_score": round_floats(brier_score, precision=4),
+    }
 
 
 @click.command()
@@ -79,6 +111,7 @@ def main(
         forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
     )
     dirs_to_write = [output_directory, most_recent_directory]
+    output_filename = "ground_truth_results.jsonl"
 
     with open(input_file, "r") as f:
         data = [json.loads(line) for line in f]
@@ -107,20 +140,32 @@ def main(
         assert load_dir is None, "load_dir must be None when run is True"
 
         forecasts = []
-        if is_async:
-            batch_size = 5
-            for start in range(0, num_lines, batch_size):
-                end = min(start + batch_size, num_lines)
-                batch_tuples = forecasting_questions[start:end]
+        results = []
+        batch_size = 20
+        for start in tqdm(range(0, num_lines, batch_size)):
+            end = min(start + batch_size, num_lines)
+            batch_tuples = forecasting_questions[start:end]
+            if is_async:
                 reset_global_semaphore()
                 call_func = functools.partial(forecaster.call_async_full)
-                results_batch = asyncio.run(parallelized_call(call_func, batch_tuples))
-                forecasts.extend(results_batch)
+                forecasts_batch = asyncio.run(
+                    parallelized_call(call_func, batch_tuples)
+                )
+            else:
+                forecasts_batch = []
+                for fq in batch_tuples:
+                    forecast = forecaster.call_full(fq)
+                    forecasts.append(forecast)
 
-        else:
-            for line, fq in zip(data[:num_lines], forecasting_questions[:num_lines]):
-                forecast = forecaster.call_full(fq)
-                forecasts.append(forecast)
+            results_batch = []
+            for line, fq, forecast in zip(
+                data[start:end], batch_tuples, forecasts_batch
+            ):
+                results_batch.append(make_result_dict(line, fq, forecast))
+
+            forecasts.extend(forecasts_batch)
+            results.extend(results_batch)
+            write_to_dirs(results, output_filename, dirs_to_write, overwrite=True)
     else:
         if (
             load_dir is None
@@ -145,41 +190,11 @@ def main(
                     == results_loaded[i]["question"]["title"]
                 ), "Questions do not match"
 
-    for line, fq, forecast in zip(
-        data[:num_lines], forecasting_questions[:num_lines], forecasts
-    ):
-        log_score = proper_score(
-            probs=[forecast.prob],
-            outcomes=[fq.resolution],
-            scoring_function=scoring_functions["log_score"],
-        )
-        brier_score = proper_score(
-            probs=[forecast.prob],
-            outcomes=[fq.resolution],
-            scoring_function=scoring_functions["brier_score"],
-        )
+        for line, fq, forecast in zip(
+            data[:num_lines], forecasting_questions[:num_lines], forecasts
+        ):
+            results.append(make_result_dict(line, fq, forecast))
 
-        assert (
-            (
-                line_fq_differences := compare_dicts(
-                    line, make_json_serializable(fq.to_dict())
-                )
-            )
-            == []
-        ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
-
-        results.append(
-            {
-                "question": line,
-                "forecast": make_json_serializable(forecast.to_dict()),
-                "prob": forecast.prob,
-                "resolution": fq.resolution,
-                "log_score": round_floats(log_score, precision=4),
-                "brier_score": round_floats(brier_score, precision=4),
-            }
-        )
-
-    output_filename = "ground_truth_results.jsonl"
     write_to_dirs(
         results=results,
         filename=output_filename,
