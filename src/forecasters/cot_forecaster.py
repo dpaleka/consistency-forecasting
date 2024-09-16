@@ -1,16 +1,25 @@
-from .forecaster import Forecaster
+from forecasters.forecaster import Forecaster
 from common.datatypes import (
     ForecastingQuestion_stripped,
     ForecastingQuestion,
     Forecast,
     Prob_cot,
 )
-from common.llm_utils import answer, answer_sync, Example
+from common.llm_utils import (
+    answer,
+    answer_sync,
+    Example,
+    query_api_chat_native,
+    query_api_chat,
+)
+import asyncio
 
 COT_FORECASTER_PREFACE = (
     "You are an informed and well-calibrated forecaster. I need you to give me "
-    "your best probability estimate for the following sentence or question resolving YES. "
-    "I want you to first provide a reasoning for your answer, and then give me the probability. "
+    "your best probability estimate for the following question resolving YES. "
+    "If you think it is likely the question resolves YES, the probability should be large; "
+    "if you think it is unlikely the question resolves NO, the probability should be small. "
+    "I want you to first provide a detailed reasoning for your answer, and then give me the probability. "
     "Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'"
 )
 
@@ -146,4 +155,60 @@ class CoT_ForecasterTextBeforeParsing(CoT_Forecaster):
         print(f"LLM API response: {response}")
         return Forecast(
             prob=response.prob, metadata={"chain_of_thought": response.chain_of_thought}
+        )
+
+
+class CoT_ForecasterAskThenParse(Forecaster):
+    def __init__(
+        self,
+        model: str,
+        preface: str = None,
+        parsing_model: str = "gpt-4o-mini-2024-07-18",
+    ):
+        self.model = model
+        self.preface = preface or COT_FORECASTER_PREFACE
+        self.parsing_model = parsing_model
+
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        native_response = await query_api_chat_native(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": self.preface},
+                {"role": "user", "content": fq.to_str_forecast_mode()},
+            ],
+            **kwargs,
+        )
+        parsed_response = await query_api_chat(
+            response_model=Prob_cot,
+            model=self.parsing_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Parse the user's message into the provided output format. ",
+                },
+                {"role": "user", "content": native_response},
+            ],
+            **kwargs,
+        )
+        return Forecast(
+            prob=parsed_response.prob,
+            metadata={"chain_of_thought": parsed_response.chain_of_thought},
+        )
+
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        return asyncio.run(self.call_async(fq, **kwargs))
+
+    def dump_config(self):
+        return {
+            "model": self.model,
+            "preface": self.preface,
+            "parsing_model": self.parsing_model,
+        }
+
+    @classmethod
+    def load_config(cls, config):
+        return cls(
+            model=config["model"],
+            preface=config["preface"],
+            parsing_model=config["parsing_model"],
         )
