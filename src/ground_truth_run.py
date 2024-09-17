@@ -25,6 +25,7 @@ from evaluation_utils.proper_scoring import (
     scoring_functions,
     plot_calibration,
     calculate_calibration,
+    scale_brier_score,
 )
 
 
@@ -47,6 +48,7 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
         outcomes=[fq.resolution],
         scoring_function=scoring_functions["brier_score"],
     )
+    brier_score_scaled = scale_brier_score(brier_score)
 
     assert (
         (
@@ -64,6 +66,7 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
         "resolution": fq.resolution,
         "log_score": round_floats(log_score, precision=4),
         "brier_score": round_floats(brier_score, precision=4),
+        "brier_score_scaled": round_floats(brier_score_scaled, precision=4),
     }
 
 
@@ -141,7 +144,7 @@ def main(
 
         forecasts = []
         results = []
-        batch_size = 20
+        batch_size = 50
         for start in tqdm(range(0, num_lines, batch_size)):
             end = min(start + batch_size, num_lines)
             batch_tuples = forecasting_questions[start:end]
@@ -204,10 +207,11 @@ def main(
     print(f"Results written to {output_filename}")
 
     # Calculate and print summary statistics
-    total_log_score = sum(result["log_score"] for result in results)
-    total_brier_score = sum(result["brier_score"] for result in results)
-    average_log_score = total_log_score / len(results)
-    average_brier_score = total_brier_score / len(results)
+    avg_log_score = sum(result["log_score"] for result in results) / len(results)
+    avg_brier_score = sum(result["brier_score"] for result in results) / len(results)
+    avg_brier_score_scaled = sum(
+        result["brier_score_scaled"] for result in results
+    ) / len(results)
 
     calibration_error_data: dict = calculate_calibration(
         [fq.resolution for fq in forecasting_questions[:num_lines]],
@@ -220,21 +224,36 @@ def main(
         [fq.resolution for fq in forecasting_questions[:num_lines]],
     )
 
+    resolutions = [fq.resolution for fq in forecasting_questions[:num_lines]]
+    avg_resolution = sum(resolutions) / len(resolutions)
+    tuned_brier_baseline = sum(
+        (resolution - avg_resolution) ** 2 for resolution in resolutions
+    ) / len(resolutions)
+    tuned_brier_baseline_scaled = scale_brier_score(tuned_brier_baseline)
+
     summary = {
         "total_questions": len(results),
-        "average_log_score": average_log_score,
-        "average_brier_score": average_brier_score,
+        "avg_brier_score_scaled": round_floats(avg_brier_score_scaled, precision=1),
+        "avg_brier_score": avg_brier_score,
+        "avg_log_score": avg_log_score,
+        "tuned_brier_baseline": tuned_brier_baseline,
+        "tuned_brier_baseline_scaled": round_floats(
+            tuned_brier_baseline_scaled, precision=1
+        ),
+        "forecaster": forecaster.__class__.__name__,
+        "forecaster_config": forecaster_config,
         "brier_score_decomposition": brier_score_decomposition,
         "calibration_error": calibration_error,
         "calibration_error_data": calibration_error_data,
-        "forecaster": forecaster.__class__.__name__,
-        "forecaster_config": forecaster_config,
     }
 
     print("\nGround Truth Summary:")
     print(f"Total questions: {summary['total_questions']}")
-    print(f"Average Log Score: {summary['average_log_score']:.4f}")
-    print(f"Average Brier Score: {summary['average_brier_score']:.4f}")
+    print(f"Average Brier Score Scaled: {summary['avg_brier_score_scaled']:.1f}")
+    print(f"Average Brier Score: {summary['avg_brier_score']:.4f}")
+    print(f"Tuned Brier Baseline Scaled: {summary['tuned_brier_baseline_scaled']:.1f}")
+    print(f"Tuned Brier Baseline: {summary['tuned_brier_baseline']:.4f}")
+    print(f"Average Log Score: {summary['avg_log_score']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
     print(f"Forecaster Config: {summary['forecaster_config']}")
 
