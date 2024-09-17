@@ -1,6 +1,5 @@
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion, Forecast
-from typing import Optional
 
 # llm_forecasting imports
 from forecasters.llm_forecasting.prompts.prompts import PROMPT_DICT
@@ -82,11 +81,16 @@ RETRIEVAL_CONFIG: RetrievalConfig = RetrievalConfig(**DEFAULT_RETRIEVAL_CONFIG)
 REASONING_CONFIG: ReasoningConfig = ReasoningConfig(**REASONING_CONFIG)
 
 
+default_forecaster_date = "2024-04-30"
+
+
 class AdvancedForecaster(Forecaster):
     def __init__(
         self,
         retrieval_config: RetrievalConfig | None = None,
         reasoning_config: ReasoningConfig | None = None,
+        forecaster_date: str | datetime | None = None,
+        retrieval_interval_length: int = 30,
         **kwargs,
     ):
         """
@@ -96,6 +100,10 @@ class AdvancedForecaster(Forecaster):
         print("Loading AdvancedForecaster...")
         self.retrieval_config = retrieval_config or RETRIEVAL_CONFIG
         self.reasoning_config = reasoning_config or REASONING_CONFIG
+        self.forecaster_date = forecaster_date or default_forecaster_date
+        self.retrieval_interval_length = retrieval_interval_length
+        print(f"Forecaster date: {self.forecaster_date}\n")
+
         if retrieval_config is None:
             for key, value in kwargs.items():
                 if key in self.retrieval_config.keys():
@@ -112,17 +120,17 @@ class AdvancedForecaster(Forecaster):
             )
             print(f"kwargs: {kwargs}")
 
-        print("Initialized forecaster with settings:")
         # print(f"Retrieval config: {self.retrieval_config}")
         # print(f"Reasoning config: {self.reasoning_config}")
 
     async def call_async(
         self,
         fq: ForecastingQuestion,
-        forecaster_date: str | datetime | None = None,
-        retrieval_interval_length: int = 30,
         **kwargs,
     ) -> Forecast:
+        forecaster_date = self.forecaster_date
+        retrieval_interval_length = self.retrieval_interval_length
+
         question: str = fq.title
         resolution_criteria: str = fq.body
         background_info: str = "N/A"  # call_full removes the `metadata` field. `background_info` is only present in Metaculus questions, and is generally not crucial for forecasting, only useful for AdvancedForecaster to retrieve relevant articles
@@ -195,16 +203,12 @@ class AdvancedForecaster(Forecaster):
     def call(
         self,
         sentence: ForecastingQuestion,
-        forecaster_date: Optional[str | datetime] = None,
-        retrieval_interval_length: int = 30,
         **kwargs,
     ) -> Forecast:
         # This won't work inside a Jupyter notebook or similar; but there you can use await
         return asyncio.run(
             self.call_async(
                 sentence,
-                forecaster_date,
-                retrieval_interval_length,
                 **kwargs,
             )
         )
@@ -213,6 +217,8 @@ class AdvancedForecaster(Forecaster):
         return {
             "retrieval_config": self.retrieval_config.to_dict(),
             "reasoning_config": self.reasoning_config.to_dict(),
+            "forecaster_date": self.forecaster_date,
+            "retrieval_interval_length": self.retrieval_interval_length,
         }
 
     @classmethod

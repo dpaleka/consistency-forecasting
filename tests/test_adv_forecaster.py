@@ -139,6 +139,7 @@ def log(message):
 @pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_advanced_forecaster(sample_forecasting_question):
+    default_test_date = "2024-04-30"
     af = AdvancedForecaster(
         MAX_WORDS_NEWSCATCHER=0,
         MAX_WORDS_GNEWS=2,
@@ -148,6 +149,7 @@ async def test_advanced_forecaster(sample_forecasting_question):
         BASE_REASONING_MODEL_NAMES=["gpt-4o-mini-2024-07-18", "gpt-4o-mini-2024-07-18"],
         RANKING_MODEL_NAME="gpt-4o-mini-2024-07-18",
         AGGREGATION_MODEL_NAME="gpt-4o-mini-2024-07-18",
+        forecaster_date=default_test_date,
     )
 
     fq = sample_forecasting_question
@@ -161,7 +163,7 @@ async def test_advanced_forecaster(sample_forecasting_question):
         log(f"\n{question['metadata']['background_info']=}")
     log(f"\n{'%'*40}\n% Running Advanced Forecaster\n{'%'*40}\n")
 
-    forecast = await af.call_async_full(fq=fq)
+    forecast = await af.call_async(fq=fq)
     final_prob = forecast.prob
 
     log(f"Final LLM probability: {final_prob}")
