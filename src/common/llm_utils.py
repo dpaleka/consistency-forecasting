@@ -56,6 +56,10 @@ max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
 
 
+if os.getenv("OPENAI_JSON_STRICT") == "True":
+    raise ValueError(
+        "OPENAI_JSON_STRICT is set to True. There is an ongoing issue with this flag, so please set it to False."
+    )
 ## All logging settings here
 if os.getenv("USE_LOGFIRE") == "True":
     print("Setting up Pydantic Logfire")
