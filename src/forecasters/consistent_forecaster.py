@@ -72,6 +72,11 @@ class ConsistentForecaster(Forecaster):
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
 
+        self.bq_func_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
+        self.bq_func_kwargs["simulate"] = self.kwargs.get("simulate", False)
+        self.instantiation_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
+        self.instantiation_kwargs["simulate"] = self.kwargs.get("simulate", False)
+
     def bq_function(
         self,
         sentence: ForecastingQuestion,
@@ -165,6 +170,10 @@ class ConsistentForecaster(Forecaster):
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+        bq_func_kwargs["cost_log"] = kwargs.get("cost_log", None)
+        bq_func_kwargs["simulate"] = kwargs.get("simulate", False)
+        instantiation_kwargs["cost_log"] = kwargs.get("cost_log", None)
+        instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
 
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
         max_tuple_size = max(check.num_base_questions for check in self.checks)
@@ -205,6 +214,10 @@ class ConsistentForecaster(Forecaster):
         kwargs = self.kwargs | (kwargs or {})
         bq_func_kwargs = self.bq_func_kwargs | (bq_func_kwargs or {})
         instantiation_kwargs = self.instantiation_kwargs | (instantiation_kwargs or {})
+        bq_func_kwargs["cost_log"] = kwargs.get("cost_log", None)
+        bq_func_kwargs["simulate"] = kwargs.get("simulate", False)
+        instantiation_kwargs["cost_log"] = kwargs.get("cost_log", None)
+        instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
 
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
         max_tuple_size = max(check.num_base_questions for check in self.checks)
