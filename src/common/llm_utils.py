@@ -17,7 +17,6 @@ from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
-import transformers
 from costly import CostlyResponse, costly
 from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
@@ -27,6 +26,7 @@ from .datatypes import (
     ForecastingQuestion_stripped,
 )
 from .path_utils import get_src_path, get_root_path, get_data_path
+from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
 
 
 from .perscache import (
@@ -43,7 +43,7 @@ from .perscache import (
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
 
-load_dotenv(override=False)
+load_dotenv(override=False, dotenv_path=get_root_path() / ".env")
 
 # We override all keys and tokens (bc those could have been set globally in the user's system). Other flags stay if they are set.
 env_path = get_root_path() / ".env"
@@ -52,7 +52,7 @@ KEYS = [k for k in env_vars.keys() if "KEY" in k or "TOKEN" in k]
 override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
 
-max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
+max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
 
 
@@ -181,11 +181,38 @@ def singleton_constructor(get_instance_func):
 
 
 @singleton_constructor
+def get_async_perplexity_client() -> AsyncPerplexityClient:
+    load_dotenv()
+    api_key = os.getenv("PERPLEXITY_API_TOKEN")
+    if not api_key:
+        raise ValueError("PERPLEXITY_API_TOKEN not found in environment variables")
+    client = AsyncPerplexityClient(api_key)
+    # If you have a logging/instrumentation library like logfire, you can add it here
+    # logfire.instrument_perplexity(client)
+    return client
+
+
+@singleton_constructor
+def get_sync_perplexity_client() -> SyncPerplexityClient:
+    load_dotenv()
+    api_key = os.getenv("PERPLEXITY_API_TOKEN")
+    if not api_key:
+        raise ValueError("PERPLEXITY_API_TOKEN not found in environment variables")
+    client = SyncPerplexityClient(api_key)
+    # If you have a logging/instrumentation library like logfire, you can add it here
+    # logfire.instrument_perplexity(client)
+    return client
+
+
+@singleton_constructor
 def get_async_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    return instructor.from_openai(_client)
+    mode = (
+        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
+    )
+    return instructor.from_openai(_client, mode=mode)
 
 
 @singleton_constructor
@@ -201,7 +228,10 @@ def get_openai_client_pydantic() -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    return instructor.from_openai(_client)
+    mode = (
+        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
+    )
+    return instructor.from_openai(_client, mode=mode)
 
 
 @singleton_constructor
@@ -300,14 +330,10 @@ def get_togetherai_client_native() -> OpenAI:
     return _client
 
 
-@singleton_constructor
-def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
-    raise NotImplementedError("HuggingFace local client not implemented")
-
-
 def is_openai(model: str) -> bool:
     keywords = [
         "ft:gpt",
+        "o1",
         "gpt-4o-mini",
         "gpt-4",
         "gpt-3.5",
@@ -317,6 +343,11 @@ def is_openai(model: str) -> bool:
         "open-ai",
     ]
     return any(keyword in model for keyword in keywords)
+
+
+def is_perplexity_ai(model: str) -> bool:
+    keywords = ["perplexity", "sonar"]
+    return any(keyword.lower() in model.lower() for keyword in keywords)
 
 
 def is_togetherai(model: str) -> bool:
@@ -338,7 +369,12 @@ def get_provider(model: str) -> str:
     if os.getenv("USE_OPENROUTER") and os.getenv("USE_OPENROUTER") != "False":
         return "openrouter"
     elif is_openai(model):
+        print(
+            f"Using OpenAI provider for model {model}, key {os.getenv('OPENAI_API_KEY')}"
+        )
         return "openai"
+    elif is_perplexity_ai(model):
+        return "perplexity"
     elif is_anthropic(model):
         return "anthropic"
     elif is_togetherai(model):
@@ -426,6 +462,11 @@ def get_client_native(
                     "Only synchronous calls are supported for TogetherAI"
                 )
             client = get_togetherai_client_native()
+        elif provider == "perplexity":
+            if use_async:
+                client = get_async_perplexity_client()
+            else:
+                client = get_sync_perplexity_client()
         else:
             raise NotImplementedError(f"Model {model} is not supported for now")
 
@@ -443,6 +484,30 @@ def _mistral_message_transform(messages):
         mistral_message = ChatMessage(role=message["role"], content=message["content"])
         mistral_messages.append(mistral_message)
     return mistral_messages
+
+
+def _o1_message_params_transform(messages, options):
+    o1_messages = []
+    if messages[0]["role"] == "system":
+        o1_messages.append({"role": "user", "content": messages[0]["content"]})
+        o1_messages.append(
+            {"role": "assistant", "content": "System message acknowledged"}
+        )
+        o1_messages.extend(messages[1:])
+    else:
+        o1_messages.extend(messages)
+
+    options["temperature"] = 1
+    return o1_messages, options
+
+
+def supports_system_message(model: str, client_name: str) -> bool:
+    """
+    There might be other models that don't support system messages; check if there is an error when running the code.
+    """
+    if "o1" in model:
+        return False
+    return True
 
 
 ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
@@ -491,12 +556,17 @@ async def query_api_chat(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     response, completion = await client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -537,9 +607,14 @@ async def query_api_chat_native(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = await client.chat(
@@ -596,12 +671,17 @@ def query_api_chat_sync(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if client_name == "anthropic":
         options["max_tokens"] = options.get("max_tokens", 1024)
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     response, completion = client.chat.completions.create_with_completion(
         messages=call_messages,
@@ -641,9 +721,14 @@ def query_api_chat_sync_native(
     call_messages = (
         _mistral_message_transform(messages) if client_name == "mistral" else messages
     )
+    call_messages, options = (
+        _o1_message_params_transform(call_messages, options)
+        if not supports_system_message(options["model"], client_name)
+        else (call_messages, options)
+    )
 
     if verbose or os.getenv("VERBOSE") == "True":
-        print(options)
+        print(f"{options=}, {len(messages)=}")
 
     if client_name == "mistral" and not os.getenv("USE_OPENROUTER"):
         response = client.chat(
@@ -677,17 +762,27 @@ class Example:
     assistant: str | BaseModel
 
 
+def serialize_if_pydantic(obj: str | BaseModel) -> str:
+    """
+    Idempotent function to convert a BaseModel to a string.
+    If the object is already a string, it returns the object as is.
+    """
+    if isinstance(obj, BaseModel):
+        return obj.model_dump_json()
+    return obj
+
+
 def prepare_messages(
-    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+    prompt: str | BaseModel | None,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
     preface = preface or "You are a helpful assistant."
     examples = examples or []
     messages = [{"role": "system", "content": preface}]
     for example in examples:
-        if isinstance(example.user, BaseModel):
-            example.user = example.user.model_dump_json()
-        if isinstance(example.assistant, BaseModel):
-            example.assistant = example.assistant.model_dump_json()
+        example.user = serialize_if_pydantic(example.user)
+        example.assistant = serialize_if_pydantic(example.assistant)
         messages.append({"role": "user", "content": example.user})
         # Convert assistant's response to string if it's not already
         assistant_content = (
@@ -696,14 +791,16 @@ def prepare_messages(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    if isinstance(prompt, BaseModel):
-        prompt = prompt.model_dump_json()
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
 def prepare_messages_alt(
-    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+    prompt: str | BaseModel | None,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
     sys_preface = "You are a helpful assistant."
     messages = [{"role": "system", "content": sys_preface}]
@@ -711,10 +808,8 @@ def prepare_messages_alt(
     if not preface:
         preface = ""
     for example in examples:
-        if isinstance(example.user, BaseModel):
-            example.user = example.user.model_dump_json()
-        if isinstance(example.assistant, BaseModel):
-            example.assistant = example.assistant.model_dump_json()
+        example.user = serialize_if_pydantic(example.user)
+        example.assistant = serialize_if_pydantic(example.assistant)
         messages.append({"role": "user", "content": example.user})
         example.user = preface + "\n\n" + example.user
         # Convert assistant's response to string if it's not already
@@ -724,10 +819,10 @@ def prepare_messages_alt(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    if isinstance(prompt, BaseModel):
-        prompt = prompt.model_dump_json()
-    prompt = preface + "\n\n" + prompt
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        prompt = preface + "\n\n" + prompt
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
@@ -737,6 +832,7 @@ async def answer(
     preface: Optional[str] = None,
     examples: Optional[List[Example]] = None,
     prepare_messages_func=prepare_messages,
+    with_parsing: bool = False,
     **kwargs,
 ) -> BaseModel:
     messages = prepare_messages_func(prompt, preface, examples)
@@ -748,10 +844,13 @@ async def answer(
     options = default_options | kwargs  # override defaults with kwargs
 
     if os.getenv("VERBOSE") == "True":
-        print(f"options: {options}")
-        print(f"messages: {messages}")
+        print(f"{options=}, {len(messages)=}")
+
     async with global_llm_semaphore:
-        return await query_api_chat(messages=messages, **options)
+        if with_parsing:
+            return await query_api_chat_with_parsing(messages=messages, **options)
+        else:
+            return await query_api_chat(messages=messages, **options)
 
 
 @logfire.instrument("answer_sync", extract_args=True)
@@ -760,6 +859,7 @@ def answer_sync(
     preface: str | None = None,
     examples: list[Example] | None = None,
     prepare_messages_func=prepare_messages,
+    with_parsing: bool = False,
     **kwargs,
 ) -> BaseModel:
     messages = prepare_messages_func(prompt, preface, examples)
@@ -768,6 +868,51 @@ def answer_sync(
         "temperature": 0.5,
         "response_model": PlainText,
     } | kwargs
+    if with_parsing:
+        return query_api_chat_sync_with_parsing(messages=messages, **options)
+    else:
+        return query_api_chat_sync(messages=messages, **options)
+
+
+async def answer_messages(
+    messages: List[dict[str, str] | dict[str, BaseModel]],
+    **kwargs,
+) -> BaseModel:
+    default_options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+        "response_model": PlainText,
+    }
+    options = default_options | kwargs  # override defaults with kwargs
+
+    for message in messages:
+        assert (
+            isinstance(message, dict) and "content" in message
+        ), "Messages must be dictionaries with a 'content' key"
+        message["content"] = serialize_if_pydantic(message["content"])
+
+    print(f"options: {options}")
+    print(f"messages: {messages}")
+    async with global_llm_semaphore:
+        return await query_api_chat(messages=messages, **options)
+
+
+def answer_messages_sync(
+    messages: List[dict[str, str] | dict[str, BaseModel]],
+    **kwargs,
+) -> BaseModel:
+    for message in messages:
+        assert (
+            isinstance(message, dict) and "content" in message
+        ), "Messages must be dictionaries with a 'content' key"
+        message["content"] = serialize_if_pydantic(message["content"])
+
+    options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+        "response_model": PlainText,
+    } | kwargs
+
     return query_api_chat_sync(messages=messages, **options)
 
 
@@ -810,14 +955,154 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     )
 
 
-# TODO: once I add hf to costly
-def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
-    client, client_name = get_client_pydantic(model, use_async=False)
-    response_text = client(text)
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Text:", text, "\nResponse:", response_text)
+@logfire.instrument("query_parse_last_response_into_format", extract_args=True)
+async def query_parse_last_response_into_format(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    parsing_messages = messages + [
+        {
+            "role": "user",
+            "content": (
+                "Now parse the latest response into the specified Pydantic model:\n\n"
+                f"{response_model.model_fields=}"
+            ),
+        },
+    ]
 
-    return response_text
+    parsed_response = await query_api_chat(
+        messages=parsing_messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+
+    return parsed_response
+
+
+@logfire.instrument("query_parse_last_response_into_format_sync", extract_args=True)
+def query_parse_last_response_into_format_sync(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    parsing_messages = messages + [
+        {
+            "role": "user",
+            "content": (
+                "Now parse the latest response into the specified Pydantic model:\n\n"
+                f"{response_model.model_fields=}"
+            ),
+        },
+    ]
+
+    response = query_api_chat_sync(
+        messages=parsing_messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+    return response
+
+
+def system_message_addition_for_parsing(response_model: BaseModel) -> str:
+    return f"""\
+Note: unless explicitly stated in the prompt, do not worry about the exact formatting of the output.
+There will be an extra step that will summarize your output into the final answer format.
+For context, the final answer format is described by the following Pydantic model:
+{response_model.model_fields=}\n
+Again, just try to answer the question as best as you can, with all the necessary information; the output will be cleaned up in the final step.
+"""
+
+
+@logfire.instrument("query_api_chat_with_parsing", extract_args=True)
+async def query_api_chat_with_parsing(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    parsing_model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    """
+    Runs a native call using the specified model, then parses the output into the desired Pydantic model.
+    """
+    system_message_addition = system_message_addition_for_parsing(response_model)
+    if messages[0]["role"] != "system":
+        messages = [{"role": "system", "content": system_message_addition}] + messages
+    else:
+        messages[0]["content"] += "\n\n" + system_message_addition
+
+    native_output: str = await query_api_chat_native(
+        messages=messages,
+        verbose=verbose,
+        model=model,
+        **kwargs,
+    )
+
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Native output: {native_output}")
+
+    messages.append({"role": "assistant", "content": native_output})
+
+    parsed_response = await query_parse_last_response_into_format(
+        messages=messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=parsing_model,
+        **kwargs,
+    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Parsed response: {parsed_response}")
+
+    return parsed_response
+
+
+@logfire.instrument("query_api_chat_sync_with_parsing", extract_args=True)
+def query_api_chat_sync_with_parsing(
+    messages: list[dict[str, str]],
+    response_model: BaseModel,
+    verbose: bool = False,
+    model: str | None = None,
+    parsing_model: str | None = None,
+    **kwargs,
+) -> BaseModel:
+    """
+    Runs a native call using the specified model, then parses the output into the desired Pydantic model.
+    """
+    system_message_addition = system_message_addition_for_parsing(response_model)
+
+    system_message_addition = system_message_addition_for_parsing(response_model)
+
+    if messages[0]["role"] != "system":
+        messages = [{"role": "system", "content": system_message_addition}] + messages
+    else:
+        messages[0]["content"] += "\n\n" + system_message_addition
+
+    native_output: str = query_api_chat_sync_native(
+        messages=messages, verbose=verbose, model=model, **kwargs
+    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Native output: {native_output}")
+
+    messages.append({"role": "assistant", "content": native_output})
+    parsed_response = query_parse_last_response_into_format_sync(
+        messages=messages,
+        response_model=response_model,
+        verbose=verbose,
+        model=parsing_model,
+        **kwargs,
+    )
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"Parsed response: {parsed_response}")
+    return parsed_response
 
 
 async def parallelized_call(

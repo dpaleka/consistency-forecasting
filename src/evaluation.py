@@ -3,39 +3,33 @@ import io
 import os
 import json
 import asyncio
-from datetime import datetime
 from pathlib import Path
-from typing import Any
 import click
-import yaml
 import logging
 import functools
 import concurrent.futures
 from costly import Costlog
 
-from forecasters import (
-    Forecaster,
-    AdvancedForecaster,
-    BasicForecaster,
-    COT_Forecaster,
-)
-from forecasters.consistent_forecaster import ConsistentForecaster
+from forecasters import Forecaster
 from static_checks.Checker import (
     Checker,
-    ExpectedEvidenceChecker,  # noqa
-    NegChecker,  # noqa
-    ParaphraseChecker,  # noqa
     choose_checkers,
 )
-from common.path_utils import get_data_path, get_src_path
+from common.path_utils import get_data_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
+from forecasters.create import make_forecaster
+from evaluation_utils.utils import (
+    create_output_directory,
+    validate_load_directory,
+    write_to_dirs,
+)
+from evaluation_utils.common_options import common_options, get_forecaster_config
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
 
 # BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
-CONFIGS_DIR: Path = get_src_path() / "forecasters/forecaster_configs"
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)  # configure root logger
@@ -100,36 +94,17 @@ def get_stats(results: dict, label: str = "") -> dict:
     return ret
 
 
-def make_folder_name(forecaster: Forecaster, model: str, timestamp: datetime) -> str:
-    # dirty hack: we explicitly don't round the seconds because we want the neighboring runs to write to the same dir
-    return f"{forecaster.__class__.__name__}_{timestamp.strftime('%m-%d-%H-%M')}"
-
-
-def validate_result(result: dict, keys: list[str]) -> None:
+def validate_result(result: dict, keys: list[str]) -> bool:
     assert "line" in result, "results must contain a 'line' key"
     for key in keys:
         assert key in result["line"], f"line must contain a '{key}' key"
         assert (
-            "elicited_prob" in result["line"][key]
-        ), f"line[{key}] must contain an 'elicited_prob' key"
+            "forecast" in result["line"][key]
+        ), f"line[{key}] must contain an 'forecast' key"
+        assert (
+            "prob" in result["line"][key]["forecast"]
+        ), f"line[{key}]['forecast'] must contain a 'prob' key"
     return True
-
-
-def write_to_dirs(
-    results: list[dict],
-    filename: str,
-    dirs_to_write: list[Path],
-    overwrite: bool = False,
-):
-    for dir in dirs_to_write:
-        if overwrite:
-            with open(dir / filename, "w", encoding="utf-8") as f:
-                for result in results:
-                    f.write(json.dumps(result) + "\n")
-        else:
-            with open(dir / filename, "a", encoding="utf-8") as f:
-                for result in results:
-                    f.write(json.dumps(result) + "\n")
 
 
 def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
@@ -201,7 +176,6 @@ def process_check(
     check_name: str,
     checkers: dict[str, Checker],
     forecaster: Forecaster,
-    model: str,
     num_lines: int,
     tuples_per_source: int,
     is_async: bool,
@@ -209,7 +183,6 @@ def process_check(
     most_recent_directory: Path,
     load_dir: Path,
     run: bool,
-    forecaster_class: str,
     eval_by_source: bool,
     **kwargs,
 ) -> dict:
@@ -221,6 +194,7 @@ def process_check(
             all_tuples = [json.loads(line) for line in f]
 
         if eval_by_source:
+            # TODO does this ignore num_lines? if yes, raise if num_lines is not None
             source_questions = {}
             for tuple_data in all_tuples:
                 source_question = (
@@ -258,54 +232,28 @@ def process_check(
                     os.remove(dir / f"{check_name}.jsonl")
 
             results = []
-            for start in range(0, len(checker_tuples), 5):
-                end = min(start + 5, len(checker_tuples))
+            batch_size = 5
+            for start in range(0, len(checker_tuples), batch_size):
+                end = min(start + batch_size, len(checker_tuples))
                 batch_tuples = checker_tuples[start:end]
 
-                match forecaster_class:
-                    case (
-                        "BasicForecaster"
-                        | "CoTForecaster"
-                        | "ConsistentForecaster"
-                        | "RecursiveConsistentForecaster"
-                    ):
-                        if is_async:
-                            reset_global_semaphore()
-                            results_batch = asyncio.run(
-                                checkers[check_name].test(
-                                    forecaster,
-                                    do_check=False,
-                                    tuples=batch_tuples,
-                                    model=model,
-                                    **kwargs,
-                                )
-                            )
-                        else:
-                            results_batch = checkers[check_name].test_sync(
-                                forecaster,
-                                do_check=False,
-                                tuples=batch_tuples,
-                                model=model,
-                                **kwargs,
-                            )
-                    case "AdvancedForecaster":
-                        if is_async:
-                            reset_global_semaphore()
-                            results_batch = asyncio.run(
-                                checkers[check_name].test(
-                                    forecaster,
-                                    do_check=False,
-                                    tuples=batch_tuples,
-                                    **kwargs,
-                                )
-                            )
-                        else:
-                            results_batch = checkers[check_name].test_sync(
-                                forecaster,
-                                do_check=False,
-                                tuples=batch_tuples,
-                                **kwargs,
-                            )
+                if is_async:
+                    reset_global_semaphore()
+                    results_batch = asyncio.run(
+                        checkers[check_name].test(
+                            forecaster,
+                            do_check=False,
+                            tuples=batch_tuples,
+                            **kwargs,
+                        )
+                    )
+                else:
+                    results_batch = checkers[check_name].test_sync(
+                        forecaster,
+                        do_check=False,
+                        tuples=batch_tuples,
+                        **kwargs,
+                    )
 
                 print(f"results_batch: {results_batch}")
                 print(f"len(results_batch): {len(results_batch)}")
@@ -338,15 +286,19 @@ def process_check(
         for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
             for key in keys:
                 try:
-                    assert result["line"][key]["id"] == checker_tuple[key]["id"], (
+                    assert (
+                        result["line"][key]["question"]["id"]
+                        == checker_tuple[key]["id"]
+                    ), (
                         f"ID mismatch for key {key} at index {i}: "
-                        f"result ID {result['line'][key]['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                        f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
                     )
                     assert (
-                        result["line"][key]["title"] == checker_tuple[key]["title"]
+                        result["line"][key]["question"]["title"]
+                        == checker_tuple[key]["title"]
                     ), (
                         f"Title mismatch for key {key} at index {i}: "
-                        f"result title {result['line'][key]['title']} != checker tuple title {checker_tuple[key]['title']}"
+                        f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
                     )
                 except AssertionError as e:
                     print(f"Assertion failed: {str(e)}")
@@ -356,7 +308,7 @@ def process_check(
 
         data = [result["line"] for result in results]
         all_answers = [
-            {key: result["line"][key]["elicited_prob"] for key in keys}
+            {key: result["line"][key]["forecast"]["prob"] for key in keys}
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
@@ -374,8 +326,9 @@ def process_check(
                 source_results = [
                     r
                     for r in results
-                    if r["line"]["P"]["metadata"].get("source_question") == source
-                    or r["line"]["P"]["title"] == source
+                    if r["line"]["P"]["question"]["metadata"].get("source_question")
+                    == source
+                    or r["line"]["P"]["question"]["title"] == source
                 ]
                 stats["by_source"][source] = get_stats(
                     source_results, label=f"{check_name}_{source}"
@@ -395,39 +348,7 @@ def process_check(
 
 
 @click.command()
-@click.option(
-    "-f",
-    "--forecaster_class",
-    default="AdvancedForecaster",
-    help="Forecaster to use. Can be BasicForecaster, COT_Forecaster, AdvancedForecaster, ConsistentForecaster, RecursiveConsistentForecaster.",
-)
-@click.option(
-    "-c",
-    "--config_path",
-    type=click.Path(),
-    default=CONFIGS_DIR / "cheap_gpt4o-mini.yaml",
-    help="Path to the configuration file",
-)
-@click.option(
-    "-m",
-    "--model",
-    default=None,
-    help="Model to use for BasicForecaster and CoT_Forecaster. Is overridden by the config file in case of AdvancedForecaster.",
-)
-@click.option("-r", "--run", is_flag=True, help="Run the forecaster")
-@click.option(
-    "-l",
-    "--load_dir",
-    required=False,
-    type=click.Path(),
-    help="Directory to load results from in case run is False. Defaults to most_recent_directory",
-)
-@click.option(
-    "-n",
-    "--num_lines",
-    default=3,
-    help="Number of lines to process in each of the files",
-)
+@common_options
 @click.option(
     "-t",
     "--tuples_per_source",
@@ -440,13 +361,6 @@ def process_check(
     multiple=True,
     default=["CondChecker"],
     help='Relevant checks to perform. In case of "all", all checkers are used.',
-)
-@click.option(
-    "--async",
-    "is_async",
-    is_flag=True,
-    default=False,
-    help="Await gather the forecaster over all lines in a check",
 )
 @click.option(
     "--threads",
@@ -463,12 +377,6 @@ def process_check(
     help="Path to the tuple file",
 )
 @click.option(
-    "--output_dir",
-    type=click.Path(),
-    required=False,
-    help=f"Path to the output directory. Will default to timestamped directory in {BASE_FORECASTS_OUTPUT_PATH} otherwise",
-)
-@click.option(
     "--eval_by_source",
     "-s",
     is_flag=True,
@@ -478,14 +386,16 @@ def process_check(
 @click.option(
     "--simulate",
     is_flag=True,
-    help="Simulate the instantiation process without actually writing tuples.",
+    default=False,
+    help="Simulate the evaluation",
 )
 def main(
-    forecaster_class: str,
-    config_path: str,
-    model: str | None,
+    forecaster_class: str | None,
+    custom_path: str | None,
+    config_path: str | None,
+    forecaster_options: list[str] | None,
     run: bool,
-    load_dir: str,
+    load_dir: str | None,
     num_lines: int,
     tuples_per_source: int,
     relevant_checks: list[str],
@@ -496,100 +406,50 @@ def main(
     eval_by_source: bool = False,
     simulate: bool = False,
 ):
+    forecaster_config = get_forecaster_config(config_path, forecaster_options)
+
+    forecaster = make_forecaster(
+        forecaster_class=forecaster_class,
+        custom_path=custom_path,
+        forecaster_config=forecaster_config,
+    )
+
+    # Print arguments
+    print("Arguments:")
+    print(f"  forecaster_class: {forecaster_class}")
+    print(f"  custom_path: {custom_path}")
+    print(f"  forecaster_config: {forecaster_config}")
+    print(f"  num_lines: {num_lines}")
+    print(f"  run: {run}")
+    print(f"  load_dir: {load_dir}")
+    print(f"  is_async: {is_async}")
+    print(f"  output_dir: {output_dir}")
+
+    cl = Costlog(mode="jsonl")
+
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
     if not tuple_dir.exists():
         assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
 
-    cl = Costlog(mode="jsonl")
-
-    match forecaster_class:
-        case "AdvancedForecaster":
-            if model is not None:
-                raise ValueError(
-                    "The 'model' parameter should not be set when using AdvancedForecaster. Model configuration should be done through the config file and the 'config_path' parameter."
-                )
-            print(f"Using AdvancedForecaster config file: {config_path}")
-        case _:
-            assert model is not None, "Model must be specified for forecaster class"
-            print(f"Using model: {model}")
-
     checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
-    match forecaster_class:
-        case "BasicForecaster":
-            forecaster = BasicForecaster()
-        case "COT_Forecaster":
-            forecaster = COT_Forecaster()
-        case "ConsistentForecaster":
-            forecaster = ConsistentForecaster(
-                hypocrite=BasicForecaster(),
-                checks=[
-                    NegChecker(),
-                ],
-                instantiation_kwargs={"model": model},
-                bq_func_kwargs={"model": model},
-            )
-        case "RecursiveConsistentForecaster":
-            forecaster = ConsistentForecaster.recursive(
-                depth=4,
-                hypocrite=BasicForecaster(),
-                checks=[
-                    NegChecker(),
-                    # ParaphraseChecker(),
-                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
-                instantiation_kwargs={"model": model},
-                bq_func_kwargs={"model": model},
-            )
-        case "AdvancedForecaster":
-            with open(config_path, "r", encoding="utf-8") as f:
-                config: dict[str, Any] = yaml.safe_load(f)
-            forecaster = AdvancedForecaster(**config)
-        case _:
-            raise ValueError(f"Invalid forecaster class: {forecaster_class}")
-
-    # print(forecaster.dump_config())
-
-    most_recent_directory = (
-        BASE_FORECASTS_OUTPUT_PATH / f"A_{forecaster.__class__.__name__}_most_recent"
+    output_directory, most_recent_directory = create_output_directory(
+        forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
     )
-    if not most_recent_directory.exists():
-        most_recent_directory.mkdir(parents=True, exist_ok=True)
 
-    timestamp_start_run = datetime.now()
-    if output_dir is None:
-        print("Using timestamped output directory for forecast evaluation outputs")
-        output_directory = BASE_FORECASTS_OUTPUT_PATH / make_folder_name(
-            forecaster, model, timestamp_start_run
-        )
-        if not output_directory.exists():
-            output_directory.mkdir(parents=True, exist_ok=True)
-            print(f"Directory '{output_directory}' created.")
-    else:
-        output_directory = Path(output_dir)
-        if not output_directory.exists():
-            output_directory.mkdir(parents=True, exist_ok=True)
-            print(f"Directory '{output_directory}' created.")
-
-    if run:
-        assert load_dir is None, "LOAD_DIR must be None if RUN is True"
-    else:
-        if load_dir is None:
-            print(f"LOAD_DIR is None, using {most_recent_directory}")
-            load_dir = most_recent_directory
-        load_dir = Path(load_dir)
-        assert (
-            load_dir.exists() and load_dir.is_dir()
-        ), "LOAD_DIR must be a valid directory"
+    load_dir = validate_load_directory(run, load_dir, most_recent_directory)
 
     print(f"Relevant checks: {checkers.keys()}")
+    print(f"Tuple dir: {tuple_dir}")
+    print(f"Output dir: {output_directory}")
 
     logged_config = {
         "forecaster_class": forecaster.__class__.__name__,
         "forecaster": forecaster.dump_config(),
         "checkers": [checker.dump_config() for name, checker in checkers.items()],
-        "model": model,
+        "forecaster_config": forecaster_config,
         "is_async": is_async,
         "use_threads": use_threads,
         "run": run,
@@ -616,7 +476,6 @@ def main(
                 process_check,
                 checkers=checkers,
                 forecaster=forecaster,
-                model=model,
                 num_lines=num_lines,
                 tuples_per_source=tuples_per_source,
                 is_async=is_async,
@@ -624,7 +483,6 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
-                forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
                 cost_log=cl,
                 simulate=simulate,
@@ -641,7 +499,6 @@ def main(
                 check_name=check_name,
                 checkers=checkers,
                 forecaster=forecaster,
-                model=model,
                 num_lines=num_lines,
                 tuples_per_source=tuples_per_source,
                 is_async=is_async,
@@ -649,19 +506,18 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
-                forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
                 cost_log=cl,
                 simulate=simulate,
             )
             all_stats[check_name] = stats
 
-    print("Costly log totals:")
-    print("------------------")
-    print(cl.totals)
-    print("------------------")
-
     # TODO figure out how to write to the load_dir
+
+    print("Cost log totals")
+    print("---------------")
+    print(cl.totals)
+    print("---------------")
 
     with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
@@ -695,6 +551,7 @@ def main(
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
             print(f"\n{check_name}:")
+            print(stats)
             overall_stats = stats["overall"]
             print(
                 f"  Overall: {overall_stats[metric]['num_violations']}/{overall_stats[metric]['num_samples']}"
@@ -716,7 +573,7 @@ if __name__ == "__main__":
     main()
 
 # run the script with the following command:
-# python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
+# python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
@@ -724,4 +581,5 @@ if __name__ == "__main__":
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
+# python evaluation.py -f PromptedToCons_Forecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 2 -k NegChecker

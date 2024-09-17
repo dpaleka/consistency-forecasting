@@ -732,13 +732,19 @@ class Checker(ABC):
                 else:
                     result_without_line = {}
 
-                for question, forecast in answers_.items():
-                    line[question]["elicited_prob"] = forecast.prob
-                    line[question]["elicitation_metadata"] = make_json_serializable(
-                        forecast.metadata
-                    )
+                result = {}
+                for question in answers_.keys():
+                    result[question] = {
+                        "question": line[question],
+                        "forecast": {
+                            "prob": answers[question],
+                            "metadata": make_json_serializable(
+                                answers_.get(question).metadata
+                            ),
+                        },
+                    }
 
-                result = {"line": line, **result_without_line}
+                result = {"line": result, **result_without_line}
 
                 results.append(result)
                 writer.write(result)
@@ -772,6 +778,8 @@ class Checker(ABC):
                 self.get_line_obj(line) for line in data
             ]
             print(validated_lines)
+            # TODO: what's going on here? what happens if some lines are not validated?
+
             print("Starting async elicitation")
             elicit_func = functools.partial(forecaster.elicit_async, **kwargs)
             all_answers_ = await parallelized_call(
@@ -792,13 +800,20 @@ class Checker(ABC):
             for line, answers_, answers, result_without_line in zip(
                 data, all_answers_, all_answers, results_without_line
             ):
-                for question, forecast in answers_.items():
-                    line[question]["elicited_prob"] = forecast.prob
-                    line[question]["elicitation_metadata"] = make_json_serializable(
-                        forecast.metadata
-                    )
+                line_obj: "Self.TupleFormat" = self.get_line_obj(line)
+                result = {}
+                for question in answers_.keys():
+                    result[question] = {
+                        "question": line[question],
+                        "forecast": {
+                            "prob": answers[question],
+                            "metadata": make_json_serializable(
+                                answers_.get(question).metadata
+                            ),
+                        },
+                    }
 
-                result = {"line": line, **result_without_line}
+                result = {"line": result, **result_without_line}
 
                 results.append(result)
                 writer.write(result)

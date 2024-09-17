@@ -52,7 +52,7 @@ def get_todays_date():
     return formatted_date
 
 
-def subtract_days_from_date(date_str, k):
+def subtract_days_from_date(date_str: str, k: int) -> str:
     """
     Subtract k days from the given date.
 

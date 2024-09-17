@@ -2,9 +2,24 @@ import pytest
 from unittest.mock import patch, MagicMock
 from datetime import datetime
 import uuid
+from common.llm_utils import (
+    query_api_chat_sync,
+    query_api_chat,
+    query_parse_last_response_into_format_sync,
+    query_parse_last_response_into_format,
+    query_api_chat_native,
+    query_api_chat_sync_native,
+)
 
 from common.datatypes import ForecastingQuestion, Forecast
-from forecasters import BasicForecaster, COT_Forecaster
+from forecasters import (
+    BasicForecaster,
+    CoT_Forecaster,
+    BasicForecasterTextBeforeParsing,
+    CoT_ForecasterTextBeforeParsing,
+)
+
+default_small_model = "gpt-4o-mini-2024-07-18"
 
 mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
 mock_response_list = ["0.03", "0.05", "0.02"]
@@ -18,7 +33,7 @@ mock_cot_response = MagicMock(
 @pytest.fixture
 def basic_forecaster():
     examples = [mock_q_and_a]
-    return BasicForecaster(preface="Test preface")
+    return BasicForecaster(preface="Test preface", model=default_small_model)
 
 
 @pytest.fixture
@@ -80,7 +95,7 @@ async def test_basic_forecaster_call_async(
 
 def test_basic_forecaster_actual_call(mock_forecasting_question):
     # Create BasicForecaster instance
-    forecaster = BasicForecaster()
+    forecaster = BasicForecaster(model=default_small_model)
 
     # Call the forecaster with actual prompts
     forecast = forecaster.call_full(actual_fq)
@@ -113,7 +128,9 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
     )
 
     # Call the forecaster with actual prompts
-    forecaster = COT_Forecaster(preface=user_preface, examples=None)
+    forecaster = CoT_Forecaster(
+        preface=user_preface, examples=None, model=default_small_model
+    )
     forecast = forecaster.call_full(mock_forecasting_question)
 
     # Print the chain of thought for manual inspection
@@ -156,3 +173,186 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
         pytest.fail(
             f"Failed to extract a valid final probability from the chain of thought. Last word was: {cot_implied_prob_str}"
         )
+
+
+def test_crowd_forecaster():
+    from forecasters import CrowdForecaster, Forecaster
+
+    # Create mock forecasters
+    forecaster1 = MagicMock(spec=Forecaster)
+    forecaster2 = MagicMock(spec=Forecaster)
+
+    # Define mock responses
+    mock_fq = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Test Crowd Forecast",
+        body="Test Body",
+        question_type="binary",
+        resolution_date=datetime(2025, 1, 1),
+        data_source="synthetic",
+        url="http://example.com",
+        metadata={"topics": ["crowd_test"]},
+        resolution=None,
+    )
+    probs = [0.6, 0.8]
+    weights = [1, 2]
+    forecast1 = Forecast(prob=probs[0])
+    forecast2 = Forecast(prob=probs[1])
+
+    forecaster1.call.return_value = forecast1
+    forecaster2.call.return_value = forecast2
+
+    # Initialize CrowdForecaster
+    crowd_forecaster = CrowdForecaster(
+        forecasters=[forecaster1, forecaster2], method="mean", weights=weights
+    )
+
+    # Call CrowdForecaster
+    combined_forecast = crowd_forecaster.call(mock_fq)
+    print(f"\n{combined_forecast.prob=:.3f}")
+
+    # Assert combined probability
+    assert (
+        combined_forecast.prob
+        == pytest.approx((probs[0] * weights[0] + probs[1] * weights[1]) / sum(weights))
+    ), "Combined probability should be the weighted mean of the individual probabilities"
+    assert combined_forecast.metadata["probs"] == [probs[0], probs[1]]
+
+    forecaster1.call.assert_called_once_with(mock_fq)
+    forecaster2.call.assert_called_once_with(mock_fq)
+
+
+def test_crowd_forecaster_extremize():
+    from forecasters import CrowdForecaster, Forecaster
+
+    # Create mock forecasters
+    forecaster1 = MagicMock(spec=Forecaster)
+    forecaster2 = MagicMock(spec=Forecaster)
+    forecaster3 = MagicMock(spec=Forecaster)
+
+    # Define mock responses
+    mock_fq = ForecastingQuestion(
+        id=uuid.uuid4(),
+        title="Test Crowd Forecast",
+        body="Test Body",
+        question_type="binary",
+        resolution_date=datetime(2025, 1, 1),
+        data_source="synthetic",
+        url="http://example.com",
+    )
+    forecast1 = Forecast(prob=0.8)
+    forecast2 = Forecast(prob=0.8)
+    forecast3 = Forecast(prob=0.8)
+
+    forecaster1.call.return_value = forecast1
+    forecaster2.call.return_value = forecast2
+    forecaster3.call.return_value = forecast3
+
+    # Initialize CrowdForecaster
+    crowd_forecaster = CrowdForecaster(
+        forecasters=[forecaster1, forecaster2, forecaster3],
+        method="mean",
+        extremize_alpha=1.5,
+    )
+
+    combined_forecast = crowd_forecaster.call(mock_fq)
+    print(f"\n{combined_forecast.prob=:.3f}")
+    assert (
+        combined_forecast.prob < 1
+    ), "Combined extremizedprobability should be less than 1"
+    assert (
+        combined_forecast.prob > 0.8
+    ), "Combined extremized probability should be greater than 0.8"
+
+    assert combined_forecast.metadata["probs"] == [
+        forecast1.prob,
+        forecast2.prob,
+        forecast3.prob,
+    ]
+
+    forecaster1.call.assert_called_once_with(mock_fq)
+    forecaster2.call.assert_called_once_with(mock_fq)
+    forecaster3.call.assert_called_once_with(mock_fq)
+
+
+@pytest.fixture
+def basic_forecaster_text_before_parsing():
+    return BasicForecasterTextBeforeParsing(
+        model="gpt-4o-2024-08-06", examples=None, parsing_model="gpt-4o-mini-2024-07-18"
+    )
+
+
+@pytest.fixture
+def cot_forecaster_text_before_parsing():
+    return CoT_ForecasterTextBeforeParsing(
+        model="gpt-4o-2024-08-06", examples=None, parsing_model="gpt-4o-mini-2024-07-18"
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "forecaster_fixture",
+    ["basic_forecaster_text_before_parsing", "cot_forecaster_text_before_parsing"],
+)
+@patch("common.llm_utils.query_api_chat_native", wraps=query_api_chat_native)
+@patch(
+    "common.llm_utils.query_parse_last_response_into_format",
+    wraps=query_parse_last_response_into_format,
+)
+@patch("common.llm_utils.query_api_chat", wraps=query_api_chat)
+async def test_forecaster_text_before_parsing_actual_call_async(
+    mock_query_api_chat_native,
+    mock_query_parse_last_response_into_format,
+    mock_query_api_chat,
+    forecaster_fixture,
+    request,
+):
+    forecaster = request.getfixturevalue(forecaster_fixture)
+
+    # Mocks wrap the actual LLM calls
+    forecast = await forecaster.call_async(actual_fq)
+    assert isinstance(forecast, Forecast)
+    assert isinstance(forecast.prob, float)
+    assert 0 <= forecast.prob <= 1
+    if isinstance(forecaster, CoT_ForecasterTextBeforeParsing):
+        assert "chain_of_thought" in forecast.metadata
+    assert mock_query_api_chat_native.call_count == 1
+    assert mock_query_parse_last_response_into_format.call_count == 1
+    assert mock_query_api_chat.call_count == 1
+    mock_query_api_chat_native.reset_mock()
+    mock_query_parse_last_response_into_format.reset_mock()
+    mock_query_api_chat.reset_mock()
+
+
+@pytest.mark.parametrize(
+    "forecaster_fixture",
+    ["basic_forecaster_text_before_parsing", "cot_forecaster_text_before_parsing"],
+)
+@patch("common.llm_utils.query_api_chat_sync_native", wraps=query_api_chat_sync_native)
+@patch(
+    "common.llm_utils.query_parse_last_response_into_format_sync",
+    wraps=query_parse_last_response_into_format_sync,
+)
+@patch("common.llm_utils.query_api_chat_sync", wraps=query_api_chat_sync)
+def test_forecaster_text_before_parsing_actual_call_sync(
+    mock_query_api_chat_sync_native,
+    mock_query_parse_last_response_into_format_sync,
+    mock_query_api_chat_sync,
+    forecaster_fixture,
+    request,
+):
+    forecaster = request.getfixturevalue(forecaster_fixture)
+
+    # Mocks wrap the actual LLM calls
+    forecast = forecaster.call(actual_fq)
+    assert isinstance(forecast, Forecast)
+    assert isinstance(forecast.prob, float)
+    assert 0 <= forecast.prob <= 1
+    if isinstance(forecaster, CoT_ForecasterTextBeforeParsing):
+        assert "chain_of_thought" in forecast.metadata
+    assert mock_query_api_chat_sync_native.call_count == 1
+    assert mock_query_parse_last_response_into_format_sync.call_count == 1
+    assert mock_query_api_chat_sync.call_count == 1
+    mock_query_api_chat_sync_native.reset_mock()
+    mock_query_parse_last_response_into_format_sync.reset_mock()
+    mock_query_api_chat_sync.reset_mock()
