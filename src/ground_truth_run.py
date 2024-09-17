@@ -241,7 +241,7 @@ def main(
             tuned_brier_baseline_scaled, precision=1
         ),
         "forecaster": forecaster.__class__.__name__,
-        "forecaster_config": forecaster_config,
+        "full_forecaster_config": forecaster.dump_config(),
         "brier_score_decomposition": brier_score_decomposition,
         "calibration_error": calibration_error,
         "calibration_error_data": calibration_error_data,
@@ -255,7 +255,7 @@ def main(
     print(f"Tuned Brier Baseline: {summary['tuned_brier_baseline']:.4f}")
     print(f"Average Log Score: {summary['avg_log_score']:.4f}")
     print(f"Forecaster: {summary['forecaster']}")
-    print(f"Forecaster Config: {summary['forecaster_config']}")
+    print(f"Forecaster Config: {summary['full_forecaster_config']}")
 
     # Write summary to file
     summary_filename = "ground_truth_summary.json"
