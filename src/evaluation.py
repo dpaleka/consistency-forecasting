@@ -11,7 +11,7 @@ import yaml
 import logging
 import functools
 import concurrent.futures
-
+from costly import Costlog
 
 from forecasters import (
     Forecaster,
@@ -211,6 +211,7 @@ def process_check(
     run: bool,
     forecaster_class: str,
     eval_by_source: bool,
+    **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
     try:
@@ -276,6 +277,7 @@ def process_check(
                                     do_check=False,
                                     tuples=batch_tuples,
                                     model=model,
+                                    **kwargs,
                                 )
                             )
                         else:
@@ -284,6 +286,7 @@ def process_check(
                                 do_check=False,
                                 tuples=batch_tuples,
                                 model=model,
+                                **kwargs,
                             )
                     case "AdvancedForecaster":
                         if is_async:
@@ -293,6 +296,7 @@ def process_check(
                                     forecaster,
                                     do_check=False,
                                     tuples=batch_tuples,
+                                    **kwargs,
                                 )
                             )
                         else:
@@ -300,6 +304,7 @@ def process_check(
                                 forecaster,
                                 do_check=False,
                                 tuples=batch_tuples,
+                                **kwargs,
                             )
 
                 print(f"results_batch: {results_batch}")
@@ -470,6 +475,11 @@ def process_check(
     default=False,
     help="Evaluate consistency scores per source question",
 )
+@click.option(
+    "--simulate",
+    is_flag=True,
+    help="Simulate the instantiation process without actually writing tuples.",
+)
 def main(
     forecaster_class: str,
     config_path: str,
@@ -484,12 +494,15 @@ def main(
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
+    simulate: bool = False,
 ):
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
     tuple_dir = Path(tuple_dir)
     if not tuple_dir.exists():
         assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
+
+    cl = Costlog(mode="jsonl")
 
     match forecaster_class:
         case "AdvancedForecaster":
@@ -613,6 +626,8 @@ def main(
                 run=run,
                 forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
+                cost_log=cl,
+                simulate=simulate,
             )
             all_stats = {
                 check_name: stats
@@ -636,8 +651,15 @@ def main(
                 run=run,
                 forecaster_class=forecaster_class,
                 eval_by_source=eval_by_source,
+                cost_log=cl,
+                simulate=simulate,
             )
             all_stats[check_name] = stats
+
+    print("Costly log totals:")
+    print("------------------")
+    print(cl.totals)
+    print("------------------")
 
     # TODO figure out how to write to the load_dir
 
