@@ -1,0 +1,8 @@
+SEARCH_QUERY_MODEL_NAME: "anthropic/claude-3.5-sonnet"
+SUMMARIZATION_MODEL_NAME: "anthropic/claude-3.5-sonnet"
+BASE_REASONING_MODEL_NAMES:
+  - "anthropic/claude-3.5-sonnet"
+  - "anthropic/claude-3.5-sonnet"
+RANKING_MODEL_NAME: "anthropic/claude-3.5-sonnet"
+AGGREGATION_MODEL_NAME: "anthropic/claude-3.5-sonnet"
+
