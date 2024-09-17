@@ -144,7 +144,7 @@ def main(
 
         forecasts = []
         results = []
-        batch_size = 50
+        batch_size = 20
         for start in tqdm(range(0, num_lines, batch_size)):
             end = min(start + batch_size, num_lines)
             batch_tuples = forecasting_questions[start:end]
