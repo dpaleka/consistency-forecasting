@@ -1,6 +1,3 @@
-from costly import costly
-
-
 import os
 import sys
 
@@ -436,12 +433,13 @@ DEFAULT_EXAMPLES = [example_generic_c, example_generic_i]
 class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
     def __init__(
         self,
+        model: str,
         preface: str = None,
         checks: list[str] = None,
         examples: list[str] = None,
         user_prompts: list[str] = None,
     ):
-        super().__init__(preface, examples)
+        super().__init__(model, preface, examples)
 
         self.consistency_checks = {
             "neg": "P = 1 - not_P",
@@ -498,8 +496,31 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             similar=None,
         )"""
 
-        cons_test = ConsistentForecaster()
+        cons_test = ConsistentForecaster(self.model)
         gen_tuple = cons_test.instantiate_cons_tuples(sentence)
+
+        self.forecasting_questions = {}
+
+        for t in gen_tuple:
+            cons_tuple = shallow_dict(t)
+            for k, v in cons_tuple.items():
+                self.forecasting_questions[k] = v
+
+        return self.forecasting_questions
+
+    async def generate_all_questions_async(self, sentence: ForecastingQuestion):
+        """# alternate way to gen questions
+        new_questions = generate_questions_from_question(
+            sentence.title,
+            "gpt-4o",
+            2,
+            source_body=sentence.body,
+            resolve_by=None,
+            similar=None,
+        )"""
+
+        cons_test = ConsistentForecaster(self.model)
+        gen_tuple = await cons_test.instantiate_cons_tuples_async(sentence)
 
         self.forecasting_questions = {}
 
@@ -524,6 +545,10 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         self.generate_all_questions(ForecastingQuestion)
         self.generate_user_prompts(self.forecasting_questions)
 
+    async def prep_call_async(self, ForecastingQuestion):
+        await self.generate_all_questions_async(ForecastingQuestion)
+        self.generate_user_prompts(self.forecasting_questions)
+
     """
     @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
@@ -535,37 +560,20 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         self.prep_call(ForecastingQuestion)
         return super().call_async(self.user_prompts, self.examples, include_metadata)"""
 
-    @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
-        try:
-            self.prep_call(ForecastingQuestion)
-            result = super().call(self.user_prompts, self.examples, include_metadata)
-            with open("adam_run_good.txt", "a") as f:
-                f.write(str(ForecastingQuestion) + "\n")
-                f.write(str(self.forecasting_questions) + "\n")
-            return result
-        except Exception as e:
-            with open("adam_run_bad.txt", "a") as f:
-                f.write(str(ForecastingQuestion) + "\n")
-                f.write(str(self.forecasting_questions) + "\n")
-            raise e
+        self.prep_call(ForecastingQuestion)
+        result = super().call(self.user_prompts, self.examples, include_metadata)
 
-    @costly()
-    def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
-        try:
-            self.prep_call(ForecastingQuestion)
+        return result
 
-            result = super().call_async(
+    async def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
+        try:
+            await self.prep_call_async(ForecastingQuestion)
+            result = await super().call_async(
                 self.user_prompts, self.examples, include_metadata
             )
-            with open("adam_run_good.txt", "a") as f:
-                f.write(str(ForecastingQuestion) + "\n")
-                f.write(str(self.forecasting_questions) + "\n")
             return result
         except Exception as e:
-            with open("adam_run_bad.txt", "a") as f:
-                f.write(str(ForecastingQuestion) + "\n")
-                f.write(str(self.forecasting_questions) + "\n")
             raise e
 
     def dump_config(self):

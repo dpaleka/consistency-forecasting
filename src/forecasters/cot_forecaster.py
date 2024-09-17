@@ -82,9 +82,13 @@ class CoT_Forecaster(Forecaster):
 
 class CoT_multistep_Forecaster(Forecaster):
     def __init__(
-        self, preface: str = "You are a helpful assistant", examples: list[str] = []
+        self,
+        model,
+        preface: str = "You are a helpful assistant",
+        examples: list[str] = [],
     ):
         # TODO define nice preface and examples
+        self.model = model
         self.preface = preface
         self.examples = examples
 
@@ -139,6 +143,7 @@ class CoT_multistep_Forecaster(Forecaster):
 
             # response = await answer_messages(
             response = answer_messages_sync(
+                model=self.model,
                 messages=messages,
                 # examples=self.examples,
                 response_model=step_formats[step_idx],
@@ -156,6 +161,7 @@ class CoT_multistep_Forecaster(Forecaster):
         }
 
         self.result = result
+
         if include_metadata:
             result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),
