@@ -60,6 +60,19 @@ class Prob_cot(BaseModel):
 register_model_for_cache(Prob_cot)
 
 
+def reasoning_field(response: BaseModel) -> str:
+    if isinstance(response, Prob_cot):
+        return response.chain_of_thought
+    elif isinstance(response, PlainText):
+        return response.text
+    elif isinstance(response, Prob):
+        return str(response.prob)
+    else:
+        raise ValueError(
+            f"Unsupported response model for extracting reasoning field: {response}"
+        )
+
+
 # this is what we pass to llms for instantiation and forecasting
 # and also the response_model we expect from llms
 class ForecastingQuestion_stripped(BaseModel):

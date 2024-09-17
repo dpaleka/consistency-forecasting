@@ -699,17 +699,27 @@ class Example:
     assistant: str | BaseModel
 
 
+def serialize_if_pydantic(obj: str | BaseModel) -> str:
+    """
+    Idempotent function to convert a BaseModel to a string.
+    If the object is already a string, it returns the object as is.
+    """
+    if isinstance(obj, BaseModel):
+        return obj.model_dump_json()
+    return obj
+
+
 def prepare_messages(
-    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+    prompt: str | BaseModel | None,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
     preface = preface or "You are a helpful assistant."
     examples = examples or []
     messages = [{"role": "system", "content": preface}]
     for example in examples:
-        if isinstance(example.user, BaseModel):
-            example.user = example.user.model_dump_json()
-        if isinstance(example.assistant, BaseModel):
-            example.assistant = example.assistant.model_dump_json()
+        example.user = serialize_if_pydantic(example.user)
+        example.assistant = serialize_if_pydantic(example.assistant)
         messages.append({"role": "user", "content": example.user})
         # Convert assistant's response to string if it's not already
         assistant_content = (
@@ -718,14 +728,16 @@ def prepare_messages(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    if isinstance(prompt, BaseModel):
-        prompt = prompt.model_dump_json()
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
 def prepare_messages_alt(
-    prompt: str, preface: str | None = None, examples: list[Example] | None = None
+    prompt: str | BaseModel | None,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
 ) -> list[dict[str, str]]:
     sys_preface = "You are a helpful assistant."
     messages = [{"role": "system", "content": sys_preface}]
@@ -733,10 +745,8 @@ def prepare_messages_alt(
     if not preface:
         preface = ""
     for example in examples:
-        if isinstance(example.user, BaseModel):
-            example.user = example.user.model_dump_json()
-        if isinstance(example.assistant, BaseModel):
-            example.assistant = example.assistant.model_dump_json()
+        example.user = serialize_if_pydantic(example.user)
+        example.assistant = serialize_if_pydantic(example.assistant)
         messages.append({"role": "user", "content": example.user})
         example.user = preface + "\n\n" + example.user
         # Convert assistant's response to string if it's not already
@@ -746,10 +756,10 @@ def prepare_messages_alt(
             else example.assistant
         )
         messages.append({"role": "assistant", "content": assistant_content})
-    if isinstance(prompt, BaseModel):
-        prompt = prompt.model_dump_json()
-    prompt = preface + "\n\n" + prompt
-    messages.append({"role": "user", "content": prompt})
+    if prompt is not None:
+        prompt = serialize_if_pydantic(prompt)
+        prompt = preface + "\n\n" + prompt
+        messages.append({"role": "user", "content": prompt})
     return messages
 
 
@@ -799,6 +809,48 @@ def answer_sync(
         return query_api_chat_sync_with_parsing(messages=messages, **options)
     else:
         return query_api_chat_sync(messages=messages, **options)
+
+
+async def answer_messages(
+    messages: List[dict[str, str] | dict[str, BaseModel]],
+    **kwargs,
+) -> BaseModel:
+    default_options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+        "response_model": PlainText,
+    }
+    options = default_options | kwargs  # override defaults with kwargs
+
+    for message in messages:
+        assert (
+            isinstance(message, dict) and "content" in message
+        ), "Messages must be dictionaries with a 'content' key"
+        message["content"] = serialize_if_pydantic(message["content"])
+
+    print(f"options: {options}")
+    print(f"messages: {messages}")
+    async with global_llm_semaphore:
+        return await query_api_chat(messages=messages, **options)
+
+
+def answer_messages_sync(
+    messages: List[dict[str, str] | dict[str, BaseModel]],
+    **kwargs,
+) -> BaseModel:
+    for message in messages:
+        assert (
+            isinstance(message, dict) and "content" in message
+        ), "Messages must be dictionaries with a 'content' key"
+        message["content"] = serialize_if_pydantic(message["content"])
+
+    options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+        "response_model": PlainText,
+    } | kwargs
+
+    return query_api_chat_sync(messages=messages, **options)
 
 
 @pydantic_cache
