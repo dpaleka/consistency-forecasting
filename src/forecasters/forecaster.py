@@ -65,9 +65,8 @@ class Forecaster(ABC):
         pass
 
     @classmethod
-    @abstractmethod
     def load_config(cls, config: dict[str, Any]) -> "Forecaster":
-        pass
+        return cls(**config)
 
 
 def try_load_tuple(

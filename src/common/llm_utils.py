@@ -38,7 +38,7 @@ from .perscache import (
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
 
-load_dotenv(override=False)
+load_dotenv(override=False, dotenv_path=get_root_path() / ".env")
 
 # We override all keys and tokens (bc those could have been set globally in the user's system). Other flags stay if they are set.
 env_path = get_root_path() / ".env"
