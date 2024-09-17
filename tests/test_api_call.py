@@ -53,11 +53,11 @@ async def test_answer_real_api(model):
                 os.environ["USE_OPENROUTER"] = "True"
         elif model.startswith("anthropic"):
             if (
-                os.getenv("ANTHROPIC_API_KEY", None) is not None
+                os.getenv("ANTHROPIC_KEY", None) is not None
                 and original_use_openrouter == "False"
             ):
                 print(
-                    "ANTHROPIC_API_KEY is set, OpenRouter API is not, setting USE_OPENROUTER to False"
+                    "ANTHROPIC_KEY is set, OpenRouter API is not, setting USE_OPENROUTER to False"
                 )
                 os.environ["USE_OPENROUTER"] = "False"
             else:
