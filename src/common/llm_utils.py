@@ -295,7 +295,7 @@ def get_openrouter_client_native() -> OpenAI:
 
 @singleton_constructor
 def get_anthropic_async_client_pydantic() -> Instructor:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("ANTHROPIC_KEY")
     _client = AsyncAnthropic(api_key=api_key)
     # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
@@ -303,7 +303,7 @@ def get_anthropic_async_client_pydantic() -> Instructor:
 
 @singleton_constructor
 def get_anthropic_async_client_native() -> AsyncAnthropic:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("ANTHROPIC_KEY")
     _client = AsyncAnthropic(api_key=api_key)
     # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return _client
@@ -311,7 +311,7 @@ def get_anthropic_async_client_native() -> AsyncAnthropic:
 
 @singleton_constructor
 def get_anthropic_client_pydantic() -> Instructor:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("ANTHROPIC_KEY")
     _client = Anthropic(api_key=api_key)
     # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return instructor.from_anthropic(_client, mode=instructor.Mode.ANTHROPIC_JSON)
@@ -319,7 +319,7 @@ def get_anthropic_client_pydantic() -> Instructor:
 
 @singleton_constructor
 def get_anthropic_client_native() -> Anthropic:
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    api_key = os.getenv("ANTHROPIC_KEY")
     _client = Anthropic(api_key=api_key)
     # As of 27 Aug 2024, cannot setup logfire for anthropic client, because of version mismatch.
     return _client
