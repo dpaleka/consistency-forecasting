@@ -576,17 +576,19 @@ async def query_api_chat(
         messages=call_messages,
         **options,
     )
-    # print(f"Completion: {completion}")
-
-    if verbose or os.getenv("VERBOSE") == "True":
-        print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
-    return CostlyResponse(
-        output=response,
-        cost_info={
+    try:
+        cost_info = {
             "input_tokens": completion.usage.prompt_tokens,
             "output_tokens": completion.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+    if verbose or os.getenv("VERBOSE") == "True":
+        print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
+    return CostlyResponse(output=response, cost_info=cost_info)
 
 
 @text_cache
@@ -636,13 +638,18 @@ async def query_api_chat_native(
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}\n")
 
-    return CostlyResponse(
-        output=text_response,
-        cost_info={
+    try:
+        cost_info = {
             "input_tokens": response.usage.prompt_tokens,
             "output_tokens": response.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=text_response, cost_info=cost_info)
 
 
 @pydantic_cache
@@ -695,13 +702,19 @@ def query_api_chat_sync(
 
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
-    return CostlyResponse(
-        output=response,
-        cost_info={
+
+    try:
+        cost_info = {
             "input_tokens": completion.usage.prompt_tokens,
             "output_tokens": completion.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response, cost_info=cost_info)
 
 
 @text_cache
@@ -750,13 +763,18 @@ def query_api_chat_sync_native(
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}")
 
-    return CostlyResponse(
-        output=text_response,
-        cost_info={
+    try:
+        cost_info = {
             "input_tokens": response.usage.prompt_tokens,
             "output_tokens": response.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=text_response, cost_info=cost_info)
 
 
 @dataclass_json
@@ -931,13 +949,19 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     response_text = response.choices[0].text
     if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text[:30], "\nResponse:", response_text[:30])
-    return CostlyResponse(
-        output=response_text,
-        cost_info={
+
+    try:
+        cost_info = {
             "input_tokens": completion.usage.prompt_tokens,
             "output_tokens": completion.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response_text, cost_info=cost_info)
 
 
 @costly(simulator=LLM_Simulator.simulate_llm_call)
@@ -950,13 +974,19 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     response_text = response.choices[0].text
     if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text, "\nResponse:", response_text)
-    return CostlyResponse(
-        output=response_text,
-        cost_info={
+
+    try:
+        cost_info = {
             "input_tokens": completion.usage.prompt_tokens,
             "output_tokens": completion.usage.completion_tokens,
-        },
-    )
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response_text, cost_info=cost_info)
 
 
 @logfire.instrument("query_parse_last_response_into_format", extract_args=True)
