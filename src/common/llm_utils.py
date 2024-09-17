@@ -17,7 +17,6 @@ from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
-import transformers
 
 from .datatypes import PlainText
 from .path_utils import get_src_path, get_root_path
@@ -294,11 +293,6 @@ def get_togetherai_client_native() -> OpenAI:
     _client = OpenAI(api_key=api_key, base_url=url)
     logfire.instrument_openai(_client)
     return _client
-
-
-@singleton_constructor
-def get_huggingface_local_client(hf_repo) -> transformers.pipeline:
-    raise NotImplementedError("HuggingFace local client not implemented")
 
 
 def is_openai(model: str) -> bool:
@@ -825,15 +819,6 @@ def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     response_text = response.choices[0].text
     if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text, "\nResponse:", response_text)
-    return response_text
-
-
-def query_hf_text(model: str, text: str, verbose=False, **kwargs) -> str:
-    client, client_name = get_client_pydantic(model, use_async=False)
-    response_text = client(text)
-    if verbose or os.getenv("VERBOSE") == "True":
-        print("Text:", text, "\nResponse:", response_text)
-
     return response_text
 
 
