@@ -45,6 +45,7 @@ class ConsistentForecaster(Forecaster):
 
     def __init__(
         self,
+        model,
         hypocrite: Forecaster = None,
         checks: list[Checker] = None,
         base_data_path=get_data_path()
@@ -56,7 +57,8 @@ class ConsistentForecaster(Forecaster):
         bq_func_kwargs: dict = None,
         **kwargs,
     ):
-        self.hypocrite = hypocrite or BasicForecaster()
+        self.model = model
+        self.hypocrite = hypocrite or BasicForecaster(model)
         self.checks = checks or [
             NegChecker(),
             ParaphraseChecker(),

@@ -19,6 +19,7 @@ PREDEFINED_FORECASTER_CLASSES = [
     "RecursiveConsistentForecaster",
     "LoadForecaster",
     "CrowdForecaster",
+    "PromptedToCons_Forecaster",
 ]
 
 
