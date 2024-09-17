@@ -235,7 +235,7 @@ async def instantiate(
         n_write (int, optional): _description_. max number of tuples we actually want to write.
             Leave as -1 to write all tuples that pass verification
     """
-    cl = kwargs.get("cost_log", None)
+    cost_log = kwargs.get("cost_log", None)
     simulate = kwargs.get("simulate", False)
 
     bqs = []
@@ -268,7 +268,7 @@ async def instantiate(
 
             print("Getting relevance scores ...")
             func = functools.partial(
-                relevance, model=model_relevance, cost_log=cl, simulate=simulate
+                relevance, model=model_relevance, cost_log=cost_log, simulate=simulate
             )
             relevances = await parallelized_call(
                 func=func, data=possible_ituples, max_concurrent_queries=25
@@ -370,7 +370,7 @@ def main(
 
     checkers = choose_checkers(relevant_checks, tuple_dir)
 
-    cost_log = Costlog(mode="jsonl")
+    cl = Costlog(mode="jsonl")
 
     if use_instantiate_rel:
         asyncio.run(
@@ -381,7 +381,7 @@ def main(
                 max_tuples_per_source=max_tuples_per_source,
                 model=model_main,
                 seed=seed,
-                cost_log=cost_log,
+                cost_log=cl,
                 simulate=simulate,
             )
         )
@@ -396,14 +396,14 @@ def main(
                 model=model_main,
                 model_relevance=model_relevance,
                 seed=seed,
-                cost_log=cost_log,
+                cost_log=cl,
                 simulate=simulate,
             )
         )
 
     print("Costly log totals:")
     print("------------------")
-    print(cost_log.totals)
+    print(cl.totals)
     print("------------------")
 
 
