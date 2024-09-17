@@ -31,7 +31,7 @@ BASE_DATA_PATH: Path = (
 #     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "test/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
 RELEVANT_CHECKS = ["ExpectedEvidenceChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]

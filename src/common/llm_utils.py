@@ -454,8 +454,8 @@ ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
 
 
 @pydantic_cache
-@logfire.instrument("query_api_chat", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_chat", extract_args=True)
 async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
@@ -516,8 +516,8 @@ async def query_api_chat(
 
 
 @text_cache
-@logfire.instrument("query_api_chat_native", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_chat_native", extract_args=True)
 async def query_api_chat_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -567,8 +567,8 @@ async def query_api_chat_native(
 
 
 @pydantic_cache
-@logfire.instrument("query_api_chat_sync", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_chat_sync", extract_args=True)
 def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
@@ -621,8 +621,8 @@ def query_api_chat_sync(
 
 
 @text_cache
-@logfire.instrument("query_api_chat_sync_native", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_chat_sync_native", extract_args=True)
 def query_api_chat_sync_native(
     messages: list[dict[str, str]],
     verbose=False,
@@ -772,8 +772,8 @@ def answer_sync(
 
 
 @pydantic_cache
-@logfire.instrument("query_api_text", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
     response, completion = await client.completions.create_with_completion(
@@ -791,8 +791,8 @@ async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     )
 
 
-@logfire.instrument("query_api_text_sync", extract_args=True)
 @costly(simulator=LLM_Simulator.simulate_llm_call)
+@logfire.instrument("query_api_text_sync", extract_args=True)
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
     response, completion = client.completions.create_with_completion(
