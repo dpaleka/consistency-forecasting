@@ -46,7 +46,7 @@ KEYS = [k for k in env_vars.keys() if "KEY" in k or "TOKEN" in k]
 override_env_vars = {k: v for k, v in env_vars.items() if k in KEYS}
 os.environ.update(override_env_vars)
 
-max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 100))
+max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
 
 
