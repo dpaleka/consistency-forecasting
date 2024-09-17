@@ -158,7 +158,7 @@ def main(
                 forecasts_batch = []
                 for fq in batch_tuples:
                     forecast = forecaster.call_full(fq)
-                    forecasts.append(forecast)
+                    forecasts_batch.append(forecast)
 
             results_batch = []
             for line, fq, forecast in zip(
