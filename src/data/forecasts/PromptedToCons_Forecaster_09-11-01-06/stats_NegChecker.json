@@ -1,0 +1,20 @@
+{
+    "overall": {
+        "default": {
+            "label": "NegChecker",
+            "num_samples": 1,
+            "num_violations": 1,
+            "avg_violation": 0.064717,
+            "avg_violation_no_outliers": 0.064717,
+            "median_violation": 0.064717
+        },
+        "frequentist": {
+            "label": "NegChecker",
+            "num_samples": 1,
+            "num_violations": 1,
+            "avg_violation": 0.365246,
+            "avg_violation_no_outliers": 0.365246,
+            "median_violation": 0.365246
+        }
+    }
+}

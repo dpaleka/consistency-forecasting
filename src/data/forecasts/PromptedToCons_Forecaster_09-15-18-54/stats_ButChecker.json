@@ -1,0 +1,20 @@
+{
+    "overall": {
+        "default": {
+            "label": "ButChecker",
+            "num_samples": 5,
+            "num_violations": 5,
+            "avg_violation": 0.268958,
+            "avg_violation_no_outliers": 0.269044,
+            "median_violation": 0.265456
+        },
+        "frequentist": {
+            "label": "ButChecker",
+            "num_samples": 5,
+            "num_violations": 5,
+            "avg_violation": 0.754024,
+            "avg_violation_no_outliers": 0.759213,
+            "median_violation": 0.772224
+        }
+    }
+}

@@ -11,6 +11,7 @@ from .cot_forecaster import (
 )
 from .advanced_forecaster import AdvancedForecaster
 from .consistent_forecaster import ConsistentForecaster
+from .PromptedToCons_Forecaster import PromptedToCons_Forecaster
 from static_checks import NegChecker
 import importlib
 from pathlib import Path
@@ -92,6 +93,8 @@ def make_predefined_forecaster(
                 instantiation_kwargs={"model": forecaster_config["model"]},
                 bq_func_kwargs={"model": forecaster_config["model"]},
             )
+        case "PromptedToCons_Forecaster":
+            return PromptedToCons_Forecaster(**forecaster_config)
         case "AdvancedForecaster":
             return AdvancedForecaster(**forecaster_config)
         case "LoadForecaster":
