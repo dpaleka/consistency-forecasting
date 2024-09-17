@@ -1,11 +1,9 @@
 from .forecaster import Forecaster
 from common.datatypes import ForecastingQuestion, Forecast
-from typing import Optional
 
 # llm_forecasting imports
 from forecasters.llm_forecasting.prompts.prompts import PROMPT_DICT
 from forecasters.llm_forecasting.utils.time_utils import (
-    get_todays_date,
     subtract_days_from_date,
 )
 import forecasters.llm_forecasting.ranking as ranking
@@ -82,20 +80,46 @@ RETRIEVAL_CONFIG: RetrievalConfig = RetrievalConfig(**DEFAULT_RETRIEVAL_CONFIG)
 REASONING_CONFIG: ReasoningConfig = ReasoningConfig(**REASONING_CONFIG)
 
 
+default_forecaster_date = "2024-04-30"
+
+
 class AdvancedForecaster(Forecaster):
     def __init__(
         self,
         retrieval_config: RetrievalConfig | None = None,
         reasoning_config: ReasoningConfig | None = None,
+        forecaster_date: str | datetime | None = None,
+        retrieval_interval_length: int = 360,
         **kwargs,
     ):
         """
         Only override kwargs for retrieval_config if the retrieval_config is None.
         Only override kwargs for reasoning_config if the reasoning_config is None.
+
+        Retrieval interval length is the number of days before the forecaster date to retrieve articles from.
         """
         print("Loading AdvancedForecaster...")
         self.retrieval_config = retrieval_config or RETRIEVAL_CONFIG
         self.reasoning_config = reasoning_config or REASONING_CONFIG
+
+        self.forecaster_date = forecaster_date or default_forecaster_date
+        if isinstance(self.forecaster_date, datetime):
+            self.forecaster_date = self.forecaster_date.strftime("%Y-%m-%d")
+
+        self.retrieval_interval_length = retrieval_interval_length
+        print(f"Forecaster date: {self.forecaster_date}\n")
+
+        assert (
+            isinstance(self.forecaster_date, str) and len(self.forecaster_date) == 10
+        ), "forecaster_date must be a string of the form 'YYYY-MM-DD'"
+
+        # If open date is set in data structure, change beginning of retrieval to question open date.
+        # Retrieve from [forecaster_date - retrieval_interval_length, forecaster_date].
+        self.retrieval_dates: tuple[str, str] = (
+            subtract_days_from_date(self.forecaster_date, retrieval_interval_length),
+            self.forecaster_date,
+        )
+
         if retrieval_config is None:
             for key, value in kwargs.items():
                 if key in self.retrieval_config.keys():
@@ -112,15 +136,12 @@ class AdvancedForecaster(Forecaster):
             )
             print(f"kwargs: {kwargs}")
 
-        print("Initialized forecaster with settings:")
         # print(f"Retrieval config: {self.retrieval_config}")
         # print(f"Reasoning config: {self.reasoning_config}")
 
     async def call_async(
         self,
         fq: ForecastingQuestion,
-        forecaster_date: str | datetime | None = None,
-        retrieval_interval_length: int = 30,
         **kwargs,
     ) -> Forecast:
         question: str = fq.title
@@ -132,23 +153,6 @@ class AdvancedForecaster(Forecaster):
             fq.created_date.strftime("%Y-%m-%d") if fq.created_date else "N/A"
         )
 
-        if forecaster_date is None:
-            print("\033[1mUsing today's date as forecaster_date\033[0m")
-            forecaster_date = get_todays_date()
-        elif isinstance(forecaster_date, datetime):
-            forecaster_date = forecaster_date.strftime("%Y-%m-%d")
-
-        assert (
-            isinstance(forecaster_date, str) and len(forecaster_date) == 10
-        ), "forecaster_date must be a string of the form 'YYYY-MM-DD'"
-
-        # If open date is set in data structure, change beginning of retrieval to question open date.
-        # Retrieve from [forecaster_date - 1 month, forecaster_date].
-        retrieval_dates: tuple[str, str] = (
-            subtract_days_from_date(forecaster_date, retrieval_interval_length),
-            forecaster_date,
-        )
-
         (
             ranked_articles,
             all_articles,
@@ -158,7 +162,7 @@ class AdvancedForecaster(Forecaster):
             question,
             background_info,
             resolution_criteria,
-            retrieval_dates,
+            self.retrieval_dates,  # Use self.retrieval_dates instead of retrieval_dates
             urls=[],
             config=self.retrieval_config,
             return_intermediates=True,
@@ -169,7 +173,7 @@ class AdvancedForecaster(Forecaster):
         )
 
         close_date = "N/A"  # data doesn't have explicit close date, so set to N/A
-        today_to_close_date = [forecaster_date, close_date]
+        today_to_close_date = [self.forecaster_date, close_date]
         ensemble_dict = await ensemble.meta_reason(
             question=question,
             background_info=background_info,
@@ -195,16 +199,12 @@ class AdvancedForecaster(Forecaster):
     def call(
         self,
         sentence: ForecastingQuestion,
-        forecaster_date: Optional[str | datetime] = None,
-        retrieval_interval_length: int = 30,
         **kwargs,
     ) -> Forecast:
         # This won't work inside a Jupyter notebook or similar; but there you can use await
         return asyncio.run(
             self.call_async(
                 sentence,
-                forecaster_date,
-                retrieval_interval_length,
                 **kwargs,
             )
         )
@@ -213,11 +213,11 @@ class AdvancedForecaster(Forecaster):
         return {
             "retrieval_config": self.retrieval_config.to_dict(),
             "reasoning_config": self.reasoning_config.to_dict(),
+            "retrieval_dates": self.retrieval_dates,
+            "forecaster_date": self.forecaster_date,
+            "retrieval_interval_length": self.retrieval_interval_length,
         }
 
     @classmethod
     def load_config(cls, config):
         return cls(**config)
-
-
-# TODO: make a cheaper/faster version of this that uses a different default config

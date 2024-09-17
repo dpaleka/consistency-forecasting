@@ -11,9 +11,12 @@ from common.path_utils import get_src_path
 load_dotenv()
 
 # Constants
-NEWS_API_DATA_DUMP_DIR = os.path.join(
+news_api_default_data_dir = os.path.join(
     get_src_path(), "data/news_feed_fq_generation/news_api/news_feed_data_dump"
 )
+
+os.makedirs(news_api_default_data_dir, exist_ok=True)
+
 NEWS_API_DOMAINS = [
     "apnews.com",
     "bloomberg.com",
@@ -82,7 +85,7 @@ def _news_api_download_file_path(
     else:
         news_save_file_name = f"news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}.jsonl"
 
-    return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
+    return os.path.join(news_api_default_data_dir, news_save_file_name)
 
 
 def _news_api_download_consolidation_path(
@@ -104,11 +107,14 @@ def _news_api_download_consolidation_path(
     else:
         news_save_file_name = f"consolidated_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}.jsonl"
 
-    return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
+    return os.path.join(news_api_default_data_dir, news_save_file_name)
 
 
 def _news_api_processed_news_path(
-    start_date: datetime, end_date: datetime, num_pages: int
+    start_date: datetime,
+    end_date: datetime,
+    num_pages: int,
+    processsed_news_save_directory,
 ) -> str:
     """
     File path where the processed form of the consolidated news will be saved.
@@ -117,16 +123,26 @@ def _news_api_processed_news_path(
         start_date (datetime): Start date for downloading news.
         end_date (datetime): End date for downloading news.
         num_pages (int): Number of pages (each containing max 100 articles) to be downloaded.
+        processsed_news_save_directory (str): Directory where to store consolidated news. If empty, defaults.
 
     Returns:
         str: File path where the processed news will be saved.
     """
+    if (
+        processsed_news_save_directory is None
+        or len(processsed_news_save_directory.strip()) == 0
+    ):
+        save_dir = news_api_default_data_dir
+    else:
+        save_dir = processsed_news_save_directory
+    os.makedirs(save_dir, exist_ok=True)
+
     if num_pages == -1:
         news_save_file_name = f"processed_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_all.jsonl"
     else:
         news_save_file_name = f"processed_news_api_from_{start_date.strftime('%Y-%m-%d')}_to_{end_date.strftime('%Y-%m-%d')}_num_pages_{num_pages}.jsonl"
 
-    return os.path.join(NEWS_API_DATA_DUMP_DIR, news_save_file_name)
+    return os.path.join(save_dir, news_save_file_name)
 
 
 def _download_news_from_api_per_day(
@@ -151,9 +167,6 @@ def _download_news_from_api_per_day(
     articles_download_path = _news_api_download_file_path(
         news_date, news_date, num_pages
     )
-
-    # Make the data dump directory
-    os.makedirs(NEWS_API_DATA_DUMP_DIR, exist_ok=True)
 
     # Failsafe to prevent redundant News API queries
     if os.path.exists(articles_download_path):
@@ -307,7 +320,11 @@ def _ner_news_processing(
 
 
 def process_news(
-    start_date: datetime, end_date: datetime, num_pages: int, news_new_threshold: float
+    start_date: datetime,
+    end_date: datetime,
+    num_pages: int,
+    news_new_threshold: float,
+    processsed_news_save_directory: str,
 ) -> str:
     """
     Processes the downloaded news to remove repetitions
@@ -318,6 +335,7 @@ def process_news(
         end_date (datetime): End date for downloading news.
         num_pages (int): Number of pages (each containing max 100 articles) to be downloaded.
         news_new_threshold (float): The threshold used to designate an article as a duplicate
+        processsed_news_save_directory (str): directory where to store the processed news. If left empty, defaults.
 
     Returns:
         str: File path where the processed news is saved.
@@ -331,7 +349,9 @@ def process_news(
             "Consolidated news does not exist at {consolidated_news_path}!"
         )
 
-    processed_news_path = _news_api_processed_news_path(start_date, end_date, num_pages)
+    processed_news_path = _news_api_processed_news_path(
+        start_date, end_date, num_pages, processsed_news_save_directory
+    )
     if os.path.exists(processed_news_path):
         print(f"The processed news has already been saved to {processed_news_path}. ")
         return processed_news_path

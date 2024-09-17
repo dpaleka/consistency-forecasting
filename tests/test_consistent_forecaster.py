@@ -15,10 +15,12 @@ pytest.mark.expensive = pytest.mark.skipif(
     reason="Skipping ConsistentForecaster tests",
 )
 
+default_small_model = "gpt-4o-mini-2024-07-18"
+
 
 @pytest.fixture
 def consistent_forecaster():
-    basic_forecaster = BasicForecaster()
+    basic_forecaster = BasicForecaster(model=default_small_model)
     return ConsistentForecaster(
         basic_forecaster,
         checks=[
@@ -30,7 +32,7 @@ def consistent_forecaster():
 
 @pytest.fixture
 def consistent_forecaster_single():
-    basic_forecaster = BasicForecaster()
+    basic_forecaster = BasicForecaster(model=default_small_model)
     return ConsistentForecaster(
         basic_forecaster,
         checks=[
@@ -116,14 +118,12 @@ test_fq_five = ForecastingQuestion(
 @pytest.mark.asyncio
 @pytest.mark.expensive
 async def test_consistent_forecaster_call_async(consistent_forecaster):
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     prob = await consistent_forecaster.call_async(
         test_fq_around_fifty_fifty,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     prob = prob.prob
     print("Probability: ", prob)
@@ -135,14 +135,12 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
 
 @pytest.mark.expensive
 def test_consistent_forecaster_call_sync(consistent_forecaster):
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     prob = consistent_forecaster.call(
         test_fq_around_fifty_fifty,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     prob = prob.prob
     print("Probability: ", prob)
@@ -156,7 +154,6 @@ def test_consistent_forecaster_call_sync(consistent_forecaster):
 async def test_consistent_forecaster_consistent_async(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
@@ -185,7 +182,6 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     print("Answers:\n", answers)
     v = checker.violation(answers)
@@ -197,7 +193,6 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
@@ -226,7 +221,6 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     print("Answers:\n", answers)
     v = checker.violation(answers)
@@ -241,7 +235,6 @@ async def test_consistent_forecaster_more_consistent_async(
 ):
     # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
 
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
@@ -270,14 +263,13 @@ async def test_consistent_forecaster_more_consistent_async(
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     print("Answers:\n", answers)
     v = checker.violation(answers)
     print("Violation: ", v)
     print("---")
     hypocrite_answers = await consistent_forecaster_single.hypocrite.elicit_async(
-        tup, **call_kwargs
+        tup,
     )
     print("Hypocrite Answers:\n", hypocrite_answers)
     hv = checker.violation(hypocrite_answers)
@@ -291,7 +283,6 @@ async def test_consistent_forecaster_more_consistent_async(
 def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single):
     # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
 
-    call_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
@@ -320,14 +311,13 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
-        **call_kwargs,
     )
     print("Answers:\n", answers)
     v = checker.violation(answers)
     print("Violation: ", v)
     print("---")
     hypocrite_answers = consistent_forecaster_single.hypocrite.elicit(
-        tup, **call_kwargs
+        tup,
     )
     print("Hypocrite Answers:\n", hypocrite_answers)
     hv = checker.violation(hypocrite_answers)

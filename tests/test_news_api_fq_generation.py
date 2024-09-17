@@ -63,7 +63,11 @@ commands = [
     --rough-fq-gen-model-name gpt-4o-2024-05-13 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
     --final-fq-verification-model-name gpt-4o-2024-05-13 \
-    -lax
+    -lax \
+    --rough-fq-save-directory src/data/news_api_test/rough \
+    --final-fq-save-directory src/data/news_api_test/final \
+    --verified-fq-save-directory src/data/news_api_test/fq \
+    --processsed-news-save-directory src/data/news_api_test/news
     """,
     """
     python src/generate_fqs_from_news.py \
@@ -71,7 +75,11 @@ commands = [
     --rough-fq-gen-model-name gpt-4o-2024-05-13 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
     --final-fq-verification-model-name gpt-4o-2024-05-13 \
-    --only-gen-final
+    --only-gen-final\
+    --rough-fq-save-directory src/data/news_api_test/rough \
+    --final-fq-save-directory src/data/news_api_test/final \
+    --verified-fq-save-directory src/data/news_api_test/fq \
+    --processsed-news-save-directory src/data/news_api_test/news
     """,
     """
     python src/generate_fqs_from_news.py \
@@ -79,7 +87,11 @@ commands = [
     --rough-fq-gen-model-name gpt-4o-2024-05-13 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
     --final-fq-verification-model-name gpt-4o-2024-05-13 \
-    --only-verify-fq
+    --only-verify-fq \
+    --rough-fq-save-directory src/data/news_api_test/rough \
+    --final-fq-save-directory src/data/news_api_test/final \
+    --verified-fq-save-directory src/data/news_api_test/fq \
+    --processsed-news-save-directory src/data/news_api_test/news
     """,
 ]
 
@@ -87,14 +99,13 @@ commands = [
 # Expected files
 def expected_files(test_exist: bool = False):
     files = [
-        "src/data/fq/synthetic/news_api_generated_fqs/verified_final_fq_using_gpt-4o-2024-05-13_lax_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
-        "src/data/fq/synthetic/news_api_generated_fqs/verified_final_fq_using_gpt-4o-2024-05-13_strict_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
-        "src/data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions/final_fq_using_anthropic__claude-3.5-sonnet_lax_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
-        "src/data/news_feed_fq_generation/news_api/final_unverified_forecasting_questions/final_fq_using_anthropic__claude-3.5-sonnet_strict_res_checking_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
-        "src/data/news_feed_fq_generation/news_api/news_feed_data_dump/consolidated_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl",
-        "src/data/news_feed_fq_generation/news_api/news_feed_data_dump/processed_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl",
-        "src/data/news_feed_fq_generation/news_api/rough_forecasting_question_data/rough_fq_using_gpt-4o-2024-05-13_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
-        "src/data/news_feed_fq_generation/news_api/rough_forecasting_question_data/validated_news_articles_using_gpt-4o-2024-05-13_from_September-1-2024_to_September-4-2024_num_pages_1_num_articles_all.jsonl",
+        "src/data/news_api_test/rough/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/rough_fq_data.jsonl",
+        "src/data/news_api_test/rough/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/validated_articles.jsonl",
+        "src/data/news_api_test/fq/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/strict_res_checking_fqs.jsonl",
+        "src/data/news_api_test/fq/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/lax_res_checking_fqs.jsonl",
+        "src/data/news_api_test/news/processed_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl",
+        "src/data/news_api_test/final/anthropic__claude-3.5-sonnet/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/strict_res_checking_fqs.jsonl",
+        "src/data/news_api_test/final/anthropic__claude-3.5-sonnet/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/lax_res_checking_fqs.jsonl",
     ]
 
     if test_exist:

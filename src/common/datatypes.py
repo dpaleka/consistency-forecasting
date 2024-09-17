@@ -38,6 +38,9 @@ class Forecast(BaseModel):
             raise ValueError("Probability must be between 0 and 1.")
         return v
 
+    def to_dict(self):
+        return self.dict()
+
 
 register_model_for_cache(Forecast)
 
@@ -55,6 +58,19 @@ class Prob_cot(BaseModel):
 
 
 register_model_for_cache(Prob_cot)
+
+
+def reasoning_field(response: BaseModel) -> str:
+    if isinstance(response, Prob_cot):
+        return response.chain_of_thought
+    elif isinstance(response, PlainText):
+        return response.text
+    elif isinstance(response, Prob):
+        return str(response.prob)
+    else:
+        raise ValueError(
+            f"Unsupported response model for extracting reasoning field: {response}"
+        )
 
 
 # this is what we pass to llms for instantiation and forecasting
@@ -100,6 +116,13 @@ class ForecastingQuestion_stripped(BaseModel):
 
 
 register_model_for_cache(ForecastingQuestion_stripped)
+
+
+class ForecastingQuestion_stripped_list(BaseModel):
+    questions: list[ForecastingQuestion_stripped]
+
+
+register_model_for_cache(ForecastingQuestion_stripped_list)
 
 exp_answer_types = {
     "default": {"binary": Prob, "conditional_binary": Prob},
@@ -154,7 +177,7 @@ class ForecastingQuestion(BaseModel):
     def __str__(self) -> str:
         return self.cast_stripped().model_dump_json()
 
-    def to_str_forecast_mode(self, mode="default") -> str:
+    def to_dict_forecast_mode(self, mode="default") -> dict:
         return_dict = {
             "title": self.title,
             "body": self.body,
@@ -163,7 +186,10 @@ class ForecastingQuestion(BaseModel):
         if self.created_date:
             return_dict["created_date"] = str(self.created_date)
 
-        return str(return_dict)
+        return return_dict
+
+    def to_str_forecast_mode(self, mode="default") -> str:
+        return str(self.to_dict_forecast_mode(mode=mode))
 
     def to_dict(self):
         return self.dict()
@@ -293,6 +319,15 @@ class QuestionGenerationResponse3(BaseModel):
 
 
 register_model_for_cache(QuestionGenerationResponse3)
+
+
+class ResolverOutput(BaseModel):
+    chain_of_thought: str
+    can_resolve_question: bool
+    answer: Optional[bool]
+
+
+register_model_for_cache(ResolverOutput)
 
 ### end Pydantic models ###
 
