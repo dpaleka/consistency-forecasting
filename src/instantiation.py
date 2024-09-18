@@ -1,6 +1,7 @@
 import jsonlines
 import asyncio
 import click
+from costly import Costlog
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks import Checker
@@ -30,7 +31,7 @@ BASE_DATA_PATH: Path = (
 #     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
 # )
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "tuples/"
+TUPLES_PATH: Path = get_data_path() / "test/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
 RELEVANT_CHECKS = ["ExpectedEvidenceChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]
@@ -234,6 +235,9 @@ async def instantiate(
         n_write (int, optional): _description_. max number of tuples we actually want to write.
             Leave as -1 to write all tuples that pass verification
     """
+    cost_log = kwargs.get("cost_log", None)
+    simulate = kwargs.get("simulate", False)
+
     bqs = []
     print(f"Loading questions from {BASE_DATA_PATH}...")
     for line in jsonlines.open(BASE_DATA_PATH):
@@ -263,7 +267,9 @@ async def instantiate(
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")
-            func = functools.partial(relevance, model=model_relevance)
+            func = functools.partial(
+                relevance, model=model_relevance, cost_log=cost_log, simulate=simulate
+            )
             relevances = await parallelized_call(
                 func=func, data=possible_ituples, max_concurrent_queries=25
             )
@@ -337,6 +343,12 @@ async def instantiate(
     default=False,
     help="Use instantiateRel instead of instantiate",
 )
+@click.option(
+    "--simulate",
+    is_flag=True,
+    default=False,
+    help="Simulate the instantiation process, don't call the LLM or write to files.",
+)
 def main(
     data_path,
     n_relevance,
@@ -349,6 +361,7 @@ def main(
     tuple_dir,
     seed,
     use_instantiate_rel,
+    simulate,
 ):
     print(f"Tuple dir: {tuple_dir}")
     tuple_dir = Path(tuple_dir)
@@ -356,6 +369,8 @@ def main(
         tuple_dir.mkdir(parents=True, exist_ok=True)
 
     checkers = choose_checkers(relevant_checks, tuple_dir)
+
+    cl = Costlog(mode="jsonl")
 
     if use_instantiate_rel:
         asyncio.run(
@@ -366,6 +381,8 @@ def main(
                 max_tuples_per_source=max_tuples_per_source,
                 model=model_main,
                 seed=seed,
+                cost_log=cl,
+                simulate=simulate,
             )
         )
 
@@ -379,8 +396,15 @@ def main(
                 model=model_main,
                 model_relevance=model_relevance,
                 seed=seed,
+                cost_log=cl,
+                simulate=simulate,
             )
         )
+
+    print("Costly log totals:")
+    print("------------------")
+    print(cl.totals)
+    print("------------------")
 
 
 if __name__ == "__main__":

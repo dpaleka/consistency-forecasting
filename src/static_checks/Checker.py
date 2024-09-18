@@ -189,7 +189,7 @@ class Checker(ABC):
         results = await self.instantiate_with_metadata(
             base_sentences, supplied_metadata=supplied_metadata, **kwargs
         )
-        if results:
+        if results and not kwargs.get("simulate", False):
             json_list = [result.model_dump_json() for result in results]
             await write_jsonl_async_from_str(self.path, json_list, append=True)
 
@@ -209,7 +209,7 @@ class Checker(ABC):
             n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
                 because some will fail verification). If -1, will make as many as possible.
         """
-        if overwrite:
+        if overwrite and not kwargs.get("simulate", False):
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 

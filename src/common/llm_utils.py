@@ -17,9 +17,15 @@ from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
-
-from .datatypes import PlainText
-from .path_utils import get_src_path, get_root_path
+from costly import CostlyResponse, costly
+from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
+from .datatypes import (
+    PlainText,
+    Prob,
+    ForecastingQuestion,
+    ForecastingQuestion_stripped,
+)
+from .path_utils import get_src_path, get_root_path, get_data_path
 from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
 
 
@@ -136,6 +142,35 @@ FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE", "LOGGING_DEBUG", "USE_LOGF
 
 client = None
 PROVIDERS = ["openai", "mistral", "anthropic", "togetherai", "huggingface_local"]
+
+
+class LLM_Simulator(LLM_Simulator_Faker):
+    fqs_path = get_data_path() / "fq" / "real" / "test_formatted.jsonl"
+
+    @staticmethod
+    def pick_random_fq(file_path: str, strip=False):
+        import random
+
+        with open(file_path, "r") as file:
+            lines = file.readlines()
+        random_line = random.choice(lines)
+        fq = ForecastingQuestion.model_validate_json(random_line)
+        if strip:
+            fq = fq.cast_stripped()
+        return fq
+
+    @classmethod
+    def _fake_custom(cls, t: type):
+        if issubclass(t, Prob):
+            import random
+
+            return t(prob=random.random())
+        elif issubclass(t, ForecastingQuestion):
+            return cls.pick_random_fq(cls.fqs_path, strip=False)
+        elif issubclass(t, ForecastingQuestion_stripped):
+            return cls.pick_random_fq(cls.fqs_path, strip=True)
+        else:
+            raise NotImplementedError(f"{t} is not a known custom type")
 
 
 def singleton_constructor(get_instance_func):
@@ -488,6 +523,7 @@ ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
 
 
 @pydantic_cache
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat", extract_args=True)
 async def query_api_chat(
     messages: list[dict[str, str]],
@@ -540,14 +576,23 @@ async def query_api_chat(
         messages=call_messages,
         **options,
     )
-    # print(f"Completion: {completion}")
-
+    try:
+        cost_info = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
-    return response
+    return CostlyResponse(output=response, cost_info=cost_info)
 
 
 @text_cache
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_native", extract_args=True)
 async def query_api_chat_native(
     messages: list[dict[str, str]],
@@ -593,10 +638,22 @@ async def query_api_chat_native(
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}\n")
 
-    return text_response
+    try:
+        cost_info = {
+            "input_tokens": response.usage.prompt_tokens,
+            "output_tokens": response.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=text_response, cost_info=cost_info)
 
 
 @pydantic_cache
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_sync", extract_args=True)
 def query_api_chat_sync(
     messages: list[dict[str, str]],
@@ -645,10 +702,23 @@ def query_api_chat_sync(
 
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {response}")
-    return response
+
+    try:
+        cost_info = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response, cost_info=cost_info)
 
 
 @text_cache
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_sync_native", extract_args=True)
 def query_api_chat_sync_native(
     messages: list[dict[str, str]],
@@ -693,7 +763,18 @@ def query_api_chat_sync_native(
     if verbose or os.getenv("VERBOSE") == "True":
         print(f"...\nText: {messages[-1]['content']}\nResponse: {text_response}")
 
-    return text_response
+    try:
+        cost_info = {
+            "input_tokens": response.usage.prompt_tokens,
+            "output_tokens": response.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": response.usage.input_tokens,
+            "output_tokens": response.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=text_response, cost_info=cost_info)
 
 
 @dataclass_json
@@ -858,24 +939,54 @@ def answer_messages_sync(
 
 
 @pydantic_cache
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
-    response = await client.completions.create(model=model, prompt=text, **kwargs)
+    response, completion = await client.completions.create_with_completion(
+        model=model, prompt=text, **kwargs
+    )
     response_text = response.choices[0].text
     if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text[:30], "\nResponse:", response_text[:30])
-    return response_text
+
+    try:
+        cost_info = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response_text, cost_info=cost_info)
 
 
+@costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_text_sync", extract_args=True)
 def query_api_text_sync(model: str, text: str, verbose=False, **kwargs) -> str:
     client, client_name = get_client_pydantic(model, use_async=False)
-    response = client.completions.create(model=model, prompt=text, **kwargs)
+    response, completion = client.completions.create_with_completion(
+        model=model, prompt=text, **kwargs
+    )
     response_text = response.choices[0].text
     if verbose or os.getenv("VERBOSE") == "True":
         print("Text:", text, "\nResponse:", response_text)
-    return response_text
+
+    try:
+        cost_info = {
+            "input_tokens": completion.usage.prompt_tokens,
+            "output_tokens": completion.usage.completion_tokens,
+        }
+    except AttributeError:
+        cost_info = {
+            "input_tokens": completion.usage.input_tokens,
+            "output_tokens": completion.usage.output_tokens,
+        }
+
+    return CostlyResponse(output=response_text, cost_info=cost_info)
 
 
 @logfire.instrument("query_parse_last_response_into_format", extract_args=True)

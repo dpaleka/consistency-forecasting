@@ -13,6 +13,8 @@ scripts/references/
 src/*see_eval.txt
 .vscode/settings.json
 *.log
+.costly/
+src/.costly/
 
 # Local
 *.code-workspace
