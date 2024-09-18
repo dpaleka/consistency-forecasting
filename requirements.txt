@@ -32,7 +32,7 @@ colorama==0.4.6
 comm==0.2.1
 confection==0.1.5
 contourpy==1.1.1
-costly==1.0.0
+costly==1.0.1
 cycler==0.12.1
 cymem==2.0.8
 dataclasses-json==0.6.7
