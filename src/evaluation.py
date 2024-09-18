@@ -8,6 +8,7 @@ import click
 import logging
 import functools
 import concurrent.futures
+from costly import Costlog
 
 from forecasters import Forecaster
 from static_checks.Checker import (
@@ -183,6 +184,7 @@ def process_check(
     load_dir: Path,
     run: bool,
     eval_by_source: bool,
+    **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
     try:
@@ -242,6 +244,7 @@ def process_check(
                             forecaster,
                             do_check=False,
                             tuples=batch_tuples,
+                            **kwargs,
                         )
                     )
                 else:
@@ -249,6 +252,7 @@ def process_check(
                         forecaster,
                         do_check=False,
                         tuples=batch_tuples,
+                        **kwargs,
                     )
 
                 print(f"results_batch: {results_batch}")
@@ -379,6 +383,12 @@ def process_check(
     default=False,
     help="Evaluate consistency scores per source question",
 )
+@click.option(
+    "--simulate",
+    is_flag=True,
+    default=False,
+    help="Simulate the evaluation",
+)
 def main(
     forecaster_class: str | None,
     custom_path: str | None,
@@ -394,6 +404,7 @@ def main(
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
+    simulate: bool = False,
 ):
     forecaster_config = get_forecaster_config(config_path, forecaster_options)
 
@@ -413,6 +424,8 @@ def main(
     print(f"  load_dir: {load_dir}")
     print(f"  is_async: {is_async}")
     print(f"  output_dir: {output_dir}")
+
+    cl = Costlog(mode="jsonl")
 
     if tuple_dir is None:
         tuple_dir = BASE_TUPLES_PATH
@@ -471,6 +484,8 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                cost_log=cl,
+                simulate=simulate,
             )
             all_stats = {
                 check_name: stats
@@ -492,10 +507,17 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                cost_log=cl,
+                simulate=simulate,
             )
             all_stats[check_name] = stats
 
     # TODO figure out how to write to the load_dir
+
+    print("Cost log totals")
+    print("---------------")
+    print(cl.totals)
+    print("---------------")
 
     with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
