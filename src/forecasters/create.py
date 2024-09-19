@@ -12,7 +12,7 @@ from .cot_forecaster import (
 from .advanced_forecaster import AdvancedForecaster
 from .consistent_forecaster import ConsistentForecaster
 from .PromptedToCons_Forecaster import PromptedToCons_Forecaster
-from static_checks import choose_checkers
+from static_checks import checker_classes
 import importlib
 from pathlib import Path
 from typing import Any
@@ -90,7 +90,7 @@ def make_consistent_forecaster(
     checks: list[str],
     depth: int,
 ) -> ConsistentForecaster:
-    checks = choose_checkers(checks).values()
+    checks = [dict(checker_classes)[check]() for check in checks]
     return ConsistentForecaster.recursive(
         depth=depth,
         hypocrite=make_predefined_forecaster("BasicForecaster", forecaster_config),
