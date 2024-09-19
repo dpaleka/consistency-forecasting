@@ -11,7 +11,7 @@ from .fq_from_news_datatypes import (
     ForecastingQuestionGroundTruthResolutionStrict,
     ForecastingQuestionGroundTruthResolutionLax,
 )
-from .date_utils import last_datetime_of_month
+from .date_utils import last_datetime_of_month, last_datetime_of_previous_month
 
 
 class NewsApiFinalForecastingQuestionGenerator:
@@ -44,7 +44,7 @@ Your task is to ensure that each question adheres to the established guidelines 
 Guidelines to be followed are:
 
 1. **Forecaster’s Context**:
-   - The forecaster’s present date is set to **{pose_date}**, so all questions must be framed as if this is the current date. Although the articles may reference future events, your questions must be phrased in a way that the forecaster cannot detect the actual date of question creation.
+   - The forecaster’s present date is set to **{pose_date}**, so all questions must be framed as if this is the current date. Although the articles may reference future events, your questions must be phrased in a way that the forecaster **cannot** detect the actual date of question creation.
 
 2. **Clarity & Precision**:
    - Each question must be **clear**, **specific**, and **unambiguous**.
@@ -55,9 +55,10 @@ Guidelines to be followed are:
    - Do **not** include any information or context that implies the question was created after **{pose_date}**.
    - Ensure no indication that the article is used to inform the question, keeping the creation date fully hidden.
 
-4. **Resolution Period**:
-   - The resolution of each question must remain definitive and applicable from the current date until **{month_name}, {year}**.
-   - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
+4. **Resolution Period**: 
+    - If you phrase the resolution date as "by {month_name}, {year}", then resolution of each question must remain definitive and applicable from the current date until {month_name}, {year}.
+    - If you phrase the resolution date as "in {month_name}, {year}", then resolution of each question must remain definitive and applicable for the month of {month_name} in {year}.
+    - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
 
 5. **Factual Basis**:
 	- Questions should be directly supported by the article content and not include fabricated information.
@@ -362,7 +363,7 @@ Please provide a brief justification for your answer, citing specific details fr
             data_source="synthetic",
             url=None,
             resolution_date=last_datetime_of_month(end_date),
-            created_date=pose_date,
+            created_date=last_datetime_of_previous_month(end_date),
             metadata={
                 "article_information": {
                     "article_url": rough_fq_data["articleUrl"],
@@ -373,7 +374,7 @@ Please provide a brief justification for your answer, citing specific details fr
                     "article_title": rough_fq_data["articleTitle"],
                     "article_content": rough_fq_data["articleContent"],
                 },
-                "question_created": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
+                "pose_date": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
                 "scraped_date": scraped_date,
             },
         )
