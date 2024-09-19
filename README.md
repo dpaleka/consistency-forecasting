@@ -209,3 +209,30 @@ python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_f
 
 
 This list not include the entry points already mentioned in previous sections (feedback form, tests).
+
+## Experiments
+
+### Evaluation
+
+```
+python evaluation.py -f BasicForecaster -o model=gpt-4o-2024-08-06 --run -n 100 -k all --async
+# gpt-4o-2024-08-06 is the latest and is cheaper I think
+# ... ADD other models e.g. llamas
+# ... ADD COT_Forecaster etc.
+
+python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 100 -k all --async
+# ... perhaps with more configurations
+
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a NegChecker -d 4 --run -n 100 -k NegChecker -k ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ParaphraseChecker -d 4 --run -n 100 -k NegChecker -k ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a NegChecker -a ParaphraseChecker -d 4 --run -n 100 -k all --async #*
+
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker --run -n 100 -k all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
+```
+
+Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
+
+Presumably all the above are also exactly what we want to run ground truth evaluation on?
