@@ -4,19 +4,11 @@ from typing import Any, Literal, Optional
 import functools
 from pathlib import Path
 from common.datatypes import ForecastingQuestion, Forecast
-from common.utils import shallow_dict
+from common.utils import shallow_dict, truncate_str
 from common.llm_utils import parallelized_call
 import numpy as np
 import asyncio
 import json
-
-
-def truncate_str(s: str, max_len: int = 80) -> str:
-    pref, suf = int(max_len * 0.75), int(max_len * 0.25)
-    if len(s) > max_len:
-        return s[:pref] + "..." + s[-suf:]
-    else:
-        return s
 
 
 class Forecaster(ABC):

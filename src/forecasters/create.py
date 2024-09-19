@@ -12,7 +12,7 @@ from .cot_forecaster import (
 from .advanced_forecaster import AdvancedForecaster
 from .consistent_forecaster import ConsistentForecaster
 from .PromptedToCons_Forecaster import PromptedToCons_Forecaster
-from static_checks import NegChecker
+from static_checks import choose_checkers
 import importlib
 from pathlib import Path
 from typing import Any
@@ -73,26 +73,6 @@ def make_predefined_forecaster(
             return CoT_ForecasterWithExamples(**forecaster_config)
         case "CoT_ForecasterTextBeforeParsing":
             return CoT_ForecasterTextBeforeParsing(**forecaster_config)
-        case "ConsistentForecaster":
-            return ConsistentForecaster(
-                hypocrite=BasicForecaster(**forecaster_config),
-                checks=[
-                    NegChecker(),
-                ],
-                instantiation_kwargs={"model": forecaster_config["model"]},
-                bq_func_kwargs={"model": forecaster_config["model"]},
-            )
-        case "RecursiveConsistentForecaster":
-            return ConsistentForecaster.recursive(
-                depth=4,
-                hypocrite=BasicForecaster(**forecaster_config),
-                checks=[
-                    NegChecker(),
-                    # ParaphraseChecker(),
-                ],  # , ParaphraseChecker(), ButChecker(), CondChecker()
-                instantiation_kwargs={"model": forecaster_config["model"]},
-                bq_func_kwargs={"model": forecaster_config["model"]},
-            )
         case "PromptedToCons_Forecaster":
             return PromptedToCons_Forecaster(**forecaster_config)
         case "AdvancedForecaster":
@@ -105,10 +85,28 @@ def make_predefined_forecaster(
             raise ValueError(f"Invalid forecaster class: {forecaster_class}")
 
 
+def make_consistent_forecaster(
+    forecaster_config: dict[str, Any] | None,
+    checks: list[str],
+    depth: int,
+) -> ConsistentForecaster:
+    checks = choose_checkers(checks).values()
+    return ConsistentForecaster.recursive(
+        depth=depth,
+        hypocrite=make_predefined_forecaster("BasicForecaster", forecaster_config),
+        checks=checks,
+        instantiation_kwargs={"model": forecaster_config["model"]},
+        bq_func_kwargs={"model": forecaster_config["model"]},
+        **forecaster_config,
+    )
+
+
 def make_forecaster(
     forecaster_class: str | None,
     custom_path: str | None,
     forecaster_config: dict[str, Any] | None,
+    checks: list[str] | None,
+    depth: int | None,
 ) -> Forecaster:
     """Kwargs are already parsed before this"""
     if custom_path is not None:
@@ -119,6 +117,13 @@ def make_forecaster(
             custom_path, class_name = custom_path.split("::")
         return make_custom_forecaster(
             custom_path, class_name, forecaster_config=forecaster_config
+        )
+    elif forecaster_class == "ConsistentForecaster":
+        assert checks  # HACK sometimes checks gets converted to a tuple () so we don't check for None
+        return make_consistent_forecaster(
+            forecaster_config=forecaster_config,
+            checks=checks,
+            depth=depth,
         )
     else:
         assert (
@@ -131,7 +136,6 @@ def make_forecaster(
                 "BasicForecaster",
                 "CoT_Forecaster",
                 "ConsistentForecaster",
-                "RecursiveConsistentForecaster",
             ]
         ):
             assert (

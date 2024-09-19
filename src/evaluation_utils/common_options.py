@@ -55,6 +55,20 @@ def common_options(f):
             multiple=True,
             help="Additional options for the forecaster in the format key=value. Can be used multiple times. These options will be passed as kwargs when creating the forecaster. Overrides options in config_path.",
         ),
+        click.option(
+            "-a",
+            "--cfcaster_checks",
+            multiple=True,
+            help="For ConsistentForecaster configuration.",
+            default=None,
+        ),
+        click.option(
+            "-d",
+            "--depth",
+            type=int,
+            default=1,
+            help="For ConsistentForecaster configuration.",
+        ),
         click.option("-r", "--run", is_flag=True, help="Run the forecaster"),
         click.option(
             "-l",
