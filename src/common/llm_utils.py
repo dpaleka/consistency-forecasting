@@ -4,7 +4,7 @@
 # %%
 import os
 import logging
-from typing import Coroutine, Optional, List
+from typing import Coroutine, Optional, List, Literal
 from openai import AsyncOpenAI, OpenAI
 import instructor
 from instructor.client import Instructor
@@ -141,7 +141,16 @@ FLAGS = CACHE_FLAGS + ["SINGLE_THREAD"] + ["VERBOSE", "LOGGING_DEBUG", "USE_LOGF
 
 
 client = None
-PROVIDERS = ["openai", "mistral", "anthropic", "togetherai", "huggingface_local"]
+PROVIDERS = [
+    "openrouter",
+    "openai",
+    "openai_o1",
+    "openai_strict",
+    "mistral",
+    "anthropic",
+    "togetherai",
+    "huggingface_local",
+]
 
 
 class LLM_Simulator(LLM_Simulator_Faker):
@@ -177,9 +186,10 @@ def singleton_constructor(get_instance_func):
     instances = {}
 
     def wrapper(*args, **kwargs):
-        if get_instance_func not in instances:
-            instances[get_instance_func] = get_instance_func(*args, **kwargs)
-        return instances[get_instance_func]
+        key = (get_instance_func, args, frozenset(kwargs.items()))
+        if key not in instances:
+            instances[key] = get_instance_func(*args, **kwargs)
+        return instances[key]
 
     return wrapper
 
@@ -209,13 +219,13 @@ def get_sync_perplexity_client() -> SyncPerplexityClient:
 
 
 @singleton_constructor
-def get_async_openai_client_pydantic() -> Instructor:
+def get_async_openai_client_pydantic(
+    mode: Literal[Mode.TOOLS, Mode.TOOLS_STRICT, Mode.JSON_O1] = Mode.TOOLS,
+) -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = AsyncOpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    mode = (
-        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
-    )
+
     return instructor.from_openai(_client, mode=mode)
 
 
@@ -228,13 +238,12 @@ def get_async_openai_client_native() -> AsyncOpenAI:
 
 
 @singleton_constructor
-def get_openai_client_pydantic() -> Instructor:
+def get_openai_client_pydantic(
+    mode: Literal[Mode.TOOLS, Mode.TOOLS_STRICT, Mode.JSON_O1] = Mode.TOOLS,
+) -> Instructor:
     api_key = os.getenv("OPENAI_API_KEY")
     _client = OpenAI(api_key=api_key)
     logfire.instrument_openai(_client)
-    mode = (
-        Mode.TOOLS_STRICT if os.getenv("OPENAI_JSON_STRICT") == "True" else Mode.TOOLS
-    )
     return instructor.from_openai(_client, mode=mode)
 
 
@@ -376,7 +385,15 @@ def get_provider(model: str) -> str:
         print(
             f"Using OpenAI provider for model {model}, key {os.getenv('OPENAI_API_KEY')}"
         )
-        return "openai"
+        if "o1" in model:
+            if os.getenv("ALLOW_OPENAI_O1", "False") == "True":
+                return "openai_o1"
+            else:
+                raise ValueError("OPENAI_O1 is not allowed")
+        elif os.getenv("OPENAI_JSON_STRICT") == "True":
+            return "openai_strict"
+        else:
+            return "openai"
     elif is_perplexity_ai(model):
         return "perplexity"
     elif is_anthropic(model):
@@ -393,39 +410,43 @@ def get_provider(model: str) -> str:
 
 
 def get_client_pydantic(model: str, use_async=True) -> tuple[Instructor, str, str]:
-    provider = get_provider(model)
+    provider: str = get_provider(model)
     final_model_name = model
 
+    print(f"Using {provider} provider for model {model}")
     if provider == "openrouter":
-        print(f"Using {provider} provider for model {model}")
         kwargs = {}
         client = (
             get_async_openrouter_client_pydantic(**kwargs)
             if use_async
             else get_openrouter_client_pydantic(**kwargs)
         )
+    elif provider in ["openai", "openai_strict", "openai_o1"]:
+        dict_modes = {
+            "openai": Mode.TOOLS,
+            "openai_strict": Mode.TOOLS_STRICT,
+            "openai_o1": Mode.JSON_O1,
+        }
+        mode = dict_modes[provider]
+        final_model_name = model.replace("openai/", "")
+        client = (
+            get_async_openai_client_pydantic(mode=mode)
+            if use_async
+            else get_openai_client_pydantic(mode=mode)
+        )
+    elif provider == "anthropic":
+        final_model_name = model.replace("anthropic/", "")
+        if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+            final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
+        client = (
+            get_anthropic_async_client_pydantic()
+            if use_async
+            else get_anthropic_client_pydantic()
+        )
     else:
-        print(f"Using {provider} provider for model {model}")
-        if provider == "openai":
-            final_model_name = model.replace("openai/", "")
-            client = (
-                get_async_openai_client_pydantic()
-                if use_async
-                else get_openai_client_pydantic()
-            )
-        elif provider == "anthropic":
-            final_model_name = model.replace("anthropic/", "")
-            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
-                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
-            client = (
-                get_anthropic_async_client_pydantic()
-                if use_async
-                else get_anthropic_client_pydantic()
-            )
-        else:
-            raise NotImplementedError(
-                f"Model {model} Pydantic client is not supported for now outside of OpenRouter"
-            )
+        raise NotImplementedError(
+            f"Model {model} Pydantic client is not supported for now outside of OpenRouter"
+        )
 
     return client, provider, final_model_name
 
@@ -436,43 +457,42 @@ def get_client_native(
     provider = get_provider(model)
     final_model_name = model
 
+    print(f"Using {provider} provider for model {model}")
     if provider == "openrouter":
         client = (
             get_async_openrouter_client_native()
             if use_async
             else get_openrouter_client_native()
         )
-    else:
-        print(f"Using {provider} provider for model {model}")
-        if provider == "openai":
-            final_model_name = model.replace("openai/", "")
-            client = (
-                get_async_openai_client_native()
-                if use_async
-                else get_openai_client_native()
+    elif provider in ["openai", "openai_strict", "openai_o1"]:
+        final_model_name = model.replace("openai/", "")
+        client = (
+            get_async_openai_client_native()
+            if use_async
+            else get_openai_client_native()
+        )
+    elif provider == "anthropic":
+        final_model_name = model.replace("anthropic/", "")
+        if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
+            final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
+        client = (
+            get_anthropic_async_client_native()
+            if use_async
+            else get_anthropic_client_native()
+        )
+    elif provider == "togetherai":
+        if use_async:
+            raise NotImplementedError(
+                "Only synchronous calls are supported for TogetherAI"
             )
-        elif provider == "anthropic":
-            final_model_name = model.replace("anthropic/", "")
-            if final_model_name in ANTHROPIC_DEFAULT_MODEL_NAME_MAP:
-                final_model_name = ANTHROPIC_DEFAULT_MODEL_NAME_MAP[final_model_name]
-            client = (
-                get_anthropic_async_client_native()
-                if use_async
-                else get_anthropic_client_native()
-            )
-        elif provider == "togetherai":
-            if use_async:
-                raise NotImplementedError(
-                    "Only synchronous calls are supported for TogetherAI"
-                )
-            client = get_togetherai_client_native()
-        elif provider == "perplexity":
-            if use_async:
-                client = get_async_perplexity_client()
-            else:
-                client = get_sync_perplexity_client()
+        client = get_togetherai_client_native()
+    elif provider == "perplexity":
+        if use_async:
+            client = get_async_perplexity_client()
         else:
-            raise NotImplementedError(f"Model {model} is not supported for now")
+            client = get_sync_perplexity_client()
+    else:
+        raise NotImplementedError(f"Model {model} is not supported for now")
 
     return client, provider, final_model_name
 

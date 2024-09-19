@@ -49,6 +49,7 @@ docstring-parser==0.16
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.0/en_core_web_sm-3.7.0.tar.gz
 exceptiongroup==1.2.0
 executing==2.0.1
+faker==28.4.1
 fastapi==0.114.2
 feedparser==6.0.11
 filelock==3.13.1
@@ -85,7 +86,7 @@ idna==3.6
 importlib-metadata==7.0.1
 importlib-resources==6.1.2
 iniconfig==2.0.0
-instructor==1.4.1
+instructor==1.4.2
 ipykernel==6.29.3
 ipython==8.12.3
 jedi==0.19.1
