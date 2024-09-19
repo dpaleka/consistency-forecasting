@@ -228,9 +228,9 @@ python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[Pa
 python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async #*
 
 python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=2 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=3 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=4 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
 ```
 
 Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
