@@ -1831,15 +1831,16 @@ checker_classes = [
 ]
 
 
-def choose_checkers(relevant_checks: list[str], tuple_dir: Path) -> dict[str, Checker]:
+def choose_checkers(
+    relevant_checks: list[str], tuple_dir: Path | None = None
+) -> dict[str, Checker]:
     print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
 
-    checkers: dict[str, Checker] = {
-        checker_name: cls(path=tuple_dir / f"{checker_name}.jsonl")
-        for checker_name, cls in checker_classes
-        if checker_name in relevant_checks
-    }
-
+    checkers: dict[str, Checker] = {}
+    for checker_name, cls in checker_classes:
+        if checker_name in relevant_checks:
+            path = None if tuple_dir is None else tuple_dir / f"{checker_name}.jsonl"
+            checkers[checker_name] = cls(path=path)
     return checkers

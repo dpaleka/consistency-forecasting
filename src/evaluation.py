@@ -394,6 +394,8 @@ def main(
     custom_path: str | None,
     config_path: str | None,
     forecaster_options: list[str] | None,
+    cfcaster_checks: list[str] | None,
+    depth: int | None,
     run: bool,
     load_dir: str | None,
     num_lines: int,
@@ -411,6 +413,8 @@ def main(
     forecaster = make_forecaster(
         forecaster_class=forecaster_class,
         custom_path=custom_path,
+        checks=cfcaster_checks,
+        depth=depth,
         forecaster_config=forecaster_config,
     )
 
@@ -583,3 +587,4 @@ if __name__ == "__main__":
 # python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
 # python evaluation.py -f PromptedToCons_Forecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 # python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 2 -k NegChecker
+# python evaluation.py -f ConsistentForecaster -a NegChecker -a ButChecker -d 2 --run -n 3 -k NegChecker -k ButChecker --async
