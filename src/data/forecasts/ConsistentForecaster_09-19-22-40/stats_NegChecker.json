@@ -1,0 +1,3 @@
+{
+    "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+}
