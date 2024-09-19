@@ -54,10 +54,31 @@ def last_datetime_of_month(dt: datetime) -> datetime:
     Returns:
         datetime: A datetime object representing the last datetime of the last day in the month.
     """
-    # Get the last day of the month
     last_day = calendar.monthrange(dt.year, dt.month)[1]
-    # Create a datetime object for the last day of the month at 23:59:59
     return datetime(dt.year, dt.month, last_day, 23, 59, 59)
+
+
+def last_datetime_of_previous_month(dt: datetime) -> datetime:
+    """
+    Given a datetime object, returns the last datetime of the previous month.
+    The time is set to 23:59:59 of that day.
+
+    Args:
+        dt (datetime): A datetime object representing any date.
+
+    Returns:
+        datetime: A datetime object representing the last datetime of the last day in the previous month.
+    """
+    first_day_of_current_month = dt.replace(day=1)
+    last_day_of_previous_month = first_day_of_current_month - timedelta(days=1)
+    return datetime(
+        last_day_of_previous_month.year,
+        last_day_of_previous_month.month,
+        last_day_of_previous_month.day,
+        23,
+        59,
+        59,
+    )
 
 
 def format_news_range_date(date: datetime):

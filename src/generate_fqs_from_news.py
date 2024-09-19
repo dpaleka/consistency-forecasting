@@ -229,7 +229,7 @@ def get_args() -> argparse.Namespace:
         help="""
         Pose date for downloading news in YYYY-MM-DD format.
 
-        Between this date and the FQ's resolution date, we assume (as well as verify) that the question does not resolve. 
+        The purpose of this date is to make the LLM add additional context about events that wouldn't have been known about by this date.
         """,
         default=datetime(2023, 10, 1),
     )

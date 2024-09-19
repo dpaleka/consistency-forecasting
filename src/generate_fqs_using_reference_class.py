@@ -156,7 +156,7 @@ class BinaryFQReferenceClassSpanner:
         cls,
         new_stripped_fq: ForecastingQuestion_stripped,
         source_fq: ForecastingQuestion,
-        pose_date: datetime,
+        created_date: datetime,
     ):
         return ForecastingQuestion(
             id=uuid4(),
@@ -167,7 +167,7 @@ class BinaryFQReferenceClassSpanner:
             data_source="synthetic",
             url=None,
             resolution_date=source_fq.resolution_date,
-            created_date=pose_date,
+            created_date=created_date,
             metadata={
                 "generated_from_ref_class_spanner": True,
                 "original_question": source_fq.to_dict(),
@@ -180,7 +180,7 @@ class BinaryFQReferenceClassSpanner:
         source_fq: ForecastingQuestion,
         model_name: str,
         num_questions: int,
-        pose_date: datetime,
+        created_date: datetime,
         spanning_type: str,
     ) -> list[ForecastingQuestion]:
         """
@@ -190,7 +190,7 @@ class BinaryFQReferenceClassSpanner:
             source_fq (ForecastingQuestion): The original FQ
             model_name (str): The model being used to create the rough forecasting question.
             num_questions (int): Minimum number of questions to generate for the given FQ
-            pose_date (datetime): The question creattion date
+            created_date (datetime): The question creattion date
             spanning_type (str): whether "multiple" or "single"
 
         Returns:
@@ -198,7 +198,7 @@ class BinaryFQReferenceClassSpanner:
         """
 
         if source_fq.created_date is not None:
-            pose_date = source_fq.created_date
+            created_date = source_fq.created_date
 
         (
             forecasting_preface,
@@ -221,7 +221,9 @@ class BinaryFQReferenceClassSpanner:
         ).questions
 
         return [
-            cls._create_fq_from_stripped_fq(generated_stripped_fq, source_fq, pose_date)
+            cls._create_fq_from_stripped_fq(
+                generated_stripped_fq, source_fq, created_date
+            )
             for generated_stripped_fq in generated_stripped_forecasting_question_list
         ]
 
@@ -264,7 +266,7 @@ def get_args() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--pose-date",
+        "--created-date",
         type=parse_date,
         help="""
         The question creation date. NOTE - not used if the source FQ has a not None `created_date`.
@@ -312,7 +314,7 @@ async def main(args: argparse.Namespace) -> None:
                 source_fq,
                 args.model_name,
                 args.num_questions,
-                args.pose_date,
+                args.created_date,
                 span_type,
             )
         )
