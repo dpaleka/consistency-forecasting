@@ -209,3 +209,53 @@ async def test_query_api_chat_with_parsing(model):
     assert isinstance(response, response_model)
     assert response.answer_polynomial == (3**47) % 23
     os.environ["USE_OPENROUTER"] = original_use_openrouter
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("model", "intended_provider"),
+    [
+        ("gpt-4o-mini-2024-07-18", "openai"),
+        ("gpt-4o-mini-2024-07-18", "openai_strict"),
+        ("o1-mini-2024-09-12", "openai_o1"),
+    ],
+)
+async def test_openai_instructor(model, intended_provider):
+    """
+    Test all ways we interact with the OpenAI API using Instructor.
+    """
+    prompt = "John Doe is 25 years old."
+    response_model = UserInfo
+
+    # Save the original USE_OPENROUTER setting
+    original_use_openrouter = os.getenv("USE_OPENROUTER", "False")
+    os.environ["USE_OPENROUTER"] = "False"
+    original_openai_json_strict = os.getenv("OPENAI_JSON_STRICT", "False")
+
+    try:
+        match intended_provider:
+            case "openai":
+                pass
+            case "openai_strict":
+                # This will work even if OPENAI_JSON_STRICT raises an error at the start of llm_utils.py, because we don't reload the llm_utils module in this test
+                os.environ["OPENAI_JSON_STRICT"] = "True"
+            case "openai_o1":
+                if os.getenv("ALLOW_OPENAI_O1", "False") == "True":
+                    pass
+                else:
+                    print(
+                        "OPENAI_O1 is not allowed, skipping the test for model: {model}"
+                    )
+                    return
+            case _:
+                raise ValueError(f"Invalid provider: {intended_provider}")
+
+        response = await answer(prompt, model=model, response_model=response_model)
+        assert response is not None
+        assert isinstance(response, UserInfo)
+        assert response.name == "John Doe"
+        assert response.age == 25
+    finally:
+        # Restore the original USE_OPENROUTER setting
+        os.environ["USE_OPENROUTER"] = original_use_openrouter
+        os.environ["OPENAI_JSON_STRICT"] = original_openai_json_strict
