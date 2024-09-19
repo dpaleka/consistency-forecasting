@@ -1,0 +1,32 @@
+{
+    "NegChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "AndChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "OrChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "AndOrChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "ButChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "CondChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "ConsequenceChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "ParaphraseChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "CondCondChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "1 validation error for Forecast\nmetadata\n  Input should be a valid dictionary [type=dict_type, input_value=[{'name': 'P', 'elicited_...tion_metadata': None}}}], input_type=list]\n    For further information visit https://errors.pydantic.dev/2.9/v/dict_type"
+    }
+}
