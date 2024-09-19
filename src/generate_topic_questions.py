@@ -8,6 +8,19 @@ from fq_generation.utils import deduplicate
 import json
 from common.llm_utils import answer
 import random
+from datetime import datetime
+
+
+# If not None, this will be the target resolution date for the questions.
+# It also changes the resolution date in some of the initail questions if its before 2030.
+# Eg: for a very long term question, it may be better to add new questions.
+TARGET_RESOLUTION_DATE = None # "2030-01-01 00:00:00"
+
+target_resolution_date = datetime(2030, 1, 1) if TARGET_RESOLUTION_DATE is None else datetime.strftime(
+    TARGET_RESOLUTION_DATE
+)
+
+example_datetime = "2030-01-01" if target_resolution_date > datetime(2030, 1, 1) else target_resolution_date.strftime("%Y-%m-%d")
 
 
 all_categories = [
@@ -151,7 +164,7 @@ initial_questions = [
         "AI,Turing Test",
     ),
     (
-        "Will a major cryptocurrency outperform the US dollar in daily transaction volume by 2030?",
+        "Will a major cryptocurrency outperform the US dollar in daily transaction volume by {example_datetime}?",
         "Cryptocurrencies",
         "Bitcoin,US dollar",
     ),
@@ -161,7 +174,7 @@ initial_questions = [
         "Global warming",
     ),
     (
-        "Will the United States have a female president before 2028?",
+        "Will the United States have a female president before {example_datetime}?",
         "Elections",
         "US Politics,Presidential Election",
     ),
@@ -176,7 +189,7 @@ initial_questions = [
         "India,China,GDP",
     ),
     (
-        "Will there be a legally binding international treaty on cyber warfare signed by over 50 countries by 2030?",
+        "Will there be a legally binding international treaty on cyber warfare signed by over 50 countries by {example_datetime}?",
         "Law",
         "Cyber warfare",
     ),
@@ -186,7 +199,7 @@ initial_questions = [
         "FIFA,World Cup",
     ),
     (
-        "Will quantum computing be commercially available to the public before 2030?",
+        "Will quantum computing be commercially available to the public before {example_datetime}?",
         "Technology",
         "Quantum computing",
     ),
@@ -201,31 +214,34 @@ initial_questions = [
         "Russia,Ukraine",
     ),
     (
-        "Will a new infectious disease with a fatality rate over 10% emerge before 2030?",
+        "Will a new infectious disease with a fatality rate over 10% emerge before {example_datetime}?",
         "Health & Pandemics",
         "Infectious Disease",
     ),
     (
-        "Will the total number of operational satellites exceed 10,000 by 2025?",
+        "Will the total number of operational satellites exceed 50,000 by {example_datetime}?",
         "Technology",
         "Satellites",
     ),
     (
-        "Will genetic editing in humans for enhancing traits (not medical) be legalized in any G7 country by 2030?",
+        "Will genetic editing in humans for enhancing traits (not medical) be legalized in any G7 country by {example_datetime}?",
         "Law",
         "Genetic editing",
     ),
     (
-        "Will the global sea level rise by more than 10 centimeters above 2020 levels before 2030?",
+        "Will the global sea level rise by more than 10 centimeters above 2020 levels before {example_datetime}?",
         "Environment & Climate",
         "Sea level rise",
     ),
 ]
 
+resolution_message = "" if TARGET_RESOLUTION_DATE is None else f"The question should resolve on the date {example_datetime}"
+
 prompt = """
 I want you to help me generate some forecasting questions for a forecasting market site like Metaculus or PredictIt.
 I will provide you with a category and some tags. Your task is to generate questions that can be answered with a probability between 0 and 1.
 For each tag, generate a relevant question if the tag is pertinent to the category. If the tag is not relevant, generate a general question about the category.
+""" + resolution_message + """
 
 Examples:
 
