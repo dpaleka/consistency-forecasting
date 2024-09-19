@@ -132,7 +132,6 @@ Based on your assessment, determine if the article is "complete" and suitable fo
 ### **Resolution Guidelines**
 - **Binary Outcome**: Resolutions must be clearly marked as True for YES and False for NO.
 - **Stable Outcome**: Ensure the resolution remains consistent and unchangeable until the resolution date.
-
 - **Definitiveness**: The resolution must be verifiable based solely on the content of the article.
 
 ### **General Guidelines**
