@@ -169,17 +169,30 @@ class ConsistentForecaster(Forecaster):
         instantiation_kwargs["cost_log"] = kwargs.get("cost_log", None)
         instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        seed = 137
         max_tuple_size = max(check.num_base_questions for check in self.checks)
         bq_tuple_max = self.bq_function(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+            sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
         cons_tuples = []
+        checks_so_far = []
         for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
+            if check.__class__.__name__ in checks_so_far:
+                # if we have multiple checks of the same type, they should have DIFFERENT base questions
+                seed += 1
+                bq_tuple = self.bq_function(
+                    sentence,
+                    tuple_size=check.num_base_questions,
+                    seed=seed,
+                    **bq_func_kwargs,
+                )
+            else:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
+            checks_so_far.append(check.__class__.__name__)
             print(f"{bq_tuple=}")
             cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
             print(f"{cons_tuple=}")
@@ -219,18 +232,29 @@ class ConsistentForecaster(Forecaster):
         instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
 
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        seed = 137
         max_tuple_size = max(check.num_base_questions for check in self.checks)
         bq_tuple_max = await self.bq_function_async(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+            sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
 
         cons_tuples = []
+        checks_so_far = []
         for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
+            if check.__class__.__name__ in checks_so_far:
+                seed += 1
+                bq_tuple = await self.bq_function_async(
+                    sentence,
+                    tuple_size=check.num_base_questions,
+                    seed=seed,
+                    **bq_func_kwargs,
+                )
+            else:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 if len(cons_tuple) == 0:
