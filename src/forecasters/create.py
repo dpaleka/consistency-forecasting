@@ -105,8 +105,6 @@ def make_forecaster(
     forecaster_class: str | None,
     custom_path: str | None,
     forecaster_config: dict[str, Any] | None,
-    checks: list[str] | None,
-    depth: int | None,
 ) -> Forecaster:
     """Kwargs are already parsed before this"""
     if custom_path is not None:
@@ -119,11 +117,17 @@ def make_forecaster(
             custom_path, class_name, forecaster_config=forecaster_config
         )
     elif forecaster_class == "ConsistentForecaster":
-        assert checks  # HACK sometimes checks gets converted to a tuple () so we don't check for None
+        assert forecaster_config[
+            "checks"
+        ], "HACK sometimes checks gets converted to a tuple () so we don't check for None"
         return make_consistent_forecaster(
-            forecaster_config=forecaster_config,
-            checks=checks,
-            depth=depth,
+            forecaster_config={
+                k: v
+                for k, v in forecaster_config.items()
+                if k != "checks" and k != "depth"
+            },
+            checks=forecaster_config["checks"],
+            depth=forecaster_config["depth"],
         )
     else:
         assert (

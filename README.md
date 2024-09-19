@@ -223,14 +223,14 @@ python evaluation.py -f BasicForecaster -o model=gpt-4o-2024-08-06 --run -n 100 
 python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 100 -k all --async
 # ... perhaps with more configurations
 
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a NegChecker -d 4 --run -n 100 -k NegChecker -k ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ParaphraseChecker -d 4 --run -n 100 -k NegChecker -k ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a NegChecker -a ParaphraseChecker -d 4 --run -n 100 -k all --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async #*
 
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker --run -n 100 -k all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker -a ExpectedEvidenceChecker --run -n 100 -k all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=2 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=3 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=4 --run -n 100 --relevant_checks all --async
 ```
 
 Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
