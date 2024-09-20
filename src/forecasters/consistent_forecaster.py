@@ -90,16 +90,13 @@ class ConsistentForecaster(Forecaster):
         **kwargs,
     ) -> dict[str, ForecastingQuestion]:
         """Get relevant questions for the given sentence.
-
         Args:
-
         sentence (ForecastingQuestion): Sentence to get relevant questions for.
         keys (list): Keys to use for the relevant questions.
         n_relevance (int): Number of retrieved questions to consider.
         n_return (int): Number of questions to return.
         tuple_size (int): Size of the tuple to get.
         base_data_path (Path): Path to questions to retrieve from.
-
         """
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
@@ -126,16 +123,13 @@ class ConsistentForecaster(Forecaster):
         **kwargs,
     ) -> dict[str, ForecastingQuestion]:
         """Get relevant questions for the given sentence.
-
         Args:
-
         sentence (ForecastingQuestion): Sentence to get relevant questions for.
         keys (list): Keys to use for the relevant questions.
         n_relevance (int): Number of retrieved questions to consider.
         n_return (int): Number of questions to return.
         tuple_size (int): Size of the tuple to get.
         base_data_path (Path): Path to questions to retrieve from.
-
         """
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
@@ -160,12 +154,10 @@ class ConsistentForecaster(Forecaster):
         **kwargs,
     ) -> list[dict[str, ForecastingQuestion]]:
         """Instantiate tuples for arbitraging the given sentence.
-
         Args:
             sentence (ForecastingQuestion): Sentence to instantiate consistent tuples for.
             bq_func_kwargs (dict): Keyword arguments for bq_function.
             instantiation_kwargs (dict): Keyword arguments for instantiation.
-
         """
         if self.coerce_nonbinary_qs and not sentence.question_type == "binary":
             sentence.question_type = "binary"
@@ -176,20 +168,31 @@ class ConsistentForecaster(Forecaster):
         bq_func_kwargs["simulate"] = kwargs.get("simulate", False)
         instantiation_kwargs["cost_log"] = kwargs.get("cost_log", None)
         instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
-
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        seed = 137
         max_tuple_size = max(check.num_base_questions for check in self.checks)
         bq_tuple_max = self.bq_function(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+            sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
-
         cons_tuples = []
+        checks_so_far = []
         for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
+            if check.__class__.__name__ in checks_so_far:
+                # if we have multiple checks of the same type, they should have DIFFERENT base questions
+                seed += 1
+                bq_tuple = self.bq_function(
+                    sentence,
+                    tuple_size=check.num_base_questions,
+                    seed=seed,
+                    **bq_func_kwargs,
+                )
+            else:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
+            checks_so_far.append(check.__class__.__name__)
             print(f"{bq_tuple=}")
             cons_tuple = check.instantiate_sync(bq_tuple, **instantiation_kwargs)
             print(f"{cons_tuple=}")
@@ -229,18 +232,30 @@ class ConsistentForecaster(Forecaster):
         instantiation_kwargs["simulate"] = kwargs.get("simulate", False)
 
         # pre-generate bq_tuple for tuple_size=max(check.num_base_questions for check in self.checks)
+        seed = 137
         max_tuple_size = max(check.num_base_questions for check in self.checks)
         bq_tuple_max = await self.bq_function_async(
-            sentence, tuple_size=max_tuple_size, **bq_func_kwargs
+            sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
 
         cons_tuples = []
+        checks_so_far = []
         for check in self.checks:
-            bq_tuple = {
-                k: v
-                for k, v in bq_tuple_max.items()
-                if k in list(bq_tuple_max.keys())[: check.num_base_questions]
-            }
+            if check.__class__.__name__ in checks_so_far:
+                seed += 1
+                bq_tuple = await self.bq_function_async(
+                    sentence,
+                    tuple_size=check.num_base_questions,
+                    seed=seed,
+                    **bq_func_kwargs,
+                )
+            else:
+                bq_tuple = {
+                    k: v
+                    for k, v in bq_tuple_max.items()
+                    if k in list(bq_tuple_max.keys())[: check.num_base_questions]
+                }
+            checks_so_far.append(check.__class__.__name__)
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 if len(cons_tuple) == 0:
@@ -283,15 +298,17 @@ class ConsistentForecaster(Forecaster):
             },
             model="gpt-4o",
         )
+        ```
 
         """
-        metadata = {}
+        metadata = []
         ans_P = self.hypocrite.call(sentence, **kwargs)
-        metadata["P"] = (
-            dict(sentence)
-            | {"elicited_prob": ans_P.prob}
-            | {"elicitation_metadata": ans_P.metadata}
-        )
+        metadata_entry = {
+            "name": "P",
+            "elicited_prob": ans_P.prob,
+            "elicitation_metadata": ans_P.metadata,
+        }
+        metadata.append(metadata_entry)
         ans_P = ans_P.prob  ###
 
         cons_tuples = self.instantiate_cons_tuples(
@@ -307,12 +324,18 @@ class ConsistentForecaster(Forecaster):
             del cons_tuple["P"]
             hypocrite_answers = self.hypocrite.elicit(cons_tuple, **kwargs)
 
-            metadata[check.__class__.__name__] = {
-                k: cons_tuple[k].model_dump()
-                | {"elicited_prob": hypocrite_answers[k].prob}
-                | {"elicitation_metadata": hypocrite_answers[k].metadata}
-                for k in cons_tuple
+            metadata_entry = {
+                "name": check.__class__.__name__,
+                "data": {
+                    k: {
+                        **cons_tuple[k].model_dump(),
+                        "elicited_prob": hypocrite_answers[k].prob,
+                        "elicitation_metadata": hypocrite_answers[k].metadata,
+                    }
+                    for k in cons_tuple
+                },
             }
+            metadata.append(metadata_entry)
 
             hypocrite_answers = {k: v.prob for k, v in hypocrite_answers.items()}
 
@@ -359,15 +382,17 @@ class ConsistentForecaster(Forecaster):
             },
             model="gpt-4o",
         )
+        ```
 
         """
-        metadata = {}
+        metadata = []
         ans_P = await self.hypocrite.call_async(sentence, **kwargs)
-        metadata["P"] = (
-            dict(sentence)
-            | {"elicited_prob": ans_P.prob}
-            | {"elicitation_metadata": ans_P.metadata}
-        )
+        metadata_entry = {
+            "name": "P",
+            "elicited_prob": ans_P.prob,
+            "elicitation_metadata": ans_P.metadata,
+        }
+        metadata.append(metadata_entry)
         ans_P = ans_P.prob  ###
 
         cons_tuples = await self.instantiate_cons_tuples_async(
@@ -376,19 +401,27 @@ class ConsistentForecaster(Forecaster):
             instantiation_kwargs=instantiation_kwargs,
             **kwargs,
         )
-
+        print("BLOK", self.checks, len(self.checks))
+        print("GLOD", cons_tuples, len(cons_tuples))
         P_weight = 1.0
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
             hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
 
-            metadata[check.__class__.__name__] = {
-                k: cons_tuple[k].model_dump()
-                | {"elicited_prob": hypocrite_answers[k].prob}
-                | {"elicitation_metadata": hypocrite_answers[k].metadata}
-                for k in cons_tuple
+            metadata_entry = {
+                "name": check.__class__.__name__,
+                "data": {
+                    k: {
+                        **cons_tuple[k].model_dump(),
+                        "elicited_prob": hypocrite_answers[k].prob,
+                        "elicitation_metadata": hypocrite_answers[k].metadata,
+                    }
+                    for k in cons_tuple
+                },
             }
+            metadata.append(metadata_entry)
+
             hypocrite_answers = {k: v.prob for k, v in hypocrite_answers.items()}
 
             hypocrite_answers["P"] = ans_P
