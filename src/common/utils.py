@@ -201,3 +201,11 @@ def delist(item):
     if isinstance(item, list):
         return item[0]
     return item
+
+
+def truncate_str(s: str, max_len: int = 80) -> str:
+    pref, suf = int(max_len * 0.75), int(max_len * 0.25)
+    if len(s) > max_len:
+        return s[:pref] + "..." + s[-suf:]
+    else:
+        return s

@@ -39,7 +39,7 @@ def common_options(f):
             default=None,
             help="Either: "
             "(1) Path to the custom forecaster Python module (e.g. `src/forecasters/custom_forecaster.py`). Has to contain exactly one Forecaster subclass. "
-            "(2) Path to the custom forecaster Python module, then `::`, then the class name (e.g. `src.forecasters.custom_forecaster.py::CustomForecaster1`). "
+            "(2) Path to the custom forecaster Python module, then `::`, then the class name (e.g. `src/forecasters/custom_forecaster.py::CustomForecaster1`). "
             "Only used when forecaster_class is None.",
         ),
         click.option(
@@ -53,7 +53,9 @@ def common_options(f):
             "-o",
             "--forecaster_options",
             multiple=True,
-            help="Additional options for the forecaster in the format key=value. Can be used multiple times. These options will be passed as kwargs when creating the forecaster. Overrides options in config_path.",
+            help="Additional options for the forecaster in the format key=value. Can be used multiple times. These options will be passed as kwargs when creating the forecaster. Overrides options in config_path. "
+            "If an option is a list, it can be passed as a comma-separated string with quotes and square brackets (e.g. `-o key='[val1, val2, val3]'`). "
+            "Alternatively, multiple=True works per key, so `-o key=val1 -o key=val2` works as the same as `-o key='[val1, val2]'`.",
         ),
         click.option("-r", "--run", is_flag=True, help="Run the forecaster"),
         click.option(
@@ -92,14 +94,28 @@ def parse_forecaster_options(options: list[str]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for option in options:
         key, value = option.split("=")
-        try:
-            result[key] = int(value)
-        except ValueError:
-            try:
-                result[key] = float(value)
-            except ValueError:
-                result[key] = value
+        value = parse_value(value)
+        if key in result:
+            if isinstance(result[key], list):
+                result[key].append(value)
+            else:
+                result[key] = [result[key], value]
+        else:
+            result[key] = value
     return result
+
+
+def parse_value(value: str) -> Any:
+    value = value.strip("\"' ")
+    if value.startswith("[") and value.endswith("]"):
+        return [parse_value(item.strip()) for item in value[1:-1].split(",")]
+    try:
+        return int(value)
+    except ValueError:
+        try:
+            return float(value)
+        except ValueError:
+            return value.strip()
 
 
 def get_forecaster_config(
