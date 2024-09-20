@@ -174,6 +174,11 @@ python scrape_question.py -d manifold -s 20240501 -e 20240815 -n 500 -o cleaned_
 
 - [`src/generate_fqs_using_reference_class.py`](src/generate_fqs_using_reference_class.py) Creates new forecasting questions from some source FQs following the same there and structure as the original questions.
 
+- [`src/perplexity_resolver_script.py`](src/perplexity_resolver_script.py) processes a JSONL file of forecasting questions using Perplexity AI models. It resolves each question and writes the results to a new JSONL file with `_resolved.jsonl` as suffix. The script supports various command-line arguments for customization, run with `--help` to see all options. Example usage:
+  ```
+  USE_OPENROUTER=True python src/perplexity_resolver_script.py --input_file path/to/input.jsonl --max_questions 10 --include_unresolvable --n_attempts 2
+  ```
+
 ### Tuple instantiation
 - [`src/instantiation.py`](src/instantiation.py) Runs instantiation. Takes a JSONL file (a list of ForecastingQuestions), and writes multiple JSONL files (each a list of QuestionTuples) into `src/data/tuples`.
 
