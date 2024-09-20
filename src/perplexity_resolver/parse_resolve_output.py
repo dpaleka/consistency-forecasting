@@ -34,11 +34,23 @@ def parse_xml_resolver_output(full_string: str) -> ResolverOutput:
 async def parse_resolver_output(
     full_string: str, question_title: str, **kwargs
 ) -> ResolverOutput:
+    """
+    Example full string:
+    <resolver_output>\n  <chain_of_thought>\n    Based on available information:\n    1. The UAW released a new video on August 3, 2024, endorsing Kamala Harris for President.\n    2. This video indicates that the UAW International Executive Board voted to endorse Kamala Harris for President on Wednesday, August 7th, 2024.\n    3. There is no mention of any change in the UAW's endorsement decision after August 2024 in the provided sources.\n\n  </chain_of_thought>\n  <can_resolve_question>true</can_resolve_question>\n  <answer>true</answer>\n</resolver_output>
+    """
     try:
-        return parse_xml_resolver_output(full_string, **kwargs)
+        xml_parsed = parse_xml_resolver_output(full_string, **kwargs)
+        print(xml_parsed)
+        with open("out_parsed.txt", "a") as f:
+            f.write(str(xml_parsed) + "\n")
+        return xml_parsed
     except ValueError as e:
         prompt = parse_resolver_output_prompt.format(
             full_string=full_string, question_title=question_title
         )
+        with open("out.txt", "a") as f:
+            f.write(prompt + "\n")
         r = await answer(prompt, response_model=ResolverOutput, **kwargs)
         return r
+    except Exception as e:
+        raise ValueError(f"Error parsing resolver output: {e}")

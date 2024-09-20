@@ -5,6 +5,8 @@ from common.perscache import register_model_for_cache
 from common.llm_utils import (
     answer,
     answer_sync,
+    answer_native,
+    answer_native_sync,
     query_api_chat_with_parsing,
 )  # Adjust the import based on your script's structure
 from pydantic import BaseModel, Field
@@ -118,7 +120,7 @@ def test_answer_sync():
 
 
 @pytest.mark.asyncio
-async def test_answer_sync_async():
+async def test_answer_async():
     example_prompt = "Generate a sample forecasting question"
     result = await answer(
         prompt=example_prompt,
@@ -128,6 +130,29 @@ async def test_answer_sync_async():
     )
     assert isinstance(result, PlainText) and len(result.text) > 0
     print(f"Generated question: {result.text}")
+
+
+def test_answer_native_sync():
+    example_prompt = "Generate a sample forecasting question"
+    result = answer_native_sync(
+        prompt=example_prompt,
+        preface=None,
+        model="gpt-4o-mini-2024-07-18",
+    )
+    assert isinstance(result, str) and len(result) > 0
+    print(f"Generated question: {result}")
+
+
+@pytest.mark.asyncio
+async def test_answer_native():
+    example_prompt = "Generate a sample forecasting question"
+    result = await answer_native(
+        prompt=example_prompt,
+        preface=None,
+        model="gpt-4o-mini-2024-07-18",
+    )
+    assert isinstance(result, str) and len(result) > 0
+    print(f"Generated question: {result}")
 
 
 class TestResponse(BaseModel):
