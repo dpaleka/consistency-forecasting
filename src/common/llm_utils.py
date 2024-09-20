@@ -4,6 +4,7 @@
 # %%
 import os
 import logging
+import warnings
 from typing import Coroutine, Optional, List, Literal
 from openai import AsyncOpenAI, OpenAI
 import instructor
@@ -55,6 +56,12 @@ os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
+
+if os.getenv("USE_COSTLY", "False") == "False":
+    # Set up global warning filter
+    warnings.filterwarnings(
+        "ignore", message=".*`cost_log` is None for the function:.*"
+    )
 
 
 if os.getenv("OPENAI_JSON_STRICT") == "True":
