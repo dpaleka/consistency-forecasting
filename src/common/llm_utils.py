@@ -22,6 +22,7 @@ from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
     PlainText,
     Prob,
+    Forecast,
     ForecastingQuestion,
     ForecastingQuestion_stripped,
 )
@@ -174,6 +175,8 @@ class LLM_Simulator(LLM_Simulator_Faker):
             import random
 
             return t(prob=random.random())
+        elif issubclass(t, Forecast):
+            return t(prob=random.random(), metadata=None)
         elif issubclass(t, ForecastingQuestion):
             return cls.pick_random_fq(cls.fqs_path, strip=False)
         elif issubclass(t, ForecastingQuestion_stripped):

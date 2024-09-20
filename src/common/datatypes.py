@@ -28,7 +28,7 @@ register_model_for_cache(Prob)
 
 
 class Forecast(BaseModel):
-    metadata: dict | None = None
+    metadata: list | dict | None = None
     prob: float
 
     @field_validator("prob")
