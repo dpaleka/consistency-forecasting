@@ -255,6 +255,7 @@ class ConsistentForecaster(Forecaster):
                     for k, v in bq_tuple_max.items()
                     if k in list(bq_tuple_max.keys())[: check.num_base_questions]
                 }
+            checks_so_far.append(check.__class__.__name__)
             cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
             if isinstance(cons_tuple, list):
                 if len(cons_tuple) == 0:
