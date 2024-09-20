@@ -72,7 +72,9 @@ async def test_reference_class_spanned_questions():
     results = await asyncio.gather(*tasks)
 
     for result in results:
-        assert len(result) >= num_spanned_questions
+        assert (
+            len(result) >= num_spanned_questions // 2
+        )  # sanity check for verification module. If it's discarding more than half then something went wrong
 
 
 if __name__ == "__main__":
