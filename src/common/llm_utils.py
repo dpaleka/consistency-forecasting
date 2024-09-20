@@ -919,6 +919,46 @@ def answer_sync(
         return query_api_chat_sync(messages=messages, **options)
 
 
+@logfire.instrument("answer_native", extract_args=True)
+async def answer_native(
+    prompt: str,
+    preface: Optional[str] = None,
+    examples: Optional[List[Example]] = None,
+    prepare_messages_func=prepare_messages,
+    **kwargs,
+) -> str:
+    messages = prepare_messages_func(prompt, preface, examples)
+    default_options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+    }
+    options = default_options | kwargs  # override defaults with kwargs
+
+    if os.getenv("VERBOSE") == "True":
+        print(f"{options=}, {len(messages)=}")
+
+    async with global_llm_semaphore:
+        response = await query_api_chat_native(messages=messages, **options)
+        return response
+
+
+@logfire.instrument("answer_native_sync", extract_args=True)
+def answer_native_sync(
+    prompt: str,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
+    prepare_messages_func=prepare_messages,
+    **kwargs,
+) -> str:
+    messages = prepare_messages_func(prompt, preface, examples)
+    options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+    } | kwargs
+    response = query_api_chat_sync_native(messages=messages, **options)
+    return response
+
+
 async def answer_messages(
     messages: List[dict[str, str] | dict[str, BaseModel]],
     **kwargs,
