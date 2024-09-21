@@ -7,6 +7,7 @@ from typing import Dict
 from common.utils import write_jsonl_async
 from perplexity_resolver import resolve_question
 from pathlib import Path
+from datetime import datetime
 
 
 def ensure_directory_exists(file_path: str):
@@ -22,6 +23,18 @@ def ensure_directory_exists(file_path: str):
         print(f"Created directory: {directory}")
 
 
+def strip_hours(date: datetime | str | None) -> str:
+    """
+    Strip the hours from a datetime object and return a string in the format YYYY-MM-DD.
+    If the date is provided as a string, first convert it to a datetime object.
+    """
+    if date is None:
+        return ""
+    if isinstance(date, str):
+        date = datetime.fromisoformat(date)
+    return date.strftime("%Y-%m-%d")
+
+
 async def process_question(
     question: Dict, models: list[str], retry: bool = False, n: int = 1
 ) -> Dict:
@@ -33,8 +46,14 @@ async def process_question(
     :return: A dictionary with the processed question data or None if processing failed
     """
     try:
+        print(f"Processing question: {question['title']}")
         response = await resolve_question(
-            question["body"], question["title"], models=models, n=n
+            question["title"],
+            question["body"],
+            models=models,
+            n=n,
+            created_date=strip_hours(question["created_date"]),
+            resolution_date=strip_hours(question["resolution_date"]),
         )
         result = question.copy()
         if "metadata" not in result:
@@ -63,6 +82,7 @@ async def process_question(
 async def process_jsonl_file(
     input_file: str,
     output_file: str,
+    start_from: int = 0,
     max_questions: int = 200,
     models: list[str] = [
         "perplexity/llama-3.1-sonar-huge-128k-online",
@@ -71,7 +91,7 @@ async def process_jsonl_file(
     include_unresolvable: bool = False,
     n_attempts: int = 1,
     stats_file: str = None,
-    batch_size: int = 20,  # Added batch_size parameter
+    batch_size: int = 20,
 ):
     """
     Read forecasting questions from a JSONL file, resolve each question, and write results to a new JSONL file.
@@ -87,15 +107,14 @@ async def process_jsonl_file(
         # Read input JSONL file
         with open(input_file, "r") as f:
             questions = [json.loads(line) for line in f]
-        questions = questions[:max_questions]
+        questions = questions[start_from : start_from + max_questions]
         print(f"Total questions to process: {len(questions)}")
 
         filtered_results = []
-        total_agreement = 0
+        total_agreement, total_resolved_with_resolution = 0, 0
 
         # Process questions in batches
-        start_from = 0
-        for start in range(start_from, len(questions), batch_size):
+        for start in range(0, len(questions), batch_size):
             end = min(start + batch_size, len(questions))
             batch = questions[start:end]
 
@@ -117,27 +136,38 @@ async def process_jsonl_file(
                     result
                     for result in batch_results
                     if result is not None
-                    and result["metadata"]["perplexity_verification"].get(
-                        "can_resolve_question", False
-                    )
+                    and result["metadata"]["perplexity_verification"][
+                        "can_resolve_question"
+                    ]
                 ]
+
+            batch_filtered_with_both_resolutions = [
+                result
+                for result in batch_filtered
+                if result is not None
+                and result["resolution"] is not None
+                and result["metadata"]["perplexity_verification"][
+                    "can_resolve_question"
+                ]
+            ]
 
             # Calculate agreement for batch
             batch_agree_mask = [
                 result["metadata"]["perplexity_verification"]["answer"]
                 == result["resolution"]
-                for result in batch_filtered
+                for result in batch_filtered_with_both_resolutions
             ]
-            for i, result in enumerate(batch_filtered):
-                batch_filtered[i]["metadata"]["perplexity_verification"][
-                    "agreement"
-                ] = batch_agree_mask[i]
+            for i, result in enumerate(batch_filtered_with_both_resolutions):
+                batch_filtered_with_both_resolutions[i]["metadata"][
+                    "perplexity_verification"
+                ]["agreement"] = batch_agree_mask[i]
 
             total_agreement += sum(batch_agree_mask)
+            total_resolved_with_resolution += len(batch_filtered_with_both_resolutions)
             filtered_results.extend(batch_filtered)
             agreement_percentage = (
-                (total_agreement / len(filtered_results)) * 100
-                if filtered_results
+                (total_agreement / total_resolved_with_resolution) * 100
+                if total_resolved_with_resolution > 0
                 else 0
             )
 
@@ -151,10 +181,9 @@ async def process_jsonl_file(
 
             # Calculate final statistics
             stats = {
-                "total_questions": end - start_from,
-                "processed_questions": len(filtered_results),
-                "failed_questions": end - start_from - len(filtered_results),
-                "total_cannot_resolve": sum(
+                "total_questions": len(questions),
+                "filtered_questions": len(filtered_results),
+                "could_not_resolve_or_failed": sum(
                     1
                     for result in filtered_results
                     if not result["metadata"]["perplexity_verification"].get(
@@ -168,12 +197,13 @@ async def process_jsonl_file(
                         "can_resolve_question", False
                     )
                 ),
-                "agreement_count": f"{total_agreement}/{len(filtered_results)}",
+                "agreement_count": f"{total_agreement}/{total_resolved_with_resolution}",
                 "agreement_percentage": f"{agreement_percentage:.1f}%",
                 "input_file": input_file,
                 "output_file": output_file,
                 "max_questions": max_questions,
                 "start_from": start_from,
+                "batch_size": batch_size,
                 "models": models,
                 "n_attempts": n_attempts,
                 "include_unresolvable": include_unresolvable,
@@ -181,7 +211,7 @@ async def process_jsonl_file(
 
         if stats_file:
             with open(stats_file, "w") as f:
-                json.dump(stats, f)
+                json.dump(stats, f, indent=2)
             print(f"Stats written to {stats_file}")
 
         print(
@@ -223,6 +253,13 @@ async def main():
         type=int,
         default=250,
         help="Maximum number of questions to process (default: 250).",
+    )
+    parser.add_argument(
+        "-s",
+        "--start_from",
+        type=int,
+        default=0,
+        help="Start from a specific question in the input file (default: 0).",
     )
     parser.add_argument(
         "-m",
@@ -274,21 +311,23 @@ async def main():
     print(f"input_file: {args.input_file}")
     print(f"output_file: {args.output_file}")
     print(f"max_questions: {args.max_questions}")
+    print(f"start_from: {args.start_from}")
     print(f"models: {args.models}")
     print(f"include_unresolvable: {args.include_unresolvable}")
     print(f"n_attempts: {args.n_attempts}")
-    print(f"batch_size: {args.batch_size}")  # Added print statement for batch_size
+    print(f"batch_size: {args.batch_size}")
 
     t0 = time.time()
     await process_jsonl_file(
         input_file=args.input_file,
         output_file=args.output_file,
         max_questions=args.max_questions,
+        start_from=args.start_from,
         models=args.models,
         include_unresolvable=args.include_unresolvable,
         n_attempts=args.n_attempts,
         stats_file=stats_file,
-        batch_size=args.batch_size,  # Passed batch_size to function
+        batch_size=args.batch_size,
     )
     print(f"time taken: {time.time() - t0:.2f} seconds")
 

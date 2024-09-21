@@ -1,6 +1,7 @@
 import time
 import json
 from common.llm_utils import answer_native
+from datetime import datetime
 import asyncio
 from typing import List
 from .prompts import (
@@ -9,13 +10,18 @@ from .prompts import (
     perplexity_resolve_example_2,
     perplexity_resolve_example_3,
     perplexity_resolve_example_4,
+    perplexity_resolve_example_5,
 )
 from .parse_resolve_output import parse_resolver_output
 from common.datatypes import ResolverOutput
 
 
 async def single_resolve(
-    question_title: str, question_body: str, model: str
+    question_title: str,
+    question_body: str,
+    resolution_date: datetime,
+    created_date: datetime | None,
+    model: str,
 ) -> ResolverOutput:
     """
     Resolve a forecasting question using a single model.
@@ -29,8 +35,11 @@ async def single_resolve(
         example_2=perplexity_resolve_example_1,
         example_3=perplexity_resolve_example_3,
         example_4=perplexity_resolve_example_4,
+        example_5=perplexity_resolve_example_5,
         question_title=question_title,
         question_body=question_body,
+        created_date=created_date,
+        resolution_date=resolution_date,
     )
     try:
         response = await answer_native(formatted_prompt, model=model)
@@ -73,6 +82,8 @@ async def single_resolve(
 async def resolve_question(
     question_title: str,
     question_body: str,
+    resolution_date: str,
+    created_date: str,
     models: List[str] = [
         "perplexity/llama-3.1-sonar-huge-128k-online",
         "perplexity/llama-3.1-sonar-large-128k-online",
@@ -89,16 +100,18 @@ async def resolve_question(
     """
     t0 = time.time()
 
+    print(f"resolve_question: {question_title}")
+
     tasks = [
-        single_resolve(question_title, question_body, model)
+        single_resolve(
+            question_title, question_body, resolution_date, created_date, model
+        )
         for model in models
         for _ in range(n)
     ]
     results = await asyncio.gather(*tasks)
 
-    print(f"Results: {results}")
     combined_output = combine_outputs(results)
-    print(f"Combined output: {combined_output}")
     print(f"Time taken: {time.time() - t0:.2f} seconds")
     return combined_output
 

@@ -40,7 +40,6 @@ async def parse_resolver_output(
     """
     try:
         xml_parsed = parse_xml_resolver_output(full_string, **kwargs)
-        print(xml_parsed)
         with open("out_parsed.txt", "a") as f:
             f.write(str(xml_parsed) + "\n")
         return xml_parsed
