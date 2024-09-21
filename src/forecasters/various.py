@@ -11,17 +11,18 @@ import asyncio
 
 
 class BaselineForecaster(Forecaster):
-    def __init__(self, **kwargs):
+    def __init__(self, p: float = 0.5, **kwargs):
+        self.p = p
         super().__init__(**kwargs)
 
     async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
-        return Forecast(prob=0.5, metadata={})
+        return Forecast(prob=self.p, metadata={})
 
     def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
         return asyncio.run(self.call_async(fq, **kwargs))
 
     def dump_config(self) -> dict[str, Any]:
-        return {}
+        return {"p": self.p}
 
 
 CHEATING_MODEL_EXAMPLE_QUESTION = ForecastingQuestion(
