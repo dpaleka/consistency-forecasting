@@ -1,0 +1,62 @@
+You are an expert in Python.
+
+Key Principles
+- Write concise, technical responses with accurate Python examples.
+- All core code resides in the src/ directory.
+- All data resides in src/data/.
+- All tests reside in the tests/ directory.
+- For any complex functionality in src/, implement tests in tests/. Check existing tests to see if it fits in some existing test file, otherwise create a new one. Tests should not be expensive.
+- Prefer iteration and modularization over code duplication.
+- Use descriptive variable names with auxiliary verbs (e.g., is_active, has_permission).
+- Use lowercase with underscores for directories and files (e.g., routers/user_routes.py).
+- Favor named exports for routes and utility functions.
+
+Ruff
+- Your code will be Ruff-formatted afterwards.
+- We don't care about: E501 (line too long), E402 (module level import not at top of file), E741 (ambiguous variable name), F841 (local variable name is assigned to but never used), F403 (import star).
+
+Python
+- Use def for pure functions and async def for asynchronous operations.
+- Implement two versions of any function: one that is async and one that is not. The non-async version should in most cases just call the async version with asyncio.run.
+- Use type hints for all function signatures. Prefer Pydantic models over raw dictionaries for input validation.
+- Import at the top of the file.
+- Avoid unnecessary curly braces in conditional statements.
+- For single-line statements in conditionals, omit curly braces.
+- Use concise, one-line syntax for simple conditional statements (e.g., if condition: do_something()).
+
+Scripts
+- By default, use argparse for command line arguments. Whenever possible, give both a short and long flag for each argument, such as, -f, --file_path.
+- Alternatively, you can use click, especially if two scripts share a similar set of arguments and you want to avoid repeating yourself.
+- Some standard arguments:
+  - `-i, --input_file`: Path to the input file. Usually a .jsonl file.
+  - `-o, --output_file`: Path to the output file. Usually a .jsonl file. 
+    - Not always required, often you can default to output_file = input_file.replace(".jsonl", "_{operation}.jsonl"), for example, _verified.jsonl, _resolved.jsonl, etc.
+    - Clean the output file by default at the beginning of the script, unless specified by argument.
+  - `-n, --max_questions / --max_tuples / --max_whatever`: Maximum number of entries of the input .jsonl to process.
+  - `-s, --seed`: Seed for the random number generator. Default is 42.
+- Use batches when processing data. It doesn't matter if it's async or not, dumping data every batch is a good idea.
+- Scripts should print the filename of the output file to stdout at the end of the script, e.g. print(f"Output written to {output_file}\n")
+
+Error Handling and Validation
+- Prioritize error handling and edge cases:
+  - Handle errors and edge cases at the beginning of functions.
+  - Use early returns for error conditions to avoid deeply nested if statements.
+  - Place the happy path last in the function for improved readability.
+  - Avoid unnecessary else statements; use the if-return pattern instead.
+  - Use guard clauses to handle preconditions and invalid states early.
+  - Write user-friendly debug and error messages.
+
+LLM API requests
+- For standard queries, prefer using methods in the llm_utils.py module over dealing with the openai package directly. 
+- If structured output, use methods like query_api_chat to get a Pydantic model.
+- If unstructured output, use methods like query_api_chat_native.
+- Models perform worse when forced to output structured data. Sometimes it is better to first run query_api_chat_native and then use that output as context for a second query_api_chat with a Pydantic model.
+- Use parallelized_call when you need to run something over a batch of data with a semaphore.
+- If you need a complex LLM request (e.g. logprobs), and you think it's not an one-off, implement another function in llm_utils.py and use that.
+- Model queries are logged in Pydantic Logfire, no need to log these explicitly.
+
+Caching
+- Existing LLM call wrappers in llm_utils.py cache their results by default using perscache. New methods should have an appropriate cache decorator.
+- Any new Pydantic model (e.g. FooModel) should have a register_model_for_cache(FooModel) immediately after it is defined.
+
+
