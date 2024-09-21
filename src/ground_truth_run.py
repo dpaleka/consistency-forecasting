@@ -26,6 +26,7 @@ from evaluation_utils.proper_scoring import (
     plot_calibration,
     calculate_calibration,
     scale_brier_score,
+    platt_scaling,
 )
 
 
@@ -78,6 +79,12 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
     required=True,
     help="Path to the input JSONL file containing Forecasting Questions",
 )
+@click.option(
+    "--platt_scaling_factor",
+    type=float,
+    default=None,
+    help="Factor to use for Platt scaling. If not provided, will be calculated from the data. If the data does not have any non-None resolutions, it will be set to 1.",
+)
 def main(
     forecaster_class: str | None,
     custom_path: str | None,
@@ -89,6 +96,7 @@ def main(
     load_dir: str | None = None,
     is_async: bool = False,
     output_dir: str | None = None,
+    platt_scaling_factor: float | None = None,
 ):
     forecaster_config = get_forecaster_config(config_path, forecaster_options)
 
@@ -198,6 +206,47 @@ def main(
         ):
             results.append(make_result_dict(line, fq, forecast))
 
+    outcomes = [result["resolution"] for result in results]
+    probs = [result["prob"] for result in results]
+    if platt_scaling_factor is None:
+        if all(o is None for o in outcomes):
+            print("No outcomes to calibrate to. Skipping platt scaling.")
+            platt_scaling_factor = 1
+        else:
+            platt_scaling_factor = platt_scaling(
+                probs=probs,
+                outcomes=outcomes,
+            ).platt_scaling_a
+
+    print(f"Platt scaling factor: {platt_scaling_factor}")
+    calibrated_probs = platt_scaling(
+        probs, outcomes, a=platt_scaling_factor
+    ).calibrated_probs
+    print(f"Calibrated probs: {calibrated_probs}")
+    for result, calibrated_prob in zip(results, calibrated_probs):
+        result["platt"] = {}
+        result["platt"]["factor"] = platt_scaling_factor
+        result["platt"]["calibrated_prob"] = calibrated_prob
+        result["platt"]["brier_score"] = round_floats(
+            proper_score(
+                probs=[calibrated_prob],
+                outcomes=[result["resolution"]],
+                scoring_function=scoring_functions["brier_score"],
+            ),
+            precision=4,
+        )
+        result["platt"]["brier_score_scaled"] = round_floats(
+            scale_brier_score(result["platt"]["brier_score"]), precision=1
+        )
+        result["platt"]["log_score"] = round_floats(
+            proper_score(
+                probs=[calibrated_prob],
+                outcomes=[result["resolution"]],
+                scoring_function=scoring_functions["log_score"],
+            ),
+            precision=4,
+        )
+
     write_to_dirs(
         results=results,
         filename=output_filename,
@@ -211,6 +260,12 @@ def main(
     avg_brier_score = sum(result["brier_score"] for result in results) / len(results)
     avg_brier_score_scaled = sum(
         result["brier_score_scaled"] for result in results
+    ) / len(results)
+    avg_platt_brier_score = sum(
+        result["platt"]["brier_score"] for result in results
+    ) / len(results)
+    avg_platt_brier_score_scaled = sum(
+        result["platt"]["brier_score_scaled"] for result in results
     ) / len(results)
 
     calibration_error_data: dict = calculate_calibration(
@@ -233,27 +288,55 @@ def main(
 
     summary = {
         "total_questions": len(results),
+        "avg_brier_score": round_floats(avg_brier_score, precision=4),
+        "avg_platt_brier_score": round_floats(avg_platt_brier_score, precision=4),
+        "tuned_brier_baseline": round_floats(tuned_brier_baseline, precision=4),
         "avg_brier_score_scaled": round_floats(avg_brier_score_scaled, precision=1),
-        "avg_brier_score": avg_brier_score,
-        "avg_log_score": avg_log_score,
-        "tuned_brier_baseline": tuned_brier_baseline,
+        "avg_platt_brier_score_scaled": round_floats(
+            avg_platt_brier_score_scaled, precision=1
+        ),
         "tuned_brier_baseline_scaled": round_floats(
             tuned_brier_baseline_scaled, precision=1
         ),
-        "forecaster": forecaster.__class__.__name__,
-        "full_forecaster_config": forecaster.dump_config(),
+        "avg_log_score": avg_log_score,
+        "platt_scaling_factor": platt_scaling_factor,
         "brier_score_decomposition": brier_score_decomposition,
         "calibration_error": calibration_error,
         "calibration_error_data": calibration_error_data,
     }
 
+    if run:
+        summary["forecaster"] = forecaster.__class__.__name__
+        summary["full_forecaster_config"] = forecaster.dump_config()
+    else:
+        # load ground_truth_summary.json
+        summary_path = Path(load_dir) / "ground_truth_summary.json"
+        if not summary_path.exists():
+            print(f"ground_truth_summary.json not found in {load_dir}")
+            summary["forecaster"] = None
+            summary["full_forecaster_config"] = None
+        else:
+            summary_data = json.load(open(summary_path, "r"))
+            summary["forecaster"] = summary_data["forecaster"]
+            summary["full_forecaster_config"] = summary_data["full_forecaster_config"]
+        summary["loaded_forecasts"] = f"{load_dir}/ground_truth_results.jsonl"
+
     print("\nGround Truth Summary:")
     print(f"Total questions: {summary['total_questions']}")
-    print(f"Average Brier Score Scaled: {summary['avg_brier_score_scaled']:.1f}")
-    print(f"Average Brier Score: {summary['avg_brier_score']:.4f}")
-    print(f"Tuned Brier Baseline Scaled: {summary['tuned_brier_baseline_scaled']:.1f}")
-    print(f"Tuned Brier Baseline: {summary['tuned_brier_baseline']:.4f}")
+    print(f"Average Brier Score:       {summary['avg_brier_score']:.4f}")
+    print(f"Average Platt Brier Score: {summary['avg_platt_brier_score']:.4f}")
+    print(f"Tuned Brier Baseline:      {summary['tuned_brier_baseline']:.4f}")
+    print()
+    print(f"Average Brier Score Scaled:       {summary['avg_brier_score_scaled']:.1f}")
+    print(
+        f"Tuned Brier Baseline Scaled:      {summary['tuned_brier_baseline_scaled']:.1f}"
+    )
+    print(
+        f"Average Platt Brier Score Scaled: {summary['avg_platt_brier_score_scaled']:.1f}"
+    )
+    print()
     print(f"Average Log Score: {summary['avg_log_score']:.4f}")
+    print(f"Platt Scaling Factor: {summary['platt_scaling_factor']:.2f}")
     print(f"Forecaster: {summary['forecaster']}")
     print(f"Forecaster Config: {summary['full_forecaster_config']}")
 

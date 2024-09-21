@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogitLocator, LogitFormatter
 from matplotlib.figure import Figure
+import scipy.optimize
 import scipy.special
 
 
@@ -143,6 +144,66 @@ def proper_score(
     if isinstance(scoring_function, str):
         scoring_function = scoring_functions[scoring_function]
     return sum(scoring_function(p, o) for p, o in zip(probs, outcomes))
+
+
+from collections import namedtuple
+
+PlattScalingResult = namedtuple(
+    "PlattScalingResult", ["calibrated_probs", "platt_scaling_a"]
+)
+
+
+def platt_scaling(
+    probs: list[float],
+    outcomes: list[bool] | None = None,
+    a: float | None = None,
+) -> PlattScalingResult:
+    """
+    Implement Platt scaling to calibrate probabilities.
+
+    Args:
+        outcomes (list[bool]): List of boolean outcomes.
+        probs (list[float]): List of initial probabilities.
+
+    Returns:
+        PlattScalingResult: A named tuple containing:
+            - calibrated_probs: List of calibrated probabilities
+            - platt_scaling_a: The optimal hyperparameter 'a'
+    """
+
+    def sigmoid(x):
+        return 1 / (1 + np.exp(-x))
+
+    def loss_function(a, probs, outcomes):
+        logits = np.log(np.array(probs) / (1 - np.array(probs)))
+        scaled_probs = sigmoid(a * logits)
+        return np.mean((scaled_probs - np.array(outcomes)) ** 2)
+
+    if a is None:
+        assert outcomes is not None and len(outcomes) == len(
+            probs
+        ), "Must provide outcomes to calibrate."
+        # Filter out None values from outcomes and corresponding probs
+        filtered_outcomes = [o for o in outcomes if o is not None]
+        filtered_probs = [p for p, o in zip(probs, outcomes) if o is not None]
+        if len(filtered_probs) == 0:
+            print("No non-None outcomes to calibrate to. Skipping Platt scaling.")
+            return PlattScalingResult(calibrated_probs=probs, platt_scaling_a=1)
+
+        # Find optimal 'a' using scipy's minimize_scalar
+        result = scipy.optimize.minimize_scalar(
+            loss_function, args=(filtered_probs, filtered_outcomes)
+        )
+        a = result.x
+    else:
+        assert isinstance(a, float), "Must provide a float for a."
+
+    # Calculate calibrated probabilities
+    logits = np.log(np.array(probs) / (1 - np.array(probs)))
+    print(f"{logits=}")
+    calibrated_probs = sigmoid(a * logits).tolist()
+
+    return PlattScalingResult(calibrated_probs=calibrated_probs, platt_scaling_a=a)
 
 
 def calculate_calibration(
