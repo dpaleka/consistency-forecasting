@@ -21,6 +21,28 @@ def get_month_date_range(year: int, month: int) -> tuple:
     return start_date.date(), end_date.date()
 
 
+def parse_datetime(date_str: str):
+    """
+    Given a date and time in the format YYYY-MM-DD-HH-MM-SS, returns the corresponding datetime object.
+    Has validation for the correct type.
+
+    Args:
+        date_str (str): The date and time as a string.
+
+    Returns:
+        datetime: The date and time as a datetime object.
+
+    Raises:
+        TypeError: If the date and time string is not in the YYYY-MM-DD-HH-MM-SS format.
+    """
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d-%H-%M-%S")
+    except ValueError:
+        raise TypeError(
+            f"Invalid date and time format: {date_str}. Date and time must be in YYYY-MM-DD-HH-MM-SS format."
+        )
+
+
 def parse_date(date_str: str):
     """
     Given a date in the format YYYY-MM-DD, returns the corresponding date object.

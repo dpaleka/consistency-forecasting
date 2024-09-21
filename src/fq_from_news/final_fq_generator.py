@@ -11,7 +11,7 @@ from .fq_from_news_datatypes import (
     ForecastingQuestionGroundTruthResolutionStrict,
     ForecastingQuestionGroundTruthResolutionLax,
 )
-from .date_utils import last_datetime_of_month, last_datetime_of_previous_month
+from .date_utils import last_datetime_of_month
 
 
 class NewsApiFinalForecastingQuestionGenerator:
@@ -335,6 +335,7 @@ Please provide a brief justification for your answer, citing specific details fr
         generated_stripped_final_forecasting_question: ForecastingQuestion_stripped_with_resolution,
         end_date: datetime,
         pose_date: datetime,
+        creation_date: datetime,
     ) -> ForecastingQuestion:
         """
         Forms the final ForecastingQuestion from the LLM-generated stripped forecasting question.
@@ -363,7 +364,7 @@ Please provide a brief justification for your answer, citing specific details fr
             data_source="synthetic",
             url=None,
             resolution_date=last_datetime_of_month(end_date),
-            created_date=last_datetime_of_previous_month(end_date),
+            created_date=creation_date,
             metadata={
                 "article_information": {
                     "article_url": rough_fq_data["articleUrl"],
@@ -523,6 +524,7 @@ Please provide a brief justification for your answer, citing specific details fr
         model_name: str,
         end_date: datetime,
         pose_date: datetime,
+        creation_date: datetime,
         be_lax_in_resolution_checking: bool,
     ) -> ForecastingQuestion:
         """
@@ -533,6 +535,7 @@ Please provide a brief justification for your answer, citing specific details fr
             model_name (str): The model being used to create the rough forecasting question.
             end_date (datetime): Used to set context of the current date for the model.
             pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
+            creation_date (datetime): The date of question creation
             be_lax_in_resolution_checking (bool): WHether to be lax in resolution checking
 
         Returns:
@@ -558,6 +561,7 @@ Please provide a brief justification for your answer, citing specific details fr
             final_resolution_checked_forecasting_question,
             end_date,
             pose_date,
+            creation_date,
         )
 
         return final_fq

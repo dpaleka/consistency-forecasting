@@ -282,6 +282,7 @@ async def generate_final_forecasting_questions(
     rough_fq_gen_model_name: str,
     final_fq_gen_model_name: str,
     pose_date: datetime,
+    creation_date: datetime,
     be_lax_in_resolution_checking: bool,
 ) -> None:
     """
@@ -317,6 +318,7 @@ async def generate_final_forecasting_questions(
                     final_fq_gen_model_name,
                     end_date,
                     pose_date,
+                    creation_date,
                     be_lax_in_resolution_checking,
                 )
             )
