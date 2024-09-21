@@ -44,7 +44,7 @@ Your task is to ensure that each question adheres to the established guidelines 
 Guidelines to be followed are:
 
 1. **Forecaster’s Context**:
-   - The forecaster’s present date is set to **{pose_date}**, so all questions must be framed as if this is the current date. Although the articles may reference future events, your questions must be phrased in a way that the forecaster cannot detect the actual date of question creation.
+   - The forecaster’s present date is set to **{pose_date}**, so all questions must be framed as if this is the current date. Although the articles may reference future events, your questions must be phrased in a way that the forecaster **cannot** detect the actual date of question creation.
 
 2. **Clarity & Precision**:
    - Each question must be **clear**, **specific**, and **unambiguous**.
@@ -55,9 +55,10 @@ Guidelines to be followed are:
    - Do **not** include any information or context that implies the question was created after **{pose_date}**.
    - Ensure no indication that the article is used to inform the question, keeping the creation date fully hidden.
 
-4. **Resolution Period**:
-   - The resolution of each question must remain definitive and applicable from the current date until **{month_name}, {year}**.
-   - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
+4. **Resolution Period**: 
+    - If you phrase the resolution date as "by {month_name}, {year}", then resolution of each question must remain definitive and applicable from the current date until {month_name}, {year}.
+    - If you phrase the resolution date as "in {month_name}, {year}", then resolution of each question must remain definitive and applicable for the month of {month_name} in {year}.
+    - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
 
 5. **Factual Basis**:
 	- Questions should be directly supported by the article content and not include fabricated information.
@@ -334,6 +335,7 @@ Please provide a brief justification for your answer, citing specific details fr
         generated_stripped_final_forecasting_question: ForecastingQuestion_stripped_with_resolution,
         end_date: datetime,
         pose_date: datetime,
+        creation_date: datetime,
     ) -> ForecastingQuestion:
         """
         Forms the final ForecastingQuestion from the LLM-generated stripped forecasting question.
@@ -362,7 +364,7 @@ Please provide a brief justification for your answer, citing specific details fr
             data_source="synthetic",
             url=None,
             resolution_date=last_datetime_of_month(end_date),
-            created_date=pose_date,
+            created_date=creation_date,
             metadata={
                 "article_information": {
                     "article_url": rough_fq_data["articleUrl"],
@@ -373,7 +375,7 @@ Please provide a brief justification for your answer, citing specific details fr
                     "article_title": rough_fq_data["articleTitle"],
                     "article_content": rough_fq_data["articleContent"],
                 },
-                "question_created": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
+                "pose_date": pose_date.strftime("%Y-%m-%d %H:%M:%S"),
                 "scraped_date": scraped_date,
             },
         )
@@ -522,6 +524,7 @@ Please provide a brief justification for your answer, citing specific details fr
         model_name: str,
         end_date: datetime,
         pose_date: datetime,
+        creation_date: datetime,
         be_lax_in_resolution_checking: bool,
     ) -> ForecastingQuestion:
         """
@@ -532,6 +535,7 @@ Please provide a brief justification for your answer, citing specific details fr
             model_name (str): The model being used to create the rough forecasting question.
             end_date (datetime): Used to set context of the current date for the model.
             pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
+            creation_date (datetime): The date of question creation
             be_lax_in_resolution_checking (bool): WHether to be lax in resolution checking
 
         Returns:
@@ -557,6 +561,7 @@ Please provide a brief justification for your answer, citing specific details fr
             final_resolution_checked_forecasting_question,
             end_date,
             pose_date,
+            creation_date,
         )
 
         return final_fq

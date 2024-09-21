@@ -1,0 +1,18 @@
+{
+  "total_questions": 200,
+  "filtered_questions": 134,
+  "could_not_resolve_or_failed": 66,
+  "total_can_resolve": 134,
+  "agreement_count": "124/128",
+  "agreement_percentage": "96.9%",
+  "input_file": "src/data/fq/real/20240501_20240815.jsonl",
+  "output_file": "src/data/fq/real/20240501_20240815_resolved.jsonl",
+  "max_questions": 200,
+  "start_from": 0,
+  "batch_size": 100,
+  "models": [
+    "perplexity/llama-3.1-sonar-huge-128k-online"
+  ],
+  "n_attempts": 1,
+  "include_unresolvable": false
+}
