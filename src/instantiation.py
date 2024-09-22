@@ -5,9 +5,7 @@ from costly import Costlog
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks import Checker
-from static_checks.Checker import (
-    choose_checkers,
-)
+from static_checks.Checker import choose_checkers
 from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
 from common.path_utils import get_data_path
@@ -24,7 +22,8 @@ BASE_DATA_PATH: Path = get_data_path() / "fq" / "real" / "20240501_20240815.json
 # fq/real/20240501_20240815_unverified.jsonl
 # fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl
 TUPLES_PATH: Path = get_data_path() / "tuples_10/"
-RELEVANT_CHECKS = ["NegChecker"]
+
+RELEVANT_CHECKS = ["all"]
 
 
 def select_tuples(possible_ituples, max_tuples):
