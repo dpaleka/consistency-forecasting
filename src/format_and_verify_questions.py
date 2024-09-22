@@ -235,6 +235,7 @@ async def main(
                 f"The file {output_path} already exists. Appending to it. If you want to overwrite, use the --overwrite flag."
             )
 
+    print("SYNTHETIC VALUE: ", synthetic)
     if synthetic:
         (
             forecasting_questions,
@@ -250,6 +251,7 @@ async def main(
         )
 
     else:
+        print("Processing real questions")
         forecasting_questions, none_count = await process_questions_from_file(
             file_path,
             max_questions=max_questions,

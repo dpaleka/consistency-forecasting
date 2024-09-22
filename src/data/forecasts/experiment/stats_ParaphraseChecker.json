@@ -1,0 +1,79 @@
+{
+    "overall": {
+        "default": {
+            "label": "ParaphraseChecker",
+            "num_samples": 3,
+            "num_violations": 2,
+            "avg_violation": 0.010422,
+            "avg_violation_no_outliers": 0.011062,
+            "median_violation": 0.011062
+        },
+        "frequentist": {
+            "label": "ParaphraseChecker",
+            "num_samples": 3,
+            "num_violations": 2,
+            "avg_violation": 0.116169,
+            "avg_violation_no_outliers": 0.148906,
+            "median_violation": 0.148906
+        }
+    },
+    "by_source": {
+        "Will Ukraine join NATO before 2030?": {
+            "default": {
+                "label": "ParaphraseChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.011062,
+                "avg_violation_no_outliers": 0.011062,
+                "median_violation": 0.011062
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.148906,
+                "avg_violation_no_outliers": 0.148906,
+                "median_violation": 0.148906
+            },
+            "source_id": "11606184-0da5-4438-a9ff-123363119bea"
+        },
+        "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?": {
+            "default": {
+                "label": "ParaphraseChecker_Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.020203,
+                "avg_violation_no_outliers": 0.020203,
+                "median_violation": 0.020203
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker_Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.199601,
+                "avg_violation_no_outliers": 0.199601,
+                "median_violation": 0.199601
+            },
+            "source_id": "ce5ae624-4697-44b8-9cf2-4ef3deee74ad"
+        },
+        "Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?": {
+            "default": {
+                "label": "ParaphraseChecker_Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?",
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker_Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?",
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            },
+            "source_id": "555cabf3-b51d-4a1a-9ebb-f6817b0b38d6"
+        }
+    }
+}

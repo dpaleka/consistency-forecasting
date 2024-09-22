@@ -16,6 +16,7 @@ from common.llm_utils import parallelized_call
 import functools
 import random
 import itertools
+import sys
 
 # The following are defaults, but can be overriden in the script args
 MODEL = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
@@ -88,7 +89,11 @@ async def instantiateRel(
     print(
         f"\nFound {len(valid_sets)} valid question sets with both source and related questions."
     )
-
+    # Print the number of related questions for each source question
+    print("\nNumber of related questions for each source question:")
+    for source_question, question_set in valid_sets.items():
+        num_related = len(question_set["related"])
+        print(f"  {source_question}: {num_related} related questions")
     random.seed(seed)
     # If n_source_questions is -1 or greater than the number of valid sets, use all valid sets
     if n_source_questions == -1 or n_source_questions > len(valid_sets):
@@ -104,6 +109,7 @@ async def instantiateRel(
         num_base_questions = checker.num_base_questions
 
         all_tuples = []
+        tuples_per_source = {}
         for source_question, question_set in selected_sets:
             if checker_name in order_sensitive_checkers:
                 possible_ituples = generate_order_sensitive_tuples(
@@ -117,16 +123,19 @@ async def instantiateRel(
             # Randomly select tuples up to max_tuples_per_source
             selected_ituples = select_tuples(possible_ituples, max_tuples_per_source)
             all_tuples.extend(selected_ituples)
-
+            tuples_per_source[source_question] = len(selected_ituples)
         print(
             f"Generated {len(all_tuples)} possible {num_base_questions}-tuples from {n_source_questions} source questions"
         )
 
+        print("Number of tuples generated for each source question:")
+        for source_question, num_tuples in tuples_per_source.items():
+            print(f"  {source_question}: {num_tuples} tuples", file=sys.stderr)
         if all_tuples:
-            print("Sample tuple:")
-            sample_tuple = random.choice(all_tuples)
-            for key, value in sample_tuple[0].items():
-                print(f"    {key}: {value.title}")
+            # print("Sample tuple:")
+            # sample_tuple = random.choice(all_tuples)
+            # for key, value in sample_tuple[0].items():
+            #     print(f"    {key}: {value.title}")
 
             try:
                 results = await checker.instantiate_and_write_many(

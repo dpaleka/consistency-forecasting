@@ -1,0 +1,79 @@
+{
+    "overall": {
+        "default": {
+            "label": "NegChecker",
+            "num_samples": 3,
+            "num_violations": 3,
+            "avg_violation": 0.033461,
+            "avg_violation_no_outliers": 0.033287,
+            "median_violation": 0.033287
+        },
+        "frequentist": {
+            "label": "NegChecker",
+            "num_samples": 3,
+            "num_violations": 3,
+            "avg_violation": 0.257067,
+            "avg_violation_no_outliers": 0.257817,
+            "median_violation": 0.257817
+        }
+    },
+    "by_source": {
+        "Will Ukraine join NATO before 2030?": {
+            "default": {
+                "label": "NegChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.026073,
+                "avg_violation_no_outliers": 0.026073,
+                "median_violation": 0.026073
+            },
+            "frequentist": {
+                "label": "NegChecker_Will Ukraine join NATO before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.229148,
+                "avg_violation_no_outliers": 0.229148,
+                "median_violation": 0.229148
+            },
+            "source_id": "11606184-0da5-4438-a9ff-123363119bea"
+        },
+        "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?": {
+            "default": {
+                "label": "NegChecker_Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.041022,
+                "avg_violation_no_outliers": 0.041022,
+                "median_violation": 0.041022
+            },
+            "frequentist": {
+                "label": "NegChecker_Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by 2025?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.284236,
+                "avg_violation_no_outliers": 0.284236,
+                "median_violation": 0.284236
+            },
+            "source_id": "ce5ae624-4697-44b8-9cf2-4ef3deee74ad"
+        },
+        "Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?": {
+            "default": {
+                "label": "NegChecker_Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.033287,
+                "avg_violation_no_outliers": 0.033287,
+                "median_violation": 0.033287
+            },
+            "frequentist": {
+                "label": "NegChecker_Will a new infectious disease prompt the development of nuclear biocontainment technologies before 2030?",
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.257817,
+                "avg_violation_no_outliers": 0.257817,
+                "median_violation": 0.257817
+            },
+            "source_id": "555cabf3-b51d-4a1a-9ebb-f6817b0b38d6"
+        }
+    }
+}
