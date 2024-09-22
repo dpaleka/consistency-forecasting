@@ -1,38 +1,81 @@
-# From https://github.com/dannyallover/llm_forecasting/blob/57361d38801bfe9f01cb05093058251c80771fa7/llm_forecasting/utils/data_utils.py#L260
+# Inspired by https://github.com/dannyallover/llm_forecasting/blob/57361d38801bfe9f01cb05093058251c80771fa7/llm_forecasting/utils/data_utils.py#L260
+from common.datatypes import register_model_for_cache
+from common.llm_utils import query_api_chat_native, query_api_chat
+import asyncio
+
+reformat_system_msg = {
+    "role": "system",
+    "content": """\
+I have questions that need to be transformed for clarity. I will first provide examples of the desired output.
+
+If the question does not need to be transformed, just return the question in the same format.
+""",
+}
+
+examples = [
+    {
+        "role": "user",
+        "content": """\
+Title: Who will win the 2022-2023 Premier League? (Leicester City) """,
+    },
+    {
+        "role": "assistant",
+        "content": """\
+Title: *Will Leicester City win the 2022-2023 Premier League?* """,
+    },
+    {
+        "role": "user",
+        "content": """\
+Title: Will SPD+Greens govern Berlin after the 2023 repeat state election?
+Body: This question will resolve as **Yes** if the SPD and Greens have a majority in the Berlin state parliament after the 2023 repeat state election. All other coalitions will resolve as **No**.""",
+    },
+    {
+        "role": "assistant",
+        "content": """\
+Title: Will SPD+Greens govern Berlin after the 2023 repeat state election?
+Body: This question will resolve as **Yes** if the SPD and Greens have a majority in the Berlin state parliament after the 2023 repeat state election. All other coalitions will resolve as **No**.""",
+    },
+    {
+        "role": "user",
+        "content": """\
+Title: Which party will form the government after the next Indian general election in 2024? (BJP)
+Body: This question will resolve as **Yes** for the party who has a member sworn in as the next Indian Prime Minister following the next general elections.  All other parties will resolve as **No**.\n\nThis question will resolve for the next general election occuring after June 1, 2022 (currently expected for May 2024)""",
+    },
+    {
+        "role": "assistant",
+        "content": """\
+Title: Will BJP form the government after the next Indian general election in 2024?
+Body: This question will resolve as **Yes** if the BJP has a member sworn in as the next Indian Prime Minister following the next general elections.  All other parties will resolve as **No**.\n\nThis question will resolve for the next general election occuring after June 1, 2022 (currently expected for May 2024)""",
+    },
+    {
+        "role": "user",
+        "content": """\
+Title: If Republicans win control of the House of Representatives in the 2022 election, who will be the next Majority Whip of the U.S. House of Representatives? (Rep. Jim Banks)
+Body: This question will resolve N/A if Republicans do not win control of the House of Representatives in the 2022 election. If they do: This question will resolve as **Yes** for the candidate who is sworn in as the next Majority Whip of the U.S. House of Representatives.  All other candidates will resolve as **No**.""",
+    },
+    {
+        "role": "assistant",
+        "content": """\
+Title: If Republicans win control of the House of Representatives in the 2022 election, will Jim Banks be the next Majority Whip of the U.S. House of Representatives?
+Body: This question will resolve N/A if Republicans do not win control of the House of Representatives in the 2022 election. If they do: This question will resolve as **Yes** if Jim Banks is sworn in as the next Majority Whip of the U.S. House of Representatives. Any other person being sworn in as the Majority Whip will resolve as **No**.""",
+    },
+]
 
 
-reformat_prompt = (
-    """I have questions that need to be transformed for clarity.
-
-Here are some examples:
-Example 1:
-Before: Who will win the 2022-2023 Premier League? (Leicester City)
-After: *Will Leicester City win the 2022-2023 Premier League?*
-
-Example 2:
-Before: What coalition will govern Berlin after the 2023 repeat state election? (SPD+Greens)
-After: *Will SPD+Greens govern Berlin after the 2023 repeat state election?*
-
-Example 3:
-Before: If Republicans win control of the House of Representatives in the 2022 election, who will be the next Majority Whip of the U.S. House of Representatives? (Rep. Jim Banks)
-After: *If Republicans win control of the House of Representatives in the 2022 election, will Jim Banks be the next Majority Whip of the U.S. House of Representatives?*
-
-Can you now transform this question for clarity: {question}
-
-Please place stars around the transformed question.
-
-Your output should take the following structure:
-Before: {insert the original question}
-After: *{insert the transformed question}*""",
-    ("QUESTION",),
-)
+from pydantic import BaseModel
 
 
-def reformat_metaculus_questions(
-    data,
-    model_name="gpt-3.5-turbo-1106",
-    prompt=reformat_prompt,
-):
+class ForecastingQuestion_title_body(BaseModel):
+    title: str
+    body: str | None
+
+
+register_model_for_cache(ForecastingQuestion_title_body)
+
+
+async def reformat_metaculus_question(
+    title: str, body: str | None, model="gpt-4o-mini"
+) -> dict[str, str | None | bool]:
     """
     Reformat questions from Metaculus to be more readable.
 
@@ -49,31 +92,59 @@ def reformat_metaculus_questions(
         data (list of dict): List of questions in dictionary format.
         model_name (str, optional): Language model name, default is
             "gpt-3.5-turbo-1106".
-        prompt (tuple of str, optional): Prompt to use for model evaluation.
-            Default is PROMPT_DICT["data_cleaning"]["reformat"].
-
-    Returns:
-        Modifies the input data in-place, and returns None.
-    """
 
     """
-    def find_text_between_stars(text):
-        match = re.search(r"\*([^*]+)\*", text)
-        return match.group(1) if match else None
 
-    for d in data:
-        if "? (" in d["title"]:
-            prompt = string_utils.get_prompt(
-                prompt[0],
-                prompt[1],
-                question=d["title"],
-            )
-            response = model_eval.get_response_from_model(
-                model_name=model_name, prompt=prompt
-            )
-            transformed_title = find_text_between_stars(response)
-            if transformed_title:
-                d["title"] = transformed_title
-    """
+    did_change = False
+    if title.endswith(")") and "? (" in title:
+        messages = (
+            [reformat_system_msg]
+            + examples
+            + [
+                {
+                    "role": "user",
+                    "content": f"Title: {title}\nBody: {body}"
+                    if body is not None
+                    else f"Title: {title}",
+                }
+            ]
+        )
 
-    return None
+        native_response = await query_api_chat_native(
+            messages=messages,
+            model=model,
+        )
+
+        messages += [
+            {"role": "assistant", "content": native_response},
+            {
+                "role": "user",
+                "content": """\
+Now reformat the title and the body into a Pydantic BaseModel with `title` and `body` fields. If there is no body, leave it empty in your response.""",
+            },
+        ]
+
+        reformatted_response = await query_api_chat(
+            messages=messages,
+            model=model,
+            response_model=ForecastingQuestion_title_body,
+        )
+        if reformatted_response.body == "":
+            reformatted_response.body = None
+
+        if reformatted_response.title != title or reformatted_response.body != body:
+            did_change = True
+
+        return {
+            "title": reformatted_response.title,
+            "body": reformatted_response.body,
+            "did_change": did_change,
+        }
+    else:
+        return {"title": title, "body": body, "did_change": False}
+
+
+def reformat_metaculus_question_sync(
+    title: str, body: str, model="gpt-4o-mini"
+) -> dict[str, str | None | bool]:
+    return asyncio.run(reformat_metaculus_question(title, body, model))
