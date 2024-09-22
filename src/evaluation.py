@@ -517,6 +517,7 @@ def main(
     print("Cost log totals")
     print("---------------")
     print(cl.totals)
+    print(cl.totals_by_model)
     print("---------------")
 
     with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
@@ -571,6 +572,7 @@ def main(
 
 if __name__ == "__main__":
     main()
+
 
 # run the script with the following commands:
 
