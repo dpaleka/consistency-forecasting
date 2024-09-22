@@ -1,6 +1,7 @@
 import time
 import json
 from common.llm_utils import answer_native
+from common.path_utils import get_logs_path
 from datetime import datetime
 import asyncio
 from typing import List
@@ -44,22 +45,9 @@ async def single_resolve(
     try:
         response = await answer_native(formatted_prompt, model=model)
         assert isinstance(response, str)
-        dump_file = "out.jsonl"
-        with open(dump_file, "a") as f:
-            f.write(
-                json.dumps(
-                    {
-                        "question_title": question_title,
-                        "question_body": question_body,
-                        "model": model,
-                        "response": response,
-                    }
-                )
-                + "\n"
-            )
         parsed_response = await parse_resolver_output(response, question_title)
-        dump_file_2 = "out_parsed.jsonl"
-        with open(dump_file_2, "a") as f:
+        dump_file = get_logs_path() / "perplexity_resolver_logs.jsonl"
+        with open(dump_file, "a") as f:
             f.write(
                 json.dumps(
                     {
