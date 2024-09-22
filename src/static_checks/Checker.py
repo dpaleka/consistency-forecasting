@@ -56,7 +56,6 @@ class Checker(ABC):
             self.path = get_data_path() / "tuples" / f"{self.name}.jsonl"
         else:
             self.path = path
-        self.counter = 0  # number of tuples successfully instantiated
 
     def dump_config(self):
         return {
@@ -192,6 +191,7 @@ class Checker(ABC):
         if results and not kwargs.get("simulate", False):
             json_list = [result.model_dump_json() for result in results]
             await write_jsonl_async_from_str(self.path, json_list, append=True)
+        return results  # necessary to return for instantiate_and_write_many
 
     async def instantiate_and_write_many(
         self,
@@ -226,25 +226,27 @@ class Checker(ABC):
             else:
                 raise ValueError("Unrecognized input format for base_sentences")
 
-        bq_counter = 0  # number of base sentences processed
-        while n_write == -1 or self.counter < n_write:
-            counter_prev = self.counter
-            to_process = base_sentencess[
-                bq_counter : bq_counter
-                + (n_write - counter_prev if n_write != -1 else len(base_sentencess))
-            ]
-            if not to_process:
-                break  # No more sentences to process
-            results = await parallelized_call(
-                _instantiate_and_write,
-                to_process,
-                max_concurrent_queries=10,
-            )
-            bq_counter += len(to_process)
-            print(f"Counter: {self.counter}")
-            print(f"BQ Counter: {bq_counter}")
+        processed_so_far = 0
+        written_so_far = 0
+        results = []
 
-        print(f"Processed {bq_counter} out of {len(base_sentencess)} base sentences")
+        while (n_write == -1 or written_so_far < n_write) and processed_so_far < len(
+            base_sentencess
+        ):
+            batch = base_sentencess[
+                processed_so_far : processed_so_far + (n_write - written_so_far)
+            ]
+
+            batch_results = await parallelized_call(
+                _instantiate_and_write, batch, max_concurrent_queries=10
+            )
+            processed_so_far += len(batch)
+            written_so_far += sum(len(r) for r in batch_results)
+            results.extend(batch_results)
+        print(
+            f"{len(base_sentencess)} base sentences given\nprocessed {processed_so_far}\nwrote {written_so_far}"
+        )
+
         return results
 
     @abstractmethod

@@ -24,7 +24,7 @@ BASE_DATA_PATH: Path = get_data_path() / "fq" / "real" / "20240501_20240815.json
 # fq/real/20240501_20240815_unverified.jsonl
 # fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl
 TUPLES_PATH: Path = get_data_path() / "tuples_10/"
-RELEVANT_CHECKS = ["all"]
+RELEVANT_CHECKS = ["NegChecker"]
 
 
 def select_tuples(possible_ituples, max_tuples):
@@ -285,8 +285,8 @@ async def instantiate(
 
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
-@click.option("--n_relevance", default=1000, help="Number of relevance samples.")
-@click.option("--n_write", default=100, help="Number of writes.")
+@click.option("--n_relevance", default=50, help="Number of relevance samples.")
+@click.option("--n_write", default=10, help="Number of writes.")
 @click.option(
     "--n_source_questions",
     default=-1,
@@ -394,6 +394,7 @@ def main(
     print("Costly log totals:")
     print("------------------")
     print(cl.totals)
+    print(cl.totals_by_model)
     print("------------------")
 
 
