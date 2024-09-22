@@ -18,10 +18,17 @@ import itertools
 # The following are defaults, but can be overriden in the script args
 MODEL = "gpt-4o-2024-08-06"  # "gpt-4o-mini-2024-07-18"
 MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"  # "gpt-4o-mini-2024-07-18"
-BASE_DATA_PATH: Path = get_data_path() / "fq" / "real" / "20240501_20240815.jsonl"
-# fq/real/20240501_20240815_unverified.jsonl
-# fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl
-TUPLES_PATH: Path = get_data_path() / "tuples_10/"
+BASE_DATA_PATH: Path = (
+    get_data_path()
+    / "fq"
+    / "synthetic"
+    / "news_api_generated_fqs"
+    / "20240701_20240831_gpt-4o_spanned_resolved.jsonl"
+)
+# get_data_path() / "fq" / "real" / "20240501_20240815.jsonl"
+# get_data_path() / "fq" / "real" / "20240501_20240815_unverified.jsonl"
+# get_data_path() / "fq" / "synthetic" / "news_api_generated_fqs" / "20240701_20240831_gpt-4o_spanned_resolved.jsonl"
+TUPLES_PATH: Path = get_data_path() / "tuples_newsapi/"
 
 RELEVANT_CHECKS = ["all"]
 

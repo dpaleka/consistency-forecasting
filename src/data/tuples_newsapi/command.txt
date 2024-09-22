@@ -1,0 +1,1 @@
+python instantiate.py --model_main="gpt-4o-2024-08-06" --model_relevance="gpt-4o-mini-2024-07-18" --data_path="src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl" --tuple_dir="src/data/tuples_newsapi" --relevant_checks all --n_relevance=5000 --n_write=500 --seed=42
