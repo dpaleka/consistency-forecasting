@@ -6,6 +6,7 @@ from common.datatypes import (
     Prob,
 )
 from common.llm_utils import answer, answer_sync, Example
+from common.utils import make_json_serializable
 
 
 BASIC_FORECASTER_PREFACE = (
@@ -22,7 +23,6 @@ class BasicForecaster(Forecaster):
         self.examples = examples or []
 
     def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
-        print("AAA")
         print(f"LLM API request: {fq.to_str_forecast_mode()}...")
         response = answer_sync(
             prompt=fq.to_str_forecast_mode(),
@@ -52,10 +52,7 @@ class BasicForecaster(Forecaster):
         return {
             "model": self.model,
             "preface": self.preface,
-            "examples": [
-                {"user": e.user.model_dump_json(), "assistant": e.assistant}
-                for e in self.examples
-            ],
+            "examples": make_json_serializable(self.examples),
         }
 
     @classmethod

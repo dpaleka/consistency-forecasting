@@ -1,6 +1,6 @@
 from forecasters.forecaster import Forecaster
 from datetime import datetime
-
+from common.utils import make_json_serializable
 from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
@@ -73,10 +73,7 @@ class CoT_Forecaster(Forecaster):
         return {
             "model": self.model,
             "preface": self.preface,
-            "examples": [
-                {"user": e.user.model_dump_json(), "assistant": e.assistant}
-                for e in self.examples
-            ],
+            "examples": make_json_serializable(self.examples),
         }
 
 
@@ -259,13 +256,7 @@ class CoT_multistep_Forecaster(Forecaster):
     def dump_config(self):
         return {
             "preface": self.preface,
-            "examples": [
-                {
-                    "user": e.user.model_dump_json(),
-                    "assistant": e.assistant.model_dump_json(),
-                }
-                for e in self.examples
-            ],
+            "examples": make_json_serializable(self.examples),
         }
 
     @classmethod
