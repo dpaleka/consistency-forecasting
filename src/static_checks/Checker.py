@@ -1841,7 +1841,14 @@ def choose_checkers(
     print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
-
+    elif isinstance(
+        relevant_checks[0], int
+    ):  # allow choosing checks with some number of base questions
+        relevant_checks = [
+            c[0]
+            for c in checker_classes
+            if c[1].num_base_questions == relevant_checks[0]
+        ]
     checkers: dict[str, Checker] = {}
     for checker_name, cls in checker_classes:
         if checker_name in relevant_checks:
