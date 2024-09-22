@@ -1,8 +1,9 @@
-from typing import Optional, Type
+from typing import Optional, Type, List
 from datetime import datetime
 from uuid import uuid4, UUID
 from pydantic import BaseModel, Field, validator, field_validator, create_model
-from .perscache import register_model_for_cache
+from .perscache import register_model_for_cache, register_models_for_cache
+from enum import Enum
 
 
 ### Pydantic models ###
@@ -358,3 +359,23 @@ class DictLikeDataclass:
 
     def to_dict(self) -> dict:
         return {key: getattr(self, key) for key in self.keys()}
+
+
+class Consequence_ConsequenceType(str, Enum):
+    quantity = "quantity"
+    time = "time"
+    misc = "misc"
+    none = "none"
+
+
+class Consequence_ClassifyOutput(BaseModel):
+    consequence_type: List[Consequence_ConsequenceType]
+
+
+class Consequence_InstantiateOutput(BaseModel):
+    title: str
+    body: str
+    resolution_date: datetime
+
+
+register_models_for_cache([Consequence_ClassifyOutput, Consequence_InstantiateOutput])

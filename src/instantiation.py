@@ -5,9 +5,7 @@ from costly import Costlog
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks import Checker
-from static_checks.Checker import (
-    choose_checkers,
-)
+from static_checks.Checker import choose_checkers
 from static_checks.tuple_relevance import relevance
 from common.datatypes import ForecastingQuestion
 from common.path_utils import get_data_path
@@ -18,23 +16,21 @@ import random
 import itertools
 
 # The following are defaults, but can be overriden in the script args
-MODEL = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
-MODEL_RELEVANCE = "gpt-4o"  # "gpt-4o-mini-2024-07-18"
+MODEL = "gpt-4o-2024-08-06"  # "gpt-4o-mini-2024-07-18"
+MODEL_RELEVANCE = "gpt-4o-mini-2024-07-18"  # "gpt-4o-mini-2024-07-18"
 BASE_DATA_PATH: Path = (
-    get_data_path() / "fq" / "real" / "questions_cleaned_formatted.jsonl"
+    get_data_path()
+    / "fq"
+    / "synthetic"
+    / "news_api_generated_fqs"
+    / "20240701_20240831_gpt-4o_spanned_resolved.jsonl"
 )
+# get_data_path() / "fq" / "real" / "20240501_20240815.jsonl"
+# get_data_path() / "fq" / "real" / "20240501_20240815_unverified.jsonl"
+# get_data_path() / "fq" / "synthetic" / "news_api_generated_fqs" / "20240701_20240831_gpt-4o_spanned_resolved.jsonl"
+TUPLES_PATH: Path = get_data_path() / "tuples_newsapi/"
 
-# BASE_DATA_PATH: Path = (
-#     get_data_path() / "fq" / "synthetic" / "from-related-verified.jsonl"
-# )
-# BASE_DATA_PATH: Path = (
-#     get_data_path() / "fq" / "synthetic" / "high-quality-questions--all-domains.jsonl"
-# )
-# TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
-TUPLES_PATH: Path = get_data_path() / "test/"
-# TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["ExpectedEvidenceChecker"]
-# RELEVANT_CHECKS = ["AndChecker"]
+RELEVANT_CHECKS = ["all"]
 
 
 def select_tuples(possible_ituples, max_tuples):
@@ -296,7 +292,7 @@ async def instantiate(
 @click.command()
 @click.option("--data_path", "-d", type=click.Path(exists=True), default=BASE_DATA_PATH)
 @click.option("--n_relevance", default=50, help="Number of relevance samples.")
-@click.option("--n_write", default=20, help="Number of writes.")
+@click.option("--n_write", default=10, help="Number of writes.")
 @click.option(
     "--n_source_questions",
     default=-1,
@@ -404,6 +400,7 @@ def main(
     print("Costly log totals:")
     print("------------------")
     print(cl.totals)
+    print(cl.totals_by_model)
     print("------------------")
 
 

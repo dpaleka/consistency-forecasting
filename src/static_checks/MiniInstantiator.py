@@ -5,7 +5,6 @@ from common.utils import shallow_dict
 from datetime import datetime
 from dateutil.tz import UTC
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import Type, Any, Optional, Self, List, List, Union  # noqa
 from pydantic import BaseModel, field_validator
 from common.llm_utils import (
@@ -23,6 +22,9 @@ from common.datatypes import (
     ForecastingQuestion,
     ForecastingQuestion_stripped,
     VerificationResult,
+    Consequence_InstantiateOutput,
+    Consequence_ClassifyOutput,
+    Consequence_ConsequenceType,
 )
 from common.perscache import register_models_for_cache
 from .checker_prompts import (
@@ -1205,20 +1207,6 @@ class Consequence(MiniInstantiator):
     class BaseSentenceFormat_stripped(BaseModel):
         P: ForecastingQuestion_stripped
 
-    class ConsequenceType(str, Enum):
-        quantity = "quantity"
-        time = "time"
-        misc = "misc"
-        none = "none"
-
-    class ClassifyOutput(BaseModel):
-        consequence_type: List["Consequence.ConsequenceType"]
-
-    class InstantiateOutput(BaseModel):
-        title: str
-        body: str
-        resolution_date: datetime
-
     class OutputFormat(BaseModel):
         cons_P: ForecastingQuestion
 
@@ -1434,16 +1422,16 @@ class Consequence(MiniInstantiator):
         p = base_sentences["P"]
         consequence_types = await self._classify_consequence(p, **kwargs)
         instantiation_results = []
-        if self.ConsequenceType.none in consequence_types.consequence_type:
+        if Consequence_ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
-            if consequence_type == self.ConsequenceType.quantity:
+            if consequence_type == Consequence_ConsequenceType.quantity:
                 instantiation_results += (
                     await self._instantiate_by_type_with_verification(
                         p, "quantity", n_verification=n_verification, **kwargs
                     )
                 )
-            elif consequence_type == self.ConsequenceType.time:
+            elif consequence_type == Consequence_ConsequenceType.time:
                 instantiation_results += (
                     await self._instantiate_by_type_with_verification(
                         p, "time", n_verification=n_verification, **kwargs
@@ -1466,16 +1454,16 @@ class Consequence(MiniInstantiator):
         p = base_sentences["P"]
         consequence_types = self._classify_consequence_sync(p, **kwargs)
         instantiation_results = []
-        if self.ConsequenceType.none in consequence_types.consequence_type:
+        if Consequence_ConsequenceType.none in consequence_types.consequence_type:
             return instantiation_results
         for consequence_type in consequence_types.consequence_type:
-            if consequence_type == self.ConsequenceType.quantity:
+            if consequence_type == Consequence_ConsequenceType.quantity:
                 instantiation_results += (
                     self._instantiate_sync_by_type_with_verification(
                         p, "quantity", n_verification=n_verification, **kwargs
                     )
                 )
-            elif consequence_type == self.ConsequenceType.time:
+            elif consequence_type == Consequence_ConsequenceType.time:
                 instantiation_results += (
                     self._instantiate_sync_by_type_with_verification(
                         p, "time", n_verification=n_verification, **kwargs
@@ -1538,25 +1526,25 @@ class Consequence(MiniInstantiator):
 
     async def _classify_consequence(
         self, p: ForecastingQuestion, **kwargs
-    ) -> "Self.ClassifyOutput":
+    ) -> Consequence_ClassifyOutput:
         prompt = self.consequence_type_prompt.format(
             title=p.title,
             body=p.body,
         )
         consequence_types = await answer(
-            prompt, response_model=self.ClassifyOutput, **kwargs
+            prompt, response_model=Consequence_ClassifyOutput, **kwargs
         )
         return consequence_types
 
     def _classify_consequence_sync(
         self, p: ForecastingQuestion, **kwargs
-    ) -> "Self.ClassifyOutput":
+    ) -> Consequence_ClassifyOutput:
         prompt = self.consequence_type_prompt.format(
             title=p.title,
             body=p.body,
         )
         consequence_types = answer_sync(
-            prompt, response_model=self.ClassifyOutput, **kwargs
+            prompt, response_model=Consequence_ClassifyOutput, **kwargs
         )
         return consequence_types
 
@@ -1582,7 +1570,10 @@ class Consequence(MiniInstantiator):
                 resolution_date=p.resolution_date,
             )
         return self._get_output_format(
-            p, await answer(prompt, response_model=self.InstantiateOutput, **kwargs)
+            p,
+            await answer(
+                prompt, response_model=Consequence_InstantiateOutput, **kwargs
+            ),
         )
 
     def _instantiate_sync_by_type(
@@ -1607,11 +1598,12 @@ class Consequence(MiniInstantiator):
                 resolution_date=p.resolution_date,
             )
         return self._get_output_format(
-            p, answer_sync(prompt, response_model=self.InstantiateOutput, **kwargs)
+            p,
+            answer_sync(prompt, response_model=Consequence_InstantiateOutput, **kwargs),
         )
 
     def _get_output_format(
-        self, p: ForecastingQuestion, instantiate_output: "Self.InstantiateOutput"
+        self, p: ForecastingQuestion, instantiate_output: Consequence_InstantiateOutput
     ) -> "Self.OutputFormat":
         forecasting_question = ForecastingQuestion(
             title=instantiate_output.title,
@@ -1651,8 +1643,6 @@ class Consequence(MiniInstantiator):
     def resolution_(self, resolutions: dict[str, bool]) -> dict[str, bool | None]:
         return {"cons_P": resolutions["P"]}
 
-
-register_models_for_cache([Consequence.ClassifyOutput, Consequence.InstantiateOutput])
 
 for instantiator in [Trivial, Neg, And, Or, Paraphrase, Conditional, Consequence]:
     register_models_for_cache(
