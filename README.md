@@ -216,8 +216,8 @@ python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_f
 This list not include the entry points already mentioned in previous sections (feedback form, tests).
 
 ## Important data files
-- [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 202 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
-- [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) is a superset of the above, 627 questions, but not FQ-verified. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
+- [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 257 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
+- [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) is close to a superset of the above, 627 questions, but not FQ-verified, and certain originally multiple-choice Metaculus question might have different wording. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
 
 - [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) is a file of 2621 synthetic ForecastingQuestions generated from NewsAPI data and reference spanning, using gpt-4o, between July 1, 2024 and August 31, 2024, inclusive. The resolutions are all produced by the Perplexity resolver using the command:
 ```
