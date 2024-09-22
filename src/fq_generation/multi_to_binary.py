@@ -74,7 +74,7 @@ register_model_for_cache(ForecastingQuestion_title_body)
 
 
 async def reformat_metaculus_question(
-    title: str, body: str | None, model="gpt-4o-mini"
+    title: str, body: str | None, model="gpt-4o-mini-2024-07-18"
 ) -> dict[str, str | None | bool]:
     """
     Reformat questions from Metaculus to be more readable.
@@ -145,6 +145,6 @@ Now reformat the title and the body into a Pydantic BaseModel with `title` and `
 
 
 def reformat_metaculus_question_sync(
-    title: str, body: str, model="gpt-4o-mini"
+    title: str, body: str, model="gpt-4o-mini-2024-07-18"
 ) -> dict[str, str | None | bool]:
     return asyncio.run(reformat_metaculus_question(title, body, model))
