@@ -1607,6 +1607,8 @@ class ParaphraseChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
         para_P = Paraphrase().instantiate_sync(base_sentences, **kwargs)
+        if isinstance(para_P, list):
+            return []
         return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
 
     async def instantiate(
@@ -1614,6 +1616,8 @@ class ParaphraseChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
+        if isinstance(para_P, list):
+            return []
         return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
 
     def max_min_arbitrage(
