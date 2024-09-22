@@ -1244,18 +1244,17 @@ class ButChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         not_P = Neg().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+
+        if isinstance(P, list) or isinstance(not_P, list):
+            return []
+
         Q_and_not_P = And().instantiate_sync(
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
 
         # Either the verification failed and the list is empty, or there is more than one element which is not expected.
-        if (
-            isinstance(Q_and_not_P, list)
-            or isinstance(P_or_Q, list)
-            or isinstance(P, list)
-            or isinstance(not_P, list)
-        ):
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list):
             return []
         return [
             self.TupleFormat(
@@ -1268,18 +1267,17 @@ class ButChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         not_P = await Neg().instantiate({"P": base_sentences["P"]}, **kwargs)
+
+        if isinstance(P, list) or isinstance(not_P, list):
+            return []
+
         Q_and_not_P = await And().instantiate(
             {"P": base_sentences["Q"], "Q": not_P.not_P}
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
 
         # Either the verification failed and the list is empty, or there is more than one element which is not expected.
-        if (
-            isinstance(Q_and_not_P, list)
-            or isinstance(P_or_Q, list)
-            or isinstance(P, list)
-            or isinstance(not_P, list)
-        ):
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list):
             return []
         return [
             self.TupleFormat(
