@@ -175,7 +175,8 @@ def platt_scaling(
         return 1 / (1 + np.exp(-x))
 
     def loss_function(a, probs, outcomes):
-        logits = np.log(np.array(probs) / (1 - np.array(probs)))
+        eps = 1e-7
+        logits = np.log(np.array(probs) + eps / (1 + eps - np.array(probs)))
         scaled_probs = sigmoid(a * logits)
         return np.mean((scaled_probs - np.array(outcomes)) ** 2)
 
@@ -200,7 +201,6 @@ def platt_scaling(
 
     # Calculate calibrated probabilities
     logits = np.log(np.array(probs) / (1 - np.array(probs)))
-    print(f"{logits=}")
     calibrated_probs = sigmoid(a * logits).tolist()
 
     return PlattScalingResult(calibrated_probs=calibrated_probs, platt_scaling_a=a)
