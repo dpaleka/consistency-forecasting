@@ -26,10 +26,11 @@ from .datatypes import (
     Forecast,
     ForecastingQuestion,
     ForecastingQuestion_stripped,
+    Consequence_ClassifyOutput,
+    Consequence_ConsequenceType,
 )
 from .path_utils import get_src_path, get_root_path, get_data_path
 from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
-
 
 from .perscache import (
     Cache,
@@ -178,9 +179,9 @@ class LLM_Simulator(LLM_Simulator_Faker):
 
     @classmethod
     def _fake_custom(cls, t: type):
-        if issubclass(t, Prob):
-            import random
+        import random
 
+        if issubclass(t, Prob):
             return t(prob=random.random())
         elif issubclass(t, Forecast):
             return t(prob=random.random(), metadata=None)
@@ -188,6 +189,15 @@ class LLM_Simulator(LLM_Simulator_Faker):
             return cls.pick_random_fq(cls.fqs_path, strip=False)
         elif issubclass(t, ForecastingQuestion_stripped):
             return cls.pick_random_fq(cls.fqs_path, strip=True)
+        elif issubclass(t, Consequence_ConsequenceType):
+            return random.choice(list(Consequence_ConsequenceType))
+        elif issubclass(t, Consequence_ClassifyOutput):
+            return Consequence_ClassifyOutput(
+                consequence_type=[
+                    random.choice(list(Consequence_ConsequenceType))
+                    for _ in range(random.randint(1, 4))
+                ]
+            )
         else:
             raise NotImplementedError(f"{t} is not a known custom type")
 
