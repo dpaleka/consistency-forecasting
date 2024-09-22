@@ -33,7 +33,7 @@ BASE_DATA_PATH: Path = get_data_path() / "fq" / "real" / "20240501_20240815.json
 # TUPLES_PATH: Path = get_data_path() / "tuples_playground/"
 TUPLES_PATH: Path = get_data_path() / "tuples_10/"
 # TUPLES_PATH: Path = get_data_path() / "tuples_synthetic"
-RELEVANT_CHECKS = ["all"]
+RELEVANT_CHECKS = ["ConsequenceChecker"]
 # RELEVANT_CHECKS = ["AndChecker"]
 
 
