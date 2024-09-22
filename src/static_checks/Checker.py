@@ -1249,7 +1249,7 @@ class ButChecker(Checker):
             return []
 
         Q_and_not_P = And().instantiate_sync(
-            {"P": base_sentences["Q"], "Q": not_P.not_P}
+            {"P": base_sentences["Q"], "Q": not_P.not_P}, **kwargs
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
 
@@ -1272,7 +1272,7 @@ class ButChecker(Checker):
             return []
 
         Q_and_not_P = await And().instantiate(
-            {"P": base_sentences["Q"], "Q": not_P.not_P}
+            {"P": base_sentences["Q"], "Q": not_P.not_P}, **kwargs
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
 
