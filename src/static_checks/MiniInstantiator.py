@@ -173,6 +173,15 @@ class MiniInstantiator(ABC):
             dates.append(dt)
         return max(dates)
 
+    def created_date(self, base_sentences: dict[str, ForecastingQuestion]) -> datetime:
+        dates = []
+        for key in base_sentences:
+            dt = base_sentences[key].created_date
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=UTC)
+            dates.append(dt)
+        return min(dates)
+
     def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
         return base_sentences[
             list(base_sentences.keys())[0]
@@ -228,6 +237,7 @@ class MiniInstantiator(ABC):
             **{
                 k: v.cast_FQ(
                     resolution_date=self.resolution_date(base_sentences),
+                    created_date=self.created_date(base_sentences),
                     question_type=self.question_type(base_sentences),
                     data_source=self.data_source(base_sentences),
                     resolution=self.resolution(base_sentences)[k],
@@ -270,6 +280,7 @@ class MiniInstantiator(ABC):
             **{
                 k: v.cast_FQ(
                     resolution_date=self.resolution_date(base_sentences),
+                    created_date=self.created_date(base_sentences),
                     question_type=self.question_type(base_sentences),
                     data_source=self.data_source(base_sentences),
                     resolution=self.resolution(base_sentences)[k],
