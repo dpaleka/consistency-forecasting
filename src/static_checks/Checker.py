@@ -1056,6 +1056,23 @@ class AndChecker(Checker):
             and answers["P_and_Q"] <= min(answers["P"], answers["Q"])
         )
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+        )
+
 
 class OrChecker(Checker):
     num_base_questions = 2
@@ -1128,6 +1145,23 @@ class OrChecker(Checker):
             all([a is not None for a in answers.values()])
             and max(answers["P"], answers["Q"]) <= answers["P_or_Q"]
             and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"])
+        )
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
         )
 
 

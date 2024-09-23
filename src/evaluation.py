@@ -26,9 +26,7 @@ from evaluation_utils.utils import (
 )
 from evaluation_utils.common_options import common_options, get_forecaster_config
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
-
-# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples_scraped/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 
 logging.basicConfig()
