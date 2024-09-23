@@ -570,7 +570,7 @@ ANTHROPIC_DEFAULT_MODEL_NAME_MAP = {
 }
 
 
-@pydantic_cache(ignore="cost_log")
+@pydantic_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat", extract_args=True)
 async def query_api_chat(
@@ -640,7 +640,7 @@ async def query_api_chat(
     return CostlyResponse(output=response, cost_info=cost_info)
 
 
-@text_cache(ignore="cost_log")
+@text_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_native", extract_args=True)
 async def query_api_chat_native(
@@ -702,7 +702,7 @@ async def query_api_chat_native(
     return CostlyResponse(output=text_response, cost_info=cost_info)
 
 
-@pydantic_cache(ignore="cost_log")
+@pydantic_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_sync", extract_args=True)
 def query_api_chat_sync(
@@ -768,7 +768,7 @@ def query_api_chat_sync(
     return CostlyResponse(output=response, cost_info=cost_info)
 
 
-@text_cache(ignore="cost_log")
+@text_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_chat_sync_native", extract_args=True)
 def query_api_chat_sync_native(
@@ -1030,7 +1030,7 @@ def answer_messages_sync(
     return query_api_chat_sync(messages=messages, **options)
 
 
-@pydantic_cache(ignore="cost_log")
+@pydantic_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(
