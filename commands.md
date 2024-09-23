@@ -24,93 +24,94 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 
 - [ ] BasicForecaster with gpt-4o-2024-08-06 model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=gpt-4o-2024-08-06
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06
 ```
+-> [`src/data/forecasts/BasicForecaster_09-23-13-46/`](src/data/forecasts/BasicForecaster_09-23-13-46/)
 
 
 - [ ] BasicForecaster with gpt-4o-2024-05-13 model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=gpt-4o-2024-05-13
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-05-13
 ```
 
 - [ ] BasicForecaster with gpt-4o-mini-2024-07-18 model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=gpt-4o-mini-2024-07-18
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-mini-2024-07-18
 ```
 
 - [ ] BasicForecaster with anthropic/claude-3.5-sonnet model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=anthropic/claude-3.5-sonnet
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet
 ```
 
 - [ ] BasicForecaster with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 
 - [ ] BasicForecaster with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
 ```
 
 - [ ] BasicForecaster with meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with o1-mini model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=o1-mini
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with o1-preview model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=o1-preview
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with anthropic/claude-3.5-sonnet model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
 ```
 
 - [ ] CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo model (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo
 ```
 
 - [ ]  AdvancedForecaster with cheap_haiku.yaml configuration (with OpenRouter)
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml
 ```
 
 - [ ] AdvancedForecaster with default_gpt4o_mini.yaml configuration
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml
 ```
 
 - [ ] AdvancedForecaster with default_gpt-4o-2024-08-06.yaml configuration
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml
 ```
 
 - [ ] AdvancedForecaster with default_gpt-4o-2024-05-13.yaml configuration
