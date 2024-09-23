@@ -110,7 +110,12 @@ async def test_resolve_true_question():
 This question will resolve Yes if Ireland wins 4 or more gold medals at the 2024 Summer Olympics in Paris. It will resolve No if Ireland wins 3 or fewer gold medals. The final count will be based on the official medal tally at the conclusion of the Games.
     """
 
-    result = await resolve_question(question_title, question_body)
+    result = await resolve_question(
+        question_title,
+        question_body,
+        resolution_date="2024-08-06",
+        created_date="2024-05-30",
+    )
     assert isinstance(result, ResolverOutput)
 
     # weaker assertions, it's an online model
@@ -136,7 +141,9 @@ async def test_resolve_false_question():
 This question will resolve Yes if Ireland wins 6 or more gold medals at the 2024 Summer Olympics in Paris. It will resolve No if Ireland wins 5 or fewer gold medals. The final count will be based on the official medal tally at the conclusion of the Games.
     """
 
-    result = await resolve_question(question_title, question_body)
+    result = await resolve_question(
+        question_title, question_body, resolution_date="2024-08-06", created_date=""
+    )
     assert isinstance(result, ResolverOutput)
 
     assert (
