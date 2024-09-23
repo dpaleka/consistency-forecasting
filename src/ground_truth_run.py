@@ -225,8 +225,8 @@ def main(
     print(f"Calibrated probs: {calibrated_probs}")
     for result, calibrated_prob in zip(results, calibrated_probs):
         result["platt"] = {}
-        result["platt"]["factor"] = platt_scaling_factor
-        result["platt"]["calibrated_prob"] = calibrated_prob
+        result["platt"]["factor"] = round_floats(platt_scaling_factor, precision=4)
+        result["platt"]["calibrated_prob"] = round_floats(calibrated_prob, precision=4)
         result["platt"]["brier_score"] = round_floats(
             proper_score(
                 probs=[calibrated_prob],
@@ -327,14 +327,16 @@ def main(
     print(f"Average Platt Brier Score: {summary['avg_platt_brier_score']:.4f}")
     print(f"Tuned Brier Baseline:      {summary['tuned_brier_baseline']:.4f}")
     print()
+
     print(f"Average Brier Score Scaled:       {summary['avg_brier_score_scaled']:.1f}")
-    print(
-        f"Tuned Brier Baseline Scaled:      {summary['tuned_brier_baseline_scaled']:.1f}"
-    )
     print(
         f"Average Platt Brier Score Scaled: {summary['avg_platt_brier_score_scaled']:.1f}"
     )
+    print(
+        f"Tuned Brier Baseline Scaled:      {summary['tuned_brier_baseline_scaled']:.1f}"
+    )
     print()
+
     print(f"Average Log Score: {summary['avg_log_score']:.4f}")
     print(f"Platt Scaling Factor: {summary['platt_scaling_factor']:.2f}")
     print(f"Forecaster: {summary['forecaster']}")

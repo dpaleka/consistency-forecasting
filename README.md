@@ -237,7 +237,7 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 - `-p src/forecasters/various.py::BaselineForecaster -o p=0.4`
 - `-p src/forecasters/various.py::BaselineForecaster -o p=0.6`
 - `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
-- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
+- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1` (with OpenRouter)
 - `-f BasicForecaster -o model=gpt-4o-2024-08-06`
 - `-f BasicForecaster -o model=gpt-4o-2024-05-13`
 - `-f BasicForecaster -o model=gpt-4o-mini-2024-07-18`
