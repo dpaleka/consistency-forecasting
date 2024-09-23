@@ -29,7 +29,7 @@ from .datatypes import (
     Consequence_ClassifyOutput,
     Consequence_ConsequenceType,
 )
-from .path_utils import get_src_path, get_root_path, get_data_path
+from .path_utils import get_src_path, get_root_path, get_data_path, get_logs_path
 from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
 
 from .perscache import (
@@ -90,6 +90,14 @@ if os.getenv("USE_LOGFIRE") == "True":
 if os.getenv("LOGGING_DEBUG") == "True":
     print("Setting logging level to DEBUG")
     logging.basicConfig(level=logging.DEBUG, force=True)
+
+
+logs_dir = get_logs_path()
+if not logs_dir.exists():
+    logs_dir.mkdir(parents=True)
+    print(f"Created generic logs directory at {logs_dir}")
+else:
+    print(f"Generic logs directory already exists at {logs_dir}")
 
 
 def reset_global_semaphore():
