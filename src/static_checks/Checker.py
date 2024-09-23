@@ -615,16 +615,24 @@ class Checker(ABC):
         raise NotImplementedError("Subclasses must implement this")
 
     def violation(
-        self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
+        self,
+        answers: dict[str, Any],
+        force_pos=True,
+        remove_zeros=1e-3,
+        metric="default",
+        **kwargs,
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
         if metric == "default":
+            if remove_zeros:
+                # remove_zeros is an epsilon value to avoid division by zero
+                answers = {k: v or remove_zeros for k, v in answers.items()}
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
-                v = max(0, v)
+                v = max(0, v)  # this also forces np.nan to 0
         elif metric == "frequentist":
             v = self.frequentist_violation(answers, **kwargs)
         else:
