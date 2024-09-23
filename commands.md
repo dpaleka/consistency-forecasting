@@ -43,11 +43,11 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 
 ### BasicForecaster with gpt-4o-2024-08-06 model
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06
 ```
--> [`src/data/forecasts/BasicForecaster_09-23-13-46/`](src/data/forecasts/BasicForecaster_09-23-13-46/)
+-> [`src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json)
 
 
 ### BasicForecaster with gpt-4o-2024-05-13 model
@@ -141,16 +141,18 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 
 ### AdvancedForecaster with [cheap_gpt4o-mini.yaml](src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml) config
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml
 ```
+-> [`src/data/forecasts/AdvancedForecaster_09-23-13-52/ground_truth_summary.json`](src/data/forecasts/AdvancedForecaster_09-23-13-52/ground_truth_summary.json)
 
 ### AdvancedForecaster with [default_gpt-4o-2024-08-06.yaml](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml) config
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml
 ```
+-> [`src/data/forecasts/AdvancedForecaster_09-23-14-32/ground_truth_summary.json`](src/data/forecasts/AdvancedForecaster_09-23-14-32/ground_truth_summary.json)
 
 ### AdvancedForecaster with [default_gpt-4o-2024-05-13.yaml](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml) config
 - [ ] ground_truth_run
