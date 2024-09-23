@@ -2,6 +2,7 @@ import jsonlines
 import asyncio
 import click
 from costly import Costlog
+import logging
 
 # from static_checks.MiniInstantiator import MiniInstantiator
 from static_checks import Checker
@@ -44,6 +45,11 @@ def select_tuples(possible_ituples, max_tuples):
     return random.sample(possible_ituples, max_tuples)
 
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+
 async def instantiateRel(
     BASE_DATA_PATH: Path,
     checker_list: dict[str, Checker],
@@ -53,6 +59,10 @@ async def instantiateRel(
     seed: int = 42,
     **kwargs,
 ):
+    logging.info(
+        f"Starting instantiateRel with {n_source_questions} source questions and {max_tuples_per_source} max tuples per source"
+    )
+
     print(f"Loading questions from {BASE_DATA_PATH}...")
     question_sets = {}
     total_questions = 0
