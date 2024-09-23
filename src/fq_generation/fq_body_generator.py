@@ -4,6 +4,7 @@ import uuid
 from common.llm_utils import answer
 from typing import Optional
 from common.utils import normalize_date_format
+from fq_generation.multi_to_binary import reformat_metaculus_question
 
 
 resolution_date_specification = """\
@@ -178,6 +179,24 @@ async def from_string(
 
     if not fill_in_body and body is None:
         raise ValueError("No question body provided and fill_in_body is False")
+
+    if data_source == "metaculus":
+        reformat_result: dict[
+            str, str | None | bool
+        ] = await reformat_metaculus_question(question, body, model=model)
+
+        if reformat_result["did_change"]:
+            print(
+                f"Reformatted Metaculus question: {question=} -> {reformat_result['title']=}"
+            )
+            if metadata is None:
+                metadata = {}
+            metadata["reformat_metaculus_question"] = {
+                "original_question": question,
+                "original_body": body,
+            }
+            question = reformat_result["title"]
+            body = reformat_result["body"]
 
     if body is None:
         print("No body, getting criteria and date from the title with an LLM call")

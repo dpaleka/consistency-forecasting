@@ -11,6 +11,7 @@ from common.llm_utils import (
     query_api_chat_sync_native,
 )
 
+from common.llm_utils import Example
 from common.datatypes import ForecastingQuestion, Forecast
 from forecasters import (
     BasicForecaster,
@@ -21,7 +22,8 @@ from forecasters import (
 
 default_small_model = "gpt-4o-mini-2024-07-18"
 
-mock_q_and_a = "Will Manhattan have a skyscraper a mile tall by 2030?"
+mock_q = "Will Manhattan have a skyscraper a mile tall by 2030?"
+mock_a = "0.03"
 mock_response_list = ["0.03", "0.05", "0.02"]
 mock_response = MagicMock(prob=0.09)
 mock_cot_response = MagicMock(
@@ -32,7 +34,7 @@ mock_cot_response = MagicMock(
 
 @pytest.fixture
 def basic_forecaster():
-    examples = [mock_q_and_a]
+    examples = [mock_q]
     return BasicForecaster(preface="Test preface", model=default_small_model)
 
 
@@ -97,6 +99,13 @@ def test_basic_forecaster_actual_call(mock_forecasting_question):
     # Create BasicForecaster instance
     forecaster = BasicForecaster(model=default_small_model)
 
+    config = forecaster.dump_config()
+    print(f"\n{config=}")
+    assert isinstance(config, dict)
+    assert "model" in config
+    assert "preface" in config
+    assert "examples" in config
+
     # Call the forecaster with actual prompts
     forecast = forecaster.call_full(actual_fq)
 
@@ -116,6 +125,31 @@ def test_basic_forecaster_actual_call(mock_forecasting_question):
     assert forecast.metadata is None, "Expected metadata to be None"
 
 
+def test_basic_forecaster_actual_call_with_examples(mock_forecasting_question):
+    # Prepare test data
+    user_preface = (
+        "You are an informed and well-calibrated forecaster. I need you to give me "
+        "your best probability estimate for the following sentence or question resolving YES. "
+        "Your answer should be a float between 0 and 1, with nothing else in your response."
+    )
+    examples = [Example(user=mock_q, assistant=mock_a)]
+    forecaster = BasicForecaster(
+        preface=user_preface, examples=examples, model=default_small_model
+    )
+
+    config = forecaster.dump_config()
+    print(f"\n{config=}")
+    assert isinstance(config, dict)
+    assert "model" in config
+    assert "preface" in config and config["preface"] == user_preface
+    assert "examples" in config
+
+    forecast = forecaster.call_full(mock_forecasting_question)
+
+    # Print the forecast for manual inspection
+    print(f"\nForecast: {forecast}")
+
+
 def test_cot_forecaster_actual_call(mock_forecasting_question):
     # Prepare test data
     user_preface = (
@@ -131,6 +165,14 @@ def test_cot_forecaster_actual_call(mock_forecasting_question):
     forecaster = CoT_Forecaster(
         preface=user_preface, examples=None, model=default_small_model
     )
+
+    config = forecaster.dump_config()
+    print(f"\n{config=}")
+    assert isinstance(config, dict)
+    assert "model" in config
+    assert "preface" in config
+    assert "examples" in config
+
     forecast = forecaster.call_full(mock_forecasting_question)
 
     # Print the chain of thought for manual inspection
@@ -205,6 +247,15 @@ def test_crowd_forecaster():
     # Initialize CrowdForecaster
     crowd_forecaster = CrowdForecaster(
         forecasters=[forecaster1, forecaster2], method="mean", weights=weights
+    )
+
+    config = crowd_forecaster.dump_config()
+    print(f"\n{config=}")
+    assert (
+        isinstance(config, dict)
+        and "forecasters" in config
+        and "method" in config
+        and "weights" in config
     )
 
     # Call CrowdForecaster

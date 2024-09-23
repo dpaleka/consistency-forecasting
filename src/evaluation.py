@@ -517,6 +517,7 @@ def main(
     print("Cost log totals")
     print("---------------")
     print(cl.totals)
+    print(cl.totals_by_model)
     print("---------------")
 
     with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
@@ -572,14 +573,32 @@ def main(
 if __name__ == "__main__":
     main()
 
-# run the script with the following command:
+
+# run the script with the following commands:
+
+# Basic example with AdvancedForecaster:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 50 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f BasicForecaster -m gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
-# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f RecursiveConsistentForecaster -m gpt-4o-mini -k NegChecker --run -n 20 --async
-# python evaluation.py -f PromptedToCons_Forecaster -m gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
-# python evaluation.py -f ConsistentForecaster -m gpt-4o-mini --run -n 2 -k NegChecker
+
+# Using ConsistentForecaster with multiple checks:
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks=NegChecker -o checks=ButChecker -o depth=2 --run -n 3 -k NegChecker -k ButChecker --async | tee see_eval.txt
+
+# Using BasicForecaster with specific checks:
+# python evaluation.py -f BasicForecaster -o model=gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
+
+# Using ConsistentForecaster with async mode:
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
+
+# Using ConsistentForecaster with multiple checks and async mode:
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
+
+# Using RecursiveConsistentForecaster:
+# python evaluation.py -f RecursiveConsistentForecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+
+# Using PromptedToCons_Forecaster:
+# python evaluation.py -f PromptedToCons_Forecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
+
+# Using ConsistentForecaster with specific checker:
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini --run -n 2 -k NegChecker
+
+# Using ConsistentForecaster with multiple checks and options:
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks=NegChecker -o checks=ButChecker -o depth=2 --run -n 3 -k NegChecker -k ButChecker --async

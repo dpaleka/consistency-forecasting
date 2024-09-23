@@ -214,3 +214,75 @@ python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_f
 
 
 This list not include the entry points already mentioned in previous sections (feedback form, tests).
+
+## Important data files
+- [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 257 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
+- [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) is close to a superset of the above, 627 questions, but not FQ-verified, and certain originally multiple-choice Metaculus question might have different wording. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
+
+- [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) is a file of 2621 synthetic ForecastingQuestions generated from NewsAPI data and reference spanning, using gpt-4o, between July 1, 2024 and August 31, 2024, inclusive. The resolutions are all produced by the Perplexity resolver using the command:
+```
+USE_OPENROUTER=True python src/perplexity_resolver_script.py -i src/data/fq/synthetic/news_api_generated_fqs/.../strict_res_checking_fqs_cleaned-ref-class-spanned-basic.jsonl --models perplexity/llama-3.1-sonar-huge-128k-online --start_from 0 -n [file_size] --batch_size 30 --n_attempts 1 --include_unresolvable
+```
+and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
+
+- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs.
+
+## Experiments
+
+### Forecasters used for the experiments
+(Draft, for now)
+
+- `-p src/forecasters/various.py::BaselineForecaster -o p=0.4`
+- `-p src/forecasters/various.py::BaselineForecaster -o p=0.6`
+- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
+- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
+- `-f BasicForecaster -o model=gpt-4o-2024-08-06`
+- `-f BasicForecaster -o model=gpt-4o-2024-05-13`
+- `-f BasicForecaster -o model=gpt-4o-mini-2024-07-18`
+- `-f BasicForecaster -o model=anthropic/claude-3.5-sonnet` (with OpenRouter)
+- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct` (with OpenRouter)
+- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
+- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
+- `-f CoT_ForecasterTextBeforeParsing -o model=o1-mini`
+- `-f CoT_ForecasterTextBeforeParsing -o model=o1-preview`
+- `-f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06`
+- `-f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18`
+- `-f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet` (with OpenRouter)
+- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct` (with OpenRouter)
+- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
+- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml`](src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml) (with OpenRouter)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_sonnet.yaml`](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) (with OpenRouter)
+- `-f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18`
+
+Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
+The other forecasters ask a native call and then parse the answer into an output format with an LLM (or otherwise, in case of `AdvancedForecaster`).
+The parsing model is always `gpt-4o-mini-2024-07-18`.
+
+### Evaluation
+
+```
+python evaluation.py -f BasicForecaster -o model=gpt-4o-2024-08-06 --run -n 100 -k all --async
+# gpt-4o-2024-08-06 is the latest and is cheaper I think
+# ... ADD other models e.g. llamas
+# ... ADD COT_Forecaster etc.
+
+python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 100 -k all --async
+# ... perhaps with more configurations
+
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async #*
+
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+```
+
+Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
+
+Presumably all the above are also exactly what we want to run ground truth evaluation on?

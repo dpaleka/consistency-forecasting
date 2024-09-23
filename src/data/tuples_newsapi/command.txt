@@ -1,0 +1,6 @@
+python instantiation.py --model_main="gpt-4o-2024-08-06" --model_relevance="gpt-4o-mini-2024-07-18" --data_path="data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl" --tuple_dir="data/tuples_newsapi" --relevant_checks all --n_relevance=5000 --n_write=500 --seed=42
+
+Costly log totals:
+------------------
+{'cost_max': 113.43087059999984, 'input_tokens': 36360440.0, 'time_min': 67262.32962686557, 'calls': 32460.0, 'cost_min': 113.43087059999984, 'output_tokens_max': 5360242.0, 'output_tokens_min': 5360242.0, 'time_max': 67262.32962686557}
+{'gpt-4o-mini-2024-07-18': {'cost_max': 1.9833605999999993, 'input_tokens': 7994044.0, 'time_min': 16117.602403029137, 'calls': 10000.0, 'cost_min': 1.9833605999999993, 'output_tokens_max': 1307090.0, 'output_tokens_min': 1307090.0, 'time_max': 16117.602403029137}, 'gpt-4o-2024-08-06': {'cost_max': 111.44750999999974, 'input_tokens': 28366396.0, 'time_min': 51144.727223836686, 'calls': 22460.0, 'cost_min': 111.44750999999974, 'output_tokens_max': 4053152.0, 'output_tokens_min': 4053152.0, 'time_max': 51144.727223836686}}

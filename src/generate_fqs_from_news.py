@@ -15,8 +15,11 @@ from fq_from_news.fq_from_news_utils import (
     generate_final_forecasting_questions_sync,
     verify_final_forecasting_questions,
 )
-from fq_from_news.date_utils import parse_date, get_month_date_range
-
+from fq_from_news.date_utils import (
+    parse_date,
+    get_month_date_range,
+    parse_datetime,
+)
 
 load_dotenv()
 
@@ -79,6 +82,7 @@ async def generate_forecasting_questions(articles_download_path, args):
             args.rough_fq_gen_model_name,
             args.final_fq_gen_model_name,
             args.pose_date,
+            args.fq_creation_date,
             args.be_lax_in_res_checking,
         )
 
@@ -229,9 +233,19 @@ def get_args() -> argparse.Namespace:
         help="""
         Pose date for downloading news in YYYY-MM-DD format.
 
-        Between this date and the FQ's resolution date, we assume (as well as verify) that the question does not resolve. 
+        The purpose of this date is to make the LLM add additional context about events that wouldn't have been known about by this date.
         """,
         default=datetime(2023, 10, 1),
+    )
+
+    # Created dates of the FQs
+    parser.add_argument(
+        "--fq-creation-date",
+        type=parse_datetime,
+        help="""
+        Creation date for the FQs in YYYY-MM-DD-HH-MM-SS. This parameter is set to be the created_date parameter in the FQs.
+        """,
+        default=datetime(2024, 6, 30, 23, 59, 59),
     )
 
     # Arguments to permit exclusive actions
