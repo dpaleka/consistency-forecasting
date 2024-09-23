@@ -40,15 +40,11 @@ async def parse_resolver_output(
     """
     try:
         xml_parsed = parse_xml_resolver_output(full_string, **kwargs)
-        with open("out_parsed.txt", "a") as f:
-            f.write(str(xml_parsed) + "\n")
         return xml_parsed
     except ValueError as e:
         prompt = parse_resolver_output_prompt.format(
             full_string=full_string, question_title=question_title
         )
-        with open("out.txt", "a") as f:
-            f.write(prompt + "\n")
         r = await answer(prompt, response_model=ResolverOutput, **kwargs)
         return r
     except Exception as e:

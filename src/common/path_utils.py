@@ -15,3 +15,7 @@ def get_root_path() -> Path:
 
 def get_scripts_path() -> Path:
     return get_root_path() / "scripts"
+
+
+def get_logs_path() -> Path:
+    return get_root_path() / "logs"

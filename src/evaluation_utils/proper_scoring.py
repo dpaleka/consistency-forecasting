@@ -174,8 +174,10 @@ def platt_scaling(
     def sigmoid(x):
         return 1 / (1 + np.exp(-x))
 
+    eps = 1e-7
+
     def loss_function(a, probs, outcomes):
-        logits = np.log(np.array(probs) / (1 - np.array(probs)))
+        logits = np.log(np.array(probs) + eps / (1 + eps - np.array(probs)))
         scaled_probs = sigmoid(a * logits)
         return np.mean((scaled_probs - np.array(outcomes)) ** 2)
 
@@ -199,8 +201,7 @@ def platt_scaling(
         assert isinstance(a, float), "Must provide a float for a."
 
     # Calculate calibrated probabilities
-    logits = np.log(np.array(probs) / (1 - np.array(probs)))
-    print(f"{logits=}")
+    logits = np.log(np.array(probs) + eps / (1 + eps - np.array(probs)))
     calibrated_probs = sigmoid(a * logits).tolist()
 
     return PlattScalingResult(calibrated_probs=calibrated_probs, platt_scaling_a=a)
