@@ -89,10 +89,12 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 
 ### CoT_ForecasterTextBeforeParsing with o1-mini model
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini
 ```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json)
+
 
 ### CoT_ForecasterTextBeforeParsing with o1-preview model
 - [ ] ground_truth_run
