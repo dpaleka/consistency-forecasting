@@ -4,6 +4,7 @@
 # %%
 import os
 import logging
+import warnings
 from typing import Coroutine, Optional, List, Literal
 from openai import AsyncOpenAI, OpenAI
 import instructor
@@ -22,12 +23,14 @@ from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
     PlainText,
     Prob,
+    Forecast,
     ForecastingQuestion,
     ForecastingQuestion_stripped,
+    Consequence_ClassifyOutput,
+    Consequence_ConsequenceType,
 )
-from .path_utils import get_src_path, get_root_path, get_data_path
+from .path_utils import get_src_path, get_root_path, get_data_path, get_logs_path
 from .perplexity_client import AsyncPerplexityClient, SyncPerplexityClient
-
 
 from .perscache import (
     Cache,
@@ -55,6 +58,12 @@ os.environ.update(override_env_vars)
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
 
+if os.getenv("USE_COSTLY", "False") == "False":
+    # Set up global warning filter
+    warnings.filterwarnings(
+        "ignore", message=".*`cost_log` is None for the function:.*"
+    )
+
 
 if os.getenv("OPENAI_JSON_STRICT") == "True":
     raise ValueError(
@@ -81,6 +90,14 @@ if os.getenv("USE_LOGFIRE") == "True":
 if os.getenv("LOGGING_DEBUG") == "True":
     print("Setting logging level to DEBUG")
     logging.basicConfig(level=logging.DEBUG, force=True)
+
+
+logs_dir = get_logs_path()
+if not logs_dir.exists():
+    logs_dir.mkdir(parents=True)
+    print(f"Created generic logs directory at {logs_dir}")
+else:
+    print(f"Generic logs directory already exists at {logs_dir}")
 
 
 def reset_global_semaphore():
@@ -170,14 +187,25 @@ class LLM_Simulator(LLM_Simulator_Faker):
 
     @classmethod
     def _fake_custom(cls, t: type):
-        if issubclass(t, Prob):
-            import random
+        import random
 
+        if issubclass(t, Prob):
             return t(prob=random.random())
+        elif issubclass(t, Forecast):
+            return t(prob=random.random(), metadata=None)
         elif issubclass(t, ForecastingQuestion):
             return cls.pick_random_fq(cls.fqs_path, strip=False)
         elif issubclass(t, ForecastingQuestion_stripped):
             return cls.pick_random_fq(cls.fqs_path, strip=True)
+        elif issubclass(t, Consequence_ConsequenceType):
+            return random.choice(list(Consequence_ConsequenceType))
+        elif issubclass(t, Consequence_ClassifyOutput):
+            return Consequence_ClassifyOutput(
+                consequence_type=[
+                    random.choice(list(Consequence_ConsequenceType))
+                    for _ in range(random.randint(1, 4))
+                ]
+            )
         else:
             raise NotImplementedError(f"{t} is not a known custom type")
 
@@ -914,6 +942,46 @@ def answer_sync(
         return query_api_chat_sync_with_parsing(messages=messages, **options)
     else:
         return query_api_chat_sync(messages=messages, **options)
+
+
+@logfire.instrument("answer_native", extract_args=True)
+async def answer_native(
+    prompt: str,
+    preface: Optional[str] = None,
+    examples: Optional[List[Example]] = None,
+    prepare_messages_func=prepare_messages,
+    **kwargs,
+) -> str:
+    messages = prepare_messages_func(prompt, preface, examples)
+    default_options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+    }
+    options = default_options | kwargs  # override defaults with kwargs
+
+    if os.getenv("VERBOSE") == "True":
+        print(f"{options=}, {len(messages)=}")
+
+    async with global_llm_semaphore:
+        response = await query_api_chat_native(messages=messages, **options)
+        return response
+
+
+@logfire.instrument("answer_native_sync", extract_args=True)
+def answer_native_sync(
+    prompt: str,
+    preface: str | None = None,
+    examples: list[Example] | None = None,
+    prepare_messages_func=prepare_messages,
+    **kwargs,
+) -> str:
+    messages = prepare_messages_func(prompt, preface, examples)
+    options = {
+        "model": "gpt-4o-mini-2024-07-18",
+        "temperature": 0.5,
+    } | kwargs
+    response = query_api_chat_sync_native(messages=messages, **options)
+    return response
 
 
 async def answer_messages(

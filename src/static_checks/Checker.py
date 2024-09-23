@@ -56,7 +56,6 @@ class Checker(ABC):
             self.path = get_data_path() / "tuples" / f"{self.name}.jsonl"
         else:
             self.path = path
-        self.counter = 0  # number of tuples successfully instantiated
 
     def dump_config(self):
         return {
@@ -192,6 +191,7 @@ class Checker(ABC):
         if results and not kwargs.get("simulate", False):
             json_list = [result.model_dump_json() for result in results]
             await write_jsonl_async_from_str(self.path, json_list, append=True)
+        return results  # necessary to return for instantiate_and_write_many
 
     async def instantiate_and_write_many(
         self,
@@ -226,25 +226,27 @@ class Checker(ABC):
             else:
                 raise ValueError("Unrecognized input format for base_sentences")
 
-        bq_counter = 0  # number of base sentences processed
-        while n_write == -1 or self.counter < n_write:
-            counter_prev = self.counter
-            to_process = base_sentencess[
-                bq_counter : bq_counter
-                + (n_write - counter_prev if n_write != -1 else len(base_sentencess))
-            ]
-            if not to_process:
-                break  # No more sentences to process
-            results = await parallelized_call(
-                _instantiate_and_write,
-                to_process,
-                max_concurrent_queries=10,
-            )
-            bq_counter += len(to_process)
-            print(f"Counter: {self.counter}")
-            print(f"BQ Counter: {bq_counter}")
+        processed_so_far = 0
+        written_so_far = 0
+        results = []
 
-        print(f"Processed {bq_counter} out of {len(base_sentencess)} base sentences")
+        while (n_write == -1 or written_so_far < n_write) and processed_so_far < len(
+            base_sentencess
+        ):
+            batch = base_sentencess[
+                processed_so_far : processed_so_far + (n_write - written_so_far)
+            ]
+
+            batch_results = await parallelized_call(
+                _instantiate_and_write, batch, max_concurrent_queries=10
+            )
+            processed_so_far += len(batch)
+            written_so_far += sum(len(r) for r in batch_results)
+            results.extend(batch_results)
+        print(
+            f"{len(base_sentencess)} base sentences given\nprocessed {processed_so_far}\nwrote {written_so_far}"
+        )
+
         return results
 
     @abstractmethod
@@ -1244,18 +1246,17 @@ class ButChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
         not_P = Neg().instantiate_sync({"P": base_sentences["P"]}, **kwargs)
+
+        if isinstance(P, list) or isinstance(not_P, list):
+            return []
+
         Q_and_not_P = And().instantiate_sync(
-            {"P": base_sentences["Q"], "Q": not_P.not_P}
+            {"P": base_sentences["Q"], "Q": not_P.not_P}, **kwargs
         )
         P_or_Q = Or().instantiate_sync(base_sentences, **kwargs)
 
         # Either the verification failed and the list is empty, or there is more than one element which is not expected.
-        if (
-            isinstance(Q_and_not_P, list)
-            or isinstance(P_or_Q, list)
-            or isinstance(P, list)
-            or isinstance(not_P, list)
-        ):
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list):
             return []
         return [
             self.TupleFormat(
@@ -1268,18 +1269,17 @@ class ButChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate({"P": base_sentences["P"]}, **kwargs)
         not_P = await Neg().instantiate({"P": base_sentences["P"]}, **kwargs)
+
+        if isinstance(P, list) or isinstance(not_P, list):
+            return []
+
         Q_and_not_P = await And().instantiate(
-            {"P": base_sentences["Q"], "Q": not_P.not_P}
+            {"P": base_sentences["Q"], "Q": not_P.not_P}, **kwargs
         )
         P_or_Q = await Or().instantiate(base_sentences, **kwargs)
 
         # Either the verification failed and the list is empty, or there is more than one element which is not expected.
-        if (
-            isinstance(Q_and_not_P, list)
-            or isinstance(P_or_Q, list)
-            or isinstance(P, list)
-            or isinstance(not_P, list)
-        ):
+        if isinstance(Q_and_not_P, list) or isinstance(P_or_Q, list):
             return []
         return [
             self.TupleFormat(
@@ -1609,6 +1609,8 @@ class ParaphraseChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = Trivial().instantiate_sync(base_sentences, **kwargs)
         para_P = Paraphrase().instantiate_sync(base_sentences, **kwargs)
+        if isinstance(para_P, list):
+            return []
         return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
 
     async def instantiate(
@@ -1616,6 +1618,8 @@ class ParaphraseChecker(Checker):
     ) -> List["Self.TupleFormat"]:
         P = await Trivial().instantiate(base_sentences, **kwargs)
         para_P = await Paraphrase().instantiate(base_sentences, **kwargs)
+        if isinstance(para_P, list):
+            return []
         return [self.TupleFormat(P=P.P, para_P=para_P.para_P)]
 
     def max_min_arbitrage(
@@ -1831,15 +1835,23 @@ checker_classes = [
 ]
 
 
-def choose_checkers(relevant_checks: list[str], tuple_dir: Path) -> dict[str, Checker]:
+def choose_checkers(
+    relevant_checks: list[str], tuple_dir: Path | None = None
+) -> dict[str, Checker]:
     print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
-
-    checkers: dict[str, Checker] = {
-        checker_name: cls(path=tuple_dir / f"{checker_name}.jsonl")
-        for checker_name, cls in checker_classes
-        if checker_name in relevant_checks
-    }
-
+    elif isinstance(relevant_checks[0], int) or relevant_checks[0] in [
+        str(n) for n in range(1, 4)
+    ]:  # allow choosing checks with some number of base questions
+        relevant_checks = [
+            c[0]
+            for c in checker_classes
+            if c[1].num_base_questions == int(relevant_checks[0])
+        ]
+    checkers: dict[str, Checker] = {}
+    for checker_name, cls in checker_classes:
+        if checker_name in relevant_checks:
+            path = None if tuple_dir is None else tuple_dir / f"{checker_name}.jsonl"
+            checkers[checker_name] = cls(path=path)
     return checkers

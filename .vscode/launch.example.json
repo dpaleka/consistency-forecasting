@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "purpose": ["debug-test"], // this is important for integration with the debugger: https://stackoverflow.com/a/76290536/15910607
+        "name": "Pytest",
+        "type": "python",
+        "request": "launch",
+        "program": "${file}",
+        "args": ["-v", "--no-cov", "-s"],
+        "justMyCode": false,
+        "env": {
+          "VERBOSE": "True",
+          "NO_CACHE": "True",
+          "LOGGING_DEBUG": "False",
+          "USE_LOGFIRE": "False"
+        }
+      }
+    ]
+  }

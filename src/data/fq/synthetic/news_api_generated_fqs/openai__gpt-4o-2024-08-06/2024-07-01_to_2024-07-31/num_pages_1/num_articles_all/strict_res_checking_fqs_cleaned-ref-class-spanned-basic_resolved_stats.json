@@ -1,0 +1,18 @@
+{
+  "total_questions": 2517,
+  "filtered_questions": 2516,
+  "could_not_resolve_or_failed": 1005,
+  "total_can_resolve": 1511,
+  "agreement_count": "83/104",
+  "agreement_percentage": "79.8%",
+  "input_file": "src/data/fq/synthetic/news_api_generated_fqs/openai__gpt-4o-2024-08-06/2024-07-01_to_2024-07-31/num_pages_1/num_articles_all/strict_res_checking_fqs_cleaned-ref-class-spanned-basic.jsonl",
+  "output_file": "src/data/fq/synthetic/news_api_generated_fqs/openai__gpt-4o-2024-08-06/2024-07-01_to_2024-07-31/num_pages_1/num_articles_all/strict_res_checking_fqs_cleaned-ref-class-spanned-basic_resolved.jsonl",
+  "max_questions": 2600,
+  "start_from": 0,
+  "batch_size": 30,
+  "models": [
+    "perplexity/llama-3.1-sonar-huge-128k-online"
+  ],
+  "n_attempts": 1,
+  "include_unresolvable": true
+}

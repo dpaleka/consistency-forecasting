@@ -2,7 +2,6 @@
 src/data/test/*.jsonl
 src/data/test/*/*.jsonl
 src/data/fq/test/*
-src/data/tuples_test/
 src/data/news_api_test/
 src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
@@ -11,10 +10,14 @@ src/data/forecasts/*_test/
 src/data/forecasts/test*/
 scripts/references/
 src/*see_eval.txt
-.vscode/settings.json
 *.log
 .costly/
 src/.costly/
+
+.vscode/settings.json
+.vscode/launch.json
+.python-version
+
 
 # Local
 *.code-workspace

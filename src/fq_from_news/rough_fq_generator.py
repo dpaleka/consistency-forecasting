@@ -76,7 +76,8 @@ Based on your assessment, determine if the article is "complete" and suitable fo
 - Ensure no indication that the article is used to inform the question, keeping the creation date fully hidden.
 
 4. **Resolution Period**: 
-- The resolution of each question must remain definitive and applicable from the current date until **{month_name}, {year}**.
+- If you phrase the resolution date as "by {month_name}, {year}", then resolution of each question must remain definitive and applicable from the current date until {month_name}, {year}.
+- If you phrase the resolution date as "in {month_name}, {year}", then resolution of each question must remain definitive and applicable for the month of {month_name} in {year}.
 - Ensure the question’s outcome is verifiable and binary (YES or NO) during this period.
 
 5. **Context from Articles**: 
@@ -107,8 +108,9 @@ Based on your assessment, determine if the article is "complete" and suitable fo
     - **Acceptable**: "Will the company announce the new product before the end of Q2 2024?" (The result is clear by the specified date.)
     - **Not Acceptable**: "Will the company continue to develop the product?" (Outcome is too vague and could change after the specified date.)
 
-- **Resolution Date**: Include a resolution date in the format "by {month_name}, {year}?".
+- **Resolution Date**: Include a resolution date using the format "by {month_name}, {year}?" or "in {month_name}, {year}?", whichever is more suitable for the context.
     - **Acceptable**: "Will Company A complete its acquisition of Company B by December 2024?"
+    - **Acceptable**: "Will Company A complete its acquisition of Company B in December 2024?"
     - **Not Acceptable**: "Will Company A complete its acquisition of Company B soon?"
 
 - **Context for Clarity**: Provide enough context if event names may not be clear as of the forecaster’s present date ({pose_date}).
@@ -123,7 +125,7 @@ Based on your assessment, determine if the article is "complete" and suitable fo
 
 - **Planned or Announced Events**: For events that are planned but not known at {pose_date}, frame them as proposals or announcements rather than completed facts. Include the event name with sufficient context to avoid ambiguity. For example:
     - **Example 1 (Planned Event)**: If MS Dhoni's injury is unknown at {pose_date} and you get an article talking about him getting well enough to play, phrase the question: "Will MS Dhoni return to play after a major injury in July 2024?"
-    - **Example 2 (Announced Event)**: For a major political announcement: "Will the U.N. announce a new climate accord by December 2024?"
+    - **Example 2 (Announced Event)**: For a major political announcement: "Will the U.N. announce a new climate accord in December 2024?"
 
 ### **Body Guidelines**
 - **Disambiguation**: Stay focused on the title’s core question without introducing unrelated details that could confuse the resolution.
@@ -132,7 +134,6 @@ Based on your assessment, determine if the article is "complete" and suitable fo
 ### **Resolution Guidelines**
 - **Binary Outcome**: Resolutions must be clearly marked as True for YES and False for NO.
 - **Stable Outcome**: Ensure the resolution remains consistent and unchangeable until the resolution date.
-
 - **Definitiveness**: The resolution must be verifiable based solely on the content of the article.
 
 ### **General Guidelines**
@@ -164,16 +165,16 @@ Based on your assessment, determine if the article is "complete" and suitable fo
     - **Reason for Rejection**: The question extends beyond the scope of the article by assuming an action that is not directly mentioned. The article focuses on the call for the CEO's resignation due to the company's decision to cut DEI efforts, not on the CEO's actual resignation.
 
 - **No Direct References to Article**: Do not mention the article, its source or the present date ({pose_date}) explicitly in either the title or body.
-    - **Acceptable**: "Will Apple release a new version of macOS by October 2024?"
-    - **Not Acceptable**: "According to the article, will Apple plan to release a new version of macOS by October 2024?"
+    - **Acceptable**: "Will Apple release a new version of macOS in October 2024?"
+    - **Not Acceptable**: "According to the article, will Apple plan to release a new version of macOS in October 2024?"
 
 - **Numerical Questions**: If using numerical thresholds, ensure they are clear, straightforward, and avoid requiring complex calculations. For example:
     - **Acceptable**: "Will the price of crude oil exceed $100 per barrel by August 2024?"
     - **Not Acceptable**: "Will crude oil prices increase significantly?"
 
 - **Prevent Predictability**: Ensure the question is not easily predictable by using reasonable approximations and avoiding excessively detailed context that could reveal too much.
-    - **Acceptable**: "Will Company A’s market share increase in Q3 2024?"
-    - **Not Acceptable**: "Will Company A’s market share increase by exactly 4.5% in Q3 2024?"
+    - **Acceptable**: "Will Company A’s market share increase by more than 3% by July 2024?"
+    - **Not Acceptable**: "Will Company A’s market share increase by exactly 4.5% by July 2024?"
 
 - **Avoid Over-Specificity**: Do not include more than three specific details or entities from the article that could make the question overly specific, leading to easy guesses. However, balance is key. Provide enough specificity for context without making it too easy. For example:
     - **Good Balance**: "Will Tesla's next earnings report show an increase of over 10% in profits by June 2024?"
@@ -282,9 +283,10 @@ The following are examples of high-quality forecasting questions. They not only 
     }
 
     example_high_quality_fq_2 = {
-        "title": "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions by December 2025?",
-        "body": 'This question will resolve as Yes if, by December 31, 2025, a Formula 1 Grand Prix is officially announced and \
-            scheduled to take place in a country that, at the time of the announcement, is under international sanctions by the United Nations, \
+        "title": "Will a Formula 1 Grand Prix be hosted in a country currently under international sanctions in December 2025?",
+        "body": 'This question will resolve as Yes if, in the month of December 2025 (between December 1, 2025 and December 31, 2025), a Formula 1 \
+            Grand Prix is officially announced and scheduled to take place in a country that, at the time of the announcement, is under \
+            international sanctions by the United Nations, \
             the European Union, the United States, or any other major international body recognized for imposing sanctions.\n\nFor the purpose of \
             this question, "international sanctions" refer to financial, trade, or other sanctions imposed by international bodies or coalitions\
             of countries against a nation for political, economic, or human rights reasons. The sanctions must be widely reported and recognized by \

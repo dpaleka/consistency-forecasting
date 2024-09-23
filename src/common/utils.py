@@ -1,5 +1,6 @@
 import json
 import aiofiles
+import os
 from typing import List, Any
 import jsonlines
 from copy import deepcopy
@@ -160,6 +161,31 @@ def normalize_date_format(date: str) -> Optional[datetime]:
     return None
 
 
+def ensure_directory_exists(file_path: str):
+    """
+    Ensure that the directory for the given file path exists.
+    If it doesn't exist, create it.
+
+    :param file_path: The path to the file
+    """
+    directory = os.path.dirname(file_path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory)
+        print(f"Created directory: {directory}")
+
+
+def strip_hours(date: datetime | str | None) -> str:
+    """
+    Strip the hours from a datetime object and return a string in the format YYYY-MM-DD.
+    If the date is provided as a string, first convert it to a datetime object.
+    """
+    if date is None:
+        return ""
+    if isinstance(date, str):
+        date = datetime.fromisoformat(date)
+    return date.strftime("%Y-%m-%d")
+
+
 def compare_dicts(dict1, dict2, path=""):
     differences = []
     for key in set(dict1.keys()) | set(dict2.keys()):
@@ -201,3 +227,11 @@ def delist(item):
     if isinstance(item, list):
         return item[0]
     return item
+
+
+def truncate_str(s: str, max_len: int = 80) -> str:
+    pref, suf = int(max_len * 0.75), int(max_len * 0.25)
+    if len(s) > max_len:
+        return s[:pref] + "..." + s[-suf:]
+    else:
+        return s

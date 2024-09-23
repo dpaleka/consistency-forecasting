@@ -30,13 +30,13 @@ commands = [
     #
     "python src/instantiation.py --data_path src/data/fq/test/from-related-verified_test.jsonl -r"
     + " ".join(f" -k {checker}" for checker in checkers)
-    + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/tuples_test",
+    + " --n_source_questions 3 --max_tuples_per_source 3 --tuple_dir src/data/test/tuples",
     #
-    "python src/evaluation.py --tuple_dir src/data/tuples_test -f BasicForecaster --forecaster_options model=gpt-4o-mini --run"
+    "python src/evaluation.py --tuple_dir src/data/test/tuples -f BasicForecaster --forecaster_options model=gpt-4o-mini --run"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --eval_by_source -t 5 --output_dir src/data/forecasts/BasicForecaster_test",
     #
-    "python src/evaluation.py --tuple_dir src/data/tuples_test -f LoadForecaster --forecaster_options load_dir=src/data/forecasts/BasicForecaster_test --run"
+    "python src/evaluation.py --tuple_dir src/data/test/tuples -f LoadForecaster --forecaster_options load_dir=src/data/forecasts/BasicForecaster_test --run"
     + " ".join(f" -k {checker}" for checker in checkers)
     + " --eval_by_source -t 5 --output_dir src/data/forecasts/LoadForecaster_test",
 ]
@@ -62,7 +62,7 @@ def expected_files(test_exist: bool = False):
     for checker in checkers:
         files.extend(
             [
-                f"src/data/tuples_test/{checker}.jsonl",
+                f"src/data/test/tuples/{checker}.jsonl",
                 f"src/data/forecasts/BasicForecaster_test/{checker}.jsonl",
                 f"src/data/forecasts/BasicForecaster_test/stats_{checker}.json",
                 f"src/data/forecasts/LoadForecaster_test/{checker}.jsonl",
