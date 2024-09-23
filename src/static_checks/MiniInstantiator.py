@@ -177,9 +177,13 @@ class MiniInstantiator(ABC):
         dates = []
         for key in base_sentences:
             dt = base_sentences[key].created_date
+            if dt is None:
+                continue
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=UTC)
             dates.append(dt)
+        if not dates:
+            return None
         return min(dates)
 
     def question_type(self, base_sentences: dict[str, ForecastingQuestion]) -> str:
