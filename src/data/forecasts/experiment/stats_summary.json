@@ -1,0 +1,951 @@
+{
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples": 3,
+                "num_violations": 3,
+                "avg_violation": 0.035561,
+                "avg_violation_no_outliers": 0.026073,
+                "median_violation": 0.026073
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples": 3,
+                "num_violations": 3,
+                "avg_violation": 0.257429,
+                "avg_violation_no_outliers": 0.229148,
+                "median_violation": 0.229148
+            }
+        },
+        "by_source": {
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.064717,
+                    "avg_violation_no_outliers": 0.064717,
+                    "median_violation": 0.064717
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.365246,
+                    "avg_violation_no_outliers": 0.365246,
+                    "median_violation": 0.365246
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.026073,
+                    "avg_violation_no_outliers": 0.026073,
+                    "median_violation": 0.026073
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.229148,
+                    "avg_violation_no_outliers": 0.229148,
+                    "median_violation": 0.229148
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.015893,
+                    "avg_violation_no_outliers": 0.015893,
+                    "median_violation": 0.015893
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.177892,
+                    "avg_violation_no_outliers": 0.177892,
+                    "median_violation": 0.177892
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples": 12,
+                "num_violations": 3,
+                "avg_violation": 0.017098,
+                "avg_violation_no_outliers": 0.008976,
+                "median_violation": 0.001591
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples": 12,
+                "num_violations": 3,
+                "avg_violation": 0.12578,
+                "avg_violation_no_outliers": 0.102226,
+                "median_violation": 0.063377
+            }
+        },
+        "by_source": {
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "AndOrChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.029179,
+                    "avg_violation_no_outliers": 0.000646,
+                    "median_violation": 0.000646
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.148346,
+                    "avg_violation_no_outliers": 0.053146,
+                    "median_violation": 0.053146
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "AndOrChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 0,
+                    "avg_violation": 0.001655,
+                    "avg_violation_no_outliers": 0.001757,
+                    "median_violation": 0.001757
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 0,
+                    "avg_violation": 0.064208,
+                    "avg_violation_no_outliers": 0.064902,
+                    "median_violation": 0.064902
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "AndOrChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.020461,
+                    "avg_violation_no_outliers": 0.012179,
+                    "median_violation": 0.012179
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.164784,
+                    "avg_violation_no_outliers": 0.134362,
+                    "median_violation": 0.134362
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            }
+        }
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples": 12,
+                "num_violations": 7,
+                "avg_violation": 0.033852,
+                "avg_violation_no_outliers": 0.031599,
+                "median_violation": 0.032861
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples": 12,
+                "num_violations": 8,
+                "avg_violation": 0.248808,
+                "avg_violation_no_outliers": 0.256079,
+                "median_violation": 0.294823
+            }
+        },
+        "by_source": {
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "ButChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.024281,
+                    "avg_violation_no_outliers": 0.003443,
+                    "median_violation": 0.003443
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.168767,
+                    "avg_violation_no_outliers": 0.09473,
+                    "median_violation": 0.09473
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ButChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.043326,
+                    "avg_violation_no_outliers": 0.047222,
+                    "median_violation": 0.047222
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.282476,
+                    "avg_violation_no_outliers": 0.369003,
+                    "median_violation": 0.369003
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ButChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.033949,
+                    "avg_violation_no_outliers": 0.040492,
+                    "median_violation": 0.040492
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.295181,
+                    "avg_violation_no_outliers": 0.294823,
+                    "median_violation": 0.294823
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            }
+        }
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples": 12,
+                "num_violations": 9,
+                "avg_violation": 0.044777,
+                "avg_violation_no_outliers": 0.033224,
+                "median_violation": 0.032744
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples": 12,
+                "num_violations": 9,
+                "avg_violation": 0.273684,
+                "avg_violation_no_outliers": 0.261575,
+                "median_violation": 0.273513
+            }
+        },
+        "by_source": {
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.014974,
+                    "avg_violation_no_outliers": 0.005648,
+                    "median_violation": 0.005648
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.150321,
+                    "avg_violation_no_outliers": 0.11854,
+                    "median_violation": 0.11854
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.073439,
+                    "avg_violation_no_outliers": 0.033241,
+                    "median_violation": 0.033241
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.353772,
+                    "avg_violation_no_outliers": 0.273513,
+                    "median_violation": 0.273513
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "CondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.045919,
+                    "avg_violation_no_outliers": 0.043857,
+                    "median_violation": 0.043857
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.316958,
+                    "avg_violation_no_outliers": 0.320873,
+                    "median_violation": 0.320873
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.031437,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.148087,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            }
+        },
+        "by_source": {
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.094311,
+                    "avg_violation_no_outliers": 0.094311,
+                    "median_violation": 0.094311
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.444262,
+                    "avg_violation_no_outliers": 0.444262,
+                    "median_violation": 0.444262
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples": 12,
+                "num_violations": 9,
+                "avg_violation": 0.04807,
+                "avg_violation_no_outliers": 0.042129,
+                "median_violation": 0.03463
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples": 12,
+                "num_violations": 12,
+                "avg_violation": 0.382598,
+                "avg_violation_no_outliers": 0.377707,
+                "median_violation": 0.341603
+            }
+        },
+        "by_source": {
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondCondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.023332,
+                    "avg_violation_no_outliers": 0.02366,
+                    "median_violation": 0.02366
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.241916,
+                    "avg_violation_no_outliers": 0.248123,
+                    "median_violation": 0.248123
+                },
+                "source_id": "ca150073-14fa-4107-92cc-809fa8d54072"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "CondCondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.063162,
+                    "avg_violation_no_outliers": 0.075154,
+                    "median_violation": 0.075154
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.488846,
+                    "avg_violation_no_outliers": 0.481706,
+                    "median_violation": 0.481706
+                },
+                "source_id": "d9bd76a6-47f8-4a7a-b0c6-637f292e6620"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondCondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.057717,
+                    "avg_violation_no_outliers": 0.037656,
+                    "median_violation": 0.037656
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.41703,
+                    "avg_violation_no_outliers": 0.415238,
+                    "median_violation": 0.415238
+                },
+                "source_id": "f4ec4cbb-53bb-494d-8360-aee60e85107b"
+            }
+        }
+    }
+}{
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.011986,
+                "avg_violation_no_outliers": 0.002671,
+                "median_violation": 0.002671
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.110289,
+                "avg_violation_no_outliers": 0.073049,
+                "median_violation": 0.073049
+            }
+        },
+        "by_source": {
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.033287,
+                    "avg_violation_no_outliers": 0.033287,
+                    "median_violation": 0.033287
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.257817,
+                    "avg_violation_no_outliers": 0.257817,
+                    "median_violation": 0.257817
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.002671,
+                    "avg_violation_no_outliers": 0.002671,
+                    "median_violation": 0.002671
+                },
+                "frequentist": {
+                    "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.073049,
+                    "avg_violation_no_outliers": 0.073049,
+                    "median_violation": 0.073049
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples": 12,
+                "num_violations": 4,
+                "avg_violation": 0.019412,
+                "avg_violation_no_outliers": 0.012051,
+                "median_violation": 0.00563
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples": 12,
+                "num_violations": 4,
+                "avg_violation": 0.14941,
+                "avg_violation_no_outliers": 0.131281,
+                "median_violation": 0.106105
+            }
+        },
+        "by_source": {
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "AndOrChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 0,
+                    "avg_violation": 0.001119,
+                    "avg_violation_no_outliers": 0.001359,
+                    "median_violation": 0.001359
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 0,
+                    "avg_violation": 0.062522,
+                    "avg_violation_no_outliers": 0.062573,
+                    "median_violation": 0.062573
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "AndOrChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.034199,
+                    "avg_violation_no_outliers": 0.012183,
+                    "median_violation": 0.012183
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.199637,
+                    "avg_violation_no_outliers": 0.159219,
+                    "median_violation": 0.159219
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "AndOrChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.022918,
+                    "avg_violation_no_outliers": 0.009351,
+                    "median_violation": 0.009351
+                },
+                "frequentist": {
+                    "label": "AndOrChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.186071,
+                    "avg_violation_no_outliers": 0.134477,
+                    "median_violation": 0.134477
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            }
+        }
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples": 12,
+                "num_violations": 7,
+                "avg_violation": 0.026871,
+                "avg_violation_no_outliers": 0.02436,
+                "median_violation": 0.025665
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples": 12,
+                "num_violations": 8,
+                "avg_violation": 0.258266,
+                "avg_violation_no_outliers": 0.260409,
+                "median_violation": 0.285072
+            }
+        },
+        "by_source": {
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ButChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.041649,
+                    "avg_violation_no_outliers": 0.042946,
+                    "median_violation": 0.042946
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.324769,
+                    "avg_violation_no_outliers": 0.407623,
+                    "median_violation": 0.407623
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ButChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.007729,
+                    "avg_violation_no_outliers": 0.00506,
+                    "median_violation": 0.00506
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.127163,
+                    "avg_violation_no_outliers": 0.120189,
+                    "median_violation": 0.120189
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "ButChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.031236,
+                    "avg_violation_no_outliers": 0.030533,
+                    "median_violation": 0.030533
+                },
+                "frequentist": {
+                    "label": "ButChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.322866,
+                    "avg_violation_no_outliers": 0.367607,
+                    "median_violation": 0.367607
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            }
+        }
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples": 12,
+                "num_violations": 6,
+                "avg_violation": 0.029516,
+                "avg_violation_no_outliers": 0.022556,
+                "median_violation": 0.015641
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples": 12,
+                "num_violations": 8,
+                "avg_violation": 0.212179,
+                "avg_violation_no_outliers": 0.198321,
+                "median_violation": 0.182715
+            }
+        },
+        "by_source": {
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 1,
+                    "avg_violation": 0.009346,
+                    "avg_violation_no_outliers": 0.007218,
+                    "median_violation": 0.007218
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.131038,
+                    "avg_violation_no_outliers": 0.133585,
+                    "median_violation": 0.133585
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "CondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.02588,
+                    "avg_violation_no_outliers": 0.023412,
+                    "median_violation": 0.023412
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.189157,
+                    "avg_violation_no_outliers": 0.192362,
+                    "median_violation": 0.192362
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.053323,
+                    "avg_violation_no_outliers": 0.037382,
+                    "median_violation": 0.037382
+                },
+                "frequentist": {
+                    "label": "CondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.316342,
+                    "avg_violation_no_outliers": 0.284515,
+                    "median_violation": 0.284515
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.015204,
+                "avg_violation_no_outliers": 0.004352,
+                "median_violation": 0.004352
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples": 3,
+                "num_violations": 1,
+                "avg_violation": 0.127658,
+                "avg_violation_no_outliers": 0.093089,
+                "median_violation": 0.093089
+            }
+        },
+        "by_source": {
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.041261,
+                    "avg_violation_no_outliers": 0.041261,
+                    "median_violation": 0.041261
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 1,
+                    "num_violations": 1,
+                    "avg_violation": 0.289886,
+                    "avg_violation_no_outliers": 0.289886,
+                    "median_violation": 0.289886
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.0,
+                    "avg_violation_no_outliers": 0.0,
+                    "median_violation": 0.0
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            },
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "ParaphraseChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.004352,
+                    "avg_violation_no_outliers": 0.004352,
+                    "median_violation": 0.004352
+                },
+                "frequentist": {
+                    "label": "ParaphraseChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 1,
+                    "num_violations": 0,
+                    "avg_violation": 0.093089,
+                    "avg_violation_no_outliers": 0.093089,
+                    "median_violation": 0.093089
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples": 12,
+                "num_violations": 7,
+                "avg_violation": 0.045752,
+                "avg_violation_no_outliers": 0.039025,
+                "median_violation": 0.030452
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples": 12,
+                "num_violations": 12,
+                "avg_violation": 0.361191,
+                "avg_violation_no_outliers": 0.360568,
+                "median_violation": 0.333459
+            }
+        },
+        "by_source": {
+            "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondCondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.01975,
+                    "avg_violation_no_outliers": 0.011859,
+                    "median_violation": 0.011859
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.203176,
+                    "avg_violation_no_outliers": 0.17445,
+                    "median_violation": 0.17445
+                },
+                "source_id": "48896ca2-214b-4430-a65e-d94d6de88c02"
+            },
+            "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
+                "default": {
+                    "label": "CondCondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 3,
+                    "avg_violation": 0.066474,
+                    "avg_violation_no_outliers": 0.078031,
+                    "median_violation": 0.078031
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.471382,
+                    "avg_violation_no_outliers": 0.542045,
+                    "median_violation": 0.542045
+                },
+                "source_id": "22446703-6c34-46af-aab9-122c1761f08c"
+            },
+            "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
+                "default": {
+                    "label": "CondCondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 2,
+                    "avg_violation": 0.051032,
+                    "avg_violation_no_outliers": 0.022677,
+                    "median_violation": 0.022677
+                },
+                "frequentist": {
+                    "label": "CondCondChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
+                    "num_samples": 4,
+                    "num_violations": 4,
+                    "avg_violation": 0.409016,
+                    "avg_violation_no_outliers": 0.384918,
+                    "median_violation": 0.384918
+                },
+                "source_id": "9923d54b-ccee-48f3-bfe2-c6f00d3c939e"
+            }
+        }
+    }
+}

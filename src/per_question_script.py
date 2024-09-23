@@ -91,10 +91,10 @@ def main():
 
     # Define pipeline steps
     steps = [
-        # f"python src/format_and_verify_questions.py --file_path {args.input_file} -m 20 -d test -F True -o verified_questions.jsonl --overwrite",  # add -s True if input file is synthetic
-        # f"python src/generate_related_questions.py -n {args.num_source} -q {args.related_questions} --input_file src/data/fq/test/verified_questions.jsonl --output_file src/data/fq/test/related_questions.jsonl",
-        # "python src/format_and_verify_questions.py --file_path src/data/fq/test/related_questions.jsonl -m 50 -d test -o verified_related_questions.jsonl -s True -F True --overwrite -v none",
-        # f"python src/instantiation.py --data_path src/data/fq/test/verified_related_questions_unverified.jsonl -r {' '.join(f'-k {checker}' for checker in args.checkers)} --max_tuples_per_source {args.tuples_per_source} --tuple_dir {args.tuple_dir}",
+        f"python src/format_and_verify_questions.py --file_path {args.input_file} -m 20 -d test -F True -o verified_questions.jsonl --overwrite",  # add -s True if input file is synthetic
+        f"python src/generate_related_questions.py -n {args.num_source} -q {args.related_questions} --input_file src/data/fq/test/verified_questions.jsonl --output_file src/data/fq/test/related_questions.jsonl",
+        "python src/format_and_verify_questions.py --file_path src/data/fq/test/related_questions.jsonl -m 30 -d test -o verified_related_questions.jsonl -s True -F True --overwrite -v none",
+        f"python src/instantiation.py --data_path src/data/fq/test/verified_related_questions_unverified.jsonl -r {' '.join(f'-k {checker}' for checker in args.checkers)} --max_tuples_per_source {args.tuples_per_source} --tuple_dir {args.tuple_dir}",
         f"python src/evaluation.py --tuple_dir {args.tuple_dir} -f {args.forecaster} --forecaster_options {args.forecaster_options} --run {' '.join(f'-k {checker}' for checker in args.checkers)} --eval_by_source -t 4 --output_dir {args.eval_dir}",
     ]
 
