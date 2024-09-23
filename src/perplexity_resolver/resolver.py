@@ -111,6 +111,7 @@ def combine_outputs(outputs: List[ResolverOutput]) -> ResolverOutput:
     - combined_answer is calculated based on outputs with non-None answers
     """
     total_outputs = len(outputs)
+    assert total_outputs > 0
     resolvable_count = sum(1 for output in outputs if output.can_resolve_question)
 
     # can_resolve_question is true if true for the majority
@@ -120,7 +121,8 @@ def combine_outputs(outputs: List[ResolverOutput]) -> ResolverOutput:
     valid_answers = [output.answer for output in outputs if output.answer is not None]
     total_valid_answers = len(valid_answers)
 
-    if can_resolve > 0:
+    if can_resolve and total_valid_answers > 0:
+        # TODO: unsure why both of these checks are needed
         positive_answers = sum(1 for answer in valid_answers if answer is True)
         combined_answer = (positive_answers / total_valid_answers) > 0.5
     else:

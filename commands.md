@@ -9,7 +9,7 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 
 - [x] evaluation
 ```
-python src/evaluation.py --tuples_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 -k all --num_lines 500 --run --async
+python src/evaluation.py --tuple_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 -k all --num_lines 500 --run --async
 ```
 -> [`src/data/evaluation/BaselineForecaster_09-23-14-12/stats_summary.json`](src/data/forecasts/BaselineForecaster_09-23-14-12/stats_summary.json)
 
@@ -22,25 +22,27 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 
 - [ ] evaluation
 ```
-python src/evaluation.py --tuples_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.6 -k all --num_lines 500 --run --async
+python src/evaluation.py --tuple_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.6 -k all --num_lines 500 --run --async
 ```
 
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-huge-128k-online model
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -p src/forecasters/various.py::ResolverBasedForecaster --forecaster_options resolver_model=perplexity/llama-3.1-sonar-huge-128k-online model=perplexity/llama-3.1-sonar-huge-128k-online n_attempts=1 --num_lines 242 --run --async
 ```
+-> [`src/data/forecasts/ResolverBasedForecaster_09-23-18-15/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_09-23-18-15/ground_truth_summary.json)
 
 - [ ] evaluation
 ```
-python src/evaluation.py --tuples_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::ResolverBasedForecaster --forecaster_options resolver_model=perplexity/llama-3.1-sonar-large-128k-online model=perplexity/llama-3.1-sonar-large-128k-online n_attempts=1 -k all --num_lines 500 --run --async
+python src/evaluation.py --tuple_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::ResolverBasedForecaster --forecaster_options resolver_model=perplexity/llama-3.1-sonar-large-128k-online model=perplexity/llama-3.1-sonar-large-128k-online n_attempts=1 -k all --num_lines 500 --run --async
 ```
 
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-large-128k-online model
-- [ ] ground_truth_run
+- [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -p src/forecasters/various.py::ResolverBasedForecaster --forecaster_options resolver_model=perplexity/llama-3.1-sonar-large-128k-online model=perplexity/llama-3.1-sonar-large-128k-online n_attempts=1 --num_lines 242 --run --async
 ```
+-> [`src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json)
 
 ### BasicForecaster with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
