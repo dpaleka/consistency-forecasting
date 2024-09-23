@@ -254,12 +254,16 @@ async def instantiate(
             break
 
         print(f"Handling {i}-tuples...")
-        sampled_tuples = [random.sample(bqs, i) for _ in range(n_relevance)]
-        possible_ituples = [
-            {chr(80 + j): tup[j] for j in range(i)} for tup in sampled_tuples
-        ]
+
+        if i == 1:
+            possible_ituples = [{"P": bq} for bq in bqs[:n_relevance]]
 
         if i > 1:
+            sampled_tuples = [random.sample(bqs, i) for _ in range(n_relevance)]
+            possible_ituples = [
+                {chr(80 + j): tup[j] for j in range(i)} for tup in sampled_tuples
+            ]  # chr 80, 81, 82 ... = P, Q, R, ...
+
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")
