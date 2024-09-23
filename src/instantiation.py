@@ -1,6 +1,7 @@
 import jsonlines
 import asyncio
 import click
+import warnings
 from costly import Costlog
 
 # from static_checks.MiniInstantiator import MiniInstantiator
@@ -256,6 +257,12 @@ async def instantiate(
         print(f"Handling {i}-tuples...")
 
         if i == 1:
+            if n_relevance > len(bqs):
+                warnings.warn(
+                    f"n_relevance: {n_relevance} is greater than "
+                    f"len(bqs): {len(bqs)}. Using all {len(bqs)} questions."
+                )
+                n_relevance = len(bqs)
             bqs_ = random.sample(bqs, n_relevance)
             possible_ituples = [{"P": bq} for bq in bqs_]
 
