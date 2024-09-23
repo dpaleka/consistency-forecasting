@@ -446,9 +446,8 @@ def main(
 
     logged_config = {
         "forecaster_class": forecaster.__class__.__name__,
-        "forecaster": forecaster.dump_config(),
+        "full_forecaster_config": forecaster.dump_config(),
         "checkers": [checker.dump_config() for name, checker in checkers.items()],
-        "forecaster_config": forecaster_config,
         "is_async": is_async,
         "use_threads": use_threads,
         "run": run,
@@ -513,6 +512,9 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
+    all_stats["forecaster"] = forecaster.__class__.__name__
+    all_stats["full_forecaster_config"] = forecaster.dump_config()
+
     print("Cost log totals")
     print("---------------")
     print(cl.totals)
@@ -550,8 +552,10 @@ def main(
     for metric in metrics:
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
+            if check_name in ["forecaster", "full_forecaster_config"]:
+                continue
             print(f"\n{check_name}:")
-            print(stats)
+            print(f"{stats=}")
             overall_stats = stats["overall"]
             print(
                 f"  Overall: {overall_stats[metric]['num_violations']}/{overall_stats[metric]['num_samples']}"
@@ -567,6 +571,9 @@ def main(
                         f"avg_no_outliers: {source_stats[metric]['avg_violation_no_outliers']:.3f}, "
                         f"median: {source_stats[metric]['median_violation']:.3f}"
                     )
+
+        print(f"Forecaster: {all_stats['forecaster']}")
+        print(f"Forecaster Config: {all_stats['full_forecaster_config']}")
 
         print(f"Output written to {output_directory}")
         print(f"Summary written to {output_directory}/stats_summary.json")
