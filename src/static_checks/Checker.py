@@ -607,10 +607,10 @@ class Checker(ABC):
         try:
             return self.max_min_arbitrage(answers, **kwargs)[1]
         except ZeroDivisionError as e:
-            warnings.warn(f"ZeroDivisionError in arbitrage_violation: {e}")
+            warnings.warn(f"ZeroDivisionError in arbitrage_violation on {answers}: {e}")
             return str(e)
         except Exception as e:
-            warnings.warn(f"Error in arbitrage_violation: {e}")
+            warnings.warn(f"Error in arbitrage_violation on {answers}: {e}")
             return str(e)
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:

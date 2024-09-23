@@ -98,6 +98,7 @@ def get_stats(results: dict, label: str = "") -> dict:
 
         ret[metric] = {
             "label": label,
+            "num_samples_including_errors": len(results),
             "num_samples": len(violations),
             "num_violations": num_failed,
             "avg_violation": round(avg_violation, 6),

@@ -1,0 +1,22 @@
+{
+    "overall": {
+        "default": {
+            "label": "ExpectedEvidenceChecker",
+            "num_samples_including_errors": 10,
+            "num_samples": 10,
+            "num_violations": 5,
+            "avg_violation": 0.018434,
+            "avg_violation_no_outliers": 0.013507,
+            "median_violation": 0.010667
+        },
+        "frequentist": {
+            "label": "ExpectedEvidenceChecker",
+            "num_samples_including_errors": 10,
+            "num_samples": 10,
+            "num_violations": 6,
+            "avg_violation": 0.183673,
+            "avg_violation_no_outliers": 0.173455,
+            "median_violation": 0.161704
+        }
+    }
+}

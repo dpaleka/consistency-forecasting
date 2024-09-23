@@ -1,0 +1,22 @@
+{
+    "overall": {
+        "default": {
+            "label": "CondCondChecker",
+            "num_samples_including_errors": 10,
+            "num_samples": 10,
+            "num_violations": 8,
+            "avg_violation": 0.078421,
+            "avg_violation_no_outliers": 0.059076,
+            "median_violation": 0.047814
+        },
+        "frequentist": {
+            "label": "CondCondChecker",
+            "num_samples_including_errors": 10,
+            "num_samples": 10,
+            "num_violations": 10,
+            "avg_violation": 0.40609,
+            "avg_violation_no_outliers": 0.363502,
+            "median_violation": 0.330406
+        }
+    }
+}
