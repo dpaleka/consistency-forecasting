@@ -27,6 +27,53 @@ def sample_article():
     }
 
 
+from forecasters.llm_forecasting.utils import gnews_utils
+from urllib.parse import urlparse
+
+
+def test_gnews_url_decoding(sample_article):
+    sample_urls = [
+        (
+            "https://news.google.com/rss/articles/CBMipgFBVV95cUxPWV9fTEI4cjh1RndwanpzNVliMUh6czg2X1RjeEN0YUctUmlZb0FyeV9oT3RWM1JrMGRodGtqTk1zV3pkNEpmdGNxc2lfd0c4LVpGVENvUDFMOEJqc0FCVVExSlRrQmI3TWZ2NUc4dy1EVXF4YnBLaGZ4cTFMQXFFM2JpanhDR3hoRmthUjVjdm1najZsaFh4a3lBbDladDZtVS1FMHFn?oc=5",
+            "https://www.reuters.com/business/healthcare-pharmaceuticals/12-mln-polio-vaccine-doses-delivered-gaza-ahead-sept-1-campaign-who-says-2024-08-30/",
+        ),
+        (
+            "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOX01TWDZZN2J5LWlmU3hudGZaRDh6a1dxUHMtalBEY1c0TlJSNlpieWxaUkxUU19MVTN3Y1BqaUZael83d1ctNXhaQUtPM0IyMFc4R3VydEtoMmFYMWpMU1Rtc3BjYmY4d3gxZHlMZG5NX0s1RmR2ZXI5YllvdzNSd2xkOFNCUTZTaEp3b0IxZEJZdVFLUDBNMC1wNGgwMGhjRG9HRFpRZU5BMFVIYjZCOWdWcHI1YzdoVHFWYnZSOEFwQ0NubGx3Rzd0SHN6OENKMXZUcHUxazA5WTIw?hl=en-US&gl=US&ceid=US%3Aen",
+            "https://nltimes.nl/2024/08/25/disney-cruise-ship-sails-past-amsterdam-due-extinction-rebellion-blockade",
+        ),
+    ]
+    encoded_urls = [pair[0] for pair in sample_urls]
+    expected_decoded_urls = [pair[1] for pair in sample_urls]
+
+    # Act
+    articles_params = [
+        gnews_utils.get_decoding_params(urlparse(url).path.split("/")[-1])
+        for url in encoded_urls
+    ]
+    decoded_urls = gnews_utils.decode_urls(articles_params)
+
+    # Assert
+    assert len(decoded_urls) == 2
+    for url in decoded_urls:
+        assert url.startswith("http")
+        assert "google.com" not in url
+        assert url in expected_decoded_urls
+
+    encoded_urls = [sample_article["url"]]
+    expected_decoded_url = (
+        "https://www.businessinsider.com/trump-campaign-2024-election-family-2023-10"
+    )
+    articles_params = [
+        gnews_utils.get_decoding_params(urlparse(url).path.split("/")[-1])
+        for url in encoded_urls
+    ]
+    decoded_urls = gnews_utils.decode_urls(articles_params)
+
+    assert len(decoded_urls) == 1
+    assert decoded_urls[0] == expected_decoded_url
+    print(decoded_urls[0])
+
+
 def test_get_full_article(sample_article):
     # Arrange
     gnews = GNews()
