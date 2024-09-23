@@ -43,6 +43,10 @@ async def validate_and_format_question(
     model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
 ) -> Optional[ForecastingQuestion]:
+    if "source_question" in question:
+        metadata = {"source_question": question.get("source_question", None)}
+    else:
+        metadata = question.get("metadata", None)
     for i in range(2):
         forecasting_question = await fq_body_generator.from_string(
             question["title"],
@@ -50,7 +54,7 @@ async def validate_and_format_question(
             created_date=question.get("created_date", None),
             question_type=question.get("question_type"),
             url=question.get("url", None),
-            metadata=question.get("metadata", None),
+            metadata=metadata,
             body=question.get("body", None),
             resolution_date=question.get("resolution_date", None),
             resolution=question.get("resolution", None),
