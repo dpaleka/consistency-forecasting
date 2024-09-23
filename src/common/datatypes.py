@@ -84,6 +84,7 @@ class ForecastingQuestion_stripped(BaseModel):
         self,
         resolution_date: datetime,
         question_type: str,
+        created_date: datetime = None,
         data_source: Optional[str] = None,
         **kwargs,
     ):
@@ -108,7 +109,7 @@ class ForecastingQuestion_stripped(BaseModel):
             resolution_date=resolution_date,
             question_type=question_type,
             data_source=data_source,
-            created_date=None,
+            created_date=created_date,
             **kwargs,
         )
 

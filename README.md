@@ -254,14 +254,14 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 - `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
 - `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml`](src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml) (with OpenRouter)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml`](src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_sonnet.yaml`](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) (with OpenRouter)
 - `-f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18`
 
 Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
-The other forecasters ask a native call and then parse the answer into an output format with an LLM (or otherwise, in case of `AdvancedForecaster`).
+The other forecasters ask native call(s) and then parse the answer into an output format with an LLM (or by other means, in case of `AdvancedForecaster`).
 The parsing model is always `gpt-4o-mini-2024-07-18`.
 
 ### Evaluation
