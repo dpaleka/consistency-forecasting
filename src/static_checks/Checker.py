@@ -235,6 +235,8 @@ class Checker(ABC):
         ):
             batch = base_sentencess[
                 processed_so_far : processed_so_far + (n_write - written_so_far)
+                if n_write != -1
+                else None
             ]
 
             batch_results = await parallelized_call(

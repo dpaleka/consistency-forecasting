@@ -1,0 +1,2 @@
+python instantiation.py --model_main="gpt-4o-2024-08-06" --model_relevance="gpt-4o-mini-2024-07-18" --data_path="data/fq/real/20240501_20240815.jsonl" --tuple_dir="data/tuples_scraped" --relevant_checks all --n_relevance=5000 --n_write=500 --seed=42
+
