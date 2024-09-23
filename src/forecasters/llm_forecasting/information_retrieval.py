@@ -3,6 +3,8 @@ import logging
 import re
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import forecasters.llm_forecasting.utils.gnews_utils as gnews_utils
+from urllib.parse import urlparse
 
 # Related third-party imports
 from gnews import GNews
@@ -418,6 +420,20 @@ def retrieve_gnews_articles_fulldata(
     fulltext_articles = []
     unique_urls = set()
 
+    """
+    encoded_urls = [article['url'] for articles_group in retrieved_articles for article in articles_group]
+
+    articles_params = [
+        gnews_utils.get_decoding_params(urlparse(url).path.split("/")[-1])
+        for url in encoded_urls
+    ]
+    decoded_urls = gnews_utils.decode_urls(articles_params)
+    # wrap back
+    for i, articles_group in enumerate(retrieved_articles):
+        for j, article in enumerate(articles_group):
+            article['url'] = decoded_urls[i * len(articles_group) + j]
+    """
+
     for i, articles_group in enumerate(retrieved_articles):
         print(f"Processing article group {i+1}/{len(retrieved_articles)}")
         print(f"Group contains {len(articles_group)} articles")
@@ -431,6 +447,15 @@ def retrieve_gnews_articles_fulldata(
                     f"Reached desired number of articles ({num_articles}) for group {i+1}. Moving to next group."
                 )
                 break
+
+            decoded_url = gnews_utils.decode_urls(
+                [
+                    gnews_utils.get_decoding_params(
+                        urlparse(article["url"]).path.split("/")[-1]
+                    )
+                ]
+            )
+            article["url"] = decoded_url
 
             if article["url"] in unique_urls:
                 print(f"Skipping duplicate article: {article['url']}")
@@ -883,13 +908,11 @@ def get_articles_from_all_sources(
             list[dict[str, str | dict[str, str]]]
         ] = get_gnews_articles(queries_gnews, retrieval_dates, max_results=num_articles)
         print(f"first {articles_gnews=}")
+
         articles_gnews = retrieve_gnews_articles_fulldata(
             articles_gnews, num_articles=num_articles, length_threshold=length_threshold
         )
     else:
         articles_gnews = []
     print(f"second {articles_gnews=}")
-    import code
-
-    code.interact(local=dict(globals(), **locals()))
     return deduplicate_articles(articles_nc + articles_gnews)

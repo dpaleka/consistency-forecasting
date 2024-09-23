@@ -79,7 +79,14 @@ def test_get_full_article(sample_article):
     gnews = GNews()
 
     # Act
-    result = gnews.get_full_article(sample_article["url"])
+    articles_params = [
+        gnews_utils.get_decoding_params(
+            urlparse(sample_article["url"]).path.split("/")[-1]
+        )
+    ]
+    replaced_url = gnews_utils.decode_urls(articles_params)[0]
+    print(f"{replaced_url=}")
+    result = gnews.get_full_article(replaced_url)
 
     print(f"{result=}")
     print(f"{result.text_cleaned=}")
