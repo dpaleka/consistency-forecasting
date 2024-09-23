@@ -59,7 +59,7 @@ def main():
     parser.add_argument(
         "--tuples_per_source",
         type=int,
-        default=7,
+        default=4,
         help="Max number of tuples to generate per source question, per check",
     )
     parser.add_argument(
@@ -91,9 +91,9 @@ def main():
 
     # Define pipeline steps
     steps = [
-        f"python src/format_and_verify_questions.py --file_path {args.input_file} -m 50 -d test -F True -s True -o verified_questions.jsonl --overwrite",  # add -s True if input file is synthetic
-        f"python src/generate_related_questions.py -n {args.num_source} -q {args.related_questions} --input_file src/data/fq/test/verified_questions.jsonl --output_file src/data/fq/test/related_questions.jsonl",
-        "python src/format_and_verify_questions.py --file_path src/data/fq/test/related_questions.jsonl -m 50 -d test -o verified_related_questions.jsonl -s True -F True --overwrite",
+        # f"python src/format_and_verify_questions.py --file_path {args.input_file} -m 10 -d test -F True -s True -o verified_questions.jsonl --overwrite",  # add -s True if input file is synthetic
+        # f"python src/generate_related_questions.py -n {args.num_source} -q {args.related_questions} --input_file src/data/fq/test/verified_questions.jsonl --output_file src/data/fq/test/related_questions.jsonl",
+        # "python src/format_and_verify_questions.py --file_path src/data/fq/test/related_questions.jsonl -m 50 -d test -o verified_related_questions.jsonl -s True -F True --overwrite",
         f"python src/instantiation.py --data_path src/data/fq/test/verified_related_questions.jsonl -r {' '.join(f'-k {checker}' for checker in args.checkers)} --max_tuples_per_source {args.tuples_per_source} --tuple_dir {args.tuple_dir}",
         f"python src/evaluation.py --tuple_dir {args.tuple_dir} -f {args.forecaster} --forecaster_options {args.forecaster_options} --run {' '.join(f'-k {checker}' for checker in args.checkers)} --eval_by_source -t 4 --output_dir {args.eval_dir}",
     ]
