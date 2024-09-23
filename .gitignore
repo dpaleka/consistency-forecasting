@@ -2,6 +2,7 @@
 src/data/test/*.jsonl
 src/data/test/*/*.jsonl
 src/data/fq/test/*
+src/data/tuples*test/*
 src/data/news_api_test/
 src/data/verification/*.jsonl
 src/data/check_tuple_logs/*.jsonl
@@ -18,6 +19,19 @@ src/.costly/
 .vscode/launch.json
 .python-version
 
+
+# Local stuff
+*cachedir
+venvlocal
+
+# Temporary
+scripts/pipeline/manifold/*.json                                                                                                                                                                                                                                
+scripts/pipeline/manifold/*.jsonl                                                                                     
+scripts/pipeline/metaculus/*.json                                                                                     
+scripts/pipeline/metaculus/*.jsonl                                                                                    
+scripts/pipeline/*cleaned_formatted*
+src/data/old_forecasts
+src/forecasters/cais_forecasting/
 
 # Local
 *.code-workspace
