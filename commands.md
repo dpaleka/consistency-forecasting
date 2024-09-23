@@ -1,10 +1,15 @@
-# Run ground_truth_run.py on the 242-size dataset for each forecaster described in the README
+## Run ground_truth_run.py on [20240501_20240815.jsonl](src/data/fq/real/20240501_20240815.jsonl) and the corresponding [tuples_scraped](src/data/tuples/tuples_scraped/)
 
-- [x] BaselineForecaster with p=0.4
+- [x] [x] BaselineForecaster with p=0.4, 
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 --num_lines 242 --run --async
 ```
--> [`src/data/forecasts/BaselineForecaster_09-23-13-41/`](src/data/forecasts/BaselineForecaster_09-23-13-41/)
+-> [`src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json)
+
+```
+python src/evaluation.py --tuples_dir src/data/tuples/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 -k all --num_lines 500 --run --async
+```
+-> [`src/data/evaluation/BaselineForecaster_09-23-14-12/stats_summary.json`](src/data/forecasts/BaselineForecaster_09-23-14-12/stats_summary.json)
 
 - [ ] BaselineForecaster with p=0.6
 ```
@@ -128,4 +133,5 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -f --num_lines 242 --run --async PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18
 ```
+
 

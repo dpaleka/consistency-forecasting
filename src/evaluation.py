@@ -370,7 +370,6 @@ def process_check(
     help="Use threads to run the forecaster on different checks",
 )
 @click.option(
-    "-p",
     "--tuple_dir",
     type=click.Path(),
     required=False,
@@ -568,6 +567,9 @@ def main(
                         f"avg_no_outliers: {source_stats[metric]['avg_violation_no_outliers']:.3f}, "
                         f"median: {source_stats[metric]['median_violation']:.3f}"
                     )
+
+        print(f"Output written to {output_directory}")
+        print(f"Summary written to {output_directory}/stats_summary.json")
 
 
 if __name__ == "__main__":
