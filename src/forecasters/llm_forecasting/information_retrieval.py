@@ -407,32 +407,77 @@ def retrieve_gnews_articles_fulldata(
     Returns:
         list: A flat list of full article data, with no duplicates.
     """
+    logger.info(
+        f"Starting retrieve_gnews_articles_fulldata with {len(retrieved_articles)} article groups"
+    )
+    logger.info(
+        f"Parameters: num_articles={num_articles}, length_threshold={length_threshold}"
+    )
+
     google_news = GNews()
     fulltext_articles = []
     unique_urls = set()
 
-    for articles_group in retrieved_articles:
-        articles_added = 0
-        for article in articles_group:
-            if articles_added >= num_articles:  # we have enough articles
-                break
-            if article["url"] in unique_urls:  # duplicated article
-                continue
-            else:  # new article, add to the set of unique urls
-                unique_urls.add(article["url"])
-            full_article = google_news.get_full_article(article["url"])
-            logger.info(f"Retrieved full article text for {article['url']}")
-            if (
-                full_article is not None
-                and full_article.text_cleaned
-                and full_article.publish_date
-                and len(full_article.text_cleaned) > length_threshold
-            ):  # remove short articles
-                full_article.search_term = article["search_term"]
-                full_article.html = ""  # remove html, useless for us
-                fulltext_articles.append(full_article)
-                articles_added += 1
+    for i, articles_group in enumerate(retrieved_articles):
+        print(f"Processing article group {i+1}/{len(retrieved_articles)}")
+        print(f"Group contains {len(articles_group)} articles")
 
+        articles_added = 0
+        for j, article in enumerate(articles_group):
+            print(f"Processing article {j+1}/{len(articles_group)} in group {i+1}")
+
+            if articles_added >= num_articles:
+                print(
+                    f"Reached desired number of articles ({num_articles}) for group {i+1}. Moving to next group."
+                )
+                break
+
+            if article["url"] in unique_urls:
+                print(f"Skipping duplicate article: {article['url']}")
+                continue
+            else:
+                print(f"New unique URL found: {article['url']}")
+                unique_urls.add(article["url"])
+
+            print(f"{article=}")
+            print(f"Attempting to retrieve full article text for {article['url']}")
+            full_article = google_news.get_full_article(article["url"])
+            print(f"{str(full_article)=}")
+
+            if full_article is None:
+                print(f"Failed to retrieve full article for {article['url']}")
+                continue
+
+            print(f"Successfully retrieved full article text for {article['url']}")
+
+            if not full_article.text_cleaned:
+                print(f"Article has no cleaned text: {article['url']}")
+                continue
+
+            if not full_article.publish_date:
+                print(f"Article has no publish date: {article['url']}")
+                continue
+
+            if len(full_article.text_cleaned) <= length_threshold:
+                print(
+                    f"Article text too short ({len(full_article.text_cleaned)} chars): {article['url']}"
+                )
+                continue
+
+            print(f"Article passes all checks: {article['url']}")
+            full_article.search_term = article["search_term"]
+            full_article.html = ""  # remove html, useless for us
+            fulltext_articles.append(full_article)
+            articles_added += 1
+            print(
+                f"Added article to fulltext_articles. Total for this group: {articles_added}"
+            )
+
+        print(f"Finished processing group {i+1}. Added {articles_added} articles.")
+
+    logger.info(
+        f"Finished processing all groups. Total articles retrieved: {len(fulltext_articles)}"
+    )
     return fulltext_articles
 
 
@@ -795,6 +840,11 @@ def get_articles_from_all_sources(
     Returns:
         list: A list of full article data, with no duplicates.
     """
+    print(f"queries_gnews: {queries_gnews}")
+    print(f"queries_nc: {queries_nc}")
+    print(f"retrieval_dates: {retrieval_dates}")
+    print(f"num_articles: {num_articles}")
+    print(f"length_threshold: {length_threshold}")
     #  return empty set for same-day questions or invalid date ranges.
     if not time_utils.is_more_recent(retrieval_dates[0], retrieval_dates[1]):
         logger.error(
@@ -813,12 +863,33 @@ def get_articles_from_all_sources(
     else:
         articles_nc = []
     if queries_gnews is not None and len(queries_gnews) > 0:
-        articles_gnews = get_gnews_articles(
-            queries_gnews, retrieval_dates, max_results=num_articles
-        )
+        """
+        len(articles_gnews) = len(queries_gnews)
+        len(articles_gnews[0]) = number of relevant articles.
+        e.g. len(articles_gnews) = 7,
+        [len(articles_gnews[i]) for i in range(len(articles_gnews))] = [4, 5, 5, 3, 4, 4, 4]
+
+        articles_gnews[search_term_idx][article_idx] looks like this:
+        {
+            'title': "Mike Pence, kicking off 2024 campaign, suggests Trump can 'never' be president again - ABC News", 
+            'description': "Mike Pence, kicking off 2024 campaign, suggests Trump can 'never' be president again  ABC News", 
+            'published date': 'Wed, 07 Jun 2023 07:00:00 GMT', 
+            'url': 'https://news.google.com/rss/articles/CBMiswFBVV95cUxNRTg0a09TSDZwcndCeEFZZHZmSnRIZEhqU0tWY1E1Ymx6MTNPbnpkZlplRmpNV2dGQkJBc2oteVhTUVZVQlhLdWYwcVozbkNkeF9OVmQ0RmcybmpxSjJVYk93TU4yWGZBalRsdFF0QUVmU1M1aWFoN0ZnU24zMm84VmJEVHFHUzgwcUltWFEwSWd5YU5yc1RucnNNeUo1X1FJNTFQUjdZaWFtMzFoUmVYXzlMNNIBuAFBVV95cUxQTkR4RDE4VmtlNGZnUElvbS00RFctNzFDZ1RXRVNub0NLTXhXWUM2ZzNiN2pqYW5ndU96bG55eThBT195T2pKUWgwNWhEeGtVQVNGR08yWE1WOENrREczckZVOFpyLWVERTNWQVNkYUpyZlUzVGRYSW13cGpBRktEaGNNTnpyWVFrY3VPaDhqQ2l3OV9YMWlsQXJ5NTJPbk5WMjk2V2dpZmNyeVRpcnhCdFUwaHRVbXk3?oc=5&hl=en-US&gl=US&ceid=US:en', 
+            'publisher': {'href': 'https://abcnews.go.com', 'title': 'ABC News'}, 
+            'search_term': 'Trump family 2024 candidacy announcement'
+        }
+        """
+        articles_gnews: list[
+            list[dict[str, str | dict[str, str]]]
+        ] = get_gnews_articles(queries_gnews, retrieval_dates, max_results=num_articles)
+        print(f"first {articles_gnews=}")
         articles_gnews = retrieve_gnews_articles_fulldata(
             articles_gnews, num_articles=num_articles, length_threshold=length_threshold
         )
     else:
         articles_gnews = []
+    print(f"second {articles_gnews=}")
+    import code
+
+    code.interact(local=dict(globals(), **locals()))
     return deduplicate_articles(articles_nc + articles_gnews)

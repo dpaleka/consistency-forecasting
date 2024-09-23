@@ -162,7 +162,7 @@ class AdvancedForecaster(Forecaster):
             question,
             background_info,
             resolution_criteria,
-            self.retrieval_dates,  # Use self.retrieval_dates instead of retrieval_dates
+            date_range=self.retrieval_dates,
             urls=[],
             config=self.retrieval_config,
             return_intermediates=True,
@@ -194,7 +194,16 @@ class AdvancedForecaster(Forecaster):
             meta_temperature=self.reasoning_config["AGGREGATION_TEMPERATURE"],
         )
 
-        return Forecast(prob=ensemble_dict["meta_prediction"], metadata=ensemble_dict)
+        return Forecast(
+            prob=ensemble_dict["meta_prediction"],
+            metadata={
+                "ensemble_dict": ensemble_dict,
+                "ranked_articles": ranked_articles,
+                "all_articles": all_articles,
+                "search_queries_list_gnews": search_queries_list_gnews,
+                "search_queries_list_nc": search_queries_list_nc,
+            },
+        )
 
     def call(
         self,

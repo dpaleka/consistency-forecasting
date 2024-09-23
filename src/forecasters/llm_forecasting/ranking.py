@@ -1,5 +1,4 @@
 # Standard library imports
-import time
 import asyncio
 import concurrent.futures
 from datetime import datetime
@@ -344,7 +343,10 @@ def get_question_article_embeddings(articles, question, background):
         "a_embeddings": a_embeddings,
     }
 
-async def async_get_articles(search_queries_gnews, search_queries_nc, date_range, num_articles, length_threshold):
+
+async def async_get_articles(
+    search_queries_gnews, search_queries_nc, date_range, num_articles, length_threshold
+):
     loop = asyncio.get_running_loop()
     with concurrent.futures.ThreadPoolExecutor() as pool:
         return await loop.run_in_executor(
@@ -354,7 +356,7 @@ async def async_get_articles(search_queries_gnews, search_queries_nc, date_range
             search_queries_nc,
             date_range,
             num_articles,
-            length_threshold
+            length_threshold,
         )
 
 
@@ -417,7 +419,16 @@ async def retrieve_summarize_and_rank_articles(
     logger.info(f"Search queries for GNews: {search_queries_list_gnews}")
     # Step 2: Retrieve articles using the search query terms
     articles = []
-    articles = await async_get_articles(search_queries_list_gnews, search_queries_list_nc, date_range, config["NUM_ARTICLES_PER_QUERY"], 200)
+    articles = await async_get_articles(
+        search_queries_list_gnews,
+        search_queries_list_nc,
+        date_range,
+        config["NUM_ARTICLES_PER_QUERY"],
+        200,
+    )
+
+    print(f"articles: {articles}")
+
     articles = information_retrieval.deduplicate_articles(articles)
     articles_unfiltered = articles.copy()
     # Step 2.5 (optional): filter articles via quick embedding model
@@ -465,6 +476,8 @@ async def retrieve_summarize_and_rank_articles(
         model_name=config["RANKING_MODEL_NAME"],
         temperature=config["RANKING_TEMPERATURE"],
     )
+    print(f"ranked_articles: {ranked_articles}")
+
     logger.info("Finished ranking the articles!")
     # Step 3.5 (optional): Extract webpages linked in the additional URLs
     if config.get("EXTRACT_BACKGROUND_URLS") and urls and len(urls) > 0:
@@ -500,6 +513,8 @@ async def retrieve_summarize_and_rank_articles(
             f"Summarizing the top {config['NUM_SUMMARIES_THRESHOLD']} articles."
         )
         ranked_articles = ranked_articles[: config["NUM_SUMMARIES_THRESHOLD"]]
+    print(f"{ranked_articles=}")
+
     await summarize.summarize_articles(
         ranked_articles,
         prompt=prompt,
