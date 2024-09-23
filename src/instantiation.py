@@ -256,7 +256,8 @@ async def instantiate(
         print(f"Handling {i}-tuples...")
 
         if i == 1:
-            possible_ituples = [{"P": bq} for bq in bqs[:n_relevance]]
+            bqs_ = random.sample(bqs, n_relevance)
+            possible_ituples = [{"P": bq} for bq in bqs_]
 
         if i > 1:
             sampled_tuples = [random.sample(bqs, i) for _ in range(n_relevance)]
