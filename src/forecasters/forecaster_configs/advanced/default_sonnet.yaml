@@ -1,3 +1,4 @@
+forecaster_date: "2024-04-30"
 SEARCH_QUERY_MODEL_NAME: "anthropic/claude-3.5-sonnet"
 SUMMARIZATION_MODEL_NAME: "anthropic/claude-3.5-sonnet"
 BASE_REASONING_MODEL_NAMES:
