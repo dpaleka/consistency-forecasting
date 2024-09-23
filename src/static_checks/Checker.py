@@ -615,16 +615,24 @@ class Checker(ABC):
         raise NotImplementedError("Subclasses must implement this")
 
     def violation(
-        self, answers: dict[str, Any], force_pos=True, metric="default", **kwargs
+        self,
+        answers: dict[str, Any],
+        force_pos=True,
+        remove_zeros=1e-3,
+        metric="default",
+        **kwargs,
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
         if metric == "default":
+            if remove_zeros:
+                # remove_zeros is an epsilon value to avoid division by zero
+                answers = {k: v or remove_zeros for k, v in answers.items()}
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos:
-                v = max(0, v)
+                v = max(0, v)  # this also forces np.nan to 0
         elif metric == "frequentist":
             v = self.frequentist_violation(answers, **kwargs)
         else:
@@ -1056,6 +1064,23 @@ class AndChecker(Checker):
             and answers["P_and_Q"] <= min(answers["P"], answers["Q"])
         )
 
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+        )
+
 
 class OrChecker(Checker):
     num_base_questions = 2
@@ -1128,6 +1153,23 @@ class OrChecker(Checker):
             all([a is not None for a in answers.values()])
             and max(answers["P"], answers["Q"]) <= answers["P_or_Q"]
             and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"])
+        )
+
+    def max_min_arbitrage(
+        self,
+        answers: dict[str, Prob],
+        scoring: dict[str, Callable[[Prob], float]] = 1,
+        initial_guess: List[float] | str | None = None,
+        euler=False,
+        dt: float = 0.00005,
+        max_steps: int = 1000,
+        tmax=5,
+        methods: tuple[str] = ("shgo",),
+    ) -> tuple:
+        """We're subclassing this because DE method doesn't work for this one
+        (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
+        return super().max_min_arbitrage(
+            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
         )
 
 
