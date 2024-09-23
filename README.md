@@ -225,7 +225,9 @@ USE_OPENROUTER=True python src/perplexity_resolver_script.py -i src/data/fq/synt
 ```
 and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 
-- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs.
+- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs described above.
+
+- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs described above
 
 ## Experiments
 
