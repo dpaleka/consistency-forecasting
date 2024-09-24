@@ -10,6 +10,7 @@ from common.llm_utils import (
 from perplexity_resolver.resolver import resolve_question, ResolverOutput
 from common.utils import normalize_date_format, strip_hours
 import asyncio
+import random
 
 
 class BaselineForecaster(Forecaster):
@@ -25,6 +26,23 @@ class BaselineForecaster(Forecaster):
 
     def dump_config(self) -> dict[str, Any]:
         return {"p": self.p}
+
+
+class UniformRandomForecaster(Forecaster):
+    def __init__(self, n_buckets: int = 100, **kwargs):
+        self.buckets = n_buckets
+        random.seed(42)
+        super().__init__(**kwargs)
+
+    async def call_async(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        prob = random.randint(0, self.buckets) / self.buckets
+        return Forecast(prob=prob, metadata={})
+
+    def call(self, fq: ForecastingQuestion, **kwargs) -> Forecast:
+        return asyncio.run(self.call_async(fq, **kwargs))
+
+    def dump_config(self) -> dict[str, Any]:
+        return {"buckets": self.buckets}
 
 
 CHEATING_MODEL_EXAMPLE_QUESTION = ForecastingQuestion(
