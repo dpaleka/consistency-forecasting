@@ -14,13 +14,19 @@ from datetime import datetime
 # If not None, this will be the target resolution date for the questions.
 # It also changes the resolution date in some of the initail questions if its before 2030.
 # Eg: for a very long term question, it may be better to add new questions.
-TARGET_RESOLUTION_DATE = None # "2030-01-01 00:00:00"
+TARGET_RESOLUTION_DATE = None  # "2030-01-01 00:00:00"
 
-target_resolution_date = datetime(2030, 1, 1) if TARGET_RESOLUTION_DATE is None else datetime.strftime(
-    TARGET_RESOLUTION_DATE
+target_resolution_date = (
+    datetime(2030, 1, 1)
+    if TARGET_RESOLUTION_DATE is None
+    else datetime.strftime(TARGET_RESOLUTION_DATE)
 )
 
-example_datetime = "2030-01-01" if target_resolution_date > datetime(2030, 1, 1) else target_resolution_date.strftime("%Y-%m-%d")
+example_datetime = (
+    "2030-01-01"
+    if target_resolution_date > datetime(2030, 1, 1)
+    else target_resolution_date.strftime("%Y-%m-%d")
+)
 
 
 all_categories = [
@@ -115,7 +121,8 @@ topics = [
     "United Nations",
     "Virginia Department of Health",
     "Japan",
-    "Tesla" "Spain",
+    "Tesla",
+    "Spain",
     "Switzerland",
     "Italy",
     "Brazil",
@@ -146,117 +153,170 @@ topics = [
 ]
 
 initial_questions = [
-    ("Will SpaceX land people on Mars before 2030?", "Space", "SpaceX,Mars"),
     (
-        "Will any of Belgium, France, Italy, Luxembourg, Netherlands, and/or Germany leave the EU before 2027?",
+        "Will SpaceX successfully land at least one crewed spacecraft on the surface of Mars before January 1, 2030?",
+        "Space",
+        "SpaceX,Mars",
+    ),
+    (
+        "Will any country from the following list: Belgium, France, Italy, Luxembourg, Netherlands, or Germany, officially withdraw its membership from the European Union before January 1, 2027?",
         "Geopolitics",
         "European Union",
     ),
-    ("Will humans go extinct before 2100?", "Natural Sciences", "Extinction"),
     (
-        "Will the richest person in the world in 2033 have a net worth equivalent to or greater than 2% of the United States' GDP at the time?",
+        "Will the global human population fall below 1 billion individuals for any reason before January 1, 2100?",
+        "Natural Sciences",
+        "Extinction",
+    ),
+    (
+        "Will the net worth of the world's richest individual, as reported by Forbes or Bloomberg, be equal to or greater than 2% of the United States' GDP, as reported by the World Bank, on December 31, 2033?",
         "Economy & Business",
         "Wealth",
     ),
     (
-        "Will artificial intelligence pass the Turing Test by 2025?",
+        "Will an artificial intelligence system pass a formally administered Turing Test, as judged by a panel of at least 5 experts in the field, before January 1, 2026?",
         "Artificial Intelligence",
         "AI,Turing Test",
     ),
     (
-        "Will a major cryptocurrency outperform the US dollar in daily transaction volume by {example_datetime}?",
+        "Will the daily transaction volume of any cryptocurrency, as reported by CoinMarketCap or a similar reputable source, exceed that of the US dollar for at least 7 consecutive days before {example_datetime}?",
         "Cryptocurrencies",
         "Bitcoin,US dollar",
     ),
     (
-        "Will global average temperatures rise by more than 2 degrees Celsius above pre-industrial levels by 2040?",
+        "Will the 5-year average global temperature, as reported by NASA's Goddard Institute for Space Studies, exceed pre-industrial levels by more than 2 degrees Celsius at any point before January 1, 2041?",
         "Environment & Climate",
         "Global warming",
     ),
     (
-        "Will the United States have a female president before {example_datetime}?",
+        "Will a woman be sworn in as President of the United States before {example_datetime}?",
         "Elections",
         "US Politics,Presidential Election",
     ),
     (
-        "Will the World Health Organization declare a new pandemic before 2025?",
+        "Will the World Health Organization officially declare a Public Health Emergency of International Concern (PHEIC) for a novel pathogen before January 1, 2026?",
         "Health & Pandemics",
         "WHO,Pandemic",
     ),
     (
-        "Will India's GDP surpass China's at any point before 2040?",
+        "Will India's annual GDP, as reported by the World Bank, exceed China's annual GDP for at least one calendar year before January 1, 2041?",
         "Economy & Business",
         "India,China,GDP",
     ),
     (
-        "Will there be a legally binding international treaty on cyber warfare signed by over 50 countries by {example_datetime}?",
+        "Will an international treaty specifically addressing cyber warfare be ratified by at least 50 UN member states before {example_datetime}?",
         "Law",
         "Cyber warfare",
     ),
     (
-        "Will a team from Africa win the FIFA World Cup before 2040?",
+        "Will a men's national football team from an African country win the FIFA World Cup before January 1, 2041?",
         "Sports & Entertainment",
         "FIFA,World Cup",
     ),
     (
-        "Will quantum computing be commercially available to the public before {example_datetime}?",
+        "Will at least one company offer commercially available quantum computing services to the general public, with a minimum of 1000 qubits, before {example_datetime}?",
         "Technology",
         "Quantum computing",
     ),
     (
-        "Will NASA discover definitive evidence of life on another planet by 2035?",
+        "Will NASA or any other space agency publicly announce the discovery of fossilized or living microorganisms on another planet, moon, or asteroid, confirmed by peer-reviewed studies, before January 1, 2036?",
         "Space",
         "NASA,Extraterrestrial life",
     ),
     (
-        "Will Russia and Ukraine sign a permanent peace treaty before 2025?",
+        "Will Russia and Ukraine sign and ratify a comprehensive peace treaty, ending all ongoing military conflicts between the two nations, before January 1, 2026?",
         "Geopolitics",
         "Russia,Ukraine",
     ),
     (
-        "Will a new infectious disease with a fatality rate over 10% emerge before {example_datetime}?",
+        "Will a new infectious disease with a confirmed case fatality rate of over 10%, based on WHO data from at least 1000 cases, emerge and spread to at least 3 countries before {example_datetime}?",
         "Health & Pandemics",
         "Infectious Disease",
     ),
     (
-        "Will the total number of operational satellites exceed 50,000 by {example_datetime}?",
+        "Will the total number of operational satellites in Earth orbit, as tracked by the United Nations Office for Outer Space Affairs, exceed 50,000 before {example_datetime}?",
         "Technology",
         "Satellites",
     ),
     (
-        "Will genetic editing in humans for enhancing traits (not medical) be legalized in any G7 country by {example_datetime}?",
+        "Will any G7 country pass legislation allowing genetic editing of human embryos for non-medical trait enhancement before {example_datetime}?",
         "Law",
         "Genetic editing",
     ),
     (
-        "Will the global sea level rise by more than 10 centimeters above 2020 levels before {example_datetime}?",
+        "Will the global mean sea level, as measured by satellite altimetry and reported by NASA or NOAA, rise by more than 10 centimeters above the 2020 average level before {example_datetime}?",
         "Environment & Climate",
         "Sea level rise",
     ),
 ]
 
-resolution_message = "" if TARGET_RESOLUTION_DATE is None else f"The question should resolve on the date {example_datetime}"
+resolution_message = (
+    ""
+    if TARGET_RESOLUTION_DATE is None
+    else f"The question should resolve on the date {example_datetime}"
+)
 
+# Prompt for generating forecasting questions
 prompt = """
-I want you to help me generate some forecasting questions for a forecasting market site like Metaculus or PredictIt.
-I will provide you with a category and some tags. Your task is to generate questions that can be answered with a probability between 0 and 1.
-For each tag, generate a relevant question if the tag is pertinent to the category. If the tag is not relevant, generate a general question about the category.
-""" + resolution_message + """
+You are tasked with generating forecasting questions for a platform similar to Metaculus or PredictIt.
+Based on the provided category and tags, create questions that can be answered with a probability between 0 and 1.
+Be precise and avoid vague language or qualifiers. Ensure each question has a clear resolution criteria and timeframe.
 
-Examples:
+Tip 1: For each tag, generate a relevant question if the tag is pertinent to the category. If the tag is not relevant, generate a general question about the category.
 
+Tip 2: Avoid using qualifiers like "significant" or "substantial". Instead, use specific, measurable criteria.
+
+Tip 3: Include a clear anchor for quality or quantity in each question. For example, instead of asking if something will "improve", ask if it will "increase by at least X%".
+
+Tip 4: Specify a clear timeframe for each question. Use precise dates or periods rather than vague terms like "soon" or "in the near future".
+
+Tip 5: Ensure that the resolution criteria for each question are unambiguous and can be objectively determined.
+
+Tip 6: If appropriate, include specific numerical thresholds or ranges in your questions to make them more precise.
+
+Tip 7: Consider including a reliable source for resolving the question, such as a specific government agency or reputable organization.
+
+Provide your generated questions in the following XML structure:
+
+<forecasting_questions>
+  <question1>
+    <title>[Insert concise question title here]</title>
+    <details>[Provide detailed resolution criteria, including specific metrics, thresholds, and timeframes]</details>
+    <resolution_date>[Specify the date by which the question should be resolved]</resolution_date>
+  </question1>
+  <question2>
+    [Repeat structure for additional questions]
+  </question2>
+  [Add more question elements as needed]
+</forecasting_questions>
+
+Ensure each question is well-formed, precise, and adheres to the principles of good forecasting questions.
+
+<example>
 {example_1}
+</example>
 
+<example>
 {example_2}
+</example>
 
+<example>
 {example_3}
+</example>
 
+<example>
 {example_4}
+</example>
 
+<example>
 {example_5}
+</example>
 
+<example>
 {example_6}
-----
+</example>
+
+Generate forecasting questions based on the following category and tags:
 
 Category: {category}
 Tags: {tags}
@@ -385,9 +445,9 @@ if __name__ == "__main__":
         "--file_path",
         "-f",
         type=str,
-        default=get_data_path() / "other" / "high-quality-questions-all-domains.jsonl",
+        default=get_data_path() / "other" / "intermediate_questions.jsonl",
     )
-    parser.add_argument("--model", "-m", type=str, default="gpt-4o-mini-2024-07-18")
+    parser.add_argument("--model", "-m", type=str, default="gpt-4o")
     parser.add_argument("--n", "-n", type=int, default=3)
     parser.add_argument("--categories", "-c", type=str, nargs="+", default=None)
     args = parser.parse_args()
