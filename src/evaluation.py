@@ -188,6 +188,27 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     print(f"Aggregated stats by source question written to {output_file}")
 
 
+def aggregate_stats(all_stats: dict, rescale_arbitrage: bool = True) -> dict:
+    aggregate_stats = {}
+
+    for metric in ["default", "frequentist"]:
+        aggregate_stats[metric] = {}
+        tot_violation = 0.0
+        n = 0
+        for checker_name, checker_stats in all_stats.items():
+            checker_obj = choose_checkers([checker_name])[checker_name]
+            if "overall" in checker_stats:
+                stats = checker_stats["overall"][metric]
+                v = stats["avg_violation"]
+                if metric == "default" and rescale_arbitrage:
+                    v /= len(checker_obj.TupleFormat.model_fields)
+                tot_violation += v
+                n += 1
+        aggregate_stats[metric]["avg_violation"] = tot_violation / n
+
+    return aggregate_stats
+
+
 def process_check(
     check_name: str,
     checkers: dict[str, Checker],
@@ -200,6 +221,8 @@ def process_check(
     load_dir: Path,
     run: bool,
     eval_by_source: bool,
+    do_check: bool,
+    scale_arbitrage: bool,
     **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
@@ -258,16 +281,18 @@ def process_check(
                     results_batch = asyncio.run(
                         checkers[check_name].test(
                             forecaster,
-                            do_check=False,
+                            do_check=do_check,
                             tuples=batch_tuples,
+                            scale_arbitrage=scale_arbitrage,
                             **kwargs,
                         )
                     )
                 else:
                     results_batch = checkers[check_name].test_sync(
                         forecaster,
-                        do_check=False,
+                        do_check=do_check,
                         tuples=batch_tuples,
+                        scale_arbitrage=scale_arbitrage,
                         **kwargs,
                     )
 
@@ -331,7 +356,7 @@ def process_check(
             violation_data = {}
             for metric in metrics:
                 violation_data[metric] = checkers[check_name].check_from_elicited_probs(
-                    answers, metric
+                    answers, metric, scale_arbitrage=scale_arbitrage
                 )
             result.update(violation_data)
 
@@ -399,6 +424,18 @@ def process_check(
     help="Evaluate consistency scores per source question",
 )
 @click.option(
+    "--skip_check",
+    is_flag=True,
+    default=False,
+    help="Compute and append violation data",
+)
+@click.option(
+    "--scale_arbitrage",
+    is_flag=True,
+    default=False,
+    help="Rescale arbitrage violations",
+)
+@click.option(
     "--simulate",
     is_flag=True,
     default=False,
@@ -419,8 +456,12 @@ def main(
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
+    skip_check: bool = False,
     simulate: bool = False,
+    scale_arbitrage: bool = False,
 ):
+    do_check = not skip_check
+
     forecaster_config = get_forecaster_config(config_path, forecaster_options)
 
     forecaster = make_forecaster(
@@ -498,6 +539,8 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
+                scale_arbitrage=scale_arbitrage,
                 cost_log=cl,
                 simulate=simulate,
             )
@@ -521,12 +564,19 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
+                scale_arbitrage=scale_arbitrage,
                 cost_log=cl,
                 simulate=simulate,
             )
             all_stats[check_name] = stats
 
     # TODO figure out how to write to the load_dir
+
+    # !!! Only rescale arbitrage in aggregation if it's not already scaled
+    all_stats["aggregated"] = aggregate_stats(
+        all_stats, rescale_arbitrage=not scale_arbitrage
+    )
 
     all_stats["forecaster"] = forecaster.__class__.__name__
     all_stats["full_forecaster_config"] = forecaster.dump_config()
@@ -568,7 +618,7 @@ def main(
     for metric in metrics:
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
-            if check_name in ["forecaster", "full_forecaster_config"]:
+            if check_name in ["forecaster", "full_forecaster_config", "aggregated"]:
                 continue
             print(f"\n{check_name}:")
             print(f"{stats=}")

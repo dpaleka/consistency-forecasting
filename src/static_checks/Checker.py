@@ -621,6 +621,7 @@ class Checker(ABC):
         answers: dict[str, Any],
         force_pos=True,
         remove_zeros=1e-3,
+        scale_arbitrage=False,
         metric="default",
         **kwargs,
     ) -> float:
@@ -635,6 +636,8 @@ class Checker(ABC):
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
+            if scale_arbitrage:
+                v = v / len(answers)
         elif metric == "frequentist":
             v = self.frequentist_violation(answers, **kwargs)
         else:
@@ -642,12 +645,17 @@ class Checker(ABC):
 
         return v
 
-    def check(self, answers: dict[str, Any], metric: str = "default") -> bool:
+    def check(
+        self,
+        answers: dict[str, Any],
+        metric: str = "default",
+        scale_arbitrage: bool = False,
+    ) -> bool:
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
         if metric == "default":
-            viol = self.violation(answers)
+            viol = self.violation(answers, scale_arbitrage=scale_arbitrage)
             if isinstance(viol, str):
                 warnings.warn(f"Error in check: {viol}")
                 return None
@@ -660,56 +668,62 @@ class Checker(ABC):
         else:
             raise ValueError(f"Metric {metric} not implemented")
 
-    def elicit_and_violation(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> float:
-        return self.violation(forecaster.elicit(sentences, **kwargs))
-
-    def elicit_and_check(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> bool:
-        return self.check(forecaster.elicit(sentences, **kwargs))
-
-    async def elicit_and_violation_async(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> float:
-        return self.violation(await forecaster.elicit_async(sentences, **kwargs))
-
-    async def elicit_and_check_async(
-        self, forecaster: Forecaster, sentences: "Self.TupleFormat", **kwargs
-    ) -> bool:
-        return self.check(await forecaster.elicit_async(sentences, **kwargs))
-
     def get_line_obj(self, line: dict[str, Any]) -> "Self.TupleFormat":
         metadata = line.pop("metadata", None)
         line_obj = self.TupleFormat.model_validate(line)
         return line_obj
 
     def check_from_elicited_probs(
-        self, answers: dict[str, Prob], metric: str = "default"
+        self,
+        answers: dict[str, Prob],
+        metric: str | list[str] = "default",
+        scale_arbitrage: bool = False,
     ) -> dict[str, Any]:
+        if isinstance(metric, list):
+            return {
+                m: self.check_from_elicited_probs(
+                    answers, metric=m, scale_arbitrage=scale_arbitrage
+                )
+                for m in metric
+            }
         print(f"answers: {answers}\n")
         if any([a is None for a in answers.values()]):
             print("ERROR: Some answers are None!")
             return {"successful_elicitation": False}
-        loss: float = self.violation(answers, metric=metric)
-        res_bool: bool = self.check(answers, metric=metric)
-        res: str = {True: "Passed", False: "Failed"}[res_bool]
-        print(f"Violation: {loss}\nCheck result: {res}\n")
-        return {
-            "metric": metric,
-            "violation": loss,
-            "check": res_bool,
-            "check_result": res,
-            "successful_elicitation": True,
-        }
+        try:
+            loss: float = self.violation(
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
+            )
+            res_bool: bool = self.check(
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
+            )
+            res: str = {True: "Passed", False: "Failed"}[res_bool]
+            print(f"Violation: {loss}\nCheck result: {res}\n")
+            return {
+                "metric": metric,
+                "violation": loss,
+                "check": res_bool,
+                "check_result": res,
+                "successful_elicitation": True,
+            }
+        except Exception as e:
+            print(
+                f"Error in check_from_elicited_probs for "
+                f"{answers} with metric {metric}: {e}"
+            )
+            return {"successful_elicitation": False}
 
     def check_all_from_elicited_probs(
-        self, all_answers: list[dict[str, Prob]]
+        self,
+        all_answers: list[dict[str, Prob]],
+        metric: str | list[str] = "default",
+        scale_arbitrage: bool = False,
     ) -> list[dict[str, Any]]:
         results = []
         for answers in all_answers:
-            result = self.check_from_elicited_probs(answers)
+            result = self.check_from_elicited_probs(
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
+            )
             results.append(result)
         return results
 
@@ -718,6 +732,7 @@ class Checker(ABC):
         forecaster: Forecaster,
         tuples: list[dict[str, Any]] | None = None,
         do_check=True,
+        scale_arbitrage=False,
         **kwargs,
     ) -> list[dict[str, Any]]:
         results = []
@@ -744,11 +759,13 @@ class Checker(ABC):
 
                 answers = {q: a.prob for q, a in answers_.items()}
                 if do_check:
-                    result_without_line: dict[
-                        str, Any
-                    ] = self.check_from_elicited_probs(line_obj, answers)
+                    violation_data: dict = self.check_from_elicited_probs(
+                        answers,
+                        metric=["default", "frequentist"],
+                        scale_arbitrage=scale_arbitrage,
+                    )
                 else:
-                    result_without_line = {}
+                    violation_data = {}
 
                 result = {}
                 for question in answers_.keys():
@@ -762,7 +779,7 @@ class Checker(ABC):
                         },
                     }
 
-                result = {"line": result, **result_without_line}
+                result = {"line": result, "violation_data": violation_data}
 
                 results.append(result)
                 writer.write(result)
@@ -774,6 +791,7 @@ class Checker(ABC):
         forecaster: Forecaster,
         tuples: list[dict[str, Any]] | None = None,
         do_check=True,
+        scale_arbitrage=False,
         **kwargs,
     ) -> list[dict[str, Any]]:
         results = []
@@ -811,12 +829,16 @@ class Checker(ABC):
 
             if do_check:
                 print("Starting checking")
-                results_without_line = self.check_all_from_elicited_probs(all_answers)
+                violations_data = self.check_all_from_elicited_probs(
+                    all_answers,
+                    metric=["default", "frequentist"],
+                    scale_arbitrage=scale_arbitrage,
+                )
             else:
-                results_without_line = [{} for _ in data]
+                violations_data = [{} for _ in data]
 
-            for line, answers_, answers, result_without_line in zip(
-                data, all_answers_, all_answers, results_without_line
+            for line, answers_, answers, violation_data in zip(
+                data, all_answers_, all_answers, violations_data
             ):
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
                 result = {}
@@ -831,7 +853,7 @@ class Checker(ABC):
                         },
                     }
 
-                result = {"line": result, **result_without_line}
+                result = {"line": result, "violation_data": violation_data}
 
                 results.append(result)
                 writer.write(result)
