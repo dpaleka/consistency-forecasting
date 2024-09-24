@@ -188,6 +188,27 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     print(f"Aggregated stats by source question written to {output_file}")
 
 
+def aggregate_stats(all_stats: dict, rescale_arbitrage=True) -> dict:
+    aggregate_stats = {}
+
+    for metric in ["default", "frequentist"]:
+        aggregate_stats[metric] = {}
+        tot_violation = 0.0
+        n = 0
+        for checker_name, checker_stats in all_stats.items():
+            checker_obj = choose_checkers([checker_name])[checker_name]
+            if "overall" in checker_stats:
+                stats = checker_stats["overall"][metric]
+                v = stats["avg_violation"]
+                if metric == "default" and rescale_arbitrage:
+                    v /= len(checker_obj.TupleFormat.model_fields)
+                tot_violation += v
+                n += 1
+        aggregate_stats[metric]["avg_violation"] = tot_violation / n
+
+    return aggregate_stats
+
+
 def process_check(
     check_name: str,
     checkers: dict[str, Checker],
@@ -540,6 +561,8 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
+    all_stats["aggregated"] = aggregate_stats(all_stats)
+
     all_stats["forecaster"] = forecaster.__class__.__name__
     all_stats["full_forecaster_config"] = forecaster.dump_config()
 
@@ -580,7 +603,7 @@ def main(
     for metric in metrics:
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
-            if check_name in ["forecaster", "full_forecaster_config"]:
+            if check_name in ["forecaster", "full_forecaster_config", "aggregated"]:
                 continue
             print(f"\n{check_name}:")
             print(f"{stats=}")
