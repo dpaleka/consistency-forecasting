@@ -1,3 +1,7 @@
+## General notes
+
+For evaluation.py, we log the output in a file called logs/evaluation_{some experiment details}.log
+We also name the dirs in a meaningful way, like `src/data/forecasts/BasicForecaster_0501_0815_model_gpt-4o-2024-05-13/
 ## Run ground_truth_run.py on [20240501_20240815.jsonl](src/data/fq/real/20240501_20240815.jsonl) and the corresponding [tuples_scraped](src/data/tuples_scraped/)
 
 ### BaselineForecaster with p=0.4
