@@ -207,5 +207,5 @@ python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -f PromptedToCons_
 
 
 
-## TODO: ConsistentForecaster jobs
+## ConsistentForecaster jobs
 
