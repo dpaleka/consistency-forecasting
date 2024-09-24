@@ -645,7 +645,11 @@ class Checker(ABC):
         if metric in ["default", "default_scaled"]:
             if remove_zeros:
                 # remove_zeros is an epsilon value to avoid division by zero
-                answers = {k: v or remove_zeros for k, v in answers.items()}
+                for k in answers:
+                    if answers[k] == 0:
+                        answers[k] = remove_zeros
+                    elif answers[k] == 1:
+                        answers[k] = 1 - remove_zeros
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
