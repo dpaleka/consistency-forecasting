@@ -1,0 +1,83 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.096,
+    "avg_platt_brier_score": 0.138,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 61.4,
+    "avg_platt_brier_score_scaled": 44.8,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 1.399,
+    "platt_scaling_factor": 1.095,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.27,
+        "resolution": 0.15
+    },
+    "calibration_error": 0.284,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.7,
+            0.8,
+            0.9,
+            0.99
+        ],
+        "bin_accuracies": [
+            0.07,
+            0.0,
+            0.25,
+            1.0,
+            0.0,
+            0.267,
+            1.0,
+            0.0,
+            1.0,
+            0.917
+        ],
+        "bin_confidences": [
+            0.001,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.7,
+            0.8,
+            0.9,
+            0.999
+        ],
+        "num_samples": [
+            142,
+            1,
+            4,
+            1,
+            2,
+            15,
+            1,
+            3,
+            1,
+            72
+        ],
+        "calibration_error": 0.284
+    },
+    "forecaster": "ResolverBasedForecaster",
+    "full_forecaster_config": {
+        "resolver_model": "perplexity/llama-3.1-sonar-large-128k-online",
+        "parsing_model": "gpt-4o-mini-2024-07-18",
+        "n_attempts": 1,
+        "hedging_on_sure": 0.001,
+        "second_forecaster_config": {
+            "model": "perplexity/llama-3.1-sonar-large-128k-online",
+            "prompt": "\nYou are acting as an administrator for a forecasting platform.\nGiven the full data of a forecasting question, you must determine whether the question resolves YES or NO.\nIf YES, your final output should be 1. If NO, your final output should be 0.\n\nToday's date is 15 September 2024 or later. You can search for events that have happened before this date.\nThe question has resolved before your knowledge cutoff date; if there is evidence of a certain event happening, you should be able to find it.\nPlease do not make up events that have not been observed. \n\nIf you are unsure on the resolution of the question, output a probability between 0 and 1 based on your reasoning.\n\nThink everything through step-by-step before coming to a conclusion.\n",
+            "parsing_model": "gpt-4o-mini-2024-07-18",
+            "examples": [
+                "Example(user=ForecastingQuestion(id=UUID('2ee1a2a8-7f9d-47c0-b042-e5acd3c5d836'), title='Who will be the Democratic nominee for the 2020 US Presidential Election? (Hillary Clinton)', body='This question will resolve as **Yes** for the candidate below who is selected by the Democratic National Convention as the nominee for the 2020 US Presidential Election.  All other candidates will resolve as **No**.  This question is not restricted to the candidates currently below; other options may be added in the future.\\n\\nFor this question, it is not relevant who recieves the Democratic nomination on the day of the 2020 US election, it is solely determined by who is selected by the delegates of the [Democratic National Convention](https://en.wikipedia.org/wiki/Democratic_National_Convention).', resolution_date=datetime.datetime(2020, 8, 1, 4, 0), question_type='binary', data_source='metaculus', created_date=datetime.datetime(2019, 2, 22, 23, 40, 52), url=None, metadata=None, resolution=None), assistant=\"\\nLet's rephrase the resolution criteria: \\n- The question resolves as **Yes** if Hillary Clinton is selected as the Democratic nominee for the 2020 US Presidential Election;\\n- The question resolves as **No** otherwise.\\n\\nMy search says Joe Biden was selected as the Democratic nominee for the 2020 US Presidential Election.\\nThus, the question resolves as **No**, hence my final output is 0.\\n\")"
+            ]
+        }
+    }
+}

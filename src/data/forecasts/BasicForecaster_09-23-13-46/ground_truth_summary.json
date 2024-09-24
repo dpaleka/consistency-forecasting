@@ -1,0 +1,86 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.179,
+    "avg_platt_brier_score": 0.192,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 28.5,
+    "avg_platt_brier_score_scaled": 23.4,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 0.773,
+    "platt_scaling_factor": 0.64,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.062,
+        "resolution": 0.052
+    },
+    "calibration_error": 0.065,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95
+        ],
+        "bin_accuracies": [
+            0.083,
+            0.0,
+            0.069,
+            0.156,
+            0.15,
+            0.429,
+            0.455,
+            0.6,
+            0.459,
+            0.647,
+            0.75,
+            1.0,
+            1.0
+        ],
+        "bin_confidences": [
+            0.01,
+            0.02,
+            0.05,
+            0.136,
+            0.225,
+            0.317,
+            0.414,
+            0.5,
+            0.592,
+            0.671,
+            0.831,
+            0.9,
+            0.95
+        ],
+        "num_samples": [
+            12,
+            3,
+            29,
+            45,
+            20,
+            35,
+            11,
+            5,
+            37,
+            34,
+            8,
+            1,
+            2
+        ],
+        "calibration_error": 0.065
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "gpt-4o-2024-08-06",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}

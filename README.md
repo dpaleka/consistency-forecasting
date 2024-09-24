@@ -225,7 +225,9 @@ USE_OPENROUTER=True python src/perplexity_resolver_script.py -i src/data/fq/synt
 ```
 and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 
-- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs.
+- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs described above.
+
+- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs described above
 
 ## Experiments
 
@@ -235,7 +237,7 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 - `-p src/forecasters/various.py::BaselineForecaster -o p=0.4`
 - `-p src/forecasters/various.py::BaselineForecaster -o p=0.6`
 - `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
-- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
+- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1` (with OpenRouter)
 - `-f BasicForecaster -o model=gpt-4o-2024-08-06`
 - `-f BasicForecaster -o model=gpt-4o-2024-05-13`
 - `-f BasicForecaster -o model=gpt-4o-mini-2024-07-18`
@@ -252,14 +254,14 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 - `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
 - `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml`](src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml) (with OpenRouter)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt4o_mini.yaml)
+- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml`](src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_sonnet.yaml`](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) (with OpenRouter)
 - `-f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18`
 
 Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
-The other forecasters ask a native call and then parse the answer into an output format with an LLM (or otherwise, in case of `AdvancedForecaster`).
+The other forecasters ask native call(s) and then parse the answer into an output format with an LLM (or by other means, in case of `AdvancedForecaster`).
 The parsing model is always `gpt-4o-mini-2024-07-18`.
 
 ### Evaluation

@@ -1,0 +1,36 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.229,
+    "avg_platt_brier_score": 0.227,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 8.2,
+    "avg_platt_brier_score_scaled": 9.3,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 0.94,
+    "platt_scaling_factor": 0.689,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.003,
+        "resolution": 0.0
+    },
+    "calibration_error": 0.053,
+    "calibration_error_data": {
+        "bins": [
+            0.4
+        ],
+        "bin_accuracies": [
+            0.347
+        ],
+        "bin_confidences": [
+            0.4
+        ],
+        "num_samples": [
+            242
+        ],
+        "calibration_error": 0.053
+    },
+    "forecaster": "BaselineForecaster",
+    "full_forecaster_config": {
+        "p": 0.4
+    }
+}

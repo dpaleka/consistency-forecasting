@@ -1,0 +1,7 @@
+{
+    "label": "CondCondChecker",
+    "num_samples": 50,
+    "num_violations": 12,
+    "avg_abs_violation": 0.013241,
+    "median_abs_violation": 0.0
+}

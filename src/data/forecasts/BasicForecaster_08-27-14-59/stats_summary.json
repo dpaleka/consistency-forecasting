@@ -1,8 +1,0 @@
-{
-    "ParaphraseChecker": {
-        "error": "[Errno 2] No such file or directory: 'C:\\\\Users\\\\abhim\\\\Google Drive\\\\Gittable\\\\Code\\\\consistency-forecasting\\\\src\\\\data\\\\tuples_source\\\\ParaphraseChecker.jsonl'"
-    },
-    "CondCondChecker": {
-        "error": "list index out of range"
-    }
-}

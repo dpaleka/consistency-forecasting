@@ -18,7 +18,7 @@ from dotenv import load_dotenv, dotenv_values
 from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
-from costly import CostlyResponse, costly
+from costly import CostlyResponse, costly, Costlog
 from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
     PlainText,
@@ -577,6 +577,7 @@ async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
+    cost_log: Costlog = None,  # need to give explicitly because of cache
     **kwargs,
 ) -> BaseModel:
     """
@@ -646,6 +647,7 @@ async def query_api_chat_native(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
+    cost_log: Costlog = None,  # need to give explicitly because of cache
     **kwargs,
 ) -> str:
     default_options = {
@@ -707,6 +709,7 @@ def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
+    cost_log: Costlog = None,  # need to give explicitly because of cache
     **kwargs,
 ) -> BaseModel:
     if not os.getenv("NO_CACHE"):
@@ -772,6 +775,7 @@ def query_api_chat_sync_native(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
+    cost_log: Costlog = None,  # need to give explicitly because of cache
     **kwargs,
 ) -> str:
     default_options = {
@@ -1029,7 +1033,9 @@ def answer_messages_sync(
 @pydantic_cache
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_text", extract_args=True)
-async def query_api_text(model: str, text: str, verbose=False, **kwargs) -> str:
+async def query_api_text(
+    model: str, text: str, verbose=False, cost_log: Costlog = None, **kwargs
+) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
     response, completion = await client.completions.create_with_completion(
         model=model, prompt=text, **kwargs
