@@ -621,7 +621,6 @@ class Checker(ABC):
         answers: dict[str, Any],
         force_pos=True,
         remove_zeros=1e-3,
-        scale_arbitrage=False,
         metric="default",
         **kwargs,
     ) -> float:
@@ -629,14 +628,14 @@ class Checker(ABC):
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
-        if metric == "default":
+        if metric in ["default", "default_scaled"]:
             if remove_zeros:
                 # remove_zeros is an epsilon value to avoid division by zero
                 answers = {k: v or remove_zeros for k, v in answers.items()}
             v = self.arbitrage_violation(answers, **kwargs)
             if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
-            if scale_arbitrage:
+            if metric == "default_scaled" and not isinstance(v, str):
                 v = v / len(answers)
         elif metric == "frequentist":
             v = self.frequentist_violation(answers, **kwargs)
@@ -649,13 +648,12 @@ class Checker(ABC):
         self,
         answers: dict[str, Any],
         metric: str = "default",
-        scale_arbitrage: bool = False,
     ) -> bool:
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
-        if metric == "default":
-            viol = self.violation(answers, scale_arbitrage=scale_arbitrage)
+        if metric in ["default", "default_scaled"]:
+            viol = self.violation(answers, metric=metric)
             if isinstance(viol, str):
                 warnings.warn(f"Error in check: {viol}")
                 return None
@@ -677,26 +675,18 @@ class Checker(ABC):
         self,
         answers: dict[str, Prob],
         metric: str | list[str] = "default",
-        scale_arbitrage: bool = False,
     ) -> dict[str, Any]:
         if isinstance(metric, list):
             return {
-                m: self.check_from_elicited_probs(
-                    answers, metric=m, scale_arbitrage=scale_arbitrage
-                )
-                for m in metric
+                m: self.check_from_elicited_probs(answers, metric=m) for m in metric
             }
         print(f"answers: {answers}\n")
         if any([a is None for a in answers.values()]):
             print("ERROR: Some answers are None!")
             return {"successful_elicitation": False}
         try:
-            loss: float = self.violation(
-                answers, metric=metric, scale_arbitrage=scale_arbitrage
-            )
-            res_bool: bool = self.check(
-                answers, metric=metric, scale_arbitrage=scale_arbitrage
-            )
+            loss: float = self.violation(answers, metric=metric)
+            res_bool: bool = self.check(answers, metric=metric)
             res: str = {True: "Passed", False: "Failed"}[res_bool]
             print(f"Violation: {loss}\nCheck result: {res}\n")
             return {
@@ -717,13 +707,10 @@ class Checker(ABC):
         self,
         all_answers: list[dict[str, Prob]],
         metric: str | list[str] = "default",
-        scale_arbitrage: bool = False,
     ) -> list[dict[str, Any]]:
         results = []
         for answers in all_answers:
-            result = self.check_from_elicited_probs(
-                answers, metric=metric, scale_arbitrage=scale_arbitrage
-            )
+            result = self.check_from_elicited_probs(answers, metric=metric)
             results.append(result)
         return results
 
@@ -732,7 +719,6 @@ class Checker(ABC):
         forecaster: Forecaster,
         tuples: list[dict[str, Any]] | None = None,
         do_check=True,
-        scale_arbitrage=False,
         **kwargs,
     ) -> list[dict[str, Any]]:
         results = []
@@ -761,8 +747,7 @@ class Checker(ABC):
                 if do_check:
                     violation_data: dict = self.check_from_elicited_probs(
                         answers,
-                        metric=["default", "frequentist"],
-                        scale_arbitrage=scale_arbitrage,
+                        metric=["default", "default_scaled", "frequentist"],
                     )
                 else:
                     violation_data = {}
@@ -791,7 +776,6 @@ class Checker(ABC):
         forecaster: Forecaster,
         tuples: list[dict[str, Any]] | None = None,
         do_check=True,
-        scale_arbitrage=False,
         **kwargs,
     ) -> list[dict[str, Any]]:
         results = []
@@ -831,8 +815,7 @@ class Checker(ABC):
                 print("Starting checking")
                 violations_data = self.check_all_from_elicited_probs(
                     all_answers,
-                    metric=["default", "frequentist"],
-                    scale_arbitrage=scale_arbitrage,
+                    metric=["default", "default_scaled", "frequentist"],
                 )
             else:
                 violations_data = [{} for _ in data]
