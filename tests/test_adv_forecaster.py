@@ -14,6 +14,7 @@ from forecasters.advanced_forecaster import AdvancedForecaster
 
 old_openrouter = os.environ.get("USE_OPENROUTER", "False")
 os.environ["USE_OPENROUTER"] = "True"
+old_skip_newscatcher = os.environ.get("SKIP_NEWSCATCHER", "False")
 os.environ["SKIP_NEWSCATCHER"] = "True"
 
 num_questions_to_run = 1
@@ -172,3 +173,4 @@ async def test_advanced_forecaster(sample_forecasting_question):
 
 
 os.environ["USE_OPENROUTER"] = old_openrouter
+os.environ["SKIP_NEWSCATCHER"] = old_skip_newscatcher

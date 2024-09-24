@@ -20,7 +20,9 @@ GOOGLE_AI_KEY = os.getenv("GOOGLE_AI_KEY")
 HF_ACCESS_TOKEN = os.getenv("HF_ACCESS_TOKEN")
 
 NEWSCATCHER_KEY = (
-    os.getenv("NEWSCATCHER_KEY") if not os.getenv("SKIP_NEWSCATCHER") else None
+    os.getenv("NEWSCATCHER_KEY")
+    if not os.getenv("SKIP_NEWSCATCHER", "False").lower() == "true"
+    else None
 )
 
 keys = {
