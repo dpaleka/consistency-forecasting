@@ -16,18 +16,11 @@ from static_checks.Checker import choose_checkers
     multiple=True,
     help="Metrics to use for the check.",
 )
-@click.option(
-    "--scale_arbitrage",
-    is_flag=True,
-    default=False,
-    help="Whether to apply scale arbitrage.",
-)
 def recalculate_violations(
     input_file: str,
     output_file: str,
     checker: str,
     metric: list[str],
-    scale_arbitrage: bool,
 ):
     """
     Recalculate violations for each entry in the JSONL file and save the updated entries to a new file.
@@ -52,7 +45,7 @@ def recalculate_violations(
 
             # Recalculate the violation_data
             recalculated_violations = checker.check_from_elicited_probs(
-                answers=answers, metric=list(metric), scale_arbitrage=scale_arbitrage
+                answers=answers, metric=list(metric)
             )
 
             # Update the data with new violation_data
@@ -72,4 +65,4 @@ def recalculate_violations(
 if __name__ == "__main__":
     recalculate_violations()
 
-# python recalc_violations.py data/forecasts/BasicForecaster_09-24-13-56/AndOrChecker.jsonl data/forecasts/BasicForecaster_09-24-13-56/AndOrChecker_recalc.jsonl --metric default --metric frequentist --scale_arbitrage
+# python recalc_violations.py data/forecasts/BasicForecaster_09-24-13-56/AndOrChecker.jsonl data/forecasts/BasicForecaster_09-24-13-56/AndOrChecker_recalc.jsonl --metric default --metric frequentist

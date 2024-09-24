@@ -327,5 +327,5 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831
 ```
 
-## TODO: ConsistentForecaster jobs
+## ConsistentForecaster jobs
 
