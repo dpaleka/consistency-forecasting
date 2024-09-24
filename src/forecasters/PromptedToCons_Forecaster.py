@@ -578,8 +578,7 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
 
     def dump_config(self):
         return {
-            "preface": self.preface,
-            "examples": self.examples,
+            **super().dump_config(),
             # "related_questions": self.forecasting_questions.__str__(),
             "checks": self.consistency_checks.__str__(),
         }
