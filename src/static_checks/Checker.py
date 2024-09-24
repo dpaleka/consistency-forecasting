@@ -657,7 +657,10 @@ class Checker(ABC):
             if isinstance(viol, str):
                 warnings.warn(f"Error in check: {viol}")
                 return None
-            return bool(viol < self.default_tolerance)
+            if metric == "default":
+                return bool(viol < self.default_tolerance)
+            elif metric == "default_scaled":
+                return bool(viol < self.default_tolerance / 2)
         elif metric == "frequentist":
             return bool(
                 self.frequentist_violation(answers)
