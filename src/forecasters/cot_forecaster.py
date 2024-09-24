@@ -161,7 +161,7 @@ class CoT_multistep_Forecaster(Forecaster):
 
         if include_metadata:
             result["metadata"] = {
-                "model": kwargs.get("model", "default_model"),
+                "model": kwargs.get("model", self.model),
                 "timestamp": datetime.now().isoformat(),
                 "user_prompts": user_prompts_lists,
                 "chain_of_thought": result["chain_of_thought"],
@@ -255,6 +255,7 @@ class CoT_multistep_Forecaster(Forecaster):
 
     def dump_config(self):
         return {
+            "model": self.model,
             "preface": self.preface,
             "examples": make_json_serializable(self.examples),
         }
