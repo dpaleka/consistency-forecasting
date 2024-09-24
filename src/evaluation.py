@@ -26,9 +26,8 @@ from evaluation_utils.utils import (
 )
 from evaluation_utils.common_options import common_options, get_forecaster_config
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples/"
-
-# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_source/"
+BASE_TUPLES_PATH: Path = get_data_path() / "tuples_scraped/"
+# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_newsapi/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 
 logging.basicConfig()
@@ -370,7 +369,6 @@ def process_check(
     help="Use threads to run the forecaster on different checks",
 )
 @click.option(
-    "-p",
     "--tuple_dir",
     type=click.Path(),
     required=False,
@@ -447,9 +445,8 @@ def main(
 
     logged_config = {
         "forecaster_class": forecaster.__class__.__name__,
-        "forecaster": forecaster.dump_config(),
+        "full_forecaster_config": forecaster.dump_config(),
         "checkers": [checker.dump_config() for name, checker in checkers.items()],
-        "forecaster_config": forecaster_config,
         "is_async": is_async,
         "use_threads": use_threads,
         "run": run,
@@ -514,6 +511,9 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
+    all_stats["forecaster"] = forecaster.__class__.__name__
+    all_stats["full_forecaster_config"] = forecaster.dump_config()
+
     print("Cost log totals")
     print("---------------")
     print(cl.totals)
@@ -551,8 +551,10 @@ def main(
     for metric in metrics:
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
+            if check_name in ["forecaster", "full_forecaster_config"]:
+                continue
             print(f"\n{check_name}:")
-            print(stats)
+            print(f"{stats=}")
             overall_stats = stats["overall"]
             print(
                 f"  Overall: {overall_stats[metric]['num_violations']}/{overall_stats[metric]['num_samples']}"
@@ -569,6 +571,12 @@ def main(
                         f"median: {source_stats[metric]['median_violation']:.3f}"
                     )
 
+        print(f"Forecaster: {all_stats['forecaster']}")
+        print(f"Forecaster Config: {all_stats['full_forecaster_config']}")
+
+        print(f"Output written to {output_directory}")
+        print(f"Summary written to {output_directory}/stats_summary.json")
+
 
 if __name__ == "__main__":
     main()
@@ -579,26 +587,11 @@ if __name__ == "__main__":
 # Basic example with AdvancedForecaster:
 # python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 3 --relevant_checks all | tee see_eval.txt
 
-# Using ConsistentForecaster with multiple checks:
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks=NegChecker -o checks=ButChecker -o depth=2 --run -n 3 -k NegChecker -k ButChecker --async | tee see_eval.txt
-
 # Using BasicForecaster with specific checks:
 # python evaluation.py -f BasicForecaster -o model=gpt-4o-mini --run -n 50 -k ParaphraseChecker -k CondCondChecker | tee see_eval.txt
-
-# Using ConsistentForecaster with async mode:
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini --run -n 25 -k CondCondChecker --async | tee see_eval.txt
-
-# Using ConsistentForecaster with multiple checks and async mode:
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini-2024-07-18 --run -n 3 -k CondChecker -k ConsequenceChecker -k ParaphraseChecker -k CondCondChecker --async | tee see_eval.txt
-
-# Using RecursiveConsistentForecaster:
-# python evaluation.py -f RecursiveConsistentForecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 
 # Using PromptedToCons_Forecaster:
 # python evaluation.py -f PromptedToCons_Forecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 
-# Using ConsistentForecaster with specific checker:
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini --run -n 2 -k NegChecker
-
-# Using ConsistentForecaster with multiple checks and options:
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks=NegChecker -o checks=ButChecker -o depth=2 --run -n 3 -k NegChecker -k ButChecker --async
+# Using ConsistentForecaster, recursive
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async | tee see_eval.txt

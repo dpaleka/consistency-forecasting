@@ -1,6 +1,7 @@
 import jsonlines
 import asyncio
 import click
+import warnings
 from costly import Costlog
 import logging
 
@@ -273,12 +274,23 @@ async def instantiate(
             break
 
         print(f"Handling {i}-tuples...")
-        sampled_tuples = [random.sample(bqs, i) for _ in range(n_relevance)]
-        possible_ituples = [
-            {chr(80 + j): tup[j] for j in range(i)} for tup in sampled_tuples
-        ]
+
+        if i == 1:
+            if n_relevance > len(bqs):
+                warnings.warn(
+                    f"n_relevance: {n_relevance} is greater than "
+                    f"len(bqs): {len(bqs)}. Using all {len(bqs)} questions."
+                )
+                n_relevance = len(bqs)
+            bqs_ = random.sample(bqs, n_relevance)
+            possible_ituples = [{"P": bq} for bq in bqs_]
 
         if i > 1:
+            sampled_tuples = [random.sample(bqs, i) for _ in range(n_relevance)]
+            possible_ituples = [
+                {chr(80 + j): tup[j] for j in range(i)} for tup in sampled_tuples
+            ]  # chr 80, 81, 82 ... = P, Q, R, ...
+
             print("Setting task to get relevance scores ...")
 
             print("Getting relevance scores ...")

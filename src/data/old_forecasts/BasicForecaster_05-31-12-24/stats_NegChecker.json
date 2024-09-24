@@ -1,0 +1,7 @@
+{
+    "label": "NegChecker",
+    "num_samples": 50,
+    "num_violations": 26,
+    "avg_abs_violation": 0.298711,
+    "median_abs_violation": 0.01292
+}

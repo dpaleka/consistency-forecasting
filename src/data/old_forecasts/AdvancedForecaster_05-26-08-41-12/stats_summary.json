@@ -1,0 +1,79 @@
+{
+    "NegChecker": {
+        "label": "NegChecker",
+        "num_samples": 50,
+        "num_violations": 38,
+        "avg_violation": 0.1117250099348149,
+        "median_violation": 0.012003963322659406
+    },
+    "AndChecker": {
+        "label": "AndChecker",
+        "num_samples": 50,
+        "num_violations": 15,
+        "avg_violation": -0.010065228385867995,
+        "median_violation": -3.569983588183265e-07
+    },
+    "OrChecker": {
+        "label": "OrChecker",
+        "num_samples": 50,
+        "num_violations": 29,
+        "avg_violation": 0.049941887629623594,
+        "median_violation": 0.0031420624945697473
+    },
+    "AndOrChecker": {
+        "label": "AndOrChecker",
+        "num_samples": 50,
+        "num_violations": 35,
+        "avg_violation": 0.0710712661866925,
+        "median_violation": 0.01749367724045598
+    },
+    "ButChecker": {
+        "label": "ButChecker",
+        "num_samples": 50,
+        "num_violations": 38,
+        "avg_violation": 0.04394901394184767,
+        "median_violation": 0.012734718876625362
+    },
+    "CondChecker": {
+        "label": "CondChecker",
+        "num_samples": 50,
+        "num_violations": 37,
+        "avg_violation": 0.027779178462494305,
+        "median_violation": 0.009740224580356754
+    },
+    "ConsequenceChecker": {
+        "label": "ConsequenceChecker",
+        "num_samples": 50,
+        "num_violations": 21,
+        "avg_violation": 0.011708703349772996,
+        "median_violation": -1.2462882809094467e-09
+    },
+    "ParaphraseChecker": {
+        "label": "ParaphraseChecker",
+        "num_samples": 50,
+        "num_violations": 43,
+        "avg_violation": 0.019993777854472122,
+        "median_violation": 0.006505408994495698
+    },
+    "SymmetryAndChecker": {
+        "label": "SymmetryAndChecker",
+        "num_samples": 50,
+        "num_violations": 31,
+        "avg_violation": 0.02032569240557065,
+        "median_violation": 0.005025391531043363
+    },
+    "SymmetryOrChecker": {
+        "label": "SymmetryOrChecker",
+        "num_samples": 50,
+        "num_violations": 41,
+        "avg_violation": 0.04518081016712101,
+        "median_violation": 0.006261896443769621
+    },
+    "CondCondChecker": {
+        "label": "CondCondChecker",
+        "num_samples": 50,
+        "num_violations": 13,
+        "avg_violation": -0.0036128676554465187,
+        "median_violation": -0.004384711686418449
+    }
+}

@@ -1,1 +1,0 @@
-this was after proper weights but before the v > check.default_tolerance change

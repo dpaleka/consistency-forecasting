@@ -1,7 +1,0 @@
-{
-    "label": "OrChecker",
-    "num_samples": 50,
-    "num_violations": 29,
-    "avg_abs_violation": 0.28778,
-    "median_abs_violation": 0.029761
-}

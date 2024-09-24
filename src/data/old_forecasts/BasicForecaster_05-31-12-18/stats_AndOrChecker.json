@@ -1,0 +1,7 @@
+{
+    "label": "AndOrChecker",
+    "num_samples": 30,
+    "num_violations": 12,
+    "avg_abs_violation": 0.046284,
+    "median_abs_violation": 0.001006
+}

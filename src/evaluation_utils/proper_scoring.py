@@ -337,11 +337,11 @@ def plot_calibration(
             ax.scatter([p["x"] for p in points], [p["y"] for p in points], color="blue")
 
             x_min, x_max = min([p["x"] for p in points]), max([p["x"] for p in points])
-            x_min = min(x_min, 0.01)
-            x_max = max(x_max, 0.99)
+            x_min = min(x_min, 0.001)
+            x_max = max(x_max, 0.999)
             # Set axis limits
             ax.set_xlim(x_min, x_max)
-            ax.set_ylim(x_min, x_max)
+            ax.set_ylim(0, 1)
 
             # Add grid
             ax.grid(True, which="both", linestyle="--", alpha=0.7)

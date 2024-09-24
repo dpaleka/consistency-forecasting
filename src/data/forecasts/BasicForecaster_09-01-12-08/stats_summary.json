@@ -1,5 +1,0 @@
-{
-    "ExpectedEvidenceChecker": {
-        "error": "Subclasses must implement this"
-    }
-}

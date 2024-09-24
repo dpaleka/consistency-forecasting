@@ -1,7 +1,0 @@
-{
-    "label": "ButChecker",
-    "num_samples": 50,
-    "num_violations": 32,
-    "avg_abs_violation": 0.047371,
-    "median_abs_violation": 0.005433
-}
