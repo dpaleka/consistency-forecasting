@@ -16,12 +16,20 @@ print(
 verify_forecasting_title_prompt = """
 I'm trying to assess the quality of an old forecasting dataset. Here is a forecasting question from the dataset: {question}. Please flag questions that don't sound like binary forecasting questions by outputting "flag". If it sounds like a reasonable question, output valid is True.
 
+Tips for identifying good forecasting questions:
+1. The question should be binary (answerable with yes/no) and about a future event.
+2. Include a specific timeframe or deadline for the event to occur.
+3. The question should have clear, objective resolution criteria. Avoid vague words like "significant", "major", "substantial", etc., as these are signs of a vague question.
+4. The outcome should be verifiable through reliable sources.
+
 Examples of strings that should be flagged:
 - Will I finish my homework tonight?
 - Metaculus party 2023
 - Will Hell freeze over?
 - Heads or tails
 - Will this video reach 100k views by the EOD?
+- Will the US pass significant legislation related to AI in 2028? (vague term: "significant")
+- Will a major breakthrough in particle physics occur before 2028? (vague term: "major breakthrough")
 
 Examples of strings that should not be flagged:
 - Will Megan Markle and Prince Harry have a baby by the end of the year?

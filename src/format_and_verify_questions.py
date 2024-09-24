@@ -9,7 +9,7 @@ from common.datatypes import (
 )
 import fq_verification.question_verifier as question_verifier
 import fq_generation.fq_body_generator as fq_body_generator
-from common.utils import write_jsonl_async, recombine_filename
+from common.utils import write_jsonl_async, recombine_filename, read_json_or_jsonl
 from common.llm_utils import parallelized_call
 from common.path_utils import get_data_path
 from simple_parsing import ArgumentParser
@@ -19,22 +19,6 @@ SyntheticQuestion = Union[
     SyntheticTagQuestion, SyntheticRelQuestion
 ]  # help functions dynamically handle Synthetic Questions
 
-
-def read_json_or_jsonl(file_path: Path):
-    print(f"Reading file: {file_path}")
-    if not file_path.exists():
-        return []
-
-    if file_path.suffix == ".json":
-        with open(file_path, "r") as file:
-            return json.load(file)
-    elif file_path.suffix == ".jsonl":
-        with open(file_path, "r") as file:
-            return [json.loads(line) for line in file]
-    else:
-        raise ValueError(
-            "Unsupported file format. Only '.json' and '.jsonl' files are supported."
-        )
 
 
 async def validate_and_format_question(
@@ -321,7 +305,7 @@ if __name__ == "__main__":
         "--synthetic",
         "-s",
         type=bool,
-        default=False,
+        default=True,
         help="Flag to indicate synthetic data processing",
     )
     parser.add_argument(
