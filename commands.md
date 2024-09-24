@@ -1,4 +1,4 @@
-## Run ground_truth_run.py on [20240501_20240815.jsonl](src/data/fq/real/20240501_20240815.jsonl) and the corresponding [tuples_scraped](src/data/tuples/tuples_scraped/)
+## Run ground_truth_run.py on [20240501_20240815.jsonl](src/data/fq/real/20240501_20240815.jsonl) and the corresponding [tuples_scraped](src/data/tuples_scraped/)
 
 ### BaselineForecaster with p=0.4
 - [x] ground_truth_run
