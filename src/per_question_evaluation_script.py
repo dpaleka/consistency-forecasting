@@ -11,10 +11,6 @@ def run_command(command):
     return process.returncode, stdout.decode(), stderr.decode()
 
 
-starting_file = "src/data/fq/real/20240501_20240815.jsonl"
-# starting_file = "src/data/other/high-quality-questions-all-domains.jsonl"
-
-
 def main():
     parser = argparse.ArgumentParser(description="Run consistency evaluation pipeline")
 
