@@ -2,6 +2,7 @@ import sys
 import io
 import os
 import json
+import warnings
 import asyncio
 from pathlib import Path
 import click
@@ -9,7 +10,7 @@ import logging
 import functools
 import concurrent.futures
 from costly import Costlog
-
+import numpy as np
 from forecasters import Forecaster
 from static_checks.Checker import (
     Checker,
@@ -36,7 +37,7 @@ logging.getLogger().setLevel(logging.INFO)  # configure root logger
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
-metrics = ["default", "frequentist"]
+metrics = ["default", "frequentist", "default_scaled"]
 
 
 def get_stats(results: dict, label: str = "") -> dict:
@@ -45,8 +46,23 @@ def get_stats(results: dict, label: str = "") -> dict:
         print(f"{metric}")
 
         # Extract the violation and check results from the test
-        violations = [result[metric]["violation"] for result in results]
-        checks = [result[metric]["check"] for result in results]
+        violations = []
+        checks = []
+        for result in results:
+            if metric in result and isinstance(
+                result[metric]["violation"], (float, int)
+            ):
+                violations.append(result[metric]["violation"])
+            else:
+                warnings.warn(
+                    f"Violation {result[metric]['violation']} is an error message not a number"
+                )
+            if metric in result and isinstance(result[metric]["check"], bool):
+                checks.append(result[metric]["check"])
+            else:
+                warnings.warn(
+                    f"Check {result[metric]['check']} is an error message not a bool"
+                )
 
         # Calculate the number of violations
         print(f"checks: {checks}")
@@ -83,6 +99,7 @@ def get_stats(results: dict, label: str = "") -> dict:
 
         ret[metric] = {
             "label": label,
+            "num_samples_including_errors": len(results),
             "num_samples": len(violations),
             "num_violations": num_failed,
             "avg_violation": round(avg_violation, 6),
@@ -127,10 +144,10 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
 
     # Calculate overall stats
     for source, stats in source_aggregated_stats.items():
-        overall = {"default": {}, "frequentist": {}}
+        overall = {"default": {}, "frequentist": {}, "default_scaled": {}}
         checker_count = len(stats["by_checker"])
 
-        for metric in ["default", "frequentist"]:
+        for metric in ["default", "frequentist", "default_scaled"]:
             overall[metric] = {
                 "num_samples": 0,
                 "num_violations": 0,
@@ -171,6 +188,23 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     print(f"Aggregated stats by source question written to {output_file}")
 
 
+def aggregate_stats(all_stats: dict) -> dict:
+    aggregate_stats = {}
+
+    for metric in ["default", "frequentist", "default_scaled"]:
+        aggregate_stats[metric] = {}
+        tot_violation = 0.0
+        n = 0
+        aggregate_stats[metric]["avg_violation"] = np.mean(
+            [
+                checker_stats["overall"][metric]["avg_violation"]
+                for checker_stats in all_stats.values()
+                if "overall" in checker_stats and metric in checker_stats["overall"]
+            ]
+        )
+    return aggregate_stats
+
+
 def process_check(
     check_name: str,
     checkers: dict[str, Checker],
@@ -183,6 +217,7 @@ def process_check(
     load_dir: Path,
     run: bool,
     eval_by_source: bool,
+    do_check: bool,
     **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
@@ -241,7 +276,7 @@ def process_check(
                     results_batch = asyncio.run(
                         checkers[check_name].test(
                             forecaster,
-                            do_check=False,
+                            do_check=do_check,
                             tuples=batch_tuples,
                             **kwargs,
                         )
@@ -249,7 +284,7 @@ def process_check(
                 else:
                     results_batch = checkers[check_name].test_sync(
                         forecaster,
-                        do_check=False,
+                        do_check=do_check,
                         tuples=batch_tuples,
                         **kwargs,
                     )
@@ -382,6 +417,12 @@ def process_check(
     help="Evaluate consistency scores per source question",
 )
 @click.option(
+    "--skip_check",
+    is_flag=True,
+    default=False,
+    help="Compute and append violation data",
+)
+@click.option(
     "--simulate",
     is_flag=True,
     default=False,
@@ -402,8 +443,11 @@ def main(
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
+    skip_check: bool = False,
     simulate: bool = False,
 ):
+    do_check = not skip_check
+
     forecaster_config = get_forecaster_config(config_path, forecaster_options)
 
     forecaster = make_forecaster(
@@ -481,6 +525,7 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
                 cost_log=cl,
                 simulate=simulate,
             )
@@ -504,12 +549,15 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
                 cost_log=cl,
                 simulate=simulate,
             )
             all_stats[check_name] = stats
 
     # TODO figure out how to write to the load_dir
+
+    all_stats["aggregated"] = aggregate_stats(all_stats)
 
     all_stats["forecaster"] = forecaster.__class__.__name__
     all_stats["full_forecaster_config"] = forecaster.dump_config()
@@ -551,7 +599,7 @@ def main(
     for metric in metrics:
         print(f"\n{metric}")
         for check_name, stats in all_stats.items():
-            if check_name in ["forecaster", "full_forecaster_config"]:
+            if check_name in ["forecaster", "full_forecaster_config", "aggregated"]:
                 continue
             print(f"\n{check_name}:")
             print(f"{stats=}")
@@ -594,4 +642,4 @@ if __name__ == "__main__":
 # python evaluation.py -f PromptedToCons_Forecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 
 # Using ConsistentForecaster, recursive
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async -o use_generate_related_questions=True | tee see_eval.txt
