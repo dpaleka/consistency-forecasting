@@ -254,9 +254,10 @@ class Checker(ABC):
 
     @abstractmethod
     def check_exact(self, answers: dict[str, Any]) -> bool:
-        """Suffices to define this for answers: dict[str, bool], because
-        it is only used to check if a given tuple of resolutions is a
-        possible world."""
+        """Just make sure:
+        - it works for True, False, None answers
+        - it works for perfectly consistent answers
+        """
         pass
 
     def arbitrage(
@@ -1016,7 +1017,7 @@ class NegChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and answers["P"] + answers["not_P"] == 1
+            and abs(answers["P"] + answers["not_P"] - 1) < 1e-5
         )
 
 
@@ -1090,8 +1091,8 @@ class AndChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and max(answers["P"] + answers["Q"] - 1, 0) <= answers["P_and_Q"]
-            and answers["P_and_Q"] <= min(answers["P"], answers["Q"])
+            and max(answers["P"] + answers["Q"] - 1, 0) <= answers["P_and_Q"] + 1e-5
+            and answers["P_and_Q"] <= min(answers["P"], answers["Q"]) + 1e-5
         )
 
     def max_min_arbitrage(
@@ -1104,11 +1105,20 @@ class AndChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        force_calculate=False,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
         return super().max_min_arbitrage(
-            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+            answers,
+            scoring,
+            initial_guess,
+            euler,
+            dt,
+            max_steps,
+            tmax,
+            methods,
+            force_calculate,
         )
 
 
@@ -1181,8 +1191,8 @@ class OrChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and max(answers["P"], answers["Q"]) <= answers["P_or_Q"]
-            and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"])
+            and max(answers["P"], answers["Q"]) <= answers["P_or_Q"] + 1e-5
+            and answers["P_or_Q"] <= min(1, answers["P"] + answers["Q"]) + 1e-5
         )
 
     def max_min_arbitrage(
@@ -1195,11 +1205,20 @@ class OrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        force_calculate=False,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
         return super().max_min_arbitrage(
-            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+            answers,
+            scoring,
+            initial_guess,
+            euler,
+            dt,
+            max_steps,
+            tmax,
+            methods,
+            force_calculate,
         )
 
 
@@ -1272,11 +1291,20 @@ class AndOrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        force_calculate=False,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
         return super().max_min_arbitrage(
-            answers, scoring, initial_guess, euler, dt, max_steps, tmax, methods
+            answers,
+            scoring,
+            initial_guess,
+            euler,
+            dt,
+            max_steps,
+            tmax,
+            methods,
+            force_calculate,
         )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
@@ -1297,7 +1325,10 @@ class AndOrChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and answers["P"] + answers["Q"] == answers["P_and_Q"] + answers["P_or_Q"]
+            and abs(
+                answers["P"] + answers["Q"] - answers["P_and_Q"] - answers["P_or_Q"]
+            )
+            < 1e-5
         )
 
 
@@ -1372,7 +1403,7 @@ class ButChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and answers["P"] + answers["Q_and_not_P"] == answers["P_or_Q"]
+            and abs(answers["P"] + answers["Q_and_not_P"] - answers["P_or_Q"]) < 1e-5
         )
 
 
@@ -1483,7 +1514,7 @@ class CondChecker(Checker):
             {"P": False, "Q_given_P": None, "P_and_Q": False},
         ] or (
             all([a is not None for a in answers.values()])
-            and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+            and abs(answers["P"] * answers["Q_given_P"] - answers["P_and_Q"]) < 1e-5
         )
 
 
@@ -1576,9 +1607,12 @@ class ExpectedEvidenceChecker(Checker):
             {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
         ] or (
             all([a is not None for a in answers.values()])
-            and answers["P"]
-            == answers["P_given_Q"] * answers["Q"]
-            + answers["P_given_not_Q"] * (1 - answers["Q"])
+            and abs(
+                answers["P"]
+                - answers["P_given_Q"] * answers["Q"]
+                - answers["P_given_not_Q"] * (1 - answers["Q"])
+            )
+            < 1e-5
         )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
@@ -1661,7 +1695,7 @@ class ConsequenceChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and answers["P"] <= answers["cons_P"]
+            and answers["P"] <= answers["cons_P"] + 1e-5
         )
 
 
@@ -1734,7 +1768,7 @@ class ParaphraseChecker(Checker):
     def check_exact(self, answers: dict[str, Prob]) -> bool:
         return (
             all([a is not None for a in answers.values()])
-            and answers["P"] == answers["para_P"]
+            and abs(answers["P"] - answers["para_P"]) < 1e-5
         )
 
 
@@ -1894,8 +1928,11 @@ class CondCondChecker(Checker):
             },
         ] or (
             all([a is not None for a in answers.values()])
-            and answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
-            == answers["P_and_Q_and_R"]
+            and abs(
+                answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
+                - answers["P_and_Q_and_R"]
+            )
+            < 1e-5
         )
 
 
