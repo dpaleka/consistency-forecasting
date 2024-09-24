@@ -224,10 +224,15 @@ This list not include the entry points already mentioned in previous sections (f
 USE_OPENROUTER=True python src/perplexity_resolver_script.py -i src/data/fq/synthetic/news_api_generated_fqs/.../strict_res_checking_fqs_cleaned-ref-class-spanned-basic.jsonl --models perplexity/llama-3.1-sonar-huge-128k-online --start_from 0 -n [file_size] --batch_size 30 --n_attempts 1 --include_unresolvable
 ```
 and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
+- [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl) is a subset of the above, containing 1000 questions, including all 150 NewsAPI-generated questions and 850 reference-class-spanned questions.
+  The command to generate this file is:
+```shell
+python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl --output_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --filter_score original --only_preference --random_sample 1000 
+```
 
-- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs described above.
+- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where the number is equal to the number of questions in the source if less than 500.
 
-- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs described above
+- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
 
 ## Experiments
 
@@ -235,7 +240,6 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 (Draft, for now)
 
 - `-p src/forecasters/various.py::BaselineForecaster -o p=0.4`
-- `-p src/forecasters/various.py::BaselineForecaster -o p=0.6`
 - `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
 - `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1` (with OpenRouter)
 - `-f BasicForecaster -o model=gpt-4o-2024-08-06`
