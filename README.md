@@ -259,6 +259,13 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml)
 - `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_sonnet.yaml`](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) (with OpenRouter)
 - `-f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
+- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
 
 Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
 The other forecasters ask native call(s) and then parse the answer into an output format with an LLM (or by other means, in case of `AdvancedForecaster`).
@@ -267,13 +274,6 @@ The parsing model is always `gpt-4o-mini-2024-07-18`.
 ### Evaluation
 
 ```
-python evaluation.py -f BasicForecaster -o model=gpt-4o-2024-08-06 --run -n 100 -k all --async
-# gpt-4o-2024-08-06 is the latest and is cheaper I think
-# ... ADD other models e.g. llamas
-# ... ADD COT_Forecaster etc.
-
-python evaluation.py -f AdvancedForecaster -c forecasters/forecaster_configs/advanced/cheap_haiku.yaml --run -n 100 -k all --async
-# ... perhaps with more configurations
 
 python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 -o use_generate_related_questions=True --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
 python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 -o use_generate_related_questions=True --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
