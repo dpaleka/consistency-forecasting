@@ -4,17 +4,17 @@
             "label": "NegChecker",
             "num_samples": 3,
             "num_violations": 1,
-            "avg_violation": 0.01042,
-            "avg_violation_no_outliers": 0.005774,
-            "median_violation": 0.005774
+            "avg_violation": 0.032851,
+            "avg_violation_no_outliers": 0.003142,
+            "median_violation": 0.003142
         },
         "frequentist": {
             "label": "NegChecker",
             "num_samples": 3,
             "num_violations": 1,
-            "avg_violation": 0.131543,
-            "avg_violation_no_outliers": 0.106966,
-            "median_violation": 0.106966
+            "avg_violation": 0.175308,
+            "avg_violation_no_outliers": 0.079206,
+            "median_violation": 0.079206
         }
     },
     "by_source": {
@@ -23,57 +23,57 @@
                 "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
                 "num_samples": 1,
                 "num_violations": 1,
-                "avg_violation": 0.022816,
-                "avg_violation_no_outliers": 0.022816,
-                "median_violation": 0.022816
+                "avg_violation": 0.095411,
+                "avg_violation_no_outliers": 0.095411,
+                "median_violation": 0.095411
             },
             "frequentist": {
                 "label": "NegChecker_Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?",
                 "num_samples": 1,
                 "num_violations": 1,
-                "avg_violation": 0.214614,
-                "avg_violation_no_outliers": 0.214614,
-                "median_violation": 0.214614
+                "avg_violation": 0.446718,
+                "avg_violation_no_outliers": 0.446718,
+                "median_violation": 0.446718
             },
-            "source_id": "daedab41-bed2-4e55-b4a6-616c93983407"
+            "source_id": "8af94906-8c4c-4fd9-bc26-bd5d4f9677c5"
         },
         "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
             "default": {
                 "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
                 "num_samples": 1,
                 "num_violations": 0,
-                "avg_violation": 0.005774,
-                "avg_violation_no_outliers": 0.005774,
-                "median_violation": 0.005774
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
             },
             "frequentist": {
                 "label": "NegChecker_Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?",
                 "num_samples": 1,
                 "num_violations": 0,
-                "avg_violation": 0.106966,
-                "avg_violation_no_outliers": 0.106966,
-                "median_violation": 0.106966
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
             },
-            "source_id": "a44fd83e-1918-4989-a624-0bfef1174b05"
+            "source_id": "6ce4a4aa-4143-47aa-90a5-79ff58936ae2"
         },
         "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
             "default": {
                 "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
                 "num_samples": 1,
                 "num_violations": 0,
-                "avg_violation": 0.002671,
-                "avg_violation_no_outliers": 0.002671,
-                "median_violation": 0.002671
+                "avg_violation": 0.003142,
+                "avg_violation_no_outliers": 0.003142,
+                "median_violation": 0.003142
             },
             "frequentist": {
                 "label": "NegChecker_Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?",
                 "num_samples": 1,
                 "num_violations": 0,
-                "avg_violation": 0.073049,
-                "avg_violation_no_outliers": 0.073049,
-                "median_violation": 0.073049
+                "avg_violation": 0.079206,
+                "avg_violation_no_outliers": 0.079206,
+                "median_violation": 0.079206
             },
-            "source_id": "681cbe33-a4fa-450b-bd1d-4e2adc50ec5e"
+            "source_id": "a4dc0be5-3b3b-4103-8784-7a745af638a8"
         }
     }
 }
