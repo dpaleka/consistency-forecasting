@@ -1,6 +1,6 @@
 forecaster_date: "2024-04-30"
-MAX_WORDS_NEWSCATCHER: 0
-MAX_WORDS_GNEWS: 1 # temporary to debug
+MAX_WORDS_NEWSCATCHER: 5
+MAX_WORDS_GNEWS: 0 # temporary to debug
 NUM_ARTICLES_PER_QUERY: 1 # temporary to debug
 SEARCH_QUERY_MODEL_NAME: "gpt-4o-2024-05-13"
 SUMMARIZATION_MODEL_NAME: "gpt-4o-2024-05-13"
