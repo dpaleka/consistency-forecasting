@@ -1,3 +1,6 @@
+"""Ideally this should go in scripts/postpatch_scripts but it needs an import
+from src and I don't want to bother with that"""
+
 import json
 import click
 from static_checks.Checker import choose_checkers
