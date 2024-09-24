@@ -346,11 +346,14 @@ def process_check(
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
-            violation_data = {}
-            for metric in metrics:
-                violation_data[metric] = checkers[check_name].check_from_elicited_probs(
-                    answers, metric
-                )
+            if "violation_data" in result:
+                violation_data = result["violation_data"]
+            else:
+                violation_data = {}
+                for metric in metrics:
+                    violation_data[metric] = checkers[
+                        check_name
+                    ].check_from_elicited_probs(answers, metric)
             result.update(violation_data)
 
         print(f"Debug: Calculating stats for {check_name}")
