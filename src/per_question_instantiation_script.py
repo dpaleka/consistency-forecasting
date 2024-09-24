@@ -99,7 +99,7 @@ def main():
     parser.add_argument(
         "--tuples_per_source",
         type=int,
-        default=4,
+        default=5,
         help="Max number of tuples to generate per source question, per check",
     )
     parser.add_argument(
