@@ -673,36 +673,53 @@ class Checker(ABC):
     def check_from_elicited_probs(
         self,
         answers: dict[str, Prob],
-        metric: str = "default",
+        metric: str | list[str] = "default",
         scale_arbitrage: bool = False,
     ) -> dict[str, Any]:
+        if isinstance(metric, list):
+            return {
+                m: self.check_from_elicited_probs(
+                    answers, metric=m, scale_arbitrage=scale_arbitrage
+                )
+                for m in metric
+            }
         print(f"answers: {answers}\n")
         if any([a is None for a in answers.values()]):
             print("ERROR: Some answers are None!")
             return {"successful_elicitation": False}
-        loss: float = self.violation(
-            answers, metric=metric, scale_arbitrage=scale_arbitrage
-        )
-        res_bool: bool = self.check(
-            answers, metric=metric, scale_arbitrage=scale_arbitrage
-        )
-        res: str = {True: "Passed", False: "Failed"}[res_bool]
-        print(f"Violation: {loss}\nCheck result: {res}\n")
-        return {
-            "metric": metric,
-            "violation": loss,
-            "check": res_bool,
-            "check_result": res,
-            "successful_elicitation": True,
-        }
+        try:
+            loss: float = self.violation(
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
+            )
+            res_bool: bool = self.check(
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
+            )
+            res: str = {True: "Passed", False: "Failed"}[res_bool]
+            print(f"Violation: {loss}\nCheck result: {res}\n")
+            return {
+                "metric": metric,
+                "violation": loss,
+                "check": res_bool,
+                "check_result": res,
+                "successful_elicitation": True,
+            }
+        except Exception as e:
+            print(
+                f"Error in check_from_elicited_probs for "
+                f"{answers} with metric {metric}: {e}"
+            )
+            return {"successful_elicitation": False}
 
     def check_all_from_elicited_probs(
-        self, all_answers: list[dict[str, Prob]], scale_arbitrage: bool = False
+        self,
+        all_answers: list[dict[str, Prob]],
+        metric: str | list[str] = "default",
+        scale_arbitrage: bool = False,
     ) -> list[dict[str, Any]]:
         results = []
         for answers in all_answers:
             result = self.check_from_elicited_probs(
-                answers, scale_arbitrage=scale_arbitrage
+                answers, metric=metric, scale_arbitrage=scale_arbitrage
             )
             results.append(result)
         return results
@@ -739,13 +756,13 @@ class Checker(ABC):
 
                 answers = {q: a.prob for q, a in answers_.items()}
                 if do_check:
-                    result_without_line: dict[
-                        str, Any
-                    ] = self.check_from_elicited_probs(
-                        line_obj, answers, scale_arbitrage=scale_arbitrage
+                    violation_data: dict = self.check_from_elicited_probs(
+                        answers,
+                        metric=["default", "frequentist"],
+                        scale_arbitrage=scale_arbitrage,
                     )
                 else:
-                    result_without_line = {}
+                    violation_data = {}
 
                 result = {}
                 for question in answers_.keys():
@@ -759,7 +776,7 @@ class Checker(ABC):
                         },
                     }
 
-                result = {"line": result, **result_without_line}
+                result = {"line": result, "violation_data": violation_data}
 
                 results.append(result)
                 writer.write(result)
@@ -809,14 +826,16 @@ class Checker(ABC):
 
             if do_check:
                 print("Starting checking")
-                results_without_line = self.check_all_from_elicited_probs(
-                    all_answers, scale_arbitrage=scale_arbitrage
+                violations_data = self.check_all_from_elicited_probs(
+                    all_answers,
+                    metric=["default", "frequentist"],
+                    scale_arbitrage=scale_arbitrage,
                 )
             else:
-                results_without_line = [{} for _ in data]
+                violations_data = [{} for _ in data]
 
-            for line, answers_, answers, result_without_line in zip(
-                data, all_answers_, all_answers, results_without_line
+            for line, answers_, answers, violation_data in zip(
+                data, all_answers_, all_answers, violations_data
             ):
                 line_obj: "Self.TupleFormat" = self.get_line_obj(line)
                 result = {}
@@ -831,7 +850,7 @@ class Checker(ABC):
                         },
                     }
 
-                result = {"line": result, **result_without_line}
+                result = {"line": result, "violation_data": violation_data}
 
                 results.append(result)
                 writer.write(result)
