@@ -2,6 +2,7 @@ import sys
 import io
 import os
 import json
+import warnings
 import asyncio
 from pathlib import Path
 import click
@@ -45,8 +46,23 @@ def get_stats(results: dict, label: str = "") -> dict:
         print(f"{metric}")
 
         # Extract the violation and check results from the test
-        violations = [result[metric]["violation"] for result in results]
-        checks = [result[metric]["check"] for result in results]
+        violations = []
+        checks = []
+        for result in results:
+            if metric in result and isinstance(
+                result[metric]["violation"], (float, int)
+            ):
+                violations.append(result[metric]["violation"])
+            else:
+                warnings.warn(
+                    f"Violation {result[metric]['violation']} is an error message not a number"
+                )
+            if metric in result and isinstance(result[metric]["check"], bool):
+                checks.append(result[metric]["check"])
+            else:
+                warnings.warn(
+                    f"Check {result[metric]['check']} is an error message not a bool"
+                )
 
         # Calculate the number of violations
         print(f"checks: {checks}")
@@ -83,6 +99,7 @@ def get_stats(results: dict, label: str = "") -> dict:
 
         ret[metric] = {
             "label": label,
+            "num_samples_including_errors": len(results),
             "num_samples": len(violations),
             "num_violations": num_failed,
             "avg_violation": round(avg_violation, 6),
