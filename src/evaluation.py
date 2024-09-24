@@ -188,7 +188,7 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     print(f"Aggregated stats by source question written to {output_file}")
 
 
-def aggregate_stats(all_stats: dict, rescale_arbitrage=True) -> dict:
+def aggregate_stats(all_stats: dict, scale_arbitrage=True) -> dict:
     aggregate_stats = {}
 
     for metric in ["default", "frequentist"]:
@@ -200,7 +200,7 @@ def aggregate_stats(all_stats: dict, rescale_arbitrage=True) -> dict:
             if "overall" in checker_stats:
                 stats = checker_stats["overall"][metric]
                 v = stats["avg_violation"]
-                if metric == "default" and rescale_arbitrage:
+                if metric == "default" and scale_arbitrage:
                     v /= len(checker_obj.TupleFormat.model_fields)
                 tot_violation += v
                 n += 1
@@ -222,6 +222,7 @@ def process_check(
     run: bool,
     eval_by_source: bool,
     do_check: bool,
+    scale_arbitrage: bool,
     **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
@@ -282,6 +283,7 @@ def process_check(
                             forecaster,
                             do_check=do_check,
                             tuples=batch_tuples,
+                            scale_arbitrage=scale_arbitrage,
                             **kwargs,
                         )
                     )
@@ -290,6 +292,7 @@ def process_check(
                         forecaster,
                         do_check=do_check,
                         tuples=batch_tuples,
+                        scale_arbitrage=scale_arbitrage,
                         **kwargs,
                     )
 
@@ -353,7 +356,7 @@ def process_check(
             violation_data = {}
             for metric in metrics:
                 violation_data[metric] = checkers[check_name].check_from_elicited_probs(
-                    answers, metric
+                    answers, metric, scale_arbitrage=scale_arbitrage
                 )
             result.update(violation_data)
 
@@ -427,6 +430,12 @@ def process_check(
     help="Compute and append violation data",
 )
 @click.option(
+    "--scale_arbitrage",
+    is_flag=True,
+    default=False,
+    help="Rescale arbitrage violations",
+)
+@click.option(
     "--simulate",
     is_flag=True,
     default=False,
@@ -449,6 +458,7 @@ def main(
     eval_by_source: bool = False,
     skip_check: bool = False,
     simulate: bool = False,
+    scale_arbitrage: bool = False,
 ):
     do_check = not skip_check
 
@@ -530,6 +540,7 @@ def main(
                 run=run,
                 eval_by_source=eval_by_source,
                 do_check=do_check,
+                scale_arbitrage=scale_arbitrage,
                 cost_log=cl,
                 simulate=simulate,
             )
@@ -554,6 +565,7 @@ def main(
                 run=run,
                 eval_by_source=eval_by_source,
                 do_check=do_check,
+                scale_arbitrage=scale_arbitrage,
                 cost_log=cl,
                 simulate=simulate,
             )
