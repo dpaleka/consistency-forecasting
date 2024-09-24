@@ -445,6 +445,7 @@ class Checker(ABC):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("de",),
+        force_calculate=False,
     ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -469,8 +470,16 @@ class Checker(ABC):
                     arbitrage(outcome, answers, arbitrageur_answers) are all equal for all outcomes; then picks the
                     arbitrageur_answers for which this (equal) arbitrage is highest. Mostly broken though.
             Defaults to ("de,").
+            force_calculate (bool, optional): If True, will force calculate the max_min_arbitrage even if the
+                violation is already 0. Defaults to False.
 
         """
+        # don't take efforts if the violation is already 0
+        # we implement this specially for max_min_arbitrage because consistentforecaster
+        # uses it
+        if self.check_exact(answers) and not force_calculate:
+            return answers, 0.0
+
         if "de" in methods:
             return self.de_method(
                 answers=answers,
@@ -622,17 +631,24 @@ class Checker(ABC):
         force_pos=True,
         remove_zeros=1e-3,
         metric="default",
+        force_calculate=False,
         **kwargs,
     ) -> float:
         """Can be re-defined in subclass to use an exact calculation."""
         for k, v in answers.items():
             if isinstance(v, Forecast):
                 answers[k] = v.prob
+
+        if self.check_exact(answers) and not force_calculate:
+            return 0.0  # don't take efforts if the violation is already 0
+
         if metric in ["default", "default_scaled"]:
             if remove_zeros:
                 # remove_zeros is an epsilon value to avoid division by zero
                 answers = {k: v or remove_zeros for k, v in answers.items()}
-            v = self.arbitrage_violation(answers, **kwargs)
+            v = self.arbitrage_violation(
+                answers, force_calculate=force_calculate, **kwargs
+            )
             if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
             if metric == "default_scaled" and not isinstance(v, str):
@@ -1465,15 +1481,10 @@ class CondChecker(Checker):
             {"P": True, "Q_given_P": True, "P_and_Q": True},
             {"P": True, "Q_given_P": False, "P_and_Q": False},
             {"P": False, "Q_given_P": None, "P_and_Q": False},
-        ]
-        # return (
-        #     all([a is not None for a in answers.values()])
-        #     and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
-        # ) or (
-        #     answers["P"] == False
-        #     and answers["Q_given_P"] is None
-        #     and answers["P_and_Q"] == False
-        # )
+        ] or (
+            all([a is not None for a in answers.values()])
+            and answers["P"] * answers["Q_given_P"] == answers["P_and_Q"]
+        )
 
 
 class ExpectedEvidenceChecker(Checker):
@@ -1563,7 +1574,12 @@ class ExpectedEvidenceChecker(Checker):
             {"P": True, "Q": False, "P_given_Q": None, "P_given_not_Q": True},
             {"P": False, "Q": True, "P_given_Q": False, "P_given_not_Q": None},
             {"P": False, "Q": False, "P_given_Q": None, "P_given_not_Q": False},
-        ]
+        ] or (
+            all([a is not None for a in answers.values()])
+            and answers["P"]
+            == answers["P_given_Q"] * answers["Q"]
+            + answers["P_given_not_Q"] * (1 - answers["Q"])
+        )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         a, b, c, d = (
@@ -1876,7 +1892,11 @@ class CondCondChecker(Checker):
                 "R_given_P_and_Q": None,
                 "P_and_Q_and_R": False,
             },
-        ]
+        ] or (
+            all([a is not None for a in answers.values()])
+            and answers["P"] * answers["Q_given_P"] * answers["R_given_P_and_Q"]
+            == answers["P_and_Q_and_R"]
+        )
 
 
 checker_classes = [
