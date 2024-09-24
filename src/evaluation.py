@@ -183,6 +183,7 @@ def process_check(
     load_dir: Path,
     run: bool,
     eval_by_source: bool,
+    do_check: bool,
     **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
@@ -241,7 +242,7 @@ def process_check(
                     results_batch = asyncio.run(
                         checkers[check_name].test(
                             forecaster,
-                            do_check=False,
+                            do_check=do_check,
                             tuples=batch_tuples,
                             **kwargs,
                         )
@@ -249,7 +250,7 @@ def process_check(
                 else:
                     results_batch = checkers[check_name].test_sync(
                         forecaster,
-                        do_check=False,
+                        do_check=do_check,
                         tuples=batch_tuples,
                         **kwargs,
                     )
@@ -382,6 +383,12 @@ def process_check(
     help="Evaluate consistency scores per source question",
 )
 @click.option(
+    "--skip_check",
+    is_flag=True,
+    default=False,
+    help="Compute and append violation data",
+)
+@click.option(
     "--simulate",
     is_flag=True,
     default=False,
@@ -402,8 +409,11 @@ def main(
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
+    skip_check: bool = False,
     simulate: bool = False,
 ):
+    do_check = not skip_check
+
     forecaster_config = get_forecaster_config(config_path, forecaster_options)
 
     forecaster = make_forecaster(
@@ -481,6 +491,7 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
                 cost_log=cl,
                 simulate=simulate,
             )
@@ -504,6 +515,7 @@ def main(
                 load_dir=load_dir,
                 run=run,
                 eval_by_source=eval_by_source,
+                do_check=do_check,
                 cost_log=cl,
                 simulate=simulate,
             )
