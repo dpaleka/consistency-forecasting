@@ -14,6 +14,7 @@ from static_checks.tuple_relevance import (
     get_relevant_questions,
     get_relevant_questions_sync,
 )
+from generate_related_questions import generate_questions_from_question
 from common.path_utils import get_data_path
 
 
@@ -53,6 +54,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         coerce_nonbinary_qs=True,
+        use_generate_related_questions=False,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -74,10 +76,14 @@ class ConsistentForecaster(Forecaster):
         self.bq_func_kwargs = bq_func_kwargs or {}
         self.kwargs = kwargs
 
+        self.use_generate_related_questions = use_generate_related_questions
+
         self.bq_func_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
         self.bq_func_kwargs["simulate"] = self.kwargs.get("simulate", False)
         self.instantiation_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
         self.instantiation_kwargs["simulate"] = self.kwargs.get("simulate", False)
+
+        print(type(self.use_generate_related_questions))
 
     def bq_function(
         self,
@@ -98,6 +104,10 @@ class ConsistentForecaster(Forecaster):
         tuple_size (int): Size of the tuple to get.
         base_data_path (Path): Path to questions to retrieve from.
         """
+        if self.use_generate_related_questions:
+            raise NotImplementedError(
+                "generate_questions_from_question does not have synchronous version"
+            )
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
         if base_data_path is None:
@@ -135,15 +145,24 @@ class ConsistentForecaster(Forecaster):
             keys = ["P", "Q", "R", "S", "T"]
         if base_data_path is None:
             base_data_path = self.base_data_path
-        res = await get_relevant_questions(
-            existing_questions=[sentence],
-            n_relevance=n_relevance,
-            n_return=n_return,
-            tuple_size=tuple_size,
-            base_data_path=base_data_path,
-            **kwargs,
-        )
-        tup = res[0][0]
+        if self.use_generate_related_questions:
+            related_questions = await generate_questions_from_question(
+                source_question=sentence.title,
+                num_questions=tuple_size - 1,
+                model=kwargs.get("model", self.model),
+                source_body=sentence.body,
+            )
+            tup = [sentence] + related_questions
+        else:
+            res = await get_relevant_questions(
+                existing_questions=[sentence],
+                n_relevance=n_relevance,
+                n_return=n_return,
+                tuple_size=tuple_size,
+                base_data_path=base_data_path,
+                **kwargs,
+            )
+            tup = res[0][0]
         return {k: fq for k, fq in zip(keys, tup)}
 
     def instantiate_cons_tuples(
