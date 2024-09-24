@@ -188,7 +188,7 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
     print(f"Aggregated stats by source question written to {output_file}")
 
 
-def aggregate_stats(all_stats: dict, scale_arbitrage=True) -> dict:
+def aggregate_stats(all_stats: dict, rescale_arbitrage: bool = True) -> dict:
     aggregate_stats = {}
 
     for metric in ["default", "frequentist"]:
@@ -200,7 +200,7 @@ def aggregate_stats(all_stats: dict, scale_arbitrage=True) -> dict:
             if "overall" in checker_stats:
                 stats = checker_stats["overall"][metric]
                 v = stats["avg_violation"]
-                if metric == "default" and scale_arbitrage:
+                if metric == "default" and rescale_arbitrage:
                     v /= len(checker_obj.TupleFormat.model_fields)
                 tot_violation += v
                 n += 1
@@ -573,7 +573,10 @@ def main(
 
     # TODO figure out how to write to the load_dir
 
-    all_stats["aggregated"] = aggregate_stats(all_stats)
+    # !!! Only rescale arbitrage in aggregation if it's not already scaled
+    all_stats["aggregated"] = aggregate_stats(
+        all_stats, rescale_arbitrage=not scale_arbitrage
+    )
 
     all_stats["forecaster"] = forecaster.__class__.__name__
     all_stats["full_forecaster_config"] = forecaster.dump_config()
