@@ -1,5 +1,6 @@
 import jsonlines
 import json
+import warnings
 from dotenv import load_dotenv
 import os
 import functools
@@ -605,11 +606,12 @@ class Checker(ABC):
                 answers[k] = v.prob
         try:
             return self.max_min_arbitrage(answers, **kwargs)[1]
-        except ZeroDivisionError:
-            return 123
+        except ZeroDivisionError as e:
+            warnings.warn(f"ZeroDivisionError in arbitrage_violation on {answers}: {e}")
+            return str(e)
         except Exception as e:
-            print(f"Error in arbitrage_violation: {e}")
-            return 148
+            warnings.warn(f"Error in arbitrage_violation on {answers}: {e}")
+            return str(e)
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
         raise NotImplementedError("Subclasses must implement this")
@@ -631,7 +633,7 @@ class Checker(ABC):
                 # remove_zeros is an epsilon value to avoid division by zero
                 answers = {k: v or remove_zeros for k, v in answers.items()}
             v = self.arbitrage_violation(answers, **kwargs)
-            if force_pos:
+            if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
         elif metric == "frequentist":
             v = self.frequentist_violation(answers, **kwargs)
@@ -645,7 +647,11 @@ class Checker(ABC):
             if isinstance(v, Forecast):
                 answers[k] = v.prob
         if metric == "default":
-            return bool(self.violation(answers) < self.default_tolerance)
+            viol = self.violation(answers)
+            if isinstance(viol, str):
+                warnings.warn(f"Error in check: {viol}")
+                return None
+            return bool(viol < self.default_tolerance)
         elif metric == "frequentist":
             return bool(
                 self.frequentist_violation(answers)
