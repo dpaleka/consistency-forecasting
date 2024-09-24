@@ -1,0 +1,78 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.192,
+    "avg_platt_brier_score": 0.198,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 23.3,
+    "avg_platt_brier_score_scaled": 20.7,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 0.823,
+    "platt_scaling_factor": 0.697,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.051,
+        "resolution": 0.042
+    },
+    "calibration_error": 0.073,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.119,
+            0.0,
+            0.167,
+            0.292,
+            0.353,
+            0.552,
+            0.562,
+            0.533,
+            0.652
+        ],
+        "bin_confidences": [
+            0.01,
+            0.02,
+            0.051,
+            0.14,
+            0.233,
+            0.345,
+            0.412,
+            0.502,
+            0.566,
+            0.687,
+            0.828
+        ],
+        "num_samples": [
+            1,
+            2,
+            42,
+            3,
+            54,
+            24,
+            17,
+            29,
+            32,
+            15,
+            23
+        ],
+        "calibration_error": 0.073
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}
