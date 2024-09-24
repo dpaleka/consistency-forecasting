@@ -594,4 +594,4 @@ if __name__ == "__main__":
 # python evaluation.py -f PromptedToCons_Forecaster -o model=gpt-4o-mini --run -n 3 --relevant_checks all | tee see_eval.txt
 
 # Using ConsistentForecaster, recursive
-# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async | tee see_eval.txt
+# python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async -o use_generate_related_questions=True | tee see_eval.txt

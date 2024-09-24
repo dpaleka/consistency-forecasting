@@ -89,6 +89,7 @@ def make_consistent_forecaster(
     forecaster_config: dict[str, Any] | None,
     checks: list[str],
     depth: int,
+    use_generate_related_questions: bool,
 ) -> ConsistentForecaster:
     checks = [dict(checker_classes)[check]() for check in checks]
     return ConsistentForecaster.recursive(
@@ -97,6 +98,7 @@ def make_consistent_forecaster(
         checks=checks,
         instantiation_kwargs={"model": forecaster_config["model"]},
         bq_func_kwargs={"model": forecaster_config["model"]},
+        use_generate_related_questions=use_generate_related_questions,
         **forecaster_config,
     )
 
@@ -117,6 +119,30 @@ def make_forecaster(
             custom_path, class_name, forecaster_config=forecaster_config
         )
     elif forecaster_class == "ConsistentForecaster":
+        if "use_generate_related_questions" in forecaster_config:
+            if forecaster_config["use_generate_related_questions"].lower() in [
+                "true",
+                "1",
+                "t",
+                "y",
+                "yes",
+            ]:
+                use_generate_related_questions = True
+            elif forecaster_config["use_generate_related_questions"].lower() in [
+                "false",
+                "0",
+                "f",
+                "n",
+                "no",
+            ]:
+                use_generate_related_questions = False
+            else:
+                raise ValueError(
+                    f"Invalid value for use_generate_related_questions: "
+                    f"{forecaster_config['use_generate_related_questions']}"
+                )
+        else:
+            use_generate_related_questions = False
         assert forecaster_config[
             "checks"
         ], "HACK sometimes checks gets converted to a tuple () so we don't check for None"
@@ -124,10 +150,13 @@ def make_forecaster(
             forecaster_config={
                 k: v
                 for k, v in forecaster_config.items()
-                if k != "checks" and k != "depth"
+                if k != "checks"
+                and k != "depth"
+                and k != "use_generate_related_questions"
             },
             checks=forecaster_config["checks"],
             depth=forecaster_config["depth"],
+            use_generate_related_questions=use_generate_related_questions,
         )
     else:
         assert (
