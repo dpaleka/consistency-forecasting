@@ -420,8 +420,6 @@ class ConsistentForecaster(Forecaster):
             instantiation_kwargs=instantiation_kwargs,
             **kwargs,
         )
-        print("BLOK", self.checks, len(self.checks))
-        print("GLOD", cons_tuples, len(cons_tuples))
         P_weight = 1.0
         for check, cons_tuple in zip(self.checks, cons_tuples):
             cons_tuple = shallow_dict(cons_tuple)
