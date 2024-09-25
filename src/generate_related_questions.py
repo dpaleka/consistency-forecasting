@@ -3,7 +3,7 @@ import asyncio
 import argparse
 from common.path_utils import get_data_path
 from common.utils import write_jsonl_async_from_str
-from common.datatypes import QuestionGenerationResponse
+from common.datatypes import QuestionGenerationResponse, QuestionGenerationResponse_FQ
 from fq_generation.utils import deduplicate
 import json
 from common.llm_utils import answer
@@ -151,7 +151,12 @@ def get_titles_from_fq(file_path, use_body=False):
 
 
 async def generate_questions_from_question(
-    source_question, model, num_questions, source_body=None, resolve_by=None
+    source_question,
+    model,
+    num_questions,
+    source_body=None,
+    resolve_by=None,
+    return_fq=False,
 ):
     if resolve_by:
         question_prompt = prompt_with_date.format(
@@ -172,17 +177,22 @@ async def generate_questions_from_question(
         )
 
     # print(question_prompt)
+    # this is a HACK for the ICLR submission, ideally this whole file needs to be refactored
+    response_model = (
+        QuestionGenerationResponse_FQ if return_fq else QuestionGenerationResponse
+    )
 
     generated_questions = await answer(
         prompt=question_prompt,
         preface=None,
-        response_model=QuestionGenerationResponse,
+        response_model=response_model,
         model=model,
     )
 
-    # Ensure each generated question has the source question field populated
-    for question in generated_questions.questions:
-        question.source_question = source_question
+    if not return_fq:
+        # Ensure each generated question has the source question field populated
+        for question in generated_questions.questions:
+            question.source_question = source_question
 
     return generated_questions.questions
 

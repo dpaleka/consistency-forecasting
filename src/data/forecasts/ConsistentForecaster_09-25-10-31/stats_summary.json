@@ -1,0 +1,171 @@
+{
+    "NegChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "AndChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "OrChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "AndOrChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "ButChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "CondChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "ConsequenceChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "ParaphraseChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "CondCondChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "generate_questions_from_question() got an unexpected keyword argument 'enforce_body'"
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": NaN
+        },
+        "frequentist": {
+            "avg_violation": NaN
+        },
+        "default_scaled": {
+            "avg_violation": NaN
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}{
+    "NegChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "AndChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "OrChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "AndOrChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "ButChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "CondChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "ConsequenceChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "ParaphraseChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "CondCondChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "\"ForecastingQuestion\" object has no field \"source_question\""
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": NaN
+        },
+        "frequentist": {
+            "avg_violation": NaN
+        },
+        "default_scaled": {
+            "avg_violation": NaN
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}
