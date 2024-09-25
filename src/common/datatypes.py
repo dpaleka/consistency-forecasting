@@ -290,6 +290,7 @@ class SyntheticTagQuestion(BaseModel):
     fixed: Optional[bool] = False
     body: Optional[str] = None
     resolution_date: Optional[str] = None
+    created_date: Optional[str] = None
 
 
 register_model_for_cache(SyntheticTagQuestion)

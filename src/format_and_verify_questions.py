@@ -20,7 +20,6 @@ SyntheticQuestion = Union[
 ]  # help functions dynamically handle Synthetic Questions
 
 
-
 async def validate_and_format_question(
     question: dict,
     verify: bool = True,
@@ -72,6 +71,7 @@ async def validate_and_format_synthetic_question(
         forecasting_question = await fq_body_generator.from_string(
             question.title,
             data_source="synthetic",
+            created_date=question.created_date if hasattr(question, "created_date") else None,
             question_type="binary",
             metadata=metadata,
             fill_in_body=fill_in_body,
