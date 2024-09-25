@@ -431,11 +431,22 @@ class ConsistentForecaster(Forecaster):
             **kwargs,
         )
         P_weight = 1.0
-        for check, cons_tuple in zip(self.checks, cons_tuples):
+
+        def get_check_answers(tup):
+            check, cons_tuple = tup
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
+            return self.hypocrite.elicit_async(cons_tuple, **kwargs)
 
+        hypocrite_answerss = await parallelized_call(
+            get_check_answers, list(zip(self.checks, cons_tuples))
+        )
+
+        for check, cons_tuple, hypocrite_answers in zip(
+            self.checks, cons_tuples, hypocrite_answerss
+        ):
+            cons_tuple = shallow_dict(cons_tuple)
+            del cons_tuple["P"]
             metadata_entry = {
                 "name": check.__class__.__name__,
                 "data": {
