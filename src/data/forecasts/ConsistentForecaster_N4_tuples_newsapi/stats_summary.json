@@ -1,0 +1,437 @@
+{
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.000371,
+                "avg_violation_no_outliers": 0.000371,
+                "median_violation": 0.000371
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.027215,
+                "avg_violation_no_outliers": 0.027215,
+                "median_violation": 0.027215
+            },
+            "default_scaled": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.000186,
+                "avg_violation_no_outliers": 0.000186,
+                "median_violation": 0.000186
+            }
+        }
+    },
+    "AndChecker": {
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.0,
+                "avg_violation_no_outliers": 0.0,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.019421,
+                "avg_violation_no_outliers": 0.019421,
+                "median_violation": 0.019421
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.196816,
+                "avg_violation_no_outliers": 0.196816,
+                "median_violation": 0.196816
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.006474,
+                "avg_violation_no_outliers": 0.006474,
+                "median_violation": 0.006474
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.025061,
+                "avg_violation_no_outliers": 0.025061,
+                "median_violation": 0.025061
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.226409,
+                "avg_violation_no_outliers": 0.226409,
+                "median_violation": 0.226409
+            },
+            "default_scaled": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.006265,
+                "avg_violation_no_outliers": 0.006265,
+                "median_violation": 0.006265
+            }
+        }
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.309725,
+                "avg_violation_no_outliers": 0.309725,
+                "median_violation": 0.309725
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.784213,
+                "avg_violation_no_outliers": 0.784213,
+                "median_violation": 0.784213
+            },
+            "default_scaled": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.103242,
+                "avg_violation_no_outliers": 0.103242,
+                "median_violation": 0.103242
+            }
+        }
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.027307,
+                "avg_violation_no_outliers": 0.027307,
+                "median_violation": 0.027307
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.254397,
+                "avg_violation_no_outliers": 0.254397,
+                "median_violation": 0.254397
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.009102,
+                "avg_violation_no_outliers": 0.009102,
+                "median_violation": 0.009102
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.000407,
+                "avg_violation_no_outliers": 0.000407,
+                "median_violation": 0.000407
+            },
+            "frequentist": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.028511,
+                "avg_violation_no_outliers": 0.028511,
+                "median_violation": 0.028511
+            },
+            "default_scaled": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.000204,
+                "avg_violation_no_outliers": 0.000204,
+                "median_violation": 0.000204
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.00073,
+                "avg_violation_no_outliers": 0.00073,
+                "median_violation": 0.00073
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.038179,
+                "avg_violation_no_outliers": 0.038179,
+                "median_violation": 0.038179
+            },
+            "default_scaled": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.000365,
+                "avg_violation_no_outliers": 0.000365,
+                "median_violation": 0.000365
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.034053,
+                "avg_violation_no_outliers": 0.034053,
+                "median_violation": 0.034053
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.299437,
+                "avg_violation_no_outliers": 0.299437,
+                "median_violation": 0.299437
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.008513,
+                "avg_violation_no_outliers": 0.008513,
+                "median_violation": 0.008513
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.014967,
+                "avg_violation_no_outliers": 0.014967,
+                "median_violation": 0.014967
+            },
+            "frequentist": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 1,
+                "avg_violation": 0.256158,
+                "avg_violation_no_outliers": 0.256158,
+                "median_violation": 0.256158
+            },
+            "default_scaled": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 1,
+                "num_samples": 1,
+                "num_violations": 0,
+                "avg_violation": 0.003742,
+                "avg_violation_no_outliers": 0.003742,
+                "median_violation": 0.003742
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.0432042
+        },
+        "frequentist": {
+            "avg_violation": 0.2111335
+        },
+        "default_scaled": {
+            "avg_violation": 0.0138093
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "hypocrite": {
+                "hypocrite": {
+                    "hypocrite": {
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+                        "examples": []
+                    },
+                    "checks": [
+                        {
+                            "name": "NegChecker",
+                            "default_tolerance": 0.01,
+                            "frequentist_hparams": {
+                                "sigma": 0.05,
+                                "gamma": 2.58,
+                                "beta": 0.001
+                            },
+                            "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
+                        }
+                    ],
+                    "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+                    "instantiation_kwargs": {
+                        "verify_before_instantiation": false,
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "cost_log": null,
+                        "simulate": false
+                    },
+                    "bq_func_kwargs": {
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "cost_log": null,
+                        "simulate": false
+                    },
+                    "call_kwargs": {}
+                },
+                "checks": [
+                    {
+                        "name": "NegChecker",
+                        "default_tolerance": 0.01,
+                        "frequentist_hparams": {
+                            "sigma": 0.05,
+                            "gamma": 2.58,
+                            "beta": 0.001
+                        },
+                        "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
+                    }
+                ],
+                "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+                "instantiation_kwargs": {
+                    "verify_before_instantiation": false,
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "cost_log": null,
+                    "simulate": false
+                },
+                "bq_func_kwargs": {
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "cost_log": null,
+                    "simulate": false
+                },
+                "call_kwargs": {}
+            },
+            "checks": [
+                {
+                    "name": "NegChecker",
+                    "default_tolerance": 0.01,
+                    "frequentist_hparams": {
+                        "sigma": 0.05,
+                        "gamma": 2.58,
+                        "beta": 0.001
+                    },
+                    "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
+                }
+            ],
+            "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+            "instantiation_kwargs": {
+                "verify_before_instantiation": false,
+                "model": "gpt-4o-mini-2024-07-18",
+                "cost_log": null,
+                "simulate": false
+            },
+            "bq_func_kwargs": {
+                "model": "gpt-4o-mini-2024-07-18",
+                "cost_log": null,
+                "simulate": false
+            },
+            "call_kwargs": {}
+        },
+        "checks": [
+            {
+                "name": "NegChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}

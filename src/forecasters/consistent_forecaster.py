@@ -150,11 +150,11 @@ class ConsistentForecaster(Forecaster):
                 num_questions=tuple_size - 1,
                 model=kwargs.get("model", self.model),
                 source_body=sentence.body,
+                resolve_by=sentence.resolution_date,
                 return_fq=True,
             )
             tup = [sentence] + related_questions
         else:
-            raise NotImplementedError("breaking here to debug")
             res = await get_relevant_questions(
                 existing_questions=[sentence],
                 n_relevance=n_relevance,
