@@ -54,7 +54,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         coerce_nonbinary_qs=True,
-        use_generate_related_questions=False,
+        use_generate_related_questions=True,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
