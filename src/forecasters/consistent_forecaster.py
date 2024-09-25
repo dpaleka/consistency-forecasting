@@ -1,5 +1,6 @@
 from common.utils import shallow_dict
 from common.path_utils import get_data_path
+from common.llm_utils import parallelized_call
 from .forecaster import Forecaster
 from .basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion, Forecast
@@ -258,8 +259,13 @@ class ConsistentForecaster(Forecaster):
             sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
 
-        cons_tuples = []
         checks_so_far = []
+        tasks = []
+
+        def _instantiate_check(tup):
+            check, bq_tuple, instantiation_kwargs = tup
+            return check.instantiate(bq_tuple, **instantiation_kwargs)
+
         for check in self.checks:
             if check.__class__.__name__ in checks_so_far:
                 seed += 1
@@ -276,15 +282,18 @@ class ConsistentForecaster(Forecaster):
                     if k in list(bq_tuple_max.keys())[: check.num_base_questions]
                 }
             checks_so_far.append(check.__class__.__name__)
-            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                if len(cons_tuple) == 0:
-                    print(
-                        f"Found multiple valid instantiated cons_tuples for {check.__class__.__name__}"
-                    )
-                    continue
-                cons_tuple = cons_tuple[0]
-            cons_tuples.append(cons_tuple)
+            tasks.append((check, bq_tuple, instantiation_kwargs))
+
+        cons_tuples = await parallelized_call(_instantiate_check, tasks)
+
+        cons_tuples = [
+            cons_tuple[0]
+            if isinstance(cons_tuple, list) and len(cons_tuple) > 0
+            else cons_tuple
+            for cons_tuple in cons_tuples
+            if cons_tuple
+        ]
+
         return cons_tuples
 
     def call(
