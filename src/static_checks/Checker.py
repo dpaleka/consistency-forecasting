@@ -1141,6 +1141,7 @@ class AndChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1153,6 +1154,7 @@ class AndChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
 
@@ -1246,6 +1248,7 @@ class OrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1258,6 +1261,7 @@ class OrChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
 
@@ -1330,6 +1334,7 @@ class AndOrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1342,6 +1347,7 @@ class AndOrChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
