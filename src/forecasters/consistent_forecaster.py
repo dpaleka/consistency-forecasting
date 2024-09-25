@@ -1,4 +1,5 @@
 from common.utils import shallow_dict
+from common.path_utils import get_data_path
 from .forecaster import Forecaster
 from .basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion, Forecast
@@ -15,7 +16,6 @@ from static_checks.tuple_relevance import (
     get_relevant_questions_sync,
 )
 from generate_related_questions import generate_questions_from_question
-from common.path_utils import get_data_path
 
 
 class ConsistentForecaster(Forecaster):

@@ -22,7 +22,8 @@ default_small_model = "gpt-4o-mini-2024-07-18"
 def consistent_forecaster():
     basic_forecaster = BasicForecaster(model=default_small_model)
     return ConsistentForecaster(
-        basic_forecaster,
+        model=default_small_model,
+        hypocrite=basic_forecaster,
         checks=[
             NegChecker(),
             CondCondChecker(),
@@ -34,7 +35,8 @@ def consistent_forecaster():
 def consistent_forecaster_single():
     basic_forecaster = BasicForecaster(model=default_small_model)
     return ConsistentForecaster(
-        basic_forecaster,
+        model=default_small_model,
+        hypocrite=basic_forecaster,
         checks=[
             NegChecker(),
         ],
