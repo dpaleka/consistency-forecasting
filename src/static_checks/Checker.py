@@ -1001,11 +1001,29 @@ class NegChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
+
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] == 0:
+                    answers[k] = remove_zeros
+                elif answers[k] == 1:
+                    answers[k] = 1 - remove_zeros
+
         weights = self.get_scoring(
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
@@ -1516,10 +1534,26 @@ class CondChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         if kwargs:
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] == 0:
+                    answers[k] = remove_zeros
+                elif answers[k] == 1:
+                    answers[k] = 1 - remove_zeros
 
         a = np.sqrt(
             (1 - answers["P"] * answers["Q_given_P"])
@@ -1709,12 +1743,29 @@ class ConsequenceChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             kwargs["methods"] = ("shgo",)  # DE does not work for this one
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] == 0:
+                    answers[k] = remove_zeros
+                elif answers[k] == 1:
+                    answers[k] = 1 - remove_zeros
+
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
@@ -1781,11 +1832,28 @@ class ParaphraseChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] == 0:
+                    answers[k] = remove_zeros
+                elif answers[k] == 1:
+                    answers[k] = 1 - remove_zeros
+
         weights = self.get_scoring(
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
