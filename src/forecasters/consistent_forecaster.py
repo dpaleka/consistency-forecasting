@@ -54,7 +54,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         coerce_nonbinary_qs=True,
-        use_generate_related_questions=True,
+        use_generate_related_questions=True,  # make sure to this is also set in forecasters.create::make_forecaster
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -154,6 +154,7 @@ class ConsistentForecaster(Forecaster):
             )
             tup = [sentence] + related_questions
         else:
+            raise NotImplementedError("breaking here to debug")
             res = await get_relevant_questions(
                 existing_questions=[sentence],
                 n_relevance=n_relevance,

@@ -142,7 +142,7 @@ def make_forecaster(
                     f"{forecaster_config['use_generate_related_questions']}"
                 )
         else:
-            use_generate_related_questions = False
+            use_generate_related_questions = True
         assert forecaster_config[
             "checks"
         ], "HACK sometimes checks gets converted to a tuple () so we don't check for None"
