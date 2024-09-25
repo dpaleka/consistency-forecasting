@@ -7,7 +7,7 @@ OUTPUT_DIRNAME="BaselineForecaster_p0.4_20240701_20240831"
 #Summary written to /Users/daniel/code/consistency-forecasting/src/data/forecasts/A_UniformRandomForecaster_most_recent/ground_truth_summary.json
 # UniformRandomForecaster with n_buckets=100
 OUTPUT_DIRNAME="UniformRandomForecaster_n_buckets100_20240701_20240831"
-#python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 1000 --run --async --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 1000 --run --async --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 
 # BasicForecaster with gpt-4o-2024-08-06 model
 OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_20240701_20240831"
