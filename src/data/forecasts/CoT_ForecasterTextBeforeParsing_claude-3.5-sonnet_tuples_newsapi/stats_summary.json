@@ -1,0 +1,238 @@
+{
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 400,
+                "num_samples": 400,
+                "num_violations": 217,
+                "avg_violation": 0.047458,
+                "avg_violation_no_outliers": 0.038151,
+                "median_violation": 0.013504
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 400,
+                "num_samples": 400,
+                "num_violations": 235,
+                "avg_violation": 0.234316,
+                "avg_violation_no_outliers": 0.211983,
+                "median_violation": 0.164843
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 400,
+                "num_samples": 400,
+                "num_violations": 192,
+                "avg_violation": 0.015819,
+                "avg_violation_no_outliers": 0.012717,
+                "median_violation": 0.004501
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.047458
+        },
+        "frequentist": {
+            "avg_violation": 0.234316
+        },
+        "default_scaled": {
+            "avg_violation": 0.015819
+        }
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}{
+    "NegChecker": {
+        "error": "Expecting value: line 275 column 1 (char 1507)"
+    },
+    "AndChecker": {
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 51,
+                "avg_violation": 0.022708,
+                "avg_violation_no_outliers": 0.00931,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 51,
+                "avg_violation": 0.081229,
+                "avg_violation_no_outliers": 0.058972,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 39,
+                "avg_violation": 0.007569,
+                "avg_violation_no_outliers": 0.003103,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 95,
+                "avg_violation": 0.029674,
+                "avg_violation_no_outliers": 0.02656,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 101,
+                "avg_violation": 0.134643,
+                "avg_violation_no_outliers": 0.129398,
+                "median_violation": 0.040039
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 74,
+                "avg_violation": 0.009891,
+                "avg_violation_no_outliers": 0.008853,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 156,
+                "avg_violation": 0.047607,
+                "avg_violation_no_outliers": 0.041434,
+                "median_violation": 0.011186
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 192,
+                "avg_violation": 0.245119,
+                "avg_violation_no_outliers": 0.235484,
+                "median_violation": 0.177327
+            },
+            "default_scaled": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 124,
+                "avg_violation": 0.011902,
+                "avg_violation_no_outliers": 0.010358,
+                "median_violation": 0.002797
+            }
+        }
+    },
+    "ButChecker": {
+        "error": "Expecting value: line 229 column 1 (char 1254)"
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 147,
+                "avg_violation": 0.040235,
+                "avg_violation_no_outliers": 0.032741,
+                "median_violation": 0.009422
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 170,
+                "avg_violation": 0.21236,
+                "avg_violation_no_outliers": 0.200161,
+                "median_violation": 0.149241
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 123,
+                "avg_violation": 0.013412,
+                "avg_violation_no_outliers": 0.010914,
+                "median_violation": 0.003141
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "error": "Expecting value: line 213 column 1 (char 1166)"
+    },
+    "ParaphraseChecker": {
+        "error": "Expecting value: line 265 column 1 (char 1452)"
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 94,
+                "avg_violation": 0.021771,
+                "avg_violation_no_outliers": 0.020834,
+                "median_violation": 0.001879
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 133,
+                "avg_violation": 0.163217,
+                "avg_violation_no_outliers": 0.161956,
+                "median_violation": 0.109738
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 75,
+                "avg_violation": 0.005443,
+                "avg_violation_no_outliers": 0.005208,
+                "median_violation": 0.00047
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "'NoneType' object is not subscriptable"
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.032399
+        },
+        "frequentist": {
+            "avg_violation": 0.1673136
+        },
+        "default_scaled": {
+            "avg_violation": 0.0096434
+        }
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}

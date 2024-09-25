@@ -1,0 +1,11 @@
+{
+    "default": {
+        "avg_violation": NaN
+    },
+    "frequentist": {
+        "avg_violation": NaN
+    },
+    "default_scaled": {
+        "avg_violation": NaN
+    }
+}
