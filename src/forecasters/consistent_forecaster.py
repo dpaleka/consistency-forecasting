@@ -54,7 +54,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         coerce_nonbinary_qs=True,
-        use_generate_related_questions=False,
+        use_generate_related_questions=True,
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -83,8 +83,6 @@ class ConsistentForecaster(Forecaster):
         self.instantiation_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
         self.instantiation_kwargs["simulate"] = self.kwargs.get("simulate", False)
 
-        print(type(self.use_generate_related_questions))
-
     def bq_function(
         self,
         sentence: ForecastingQuestion,
@@ -107,6 +105,7 @@ class ConsistentForecaster(Forecaster):
         if self.use_generate_related_questions:
             raise NotImplementedError(
                 "generate_questions_from_question does not have synchronous version"
+                "please use --async"
             )
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
@@ -151,6 +150,7 @@ class ConsistentForecaster(Forecaster):
                 num_questions=tuple_size - 1,
                 model=kwargs.get("model", self.model),
                 source_body=sentence.body,
+                return_fq=True,
             )
             tup = [sentence] + related_questions
         else:
