@@ -1,0 +1,82 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.183,
+    "avg_platt_brier_score": 0.135,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 26.9,
+    "avg_platt_brier_score_scaled": 45.9,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 0.781,
+    "platt_scaling_factor": 1.653,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.068,
+        "resolution": 0.025
+    },
+    "calibration_error": 0.152,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.045,
+            0.043,
+            0.091,
+            0.109,
+            0.196,
+            0.5,
+            0.208,
+            0.352,
+            0.627,
+            0.667,
+            1.0
+        ],
+        "bin_confidences": [
+            0.005,
+            0.05,
+            0.133,
+            0.215,
+            0.321,
+            0.404,
+            0.5,
+            0.591,
+            0.694,
+            0.804,
+            0.9,
+            0.95
+        ],
+        "num_samples": [
+            4,
+            88,
+            70,
+            219,
+            110,
+            179,
+            2,
+            130,
+            125,
+            59,
+            12,
+            2
+        ],
+        "calibration_error": 0.152
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}
