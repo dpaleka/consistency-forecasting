@@ -83,7 +83,7 @@ if os.getenv("USE_LOGFIRE") == "True":
             return m.value
 
     logfire.configure(
-        pydantic_plugin=logfire.PydanticPlugin(record="all"),
+        pydantic_plugin=logfire.PydanticPlugin(record="failure"),
         scrubbing=logfire.ScrubbingOptions(callback=scrubbing_callback),
     )
 
