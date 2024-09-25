@@ -266,7 +266,7 @@ def process_check(
                     os.remove(dir / f"{check_name}.jsonl")
 
             results = []
-            batch_size = 5
+            batch_size = 50
             for start in range(0, len(checker_tuples), batch_size):
                 end = min(start + batch_size, len(checker_tuples))
                 batch_tuples = checker_tuples[start:end]
