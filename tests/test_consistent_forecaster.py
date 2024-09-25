@@ -41,7 +41,7 @@ def consistent_forecaster_single():
         checks=[
             NegChecker(),
         ],
-        use_generate_related_questions=False,
+        use_generate_related_questions=True,
     )
 
 
