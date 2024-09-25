@@ -28,6 +28,7 @@ def consistent_forecaster():
             NegChecker(),
             CondCondChecker(),
         ],
+        use_generate_related_questions=True,
     )
 
 
@@ -40,6 +41,7 @@ def consistent_forecaster_single():
         checks=[
             NegChecker(),
         ],
+        use_generate_related_questions=False,
     )
 
 
