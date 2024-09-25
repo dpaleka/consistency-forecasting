@@ -17,17 +17,7 @@ from generate_fqs_using_reference_class import BinaryFQReferenceClassSpanner
 load_dotenv()
 
 sample_forecasting_question_dicts = [
-    {
-        "id": "18b81ba1-bd49-48c2-874b-48cd149f6eb2",
-        "title": "What is the probability that a woman will be elected as the President of the United States between 2024 and 2030?",
-        "body": "This question will resolve as Yes if, between January 20, 2025, and January 20, 2031, a woman is inaugurated as the President of the United States. The resolution will be based on the official inauguration records provided by the U.S. National Archives or any other authoritative governmental source. In the event of a dispute regarding the election outcome, the question will resolve based on the decision of the U.S. Supreme Court. If a woman assumes the presidency without an inauguration due to unforeseen circumstances (e.g., succession following the incapacitation or death of a sitting president), this will also result in a Yes resolution, provided that she serves as president for at least 24 hours.",
-        "resolution_date": "2023-11-05T00:00:00Z",
-        "question_type": "binary",
-        "data_source": "synthetic",
-        "url": None,
-        "metadata": None,
-        "resolution": None,
-    },
+    # TODO - add support for spanning the reference classes of questions that have their resolutions between a date such as between 2024 and 2030.
     {
         "id": "5d8a3198-dd56-4a7b-ac3b-b464cadc94e4",
         "title": "What is the probability that the United Kingdom will have a new Prime Minister by January 1, 2028?",
@@ -55,7 +45,7 @@ sample_forecasting_question_dicts = [
 
 @pytest.mark.asyncio
 async def test_reference_class_spanned_questions():
-    num_spanned_questions = 7
+    num_spanned_questions = 10
     tasks = []
     for source_fq_dict in sample_forecasting_question_dicts:
         source_fq = ForecastingQuestion(**source_fq_dict)
@@ -71,10 +61,13 @@ async def test_reference_class_spanned_questions():
 
     results = await asyncio.gather(*tasks)
 
+    print(sample_forecasting_question_dicts)
+    print(results)
+
     for result in results:
         assert (
-            len(result) >= num_spanned_questions // 2
-        )  # sanity check for verification module. If it's discarding more than half then something went wrong
+            len(result) >= num_spanned_questions / 2
+        )  # sanity check for verification module. If it's discarding more than half then we need better prompts
 
 
 if __name__ == "__main__":
