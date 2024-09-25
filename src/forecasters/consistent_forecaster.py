@@ -150,6 +150,7 @@ class ConsistentForecaster(Forecaster):
                 num_questions=tuple_size - 1,
                 model=kwargs.get("model", self.model),
                 source_body=sentence.body,
+                return_fq=True,
             )
             tup = [sentence] + related_questions
         else:
