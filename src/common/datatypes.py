@@ -303,6 +303,12 @@ class SyntheticRelQuestion(BaseModel):
     feedback: Optional[str] = None
     fixed: Optional[bool] = False
 
+    def cast_stripped(self) -> ForecastingQuestion_stripped:
+        return ForecastingQuestion_stripped(
+            title=self.title,
+            body=self.body,
+        )
+
 
 register_model_for_cache(SyntheticRelQuestion)
 

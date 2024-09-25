@@ -83,8 +83,6 @@ class ConsistentForecaster(Forecaster):
         self.instantiation_kwargs["cost_log"] = self.kwargs.get("cost_log", None)
         self.instantiation_kwargs["simulate"] = self.kwargs.get("simulate", False)
 
-        print(type(self.use_generate_related_questions))
-
     def bq_function(
         self,
         sentence: ForecastingQuestion,
@@ -107,6 +105,7 @@ class ConsistentForecaster(Forecaster):
         if self.use_generate_related_questions:
             raise NotImplementedError(
                 "generate_questions_from_question does not have synchronous version"
+                "please use --async"
             )
         if keys is None:
             keys = ["P", "Q", "R", "S", "T"]
