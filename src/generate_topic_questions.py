@@ -162,7 +162,7 @@ initial_questions = [
         "category": "Space",
         "tags": ["SpaceX", "Mars"],
         "resolution_datetime": "01-01-2030",
-        "creation_datetime": CREATION_DATETIME if CREATION_DATETIME is not None else "01-09-2023"
+        "created_date": CREATION_DATETIME if CREATION_DATETIME is not None else "01-09-2023"
     },
     {
         "title": "Will any country from the following list: Belgium, France, Italy, Luxembourg, Netherlands, or Germany, officially withdraw its membership from the European Union before January 1, 2027?",
@@ -170,7 +170,7 @@ initial_questions = [
         "category": "Geopolitics",
         "tags": ["European Union"],
         "resolution_datetime": "01-01-2027",
-        "creation_datetime": CREATION_DATETIME if CREATION_DATETIME is not None else "01-10-2023"
+        "created_date": CREATION_DATETIME if CREATION_DATETIME is not None else "01-10-2023"
     },
     {
         "title": "Will the global human population fall below 1 billion individuals for any reason before January 1, 2100?",
@@ -178,7 +178,7 @@ initial_questions = [
         "category": "Natural Sciences",
         "tags": ["Extinction"],
         "resolution_datetime": "01-01-2100",
-        "creation_datetime": CREATION_DATETIME if CREATION_DATETIME is not None else "01-11-2023"
+        "created_date": CREATION_DATETIME if CREATION_DATETIME is not None else "01-11-2023"
     },
     {
         "title": "Will the net worth of the world's richest individual, as reported by Forbes or Bloomberg, be equal to or greater than 2% of the United States' GDP, as reported by the World Bank, on December 31, 2033?",
@@ -186,7 +186,7 @@ initial_questions = [
         "category": "Economy & Business",
         "tags": ["Wealth"],
         "resolution_datetime": "31-12-2033",
-        "creation_datetime": CREATION_DATETIME if CREATION_DATETIME is not None else "01-03-2024"
+        "created_date": CREATION_DATETIME if CREATION_DATETIME is not None else "01-03-2024"
     },
     {
         "title": "Will an artificial intelligence system pass a formally administered Turing Test, as judged by a panel of at least 5 experts in the field, before January 1, 2026?",
@@ -194,7 +194,7 @@ initial_questions = [
         "category": "Artificial Intelligence",
         "tags": ["AI", "Turing Test"],
         "resolution_datetime": "01-01-2026",
-        "creation_datetime": CREATION_DATETIME if CREATION_DATETIME is not None else "01-04-2024"
+        "created_date": CREATION_DATETIME if CREATION_DATETIME is not None else "01-04-2024"
     },
     {
         "title": "Will the 5-year average global temperature, as reported by NASA's Goddard Institute for Space Studies, exceed pre-industrial levels by more than 2 degrees Celsius at any point by January 1, 2041?",
@@ -202,7 +202,7 @@ initial_questions = [
         "category": "Environment & Climate",
         "tags": ["Global warming"],
         "resolution_datetime": "01-01-2041",
-        "creation_datetime": "01-09-2023"
+        "created_date": "01-09-2023"
     },
     {
         "title": "Will a woman be sworn in as President of the United States before {example_datetime}?",
@@ -210,7 +210,7 @@ initial_questions = [
         "category": "Elections",
         "tags": ["US Politics", "Presidential Election"],
         "resolution_datetime": "{example_datetime}",
-        "creation_datetime": "01-09-2023"
+        "created_date": "01-09-2023"
     },
     {
         "title": "Will the World Health Organization officially declare a Public Health Emergency of International Concern (PHEIC) for a novel pathogen by and January 1, 2026?",
@@ -218,7 +218,7 @@ initial_questions = [
         "category": "Health & Pandemics",
         "tags": ["WHO", "Pandemic"],
         "resolution_datetime": "01-01-2026",
-        "creation_datetime": "01-05-2024"
+        "created_date": "01-05-2024"
     },
     {
         "title": "Will India's annual GDP, as reported by the World Bank, exceed China's annual GDP for at least one calendar year by and January 1, 2041?",
@@ -226,7 +226,7 @@ initial_questions = [
         "category": "Economy & Business",
         "tags": ["India", "China", "GDP"],
         "resolution_datetime": "01-01-2041",
-        "creation_datetime": "01-06-2024"
+        "created_date": "01-06-2024"
     },
     {
         "title": "Will an international treaty specifically addressing cyber warfare be ratified by at least 50 UN member states by {example_datetime}?",
@@ -234,7 +234,7 @@ initial_questions = [
         "category": "Law",
         "tags": ["Cyber warfare"],
         "resolution_datetime": "{example_datetime}",
-        "creation_datetime": "01-09-2024"
+        "created_date": "01-09-2024"
     },
     {
         "title": "Will a men's national football team from an African country win the FIFA World Cup between January 9, 2024 and January 1, 2041?",
@@ -242,7 +242,7 @@ initial_questions = [
         "category": "Sports & Entertainment",
         "tags": ["FIFA", "World Cup"],
         "resolution_datetime": "01-01-2041",
-        "creation_datetime": "01-09-2024"
+        "created_date": "01-09-2024"
     },
     {
         "title": "Will at least one company offer commercially available quantum computing services to the general public, with a minimum of 1000 qubits, before {example_datetime}?",
@@ -257,7 +257,7 @@ initial_questions = [
         "category": "Space",
         "tags": ["NASA", "Extraterrestrial life"],
         "resolution_datetime": "01-01-2036",
-        "creation_datetime": "01-09-2023"
+        "created_date": "01-09-2023"
     },
     {
         "title": "Will Russia and Ukraine sign and ratify a comprehensive peace treaty, ending all ongoing military conflicts between the two nations, before January 1, 2026?",
@@ -265,7 +265,7 @@ initial_questions = [
         "category": "Geopolitics",
         "tags": ["Russia", "Ukraine"],
         "resolution_datetime": "01-01-2026",
-        "creation_datetime": "01-07-2024"
+        "created_date": "01-07-2024"
     },
     {
         "title": "Will a new infectious disease with a confirmed case fatality rate of over 10%, based on WHO data from at least 1000 cases, emerge and spread to at least 3 countries before {example_datetime}?",
@@ -287,7 +287,7 @@ initial_questions = [
         "category": "Law",
         "tags": ["Genetic editing"],
         "resolution_datetime": "{example_datetime}",
-        "creation_datetime": "01-09-2024"
+        "created_date": "01-09-2024"
     },
     {
         "title": "Will the global mean sea level, as measured by satellite altimetry and reported by NASA or NOAA, rise by more than 10 centimeters above the 2020 average level before {example_datetime}?",
@@ -302,7 +302,7 @@ initial_questions = [
         "category": "Space Exploration",
         "tags": ["Mars", "Space Travel"],
         "resolution_datetime": "01-01-2036",
-        "creation_datetime": "01-10-2024"
+        "created_date": "01-10-2024"
     },
     {
         "title": "Will the global average temperature increase exceed 1.5°C above pre-industrial levels in 2030?",
@@ -310,7 +310,7 @@ initial_questions = [
         "category": "Climate & Environment",
         "tags": ["Global Warming", "Climate Change"],
         "resolution_datetime": "07-01-2031",
-        "creation_datetime": "01-10-2024"
+        "created_date": "01-10-2024"
     },
     {
         "title": "Will a cryptocurrency become legal tender in a G7 country in 2028?",
@@ -318,7 +318,7 @@ initial_questions = [
         "category": "Economy & Finance",
         "tags": ["Cryptocurrency", "G7"],
         "resolution_datetime": "01-01-2029",
-        "creation_datetime": "01-10-2024"
+        "created_date": "01-10-2024"
     },
     {
         "title": "Will lab-grown meat products account for more than 10% of the global meat market share in 2040?",
@@ -326,7 +326,7 @@ initial_questions = [
         "category": "Food & Agriculture",
         "tags": ["Lab-grown Meat", "Food Technology"],
         "resolution_datetime": "07-01-2041",
-        "creation_datetime": "01-10-2024"
+        "created_datetime": "01-10-2024"
     },
     {
         "title": "Will a non-English language film win the Academy Award for Best Picture in 2026?",
@@ -334,7 +334,7 @@ initial_questions = [
         "category": "Entertainment",
         "tags": ["Academy Awards", "World Cinema"],
         "resolution_datetime": "04-01-2026",
-        "creation_datetime": "01-10-2024"
+        "created_datetime": "01-10-2024"
     }
 ]
 
