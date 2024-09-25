@@ -449,6 +449,7 @@ class Checker(ABC):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("de",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """Finding the best arbitrageur_answers to maximize the guaranteed minimum
         arbitrage earned for some given forecaster answers.
@@ -480,6 +481,16 @@ class Checker(ABC):
         # uses it
         if self.violation_basic(answers) < 1e-5:
             return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] == 0:
+                    answers[k] = remove_zeros
+                elif answers[k] == 1:
+                    answers[k] = 1 - remove_zeros
 
         if "de" in methods:
             return self.de_method(
@@ -645,12 +656,14 @@ class Checker(ABC):
         if metric in ["default", "default_scaled"]:
             if remove_zeros:
                 # remove_zeros is an epsilon value to avoid division by zero
+                # this needs to be both here and in max_min_arbitrage because
+                # I'm too lazy to refactor
                 for k in answers:
                     if answers[k] == 0:
                         answers[k] = remove_zeros
                     elif answers[k] == 1:
                         answers[k] = 1 - remove_zeros
-            v = self.arbitrage_violation(answers, **kwargs)
+            v = self.arbitrage_violation(answers, remove_zeros=remove_zeros, **kwargs)
             if force_pos and not isinstance(v, str):
                 v = max(0, v)  # this also forces np.nan to 0
             if metric == "default_scaled" and not isinstance(v, str):
@@ -924,10 +937,22 @@ class Checker(ABC):
         cls, answers: dict[str, Prob], **kwargs
     ) -> bool:
         if kwargs:
-            if len(kwargs) > 1 or "scoring" not in kwargs:
+            if any(
+                [
+                    k in kwargs
+                    for k in [
+                        "initial_guess",
+                        "euler",
+                        "dt",
+                        "max_steps",
+                        "tmax",
+                        "methods",
+                    ]
+                ]
+            ):
                 return True  # there are kwargs that aren't just scoring weights
             else:
-                scoring = kwargs["scoring"]
+                scoring = kwargs.get("scoring", None)
                 scoring_weights = cls.get_scoring(
                     answers, scoring, return_just_log_weights=True
                 )
@@ -1116,6 +1141,7 @@ class AndChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1128,6 +1154,7 @@ class AndChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
 
@@ -1221,6 +1248,7 @@ class OrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1233,6 +1261,7 @@ class OrChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
 
@@ -1305,6 +1334,7 @@ class AndOrChecker(Checker):
         max_steps: int = 1000,
         tmax=5,
         methods: tuple[str] = ("shgo",),
+        remove_zeros: float = 1e-3,
     ) -> tuple:
         """We're subclassing this because DE method doesn't work for this one
         (matrix not square; len(Omega) != len(self.TupleFormat.model_fields))."""
@@ -1317,6 +1347,7 @@ class AndOrChecker(Checker):
             max_steps,
             tmax,
             methods,
+            remove_zeros,
         )
 
     def frequentist_violation(self, answers: dict[str, Any]) -> float:
