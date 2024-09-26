@@ -160,17 +160,19 @@ class CoT_multistep_Forecaster(Forecaster):
         self.result = result
 
         if include_metadata:
-            result["metadata"] = {
+            self.result["metadata"] = {
                 "model": kwargs.get("model", self.model),
                 "timestamp": datetime.now().isoformat(),
                 "user_prompts": user_prompts_lists,
-                "chain_of_thought": result["chain_of_thought"],
+                "chain_of_thought": self.result["chain_of_thought"],
                 "steps": self.steps,
             }
 
-            return Forecast(prob=result["response"].prob, metadata=result["metadata"])
+            return Forecast(
+                prob=self.result["response"].prob, metadata=self.result["metadata"]
+            )
 
-        return Forecast(prob=result["response"].prob)
+        return Forecast(prob=self.result["response"].prob)
 
     async def call_async(
         self,
@@ -241,17 +243,19 @@ class CoT_multistep_Forecaster(Forecaster):
 
         self.result = result
         if include_metadata:
-            result["metadata"] = {
+            self.result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),
                 "timestamp": datetime.now().isoformat(),
                 "user_prompts": user_prompts_lists,
-                "chain_of_thought": result["chain_of_thought"],
+                "chain_of_thought": self.result["chain_of_thought"],
                 "steps": self.steps,
             }
 
-            return Forecast(prob=result["response"].prob, metadata=result["metadata"])
+            return Forecast(
+                prob=self.result["response"].prob, metadata=self.result["metadata"]
+            )
 
-        return Forecast(prob=result["response"].prob)
+        return Forecast(prob=self.result["response"].prob)
 
     def dump_config(self):
         return {

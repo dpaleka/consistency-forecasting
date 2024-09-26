@@ -129,22 +129,21 @@ def gen_or_tuple(og_question_1, og_question_2):
 
 DEFAULT_PROMPTS = [
     """
-    GENERAL: Output your general reasoning and thought process.  Here you can be as detailed as you want, mentioning the reasoning of your predictions and how / why each prediction obeys the given consistency rules.  For each prediction, you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.    """,
-    """PROB: Output your probability estimates of each of the variables (P, Q, not_P, etc.).  Here, ONLY output the labels and their associated predictions and NOTHING ELSE. Your output MUST look and be formatted as follows.
+    GENERAL: Output your general reasoning and thought process.  Here you can be as detailed as you want, mentioning the reasoning of your predictions and how / why each prediction obeys the given consistency rules.  If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.""",
+    """PROB: Output your probability estimates of each of the variables (P, Q, not_P, etc.).  Here, ONLY output the labels, their associated predictions, and NOTHING ELSE. Your output MUST look and be formatted as follows.
     P: 0.xx,
     not_P: 0.xx,
     P_or_Q: 0.xx,
     ...""",
-    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print the mathematical rule and the associated numbers associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. Your output MUST look and be formatted as follows.
+    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print the mathematical rule and the associated predicted values associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. At the end, print out a summary on whether all of the rules passed, or which ones failed. Your output MUST look and be formatted as follows.
     neg: P = 1- not_P, EQUATION is EVALUATION, 
     andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION, 
     and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION,
     ...
     {ALL consistency checks passed!} OR {failed_check_1, failed_check_2 ... consistency checks failed!""",
-    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occurred before.
-        Note that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes  
-        your correction needs to ENSURE that it still passes other consistency checks too.
-        If there were no violations found then simply output the same dict again.  Your output MUST look like and be formatted like the following.
+    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occurred.
+        Note that changing the predicted probability of one value to satisfy one consistency rule will also affect consistency rules for others.  It is IMPERATIVE that any changes made still ensure all other consistency checks pass too.
+        If there were no violations found, then simply output the same dict again.  Your output MUST look like and be formatted as follows.
         P: 0.xx,
         not_P: 0.xx,
         P_or_Q: 0.xx,
@@ -506,6 +505,13 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             for k, v in cons_tuple.items():
                 self.forecasting_questions[k] = v
 
+        file_path = "prompted_neg_debug.txt"
+        if not os.path.exists(file_path):
+            open(file_path, "w").close()
+
+        with open(file_path, "a") as f:
+            f.write(str(ForecastingQuestion) + "\n")
+            f.write(str(self.forecasting_questions) + "\n\n")
         return self.forecasting_questions
 
     async def generate_all_questions_async(self, sentence: ForecastingQuestion):
@@ -529,6 +535,13 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             for k, v in cons_tuple.items():
                 self.forecasting_questions[k] = v
 
+        file_path = "prompted_neg_debug.txt"
+        if not os.path.exists(file_path):
+            open(file_path, "w").close()
+
+        with open(file_path, "a") as f:
+            f.write(str(ForecastingQuestion) + "\n")
+            f.write(str(self.forecasting_questions) + "\n\n")
         return self.forecasting_questions
 
     def generate_user_prompts(self, questions_dict):
@@ -581,6 +594,7 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             **super().dump_config(),
             # "related_questions": self.forecasting_questions.__str__(),
             "checks": self.consistency_checks.__str__(),
+            #'forecasting_questions': make_json_serializable(self.forecasting_questions),
         }
 
 
