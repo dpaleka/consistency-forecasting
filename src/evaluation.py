@@ -22,7 +22,6 @@ from common.llm_utils import reset_global_semaphore
 from forecasters.create import make_forecaster
 from evaluation_utils.utils import (
     create_output_directory,
-    validate_load_directory,
     write_to_dirs,
 )
 from evaluation_utils.common_options import common_options, get_forecaster_config
@@ -49,19 +48,22 @@ def get_stats(results: dict, label: str = "") -> dict:
         violations = []
         checks = []
         for result in results:
-            if metric in result and isinstance(
-                result[metric]["violation"], (float, int)
+            violation_data = result.get("violation_data", {})
+            if metric in violation_data and isinstance(
+                violation_data[metric]["violation"], (float, int)
             ):
-                violations.append(result[metric]["violation"])
+                violations.append(violation_data[metric]["violation"])
             else:
                 warnings.warn(
-                    f"Violation {result[metric]['violation']} is an error message not a number"
+                    f"Violation {violation_data[metric]['violation']} is an error message not a number"
                 )
-            if metric in result and isinstance(result[metric]["check"], bool):
-                checks.append(result[metric]["check"])
+            if metric in violation_data and isinstance(
+                violation_data[metric]["check"], bool
+            ):
+                checks.append(violation_data[metric]["check"])
             else:
                 warnings.warn(
-                    f"Check {result[metric]['check']} is an error message not a bool"
+                    f"Check {violation_data[metric]['check']} is an error message not a bool"
                 )
 
         # Calculate the number of violations
@@ -209,7 +211,6 @@ def process_check(
     check_name: str,
     checkers: dict[str, Checker],
     forecaster: Forecaster,
-    num_lines: int,
     tuples_per_source: int,
     is_async: bool,
     output_directory: Path,
@@ -218,14 +219,25 @@ def process_check(
     run: bool,
     eval_by_source: bool,
     do_check: bool,
+    num_lines: int | None = None,
     **kwargs,
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
     try:
-        print("Checker: ", check_name)
-        with open(checkers[check_name].path, "r", encoding="utf-8") as f:
-            print(f"Path: {checkers[check_name].path}")
-            all_tuples = [json.loads(line) for line in f]
+        if run:
+            print("Checker: ", check_name)
+            with open(checkers[check_name].path, "r", encoding="utf-8") as f:
+                print(f"Path: {checkers[check_name].path}")
+                all_tuples = [json.loads(line) for line in f]
+        else:
+            print("Checker: ", check_name)
+            checker_path = load_dir / f"{check_name}.jsonl"
+            with open(checker_path, "r", encoding="utf-8") as f:
+                all_results = [json.loads(line) for line in f]
+                all_tuples = [result["line"] for result in all_results]
+                all_violation_data = [
+                    result["violation_data"] for result in all_results
+                ]
 
         if eval_by_source:
             # TODO does this ignore num_lines? if yes, raise if num_lines is not None
@@ -250,9 +262,10 @@ def process_check(
                 for tuple in source_data["tuples"]
             ]
         else:
+            # if num_lines is None, this is all the tuples
             checker_tuples = all_tuples[:num_lines]
 
-        keys = [key for key in checker_tuples[0].keys() if key not in ["metadata"]]
+        keys = [key for key in checkers[check_name].TupleFormat.model_fields]
         print(f"Debug: keys: {keys}")
         print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
 
@@ -301,44 +314,44 @@ def process_check(
                 results.extend(results_batch)
 
             print(f"Debug: Number of results after run: {len(results)}")
-        else:
-            with open(load_dir / f"{check_name}.jsonl", "r", encoding="utf-8") as f:
-                results = [json.loads(line) for line in f]
+            print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
 
-            results = results[: len(checker_tuples)]
+            if len(results) != len(checker_tuples):
+                print(
+                    "Warning: Number of results does not match number of checker_tuples"
+                )
+                print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
+
+            # Ensure results match checker_tuples
+            for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
+                for key in keys:
+                    print(
+                        f"Debug: Checking key {key}. It is {checker_tuple[key].keys()}"
+                    )
+                    try:
+                        assert (
+                            result["line"][key]["question"]["id"]
+                            == checker_tuple[key]["id"]
+                        ), (
+                            f"ID mismatch for key {key} at index {i}: "
+                            f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
+                        )
+                        assert (
+                            result["line"][key]["question"]["title"]
+                            == checker_tuple[key]["title"]
+                        ), (
+                            f"Title mismatch for key {key} at index {i}: "
+                            f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
+                        )
+                    except AssertionError as e:
+                        print(f"Assertion failed: {str(e)}")
+                        print(f"Result: {result}")
+                        print(f"Checker tuple: {checker_tuple}")
+                        raise
+        else:
+            results = all_results[: len(checker_tuples)]
             assert all(validate_result(result, keys) for result in results)
             print(f"Debug: Number of results loaded: {len(results)}")
-
-        print(f"Debug: Number of results: {len(results)}")
-        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
-
-        if len(results) != len(checker_tuples):
-            print("Warning: Number of results does not match number of checker_tuples")
-            print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
-
-        # Ensure results match checker_tuples
-        for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
-            for key in keys:
-                try:
-                    assert (
-                        result["line"][key]["question"]["id"]
-                        == checker_tuple[key]["id"]
-                    ), (
-                        f"ID mismatch for key {key} at index {i}: "
-                        f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
-                    )
-                    assert (
-                        result["line"][key]["question"]["title"]
-                        == checker_tuple[key]["title"]
-                    ), (
-                        f"Title mismatch for key {key} at index {i}: "
-                        f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
-                    )
-                except AssertionError as e:
-                    print(f"Assertion failed: {str(e)}")
-                    print(f"Result: {result}")
-                    print(f"Checker tuple: {checker_tuple}")
-                    raise
 
         data = [result["line"] for result in results]
         all_answers = [
@@ -346,7 +359,7 @@ def process_check(
             for result in results
         ]
         for line, answers, result in zip(data, all_answers, results):
-            if "violation_data" in result:
+            if "violation_data" in result and run:
                 violation_data = result["violation_data"]
             else:
                 violation_data = {}
@@ -354,7 +367,7 @@ def process_check(
                     violation_data[metric] = checkers[
                         check_name
                     ].check_from_elicited_probs(answers, metric)
-            result.update(violation_data)
+            result["violation_data"] = violation_data
 
         print(f"Debug: Calculating stats for {check_name}")
         if eval_by_source:
@@ -373,6 +386,12 @@ def process_check(
                 stats["by_source"][source]["source_id"] = source_data["source_id"]
         else:
             stats = {"overall": get_stats(results, label=check_name)}
+
+        if not run:
+            # write results back to file
+            with open(load_dir / f"{check_name}.jsonl", "w", encoding="utf-8") as f:
+                for result in results:
+                    f.write(json.dumps(result) + "\n")
 
         print(f"Debug: Finished process_check for {check_name}")
         return stats
@@ -438,11 +457,11 @@ def main(
     forecaster_options: list[str] | None,
     run: bool,
     load_dir: str | None,
-    num_lines: int,
     tuples_per_source: int,
     relevant_checks: list[str],
     is_async: bool,
     use_threads: bool,
+    num_lines: int | None = None,
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
@@ -450,65 +469,74 @@ def main(
     simulate: bool = False,
 ):
     do_check = not skip_check
-
-    forecaster_config = get_forecaster_config(config_path, forecaster_options)
-
-    forecaster = make_forecaster(
-        forecaster_class=forecaster_class,
-        custom_path=custom_path,
-        forecaster_config=forecaster_config,
-    )
+    if num_lines == "":
+        num_lines = None
+    else:
+        num_lines = int(num_lines)
 
     # Print arguments
     print("Arguments:")
     print(f"  forecaster_class: {forecaster_class}")
     print(f"  custom_path: {custom_path}")
-    print(f"  forecaster_config: {forecaster_config}")
     print(f"  num_lines: {num_lines}")
     print(f"  run: {run}")
     print(f"  load_dir: {load_dir}")
     print(f"  is_async: {is_async}")
     print(f"  output_dir: {output_dir}")
-
     cl = Costlog(mode="jsonl")
 
-    if tuple_dir is None:
-        tuple_dir = BASE_TUPLES_PATH
-    tuple_dir = Path(tuple_dir)
-    if not tuple_dir.exists():
-        assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
+    if run:
+        forecaster_config = get_forecaster_config(config_path, forecaster_options)
+        print(f"  forecaster_config: {forecaster_config}")
 
-    checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
+        forecaster = make_forecaster(
+            forecaster_class=forecaster_class,
+            custom_path=custom_path,
+            forecaster_config=forecaster_config,
+        )
+        if tuple_dir is None:
+            tuple_dir = BASE_TUPLES_PATH
+        tuple_dir = Path(tuple_dir)
+        if not tuple_dir.exists():
+            assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
+        output_directory, most_recent_directory = create_output_directory(
+            forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
+        )
+        checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
+        logged_config = {
+            "forecaster_class": forecaster.__class__.__name__,
+            "full_forecaster_config": forecaster.dump_config(),
+            "checkers": [checker.dump_config() for name, checker in checkers.items()],
+            "is_async": is_async,
+            "use_threads": use_threads,
+            "run": run,
+            "load_dir": str(load_dir),
+            "relevant_checks": list(checkers.keys()),
+            "tuple_dir": str(tuple_dir),
+            "num_lines": num_lines,
+        }
+        write_to_dirs(
+            [logged_config],
+            "config.jsonl",
+            [output_directory, most_recent_directory],
+            overwrite=True,
+        )
+    else:
+        forecaster_config = None
+        forecaster = None
+        load_dir, output_directory, most_recent_directory = (
+            Path(load_dir),
+            Path(load_dir),
+            Path(load_dir),
+        )
 
-    output_directory, most_recent_directory = create_output_directory(
-        forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
-    )
+        checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
-    load_dir = validate_load_directory(run, load_dir, most_recent_directory)
+    # load_dir = validate_load_directory(run, load_dir, most_recent_directory)
 
     print(f"Relevant checks: {checkers.keys()}")
     print(f"Tuple dir: {tuple_dir}")
     print(f"Output dir: {output_directory}")
-
-    logged_config = {
-        "forecaster_class": forecaster.__class__.__name__,
-        "full_forecaster_config": forecaster.dump_config(),
-        "checkers": [checker.dump_config() for name, checker in checkers.items()],
-        "is_async": is_async,
-        "use_threads": use_threads,
-        "run": run,
-        "load_dir": str(load_dir),
-        "relevant_checks": list(checkers.keys()),
-        "tuple_dir": str(tuple_dir),
-        "num_lines": num_lines,
-    }
-
-    write_to_dirs(
-        [logged_config],
-        "config.jsonl",
-        [output_directory, most_recent_directory],
-        overwrite=True,
-    )
 
     all_stats = {}
     if use_threads:
@@ -558,12 +586,10 @@ def main(
             )
             all_stats[check_name] = stats
 
-    # TODO figure out how to write to the load_dir
-
     all_stats["aggregated"] = aggregate_stats(all_stats)
-
-    all_stats["forecaster"] = forecaster.__class__.__name__
-    all_stats["full_forecaster_config"] = forecaster.dump_config()
+    if run:
+        all_stats["forecaster"] = forecaster.__class__.__name__
+        all_stats["full_forecaster_config"] = forecaster.dump_config()
 
     print("Cost log totals")
     print("---------------")
@@ -621,9 +647,9 @@ def main(
                         f"avg_no_outliers: {source_stats[metric]['avg_violation_no_outliers']:.3f}, "
                         f"median: {source_stats[metric]['median_violation']:.3f}"
                     )
-
-        print(f"Forecaster: {all_stats['forecaster']}")
-        print(f"Forecaster Config: {all_stats['full_forecaster_config']}")
+        if run:
+            print(f"Forecaster: {all_stats['forecaster']}")
+            print(f"Forecaster Config: {all_stats['full_forecaster_config']}")
 
         print(f"Output written to {output_directory}")
         print(f"Summary written to {output_directory}/stats_summary.json")
@@ -649,4 +675,4 @@ if __name__ == "__main__":
 
 # just recalculate
 
-# python evaluation.py --load_dir src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi__
+# python evaluation.py --load_dir src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi__ -k all
