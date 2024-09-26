@@ -105,7 +105,7 @@ ground_truth_directories=(
     "src/data/forecasts/ConsistentForecaster_N4_scraped"
     "src/data/forecasts/ConsistentForecaster_P4_scraped"
     "src/data/forecasts/ConsistentForecaster_NP4_scraped"
-)
+) # TODO: need to add the intermediate ones
 evaluation_directories=(
     "src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi"
     "src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi"
@@ -115,6 +115,7 @@ evaluation_directories=(
     "src/data/forecasts/ConsistentForecaster_N4_tuples_scraped"
     "src/data/forecasts/ConsistentForecaster_P4_tuples_scraped"
     "src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped"
+) # TODO: need to add the intermediate ones
 
 for DIR in "${ground_truth_directories[@]}"; do
     python src/ground_truth_run.py --load_dir "$DIR"
