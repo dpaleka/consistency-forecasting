@@ -8,6 +8,8 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 **best to recompute stats and plots for everything** -- this won't take much time, and will make sure everything is using the latest versions of violations etc
 
+# Main runs
+
 ## CF-4xEE1
 
 - [x] ground truth run - NewsAPI
@@ -36,13 +38,13 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 -> [src/data/forecasts/ConsistentForecaster_N4_scraped](src/data/forecasts/ConsistentForecaster_N4_scraped)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
--> running in: [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi)
+-> [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
--> running in:[src/data/forecasts/ConsistentForecaster_N4_tuples_scraped](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped)
+-> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped)
 
 ## CF-P4
 
@@ -83,8 +85,42 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 -----
 
-directories for testing recalc stuff
+# Recalculation scripts
 
-src/data/forecasts/recalc_test/groundtruth
+E.g.
+```
+python src/ground_truth_run.py --load_dir src/data/forecasts/recalc_test/groundtruth/
+python src/evaluation.py --load_dir src/data/forecasts/recalc_test/eval_small_np4 -k all
+python src/evaluation.py --load_dir src/data/forecasts/recalc_test/eval_n4 -k all
+```
+Just run these on all your directories. E.g.
 
-src/data/forecasts/recalc_test/eval_small
+```bash
+ground_truth_directories=(
+    "src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831"
+    "src/data/forecasts/ConsistentForecaster_N4_20240701_20240831"
+    "src/data/forecasts/ConsistentForecaster_P4_20240701_20240831"
+    "src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831"
+    "src/data/forecasts/ConsistentForecaster_4xEE1_scraped"
+    "src/data/forecasts/ConsistentForecaster_N4_scraped"
+    "src/data/forecasts/ConsistentForecaster_P4_scraped"
+    "src/data/forecasts/ConsistentForecaster_NP4_scraped"
+)
+evaluation_directories=(
+    "src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi"
+    "src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi"
+    "src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi"
+    "src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi"
+    "src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped"
+    "src/data/forecasts/ConsistentForecaster_N4_tuples_scraped"
+    "src/data/forecasts/ConsistentForecaster_P4_tuples_scraped"
+    "src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped"
+
+for DIR in "${ground_truth_directories[@]}"; do
+    python src/ground_truth_run.py --load_dir "$DIR"
+done
+
+for DIR in "${evaluation_directories[@]}"; do
+    python src/evaluation.py --load_dir "$DIR" -k all
+done
+```
