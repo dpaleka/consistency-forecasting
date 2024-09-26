@@ -1,0 +1,217 @@
+{
+    "NegChecker": {
+        "error": "Expecting value: line 71 column 1 (char 385)"
+    },
+    "AndChecker": {
+        "error": "Expecting value: line 255 column 1 (char 1397)"
+    },
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 64,
+                "avg_violation": 0.044915,
+                "avg_violation_no_outliers": 0.034507,
+                "median_violation": 3.7e-05
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 67,
+                "avg_violation": 0.15695,
+                "avg_violation_no_outliers": 0.139024,
+                "median_violation": 0.040628
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 51,
+                "avg_violation": 0.014972,
+                "avg_violation_no_outliers": 0.011502,
+                "median_violation": 1.2e-05
+            }
+        }
+    },
+    "AndOrChecker": {
+        "error": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n\n\n<title>openrouter.ai | 524: A timeout occurred</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/main.css\" />\n\n\n</head>\n<body>\n<div id=\"cf-wrapper\">\n    <div id=\"cf-error-details\" class=\"p-0\">\n        <header class=\"mx-auto pt-10 lg:pt-6 lg:px-8 w-240 lg:w-full mb-8\">\n            <h1 class=\"inline-block sm:block sm:mb-2 font-light text-60 lg:text-4xl text-black-dark leading-tight mr-2\">\n              <span class=\"inline-block\">A timeout occurred</span>\n              <span class=\"code-label\">Error code 524</span>\n            </h1>\n            <div>\n               Visit <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_524&utm_campaign=openrouter.ai\" target=\"_blank\" rel=\"noopener noreferrer\">cloudflare.com</a> for more information.\n            </div>\n            <div class=\"mt-3\">2024-09-25 23:45:36 UTC</div>\n        </header>\n        <div class=\"my-8 bg-gradient-gray\">\n            <div class=\"w-240 lg:w-full mx-auto\">\n                <div class=\"clearfix md:px-8\">\n                  \n<div id=\"cf-browser-status\" class=\" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    \n    <span class=\"cf-icon-browser block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    \n  </div>\n  <span class=\"md:block w-full truncate\">You</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n    \n    Browser\n    \n  </h3>\n  <span class=\"leading-1.3 text-2xl text-green-success\">Working</span>\n</div>\n\n<div id=\"cf-cloudflare-status\" class=\" relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_524&utm_campaign=openrouter.ai\" target=\"_blank\" rel=\"noopener noreferrer\">\n    <span class=\"cf-icon-cloud block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-ok w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    </a>\n  </div>\n  <span class=\"md:block w-full truncate\">Geneva</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n    <a href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_524&utm_campaign=openrouter.ai\" target=\"_blank\" rel=\"noopener noreferrer\">\n    Cloudflare\n    </a>\n  </h3>\n  <span class=\"leading-1.3 text-2xl text-green-success\">Working</span>\n</div>\n\n<div id=\"cf-host-status\" class=\"cf-error-source relative w-1/3 md:w-full py-15 md:p-0 md:py-8 md:text-left md:border-solid md:border-0 md:border-b md:border-gray-400 overflow-hidden float-left md:float-none text-center\">\n  <div class=\"relative mb-10 md:m-0\">\n    \n    <span class=\"cf-icon-server block md:hidden h-20 bg-center bg-no-repeat\"></span>\n    <span class=\"cf-icon-error w-12 h-12 absolute left-1/2 md:left-auto md:right-0 md:top-0 -ml-6 -bottom-4\"></span>\n    \n  </div>\n  <span class=\"md:block w-full truncate\">openrouter.ai</span>\n  <h3 class=\"md:inline-block mt-3 md:mt-0 text-2xl text-gray-600 font-light leading-1.3\">\n    \n    Host\n    \n  </h3>\n  <span class=\"leading-1.3 text-2xl text-red-error\">Error</span>\n</div>\n\n                </div>\n            </div>\n        </div>\n\n        <div class=\"w-240 lg:w-full mx-auto mb-8 lg:px-8\">\n            <div class=\"clearfix\">\n                <div class=\"w-1/2 md:w-full float-left pr-6 md:pb-10 md:pr-0 leading-relaxed\">\n                    <h2 class=\"text-3xl font-normal leading-1.3 mb-4\">What happened?</h2>\n                    <p>The origin web server timed out responding to this request.</p>\n                </div>\n                <div class=\"w-1/2 md:w-full float-left leading-relaxed\">\n                    <h2 class=\"text-3xl font-normal leading-1.3 mb-4\">What can I do?</h2>\n                          <h3 class=\"text-15 font-semibold mb-2\">If you're a visitor of this website:</h3>\n      <p class=\"mb-6\">Please try again in a few minutes.</p>\n\n      <h3 class=\"text-15 font-semibold mb-2\">If you're the owner of this website:</h3>\n      <p><span>The connection to the origin web server was made, but the origin web server timed out before responding. The likely cause is an overloaded background task, database or application, stressing the resources on your web server. To resolve, please work with your hosting provider or web development team to free up resources for your database or overloaded application.</span> <a rel=\"noopener noreferrer\" href=\"https://support.cloudflare.com/hc/en-us/articles/200171926-Error-524\">Additional troubleshooting information here.</a></p>\n                </div>\n            </div>\n        </div>\n\n        <div class=\"cf-error-footer cf-wrapper w-240 lg:w-full py-10 sm:py-4 sm:px-8 mx-auto text-center sm:text-left border-solid border-0 border-t border-gray-300\">\n  <p class=\"text-13\">\n    <span class=\"cf-footer-item sm:block sm:mb-1\">Cloudflare Ray ID: <strong class=\"font-semibold\">8c8ee1194b913b52</strong></span>\n    <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    <span id=\"cf-footer-item-ip\" class=\"cf-footer-item hidden sm:block sm:mb-1\">\n      Your IP:\n      <button type=\"button\" id=\"cf-footer-ip-reveal\" class=\"cf-footer-ip-reveal-btn\">Click to reveal</button>\n      <span class=\"hidden\" id=\"cf-footer-ip\">129.132.107.104</span>\n      <span class=\"cf-footer-separator sm:hidden\">&bull;</span>\n    </span>\n    <span class=\"cf-footer-item sm:block sm:mb-1\"><span>Performance &amp; security by</span> <a rel=\"noopener noreferrer\" href=\"https://www.cloudflare.com/5xx-error-landing?utm_source=errorcode_524&utm_campaign=openrouter.ai\" id=\"brand_link\" target=\"_blank\">Cloudflare</a></span>\n    \n  </p>\n  <script>(function(){function d(){var b=a.getElementById(\"cf-footer-item-ip\"),c=a.getElementById(\"cf-footer-ip-reveal\");b&&\"classList\"in b&&(b.classList.remove(\"hidden\"),c.addEventListener(\"click\",function(){c.classList.add(\"hidden\");a.getElementById(\"cf-footer-ip\").classList.remove(\"hidden\")}))}var a=document;document.addEventListener&&a.addEventListener(\"DOMContentLoaded\",d)})();</script>\n</div><!-- /.error-footer -->\n\n\n    </div>\n</div>\n</body>\n</html>"
+    },
+    "ButChecker": {
+        "error": "Expecting value: line 131 column 1 (char 715)"
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 55,
+                "avg_violation": 0.013448,
+                "avg_violation_no_outliers": 0.0124,
+                "median_violation": 0.000342
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 78,
+                "avg_violation": 0.129496,
+                "avg_violation_no_outliers": 0.127902,
+                "median_violation": 0.080908
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 44,
+                "avg_violation": 0.004483,
+                "avg_violation_no_outliers": 0.004133,
+                "median_violation": 0.000114
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 20,
+                "avg_violation": 0.006383,
+                "avg_violation_no_outliers": 0.004148,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 20,
+                "avg_violation": 0.032941,
+                "avg_violation_no_outliers": 0.027883,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 20,
+                "avg_violation": 0.003191,
+                "avg_violation_no_outliers": 0.002074,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 66,
+                "avg_violation": 0.020228,
+                "avg_violation_no_outliers": 0.018424,
+                "median_violation": 0.000976
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 66,
+                "avg_violation": 0.111467,
+                "avg_violation_no_outliers": 0.107819,
+                "median_violation": 0.043811
+            },
+            "default_scaled": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 66,
+                "avg_violation": 0.010114,
+                "avg_violation_no_outliers": 0.009212,
+                "median_violation": 0.000488
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 23,
+                "avg_violation": 0.005367,
+                "avg_violation_no_outliers": 0.004854,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 47,
+                "avg_violation": 0.101466,
+                "avg_violation_no_outliers": 0.098472,
+                "median_violation": 0.061151
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 15,
+                "avg_violation": 0.001342,
+                "avg_violation_no_outliers": 0.001213,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 53,
+                "avg_violation": 0.02754,
+                "avg_violation_no_outliers": 0.024351,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 83,
+                "avg_violation": 0.16228,
+                "avg_violation_no_outliers": 0.157069,
+                "median_violation": 0.099738
+            },
+            "default_scaled": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 33,
+                "avg_violation": 0.006885,
+                "avg_violation_no_outliers": 0.006088,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.019646833333333332
+        },
+        "frequentist": {
+            "avg_violation": 0.11576666666666664
+        },
+        "default_scaled": {
+            "avg_violation": 0.006831166666666667
+        }
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}
