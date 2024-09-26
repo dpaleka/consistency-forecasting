@@ -98,6 +98,10 @@ def main(
     output_dir: str | None = None,
     platt_scaling_factor: float | None = None,
 ):
+    # IMPORTANT!!! If you remove this, it will prune your data down to 3 lines.
+    if num_lines == -1 or not run:
+        num_lines = None
+
     output_filename = "ground_truth_results.jsonl"
 
     if run:
@@ -215,7 +219,7 @@ def main(
         print(
             f"Filtered to {len(forecasting_questions)}/{len(data)} questions with resolutions"
         )
-        num_lines = min(num_lines, len(forecasting_questions))
+        num_lines = len(forecasting_questions)
         results = []
 
         with open(input_file, "r", encoding="utf-8") as f:
