@@ -5,8 +5,8 @@ MODEL="gpt-4o-mini-2024-07-18"
 # ConsistentForecaster with ExpectedEvidenceChecker x 4, depth=1
 # 4 min, $0.12, 750 calls per concurrent
 # src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi
-OUTPUT_DIRNAME="ConsistentForecaster_4xEE1_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir $INPUT_DIR --num_lines $NUM_LINES --run --async -f ConsistentForecaster -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 -o model=$MODEL -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+# OUTPUT_DIRNAME="ConsistentForecaster_4xEE1_tuples_newsapi"
+# USE_OPENROUTER=False python src/evaluation.py --tuple_dir $INPUT_DIR --num_lines $NUM_LINES --run --async -f ConsistentForecaster -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 -o model=$MODEL -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 
 # ConsistentForecaster with NegChecker, depth=4
 # 15 min, $0.12, 930 calls per concurrent

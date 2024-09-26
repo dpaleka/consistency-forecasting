@@ -1,0 +1,531 @@
+{
+    "AndChecker": {
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 13,
+                "avg_violation": 0.002676,
+                "avg_violation_no_outliers": 0.002078,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 15,
+                "avg_violation": 0.027298,
+                "avg_violation_no_outliers": 0.025117,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 10,
+                "avg_violation": 0.000892,
+                "avg_violation_no_outliers": 0.000693,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.002676
+        },
+        "frequentist": {
+            "avg_violation": 0.027298
+        },
+        "default_scaled": {
+            "avg_violation": 0.000892
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}{
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 100,
+                "num_samples": 100,
+                "num_violations": 46,
+                "avg_violation": 0.017335,
+                "avg_violation_no_outliers": 0.015907,
+                "median_violation": 0.008659
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 100,
+                "num_samples": 100,
+                "num_violations": 52,
+                "avg_violation": 0.153376,
+                "avg_violation_no_outliers": 0.150522,
+                "median_violation": 0.131595
+            },
+            "default_scaled": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 100,
+                "num_samples": 100,
+                "num_violations": 30,
+                "avg_violation": 0.004334,
+                "avg_violation_no_outliers": 0.003977,
+                "median_violation": 0.002165
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.017335
+        },
+        "frequentist": {
+            "avg_violation": 0.153376
+        },
+        "default_scaled": {
+            "avg_violation": 0.004334
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}{
+    "ConsequenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 6,
+                "avg_violation": 0.010792,
+                "avg_violation_no_outliers": 0.004295,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 8,
+                "avg_violation": 0.057148,
+                "avg_violation_no_outliers": 0.045594,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 6,
+                "avg_violation": 0.005396,
+                "avg_violation_no_outliers": 0.002148,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.010792
+        },
+        "frequentist": {
+            "avg_violation": 0.057148
+        },
+        "default_scaled": {
+            "avg_violation": 0.005396
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}{
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 103,
+                "avg_violation": 0.024948,
+                "avg_violation_no_outliers": 0.023791,
+                "median_violation": 0.010426
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 114,
+                "avg_violation": 0.176749,
+                "avg_violation_no_outliers": 0.174482,
+                "median_violation": 0.144392
+            },
+            "default_scaled": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 103,
+                "avg_violation": 0.012474,
+                "avg_violation_no_outliers": 0.011895,
+                "median_violation": 0.005213
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.024948
+        },
+        "frequentist": {
+            "avg_violation": 0.176749
+        },
+        "default_scaled": {
+            "avg_violation": 0.012474
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}{
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 16,
+                "avg_violation": 0.01279,
+                "avg_violation_no_outliers": 0.010999,
+                "median_violation": 0.000404
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 19,
+                "avg_violation": 0.103982,
+                "avg_violation_no_outliers": 0.098206,
+                "median_violation": 0.03959
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 13,
+                "avg_violation": 0.004263,
+                "avg_violation_no_outliers": 0.003666,
+                "median_violation": 0.000135
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.01279
+        },
+        "frequentist": {
+            "avg_violation": 0.103982
+        },
+        "default_scaled": {
+            "avg_violation": 0.004263
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}
