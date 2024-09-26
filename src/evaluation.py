@@ -474,6 +474,8 @@ def main(
     simulate: bool = False,
 ):
     do_check = not skip_check
+
+    # IMPORTANT!!! If you remove this, it will prune your data down to 3 lines.
     if num_lines == -1 or not run:
         num_lines = None
 
