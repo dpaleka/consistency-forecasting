@@ -1,0 +1,3 @@
+{
+    "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=74.37904530274275, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+}

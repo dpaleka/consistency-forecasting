@@ -487,9 +487,9 @@ class Checker(ABC):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         if "de" in methods:
@@ -659,9 +659,9 @@ class Checker(ABC):
                 # this needs to be both here and in max_min_arbitrage because
                 # I'm too lazy to refactor
                 for k in answers:
-                    if answers[k] == 0:
+                    if answers[k] <= 0:
                         answers[k] = remove_zeros
-                    elif answers[k] == 1:
+                    elif answers[k] >= 1:
                         answers[k] = 1 - remove_zeros
             v = self.arbitrage_violation(answers, remove_zeros=remove_zeros, **kwargs)
             if force_pos and not isinstance(v, str):
@@ -1019,9 +1019,9 @@ class NegChecker(Checker):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         weights = self.get_scoring(
@@ -1550,9 +1550,9 @@ class CondChecker(Checker):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         a = np.sqrt(
@@ -1761,9 +1761,9 @@ class ConsequenceChecker(Checker):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         if answers["P"] <= answers["cons_P"]:
@@ -1849,9 +1849,9 @@ class ParaphraseChecker(Checker):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         weights = self.get_scoring(
