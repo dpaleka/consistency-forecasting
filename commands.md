@@ -12,6 +12,7 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 -> [`src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json)
 
+**Missing aggregated value, forecaster config, and the field 'num_samples_including_errors' for each checker**
 - [x] evaluation
 ```
 python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster -o p=0.4 -k all --num_lines 500 --run --async
@@ -334,6 +335,7 @@ python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_gener
 ```
 -> [`src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831/ground_truth_summary.json)
 
+**Separated in two json object, ConcCond in one, and the others in other.**
 - [x] evaluation
 ```
 python src/evaluation.py --tuple_dir src/data/tuples_newsapi -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 2 --run --async --output_dir src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi
@@ -347,6 +349,7 @@ USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/syn
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json)
 
+**Not valid json, two objects, one with CondCond, and one with everything else (including CondCond)**
 - [x] evaluation
 ```
 OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_tuples_newsapi"
@@ -361,6 +364,7 @@ python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_gener
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_20240701_20240831/ground_truth_summary.json)
 
+**Two json objects with two sets of results**
 - [x] evaluation
 ```
 OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-05-13_tuples_newsapi"
@@ -442,6 +446,7 @@ USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/syn
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json)
 
+**Two Json objects, one with CondCond, and another with all the checkers**
 - [x] evaluation
 ```
 OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi"
