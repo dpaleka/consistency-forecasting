@@ -340,6 +340,7 @@ class Checker(ABC):
         dt=5e-5,
         max_steps=1000,
         tmax=5,
+        remove_zeros=1e-3,
     ) -> tuple[dict[str, Prob], float]:
         """
         Use differential equations to find the best arbitrageur_answers.
@@ -435,6 +436,13 @@ class Checker(ABC):
 
             p = dict(zip(self.TupleFormat.model_fields, res.y[:, -1]))
 
+        if remove_zeros:
+            for k in p:
+                if p[k] <= 0:
+                    p[k] = remove_zeros
+                if p[k] >= 1:
+                    p[k] = 1 - remove_zeros
+
         return p, self.min_arbitrage(
             answers=answers, arbitrageur_answers=p, scoring=scoring
         )
@@ -500,6 +508,7 @@ class Checker(ABC):
                 max_steps=max_steps,
                 tmax=tmax,
                 euler=euler,
+                remove_zeros=remove_zeros,
             )
 
         x = answers.keys()
@@ -619,6 +628,14 @@ class Checker(ABC):
             )
 
         best_max = max(maxes, key=lambda x: x["arbitrage_max"])
+
+        if remove_zeros:
+            for k in best_max["arbitrage_argmax"]:
+                if best_max["arbitrage_argmax"][k] <= 0:
+                    best_max["arbitrage_argmax"][k] = remove_zeros
+                elif best_max["arbitrage_argmax"][k] >= 1:
+                    best_max["arbitrage_argmax"][k] = 1 - remove_zeros
+
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
@@ -1045,6 +1062,12 @@ class NegChecker(Checker):
         v = W * np.log(p) - sum(
             [weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]]
         )
+
+        if remove_zeros:
+            if p <= 0:
+                p = remove_zeros
+            if p >= 1:
+                p = 1 - remove_zeros
 
         return {"P": p, "not_P": 1 - p}, v
 
