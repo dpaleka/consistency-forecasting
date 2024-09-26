@@ -22,11 +22,9 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped)
-
--> remaining rerunning in: [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_rerun](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_rerun)
 
 ## CF-N4
 

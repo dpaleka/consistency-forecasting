@@ -1,3 +1,31 @@
 {
-    "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=23.597736797218367, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    "overall": {
+        "default": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 56,
+            "avg_violation": 0.01121,
+            "avg_violation_no_outliers": 0.010094,
+            "median_violation": 0.003447
+        },
+        "frequentist": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 68,
+            "avg_violation": 0.1095,
+            "avg_violation_no_outliers": 0.10691,
+            "median_violation": 0.083
+        },
+        "default_scaled": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 56,
+            "avg_violation": 0.005605,
+            "avg_violation_no_outliers": 0.005047,
+            "median_violation": 0.001723
+        }
+    }
 }
