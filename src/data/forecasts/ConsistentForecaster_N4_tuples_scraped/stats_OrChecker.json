@@ -1,3 +1,31 @@
 {
-    "error": "slice indices must be integers or None or have an __index__ method"
+    "overall": {
+        "default": {
+            "label": "OrChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 28,
+            "avg_violation": 0.009255,
+            "avg_violation_no_outliers": 0.006951,
+            "median_violation": 0.0
+        },
+        "frequentist": {
+            "label": "OrChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 31,
+            "avg_violation": 0.062547,
+            "avg_violation_no_outliers": 0.05766,
+            "median_violation": 0.0
+        },
+        "default_scaled": {
+            "label": "OrChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 21,
+            "avg_violation": 0.003085,
+            "avg_violation_no_outliers": 0.002317,
+            "median_violation": 0.0
+        }
+    }
 }
