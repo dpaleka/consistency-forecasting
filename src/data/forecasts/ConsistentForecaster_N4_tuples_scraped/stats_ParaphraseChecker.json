@@ -1,3 +1,31 @@
 {
-    "error": "slice indices must be integers or None or have an __index__ method"
+    "overall": {
+        "default": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 45,
+            "avg_violation": 0.00736,
+            "avg_violation_no_outliers": 0.007082,
+            "median_violation": 0.002267
+        },
+        "frequentist": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 51,
+            "avg_violation": 0.089743,
+            "avg_violation_no_outliers": 0.088731,
+            "median_violation": 0.067298
+        },
+        "default_scaled": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 45,
+            "avg_violation": 0.00368,
+            "avg_violation_no_outliers": 0.003541,
+            "median_violation": 0.001134
+        }
+    }
 }

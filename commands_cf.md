@@ -79,3 +79,12 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 - [ ] consistency evaluation - scraped
 
 -> will run in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
+
+
+-----
+
+directories for testing recalc stuff
+
+src/data/forecasts/recalc_test/groundtruth
+
+src/data/forecasts/recalc_test/eval_small
