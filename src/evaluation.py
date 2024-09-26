@@ -232,6 +232,11 @@ def process_check(
         else:
             print("Checker: ", check_name)
             checker_path = load_dir / f"{check_name}.jsonl"
+            if not os.path.exists(checker_path):
+                warnings.warn(
+                    f"You have not collected data for {check_name}. Ignoring."
+                )
+                return None
             with open(checker_path, "r", encoding="utf-8") as f:
                 all_results = [json.loads(line) for line in f]
                 all_tuples = [result["line"] for result in all_results]
@@ -461,7 +466,7 @@ def main(
     relevant_checks: list[str],
     is_async: bool,
     use_threads: bool,
-    num_lines: int | None = None,
+    num_lines: int,
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
@@ -469,10 +474,8 @@ def main(
     simulate: bool = False,
 ):
     do_check = not skip_check
-    if num_lines == "":
+    if num_lines == -1 or not run:
         num_lines = None
-    else:
-        num_lines = int(num_lines)
 
     # Print arguments
     print("Arguments:")
@@ -565,6 +568,7 @@ def main(
                 for check_name, stats in zip(
                     checkers.keys(), executor.map(process_check_func, checkers.keys())
                 )
+                if stats is not None
             }
     else:
         for check_name in checkers.keys():
@@ -584,7 +588,8 @@ def main(
                 cost_log=cl,
                 simulate=simulate,
             )
-            all_stats[check_name] = stats
+            if stats is not None:
+                all_stats[check_name] = stats
 
     all_stats["aggregated"] = aggregate_stats(all_stats)
     if run:
@@ -675,4 +680,4 @@ if __name__ == "__main__":
 
 # just recalculate
 
-# python evaluation.py --load_dir src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi__ -k all
+# python evaluation.py --load_dir data/forecasts/CF_NP4_test -k all

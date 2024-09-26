@@ -68,7 +68,7 @@ def common_options(f):
         click.option(
             "-n",
             "--num_lines",
-            default=None,
+            default=3,
             help="Number of lines to process in each of the files",
         ),
         click.option(
