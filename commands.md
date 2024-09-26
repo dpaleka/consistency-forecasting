@@ -41,10 +41,17 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ### BasicForecaster with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06
+USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06
 ```
 -> [`src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json)
 
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped/stats_summary.json)
 
 ### BasicForecaster with gpt-4o-2024-05-13 model
 - [x] ground_truth_run
@@ -53,6 +60,14 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 -> [`src/data/forecasts/BasicForecaster_09-24-23-30/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-23-30/ground_truth_summary.json)
 
+- [x] evaluation
+```
+OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-05-13_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=gpt-4o-2024-05-13 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped/stats_summary.json)
+
+
 ### BasicForecaster with gpt-4o-mini-2024-07-18 model
 - [x] ground_truth_run
 ```
@@ -60,33 +75,41 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 -> [`src/data/forecasts/BasicForecaster_09-24-19-10/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-10/ground_truth_summary.json)
 
-### BasicForecaster with anthropic/claude-3.5-sonnet model (with OpenRouter)
-- [x] ground_truth_run
+- [x] evaluation
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet
+OUTPUT_DIRNAME="BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json)
 
-### BasicForecaster with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
-```
--> [`src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json)
 
-### BasicForecaster with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
+### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json)
 
-### BasicForecaster with meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo model (with OpenRouter)
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped" 
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped/stats_summary.json)
+
+### CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
 - [x] ground_truth_run
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json)
 
 ### CoT_ForecasterTextBeforeParsing with o1-mini model
 - [x] ground_truth_run
@@ -94,6 +117,13 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped/stats_summary.json)
 
 
 ### CoT_ForecasterTextBeforeParsing with o1-preview model
@@ -103,19 +133,29 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12/ground_truth_summary.json)
 
-### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
-- [x] ground_truth_run
+- [x] evaluation
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json)
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 50 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 
-### CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
+```
+**Error: ButChecker and ExpectedEvidence checker have some stuff violating usage policy.**
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped/stats_summary.json)
+
+
+### BasicForecaster with anthropic/claude-3.5-sonnet model (with OpenRouter)
 - [x] ground_truth_run
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="BasicForecaster_claude-3.5-sonnet_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_scraped/stats_summary.json)
 
 ### CoT_ForecasterTextBeforeParsing with anthropic/claude-3.5-sonnet model (with OpenRouter)
 - [x] ground_truth_run
@@ -124,12 +164,29 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42/ground_truth_summary.json)
 
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+**Errors abound in checkers, maybe need to rerun with some stability, or recompute**
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped/stats_summary.json)
+
 ### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36/ground_truth_summary.json)
+
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+**CondCondChecker failed, see the stats_summary.json for details.**
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped/stats_summary.json)
 
 ### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
@@ -138,6 +195,13 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09/ground_truth_summary.json)
 
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped/stats_summary.json)
+
 ### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-405B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
@@ -145,74 +209,59 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25/ground_truth_summary.json)
 
-### AdvancedForecaster with [cheap_haiku.yaml](src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml) config (with OpenRouter)
-- [ ] ground_truth_run
+- [x] evaluation
 ```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
+**Note: ButChecker and CondCondChecker failed, see the stats_summary.json for details.**
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped/stats_summary.json)
 
-## AdvancedForecaster
-The following runs are wrong, the search was silently failing.
-### AdvancedForecaster with [cheap_gpt4o-mini.yaml](src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml) config
 
+### BasicForecaster with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
--> [`src/data/forecasts/AdvancedForecaster_09-23-13-52/ground_truth_summary.json`](src/data/forecasts/AdvancedForecaster_09-23-13-52/ground_truth_summary.json)
-
-### AdvancedForecaster with [default_gpt-4o-2024-08-06.yaml](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml) config
-- [x] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml
-```
--> [`src/data/forecasts/AdvancedForecaster_09-23-14-32/ground_truth_summary.json`](src/data/forecasts/AdvancedForecaster_09-23-14-32/ground_truth_summary.json)
-
-### AdvancedForecaster with [default_gpt-4o-2024-05-13.yaml](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml) config
-- [ ] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl  --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml
-```
-
-### AdvancedForecaster with [default_sonnet.yaml](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) config (with OpenRouter)
-- [ ] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f AdvancedForecaster -c src/forecasters/forecaster_configs/advanced/default_sonnet.yaml
-```
-
-
-## PromptedToCons_Forecaster  (WIP)
-
-### PromptedToCons_Forecaster with gpt-4o-mini-2024-07-18
-- [x] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18
-```
--> [`src/data/forecasts/PromptedToCons_Forecaster_09-23-21-49/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_09-23-21-49/ground_truth_summary.json)
-
-worse than random.
+-> [`src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json)
 
 - [x] evaluation
-Just NegChecker and CondChecker, two samples:
 ```
-python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 -k NegChecker -k CondChecker --num_lines 2 --run --async
-``` 
--> [`src/data/forecasts/PromptedToCons_Forecaster_09-24-15-16/stats_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_09-24-15-16/stats_summary.json)
-It doesn't seem like it's making it consistent, nor that it is reporting valid reasoning. See [`src/data/forecasts/PromptedToCons_Forecaster_09-24-15-16/NegChecker.jsonl`](src/data/forecasts/PromptedToCons_Forecaster_09-24-15-16/NegChecker.jsonl)
+OUTPUT_DIRNAME="BasicForecaster_llama-3.1-8B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+**Some checks failed, see the stats_summary.json for details. I recommend not reporting this model.**
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped/stats_summary.json)
 
-
-### PromptedToCons_Forecaster with gpt-4o-2024-05-13
+### BasicForecaster with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-2024-05-13
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
 ```
--> [`src/data/forecasts/PromptedToCons_Forecaster_09-24-13-11/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_09-24-13-11/ground_truth_summary.json)
-worse than random.
+-> [`src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json)
 
-- [ ] evaluation
+- [x] evaluation
 ```
-python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -f PromptedToCons_Forecaster -o model=gpt-4o-2024-05-13 -k all --num_lines 500 --run --async
-``` 
+OUTPUT_DIRNAME="BasicForecaster_llama-3.1-70B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-70B_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-70B_tuples_scraped/stats_summary.json)
+
+### BasicForecaster with meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct
+```
+-> [`src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="BasicForecaster_llama-3.1-405B_tuples_scraped"
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-405B_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-405B_tuples_scraped/stats_summary.json)
+
+
 
 
 # Run ground_truth_run.py on [20240701_20240831.jsonl](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl) and the corresponding [tuples_news_api](src/data/tuples_news_api/)
@@ -522,7 +571,7 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 - [ ] evaluation
 ```
 OUTPUT_DIRNAME="ResolverBasedForecaster_large_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
 
 ## ConsistentForecaster jobs
