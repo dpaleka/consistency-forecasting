@@ -60,9 +60,9 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 -> will run in: [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
--> will run in: [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped)
+-> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped)
 
 ## CF-NP4
 
