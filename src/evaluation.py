@@ -646,3 +646,7 @@ if __name__ == "__main__":
 
 # Using ConsistentForecaster, recursive
 # python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async -o use_generate_related_questions=True | tee see_eval.txt
+
+# just recalculate
+
+# python evaluation.py --load_dir src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi__
