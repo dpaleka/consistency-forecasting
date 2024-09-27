@@ -398,9 +398,6 @@ def main(
 if __name__ == "__main__":
     main()
 
-    # Example run command
-print("Example run command:")
-print(
-    "python ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file path/to/input.jsonl --output_dir path/to/output"
-)
+# Example run command
+# python ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file path/to/input.jsonl --output_dir path/to/output
 # python src/ground_truth_run.py --load_dir="src/data/forecasts/recalc_test/groundtruth/"
