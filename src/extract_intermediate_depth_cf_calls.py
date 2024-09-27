@@ -7,7 +7,7 @@ import click
 import json
 from pathlib import Path
 from evaluation_utils.utils import write_to_dirs
-from .ground_truth_run import make_result_dict
+from ground_truth_run import make_result_dict
 from common.datatypes import Forecast, ForecastingQuestion
 
 
@@ -65,7 +65,8 @@ def main(
     )
 
     output_dirs = [
-        input_dir + f"_{depth}" for depth in range(len(intermediary_forecastss))
+        input_dir + f"_{len(intermediary_forecastss)-1-depth}"
+        for depth in range(len(intermediary_forecastss))
     ]
     for output_dir, intermediary_forecasts in zip(output_dirs, intermediary_forecastss):
         os.makedirs(output_dir, exist_ok=True)
@@ -76,7 +77,7 @@ def main(
                 "forecast": forecast,
             }
             result = make_result_dict(
-                line=line,
+                line=question,
                 fq=ForecastingQuestion(**question),
                 forecast=Forecast(**forecast),
             )
@@ -89,3 +90,5 @@ def main(
 
 if __name__ == "__main__":
     main()
+
+# python src/extract_intermediate_depth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth
