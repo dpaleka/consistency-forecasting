@@ -89,10 +89,10 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 # Intermediate runs
 
 There are four scripts of relevance here. Example usage:
-- `src/extract_intermediate_depth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth`
-- `src/extract_intermediate_breadth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth_4xee1`
-- `src/extract_intermediate_depth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
-- `src/extract_intermediate_breadth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
+- [x] `python src/extract_intermediate_depth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth`
+- [x] `python src/extract_intermediate_breadth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth_4xee1`
+- [ ] `python src/extract_intermediate_depth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
+- [ ] `python src/extract_intermediate_breadth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
 
 ## CF-3xEE1
 
