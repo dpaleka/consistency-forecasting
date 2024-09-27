@@ -2094,7 +2094,6 @@ checker_classes = [
 def choose_checkers(
     relevant_checks: list[str], tuple_dir: Path | None = None
 ) -> dict[str, Checker]:
-    print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
     elif isinstance(relevant_checks[0], int) or relevant_checks[0] in [

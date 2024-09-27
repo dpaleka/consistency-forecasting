@@ -4,10 +4,27 @@ from pathlib import Path
 import json
 from ground_truth_run import make_result_dict
 from common.datatypes import ForecastingQuestion, Forecast
+from static_checks import choose_checkers
 
 
-def arbitragify(metadata: list[dict]) -> float:
-    return 0.5
+def arbitragify(forecast_P: dict, metadata_checks: list[dict]) -> float:
+    P_weight = 1.0
+    P_prob = forecast_P["elicited_prob"]
+    for check in metadata_checks:
+        check_name = check["name"]
+        check_data = check["data"]
+        checker = choose_checkers([check_name])[check_name]
+        hypocrite_answers = {
+            "P": P_prob,
+            **{q: v["elicited_prob"] for q, v in check_data.items()},
+        }
+        other = len(check_data)
+        cons_answers, v = checker.max_min_arbitrage(
+            hypocrite_answers, scoring=[P_weight] + [1.0] * other
+        )
+        P_weight += 1.0 * other
+        P_prob = cons_answers["P"]
+    return P_prob
 
 
 def extract_intermediate_breadth_lines(line: dict) -> list[dict]:
@@ -24,7 +41,7 @@ def extract_intermediate_breadth_lines(line: dict) -> list[dict]:
     intermediate_lines = []
     for i in range(breadth):
         intermediate_metadata = forecast_Ps + metadata_checks[:i]
-        prob = arbitragify(intermediate_metadata)
+        prob = arbitragify(forecast_P, metadata_checks[:i])
         intermediate_line = make_result_dict(
             line=line["question"],
             fq=ForecastingQuestion(**question),
