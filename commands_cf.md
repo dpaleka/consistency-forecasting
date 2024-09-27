@@ -56,11 +56,9 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 -> [src/data/forecasts/ConsistentForecaster_P4_scraped](src/data/forecasts/ConsistentForecaster_P4_scraped)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi)
-
--> rerun in: [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_rerun](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_rerun)
 
 - [x] consistency evaluation - scraped
 
@@ -78,11 +76,11 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 - [ ] consistency evaluation - newsAPI
 
--> will run in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
+-> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
 
 - [ ] consistency evaluation - scraped
 
--> will run in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
+-> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
 
 -----
 
