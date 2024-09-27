@@ -38,6 +38,8 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 ```
 -> [`src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json)
 
+- [ ] evaluation
+
 ### BasicForecaster with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
 ```
@@ -557,14 +559,6 @@ OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_newsapi"
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
 
-### ResolverBasedForecaster with perplexity/llama-3.1-sonar-huge-128k-online model (with OpenRouter)
-(maybe skip this one?)
-
-- [ ] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1 --num_lines 1000 --run --async --output_dir src/data/forecasts/ResolverBasedForecaster_huge_20240701_20240831
-```
-
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-large-128k-online model (with OpenRouter)
 - [x] ground_truth_run
 ```
@@ -572,11 +566,13 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 ```
 -> [`src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json)
 
-- [ ] evaluation
+- [x] evaluation
+**NOTE: NegChecker and ConsequenceChecker incomplete due to errors, need to rerun these checks, look in the file**
 ```
 OUTPUT_DIRNAME="ResolverBasedForecaster_large_tuples_newsapi"
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
+-> [`src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json)
 
 ## ConsistentForecaster jobs
 
