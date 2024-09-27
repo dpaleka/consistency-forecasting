@@ -27,7 +27,9 @@ def arbitragify(forecast_P: dict, metadata_checks: list[dict]) -> float:
     return P_prob
 
 
-def extract_intermediate_breadth_lines(line: dict) -> list[dict]:
+def extract_intermediate_breadth_lines(
+    line: dict, include_ground_truth_info: bool = True
+) -> list[dict]:
     question = line["question"]
     metadata = line["forecast"]["metadata"]
 
@@ -46,15 +48,24 @@ def extract_intermediate_breadth_lines(line: dict) -> list[dict]:
         # print(line["question"])
         # print(ForecastingQuestion(**question).model_dump_json())
 
-        intermediate_line = make_result_dict(
-            line=line["question"],
-            fq=ForecastingQuestion(**question),
-            forecast=Forecast(prob=prob, metadata=intermediate_metadata),
-            compare=False,
-        )
-        # NOTE: the dataset contains weird time zone conflicts
-        # so we have to set compare=False. It's the same line anyway,
-        # so we don't have to bother about it.
+        if include_ground_truth_info:
+            intermediate_line = make_result_dict(
+                line=line["question"],
+                fq=ForecastingQuestion(**question),
+                forecast=Forecast(prob=prob, metadata=intermediate_metadata),
+                compare=False,
+            )
+            # NOTE: the dataset contains weird time zone conflicts
+            # so we have to set compare=False. It's the same line anyway,
+            # so we don't have to bother about it.
+        else:
+            intermediate_line = {
+                "question": line["question"],
+                "forecast": {
+                    "prob": prob,
+                    "metadata": intermediate_metadata,
+                },
+            }
         intermediate_lines.append(intermediate_line)
 
     return intermediate_lines
