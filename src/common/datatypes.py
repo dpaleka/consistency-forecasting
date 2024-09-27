@@ -313,7 +313,7 @@ class QuestionGenerationResponse(BaseModel):
 
 
 class QuestionGenerationResponse_FQ(BaseModel):
-    questions: list[ForecastingQuestion]
+    questions: list[ForecastingQuestion_stripped]
 
 
 register_model_for_cache(QuestionGenerationResponse)

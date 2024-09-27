@@ -266,10 +266,9 @@ python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_f
 - `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4`
 - `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4`
 - `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
 - `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
+
+"Intermediate" consistent forecasters (i.e. lower depth ones and fewer EE checks) will also be evaluated, but don't need to be run separately; we can extract their runs from the above with some logic.
 
 Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
 The other forecasters ask native call(s) and then parse the answer into an output format with an LLM (or by other means, in case of `AdvancedForecaster`).
@@ -279,14 +278,14 @@ The parsing model is always `gpt-4o-mini-2024-07-18`.
 
 ```
 
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 -o use_generate_related_questions=True --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 -o use_generate_related_questions=True --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 -o use_generate_related_questions=True --run -n 100 --relevant_checks all --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async #*
 
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 -o use_generate_related_questions=True --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 -o use_generate_related_questions=True --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 -o use_generate_related_questions=True --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 -o use_generate_related_questions=True --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
+python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
 ```
 
 Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
