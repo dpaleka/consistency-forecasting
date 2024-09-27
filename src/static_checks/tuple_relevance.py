@@ -322,6 +322,15 @@ async def get_relevant_questions(
     if existing_questions is None:
         existing_questions = []
 
+    if len(existing_questions) >= tuple_size:
+        return [
+            (
+                existing_questions,
+                {"relevance": {"score": 10.0, "reasons": [], "conclusion": "N/A"}},
+            )
+            for _ in range(n_return)
+        ]
+
     bqs = []
     print(f"Loading questions from {base_data_path}...")
     for line in jsonlines.open(base_data_path):

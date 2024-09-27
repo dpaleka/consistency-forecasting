@@ -340,6 +340,7 @@ class Checker(ABC):
         dt=5e-5,
         max_steps=1000,
         tmax=5,
+        remove_zeros=1e-3,
     ) -> tuple[dict[str, Prob], float]:
         """
         Use differential equations to find the best arbitrageur_answers.
@@ -435,6 +436,13 @@ class Checker(ABC):
 
             p = dict(zip(self.TupleFormat.model_fields, res.y[:, -1]))
 
+        if remove_zeros:
+            for k in p:
+                if p[k] <= 0:
+                    p[k] = remove_zeros
+                if p[k] >= 1:
+                    p[k] = 1 - remove_zeros
+
         return p, self.min_arbitrage(
             answers=answers, arbitrageur_answers=p, scoring=scoring
         )
@@ -487,9 +495,9 @@ class Checker(ABC):
             # this needs to be both here and in violation because I'm too
             # lazy to refactor
             for k in answers:
-                if answers[k] == 0:
+                if answers[k] <= 0:
                     answers[k] = remove_zeros
-                elif answers[k] == 1:
+                elif answers[k] >= 1:
                     answers[k] = 1 - remove_zeros
 
         if "de" in methods:
@@ -500,6 +508,7 @@ class Checker(ABC):
                 max_steps=max_steps,
                 tmax=tmax,
                 euler=euler,
+                remove_zeros=remove_zeros,
             )
 
         x = answers.keys()
@@ -619,6 +628,14 @@ class Checker(ABC):
             )
 
         best_max = max(maxes, key=lambda x: x["arbitrage_max"])
+
+        if remove_zeros:
+            for k in best_max["arbitrage_argmax"]:
+                if best_max["arbitrage_argmax"][k] <= 0:
+                    best_max["arbitrage_argmax"][k] = remove_zeros
+                elif best_max["arbitrage_argmax"][k] >= 1:
+                    best_max["arbitrage_argmax"][k] = 1 - remove_zeros
+
         return best_max["arbitrage_argmax"], best_max["arbitrage_max"]
 
     def arbitrage_violation(self, answers: dict[str, Prob], **kwargs) -> float:
@@ -659,9 +676,9 @@ class Checker(ABC):
                 # this needs to be both here and in max_min_arbitrage because
                 # I'm too lazy to refactor
                 for k in answers:
-                    if answers[k] == 0:
+                    if answers[k] <= 0:
                         answers[k] = remove_zeros
-                    elif answers[k] == 1:
+                    elif answers[k] >= 1:
                         answers[k] = 1 - remove_zeros
             v = self.arbitrage_violation(answers, remove_zeros=remove_zeros, **kwargs)
             if force_pos and not isinstance(v, str):
@@ -1001,11 +1018,29 @@ class NegChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
+
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] <= 0:
+                    answers[k] = remove_zeros
+                elif answers[k] >= 1:
+                    answers[k] = 1 - remove_zeros
+
         weights = self.get_scoring(
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
@@ -1027,6 +1062,12 @@ class NegChecker(Checker):
         v = W * np.log(p) - sum(
             [weights_[q] * np.log(answers_[q]) for q in ["P", "implied_P"]]
         )
+
+        if remove_zeros:
+            if p <= 0:
+                p = remove_zeros
+            if p >= 1:
+                p = 1 - remove_zeros
 
         return {"P": p, "not_P": 1 - p}, v
 
@@ -1516,10 +1557,26 @@ class CondChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         if kwargs:
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] <= 0:
+                    answers[k] = remove_zeros
+                elif answers[k] >= 1:
+                    answers[k] = 1 - remove_zeros
 
         a = np.sqrt(
             (1 - answers["P"] * answers["Q_given_P"])
@@ -1709,12 +1766,29 @@ class ConsequenceChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
             kwargs["methods"] = ("shgo",)  # DE does not work for this one
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] <= 0:
+                    answers[k] = remove_zeros
+                elif answers[k] >= 1:
+                    answers[k] = 1 - remove_zeros
+
         if answers["P"] <= answers["cons_P"]:
             return answers, 0.0
         else:
@@ -1781,11 +1855,28 @@ class ParaphraseChecker(Checker):
     def max_min_arbitrage(
         self,
         answers: dict[str, Prob],
+        remove_zeros: float = 1e-3,
         **kwargs,
     ) -> float:
         """Subclassing this one to use the exact formula."""
         if self.must_compute_arbitrage_numerically(answers, **kwargs):
-            return super().max_min_arbitrage(answers, **kwargs)
+            return super().max_min_arbitrage(
+                answers, remove_zeros=remove_zeros, **kwargs
+            )
+
+        if self.violation_basic(answers) < 1e-5:
+            return answers, 0.0
+
+        if remove_zeros:
+            # remove_zeros is an epsilon value to avoid division by zero
+            # this needs to be both here and in violation because I'm too
+            # lazy to refactor
+            for k in answers:
+                if answers[k] <= 0:
+                    answers[k] = remove_zeros
+                elif answers[k] >= 1:
+                    answers[k] = 1 - remove_zeros
+
         weights = self.get_scoring(
             answers, kwargs.get("scoring", [1.0]), return_just_log_weights=True
         )
@@ -2003,7 +2094,6 @@ checker_classes = [
 def choose_checkers(
     relevant_checks: list[str], tuple_dir: Path | None = None
 ) -> dict[str, Checker]:
-    print(f"Relevant checks: {relevant_checks}")
     if relevant_checks[0] == "all":
         relevant_checks = [c[0] for c in checker_classes]
     elif isinstance(relevant_checks[0], int) or relevant_checks[0] in [
