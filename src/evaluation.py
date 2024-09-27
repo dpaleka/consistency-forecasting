@@ -240,9 +240,9 @@ def process_check(
             with open(checker_path, "r", encoding="utf-8") as f:
                 all_results = [json.loads(line) for line in f]
                 all_tuples = [result["line"] for result in all_results]
-                all_violation_data = [
-                    result["violation_data"] for result in all_results
-                ]
+                # all_violation_data = [
+                #     result["violation_data"] for result in all_results
+                # ]
 
         if eval_by_source:
             # TODO does this ignore num_lines? if yes, raise if num_lines is not None
@@ -420,7 +420,7 @@ def process_check(
     "-k",
     "--relevant_checks",
     multiple=True,
-    default=["CondChecker"],
+    default=["all"],
     help='Relevant checks to perform. In case of "all", all checkers are used.',
 )
 @click.option(
