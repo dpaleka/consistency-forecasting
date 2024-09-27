@@ -188,8 +188,18 @@ async def generate_questions_from_question(
         response_model=response_model,
         model=model,
     )
-
-    if not return_fq:
+    if return_fq:
+        qs = generated_questions.questions
+        questions = [
+            q.cast_FQ(
+                resolution_date=resolve_by,
+                question_type="binary",
+                data_source="synthetic_inst",
+            )
+            for q in qs
+        ]
+        return questions
+    else:
         # Ensure each generated question has the source question field populated
         for question in generated_questions.questions:
             question.source_question = source_question
