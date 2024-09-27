@@ -106,9 +106,9 @@ TODO: add synthetic
 
 There are four scripts of relevance here. Usage for testing:
 - `python src/extract_intermediate_depth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth`
-- `python src/extract_intermediate_breadth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth_4xee1`
+- `python src/extract_intermediate_breadth_cf_calls.py --input_dir src/data/forecasts/recalc_test/groundtruth_broad`
 - `python src/extract_intermediate_depth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
-- `python src/extract_intermediate_breadth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/eval_small_np4`
+- `python src/extract_intermediate_breadth_cf_elicitations.py --input_dir src/data/forecasts/recalc_test/tuples_broad`
 
 ```bash
 # NewsAPI
