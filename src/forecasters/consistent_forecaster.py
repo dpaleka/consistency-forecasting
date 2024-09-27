@@ -1,4 +1,6 @@
 from common.utils import shallow_dict
+from common.path_utils import get_data_path
+from common.llm_utils import parallelized_call
 from .forecaster import Forecaster
 from .basic_forecaster import BasicForecaster
 from common.datatypes import ForecastingQuestion, Forecast
@@ -15,7 +17,6 @@ from static_checks.tuple_relevance import (
     get_relevant_questions_sync,
 )
 from generate_related_questions import generate_questions_from_question
-from common.path_utils import get_data_path
 
 
 class ConsistentForecaster(Forecaster):
@@ -54,7 +55,7 @@ class ConsistentForecaster(Forecaster):
         / "real"
         / "questions_cleaned_formatted.jsonl",
         coerce_nonbinary_qs=True,
-        use_generate_related_questions=True,
+        use_generate_related_questions=True,  # make sure to this is also set in forecasters.create::make_forecaster
         instantiation_kwargs: dict = None,
         bq_func_kwargs: dict = None,
         **kwargs,
@@ -150,6 +151,7 @@ class ConsistentForecaster(Forecaster):
                 num_questions=tuple_size - 1,
                 model=kwargs.get("model", self.model),
                 source_body=sentence.body,
+                resolve_by=sentence.resolution_date,
                 return_fq=True,
             )
             tup = [sentence] + related_questions
@@ -257,8 +259,13 @@ class ConsistentForecaster(Forecaster):
             sentence, tuple_size=max_tuple_size, seed=seed, **bq_func_kwargs
         )
 
-        cons_tuples = []
         checks_so_far = []
+        tasks = []
+
+        def _instantiate_check(tup):
+            check, bq_tuple, instantiation_kwargs = tup
+            return check.instantiate(bq_tuple, **instantiation_kwargs)
+
         for check in self.checks:
             if check.__class__.__name__ in checks_so_far:
                 seed += 1
@@ -275,15 +282,18 @@ class ConsistentForecaster(Forecaster):
                     if k in list(bq_tuple_max.keys())[: check.num_base_questions]
                 }
             checks_so_far.append(check.__class__.__name__)
-            cons_tuple = await check.instantiate(bq_tuple, **instantiation_kwargs)
-            if isinstance(cons_tuple, list):
-                if len(cons_tuple) == 0:
-                    print(
-                        f"Found multiple valid instantiated cons_tuples for {check.__class__.__name__}"
-                    )
-                    continue
-                cons_tuple = cons_tuple[0]
-            cons_tuples.append(cons_tuple)
+            tasks.append((check, bq_tuple, instantiation_kwargs))
+
+        cons_tuples = await parallelized_call(_instantiate_check, tasks)
+
+        cons_tuples = [
+            cons_tuple[0]
+            if isinstance(cons_tuple, list) and len(cons_tuple) > 0
+            else cons_tuple
+            for cons_tuple in cons_tuples
+            if cons_tuple
+        ]
+
         return cons_tuples
 
     def call(
@@ -421,11 +431,22 @@ class ConsistentForecaster(Forecaster):
             **kwargs,
         )
         P_weight = 1.0
-        for check, cons_tuple in zip(self.checks, cons_tuples):
+
+        def get_check_answers(tup):
+            check, cons_tuple = tup
             cons_tuple = shallow_dict(cons_tuple)
             del cons_tuple["P"]
-            hypocrite_answers = await self.hypocrite.elicit_async(cons_tuple, **kwargs)
+            return self.hypocrite.elicit_async(cons_tuple, **kwargs)
 
+        hypocrite_answerss = await parallelized_call(
+            get_check_answers, list(zip(self.checks, cons_tuples))
+        )
+
+        for check, cons_tuple, hypocrite_answers in zip(
+            self.checks, cons_tuples, hypocrite_answerss
+        ):
+            cons_tuple = shallow_dict(cons_tuple)
+            del cons_tuple["P"]
             metadata_entry = {
                 "name": check.__class__.__name__,
                 "data": {

@@ -19,6 +19,7 @@ from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
 from costly import CostlyResponse, costly, Costlog
+from costly.utils import CostlyWarning
 from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
     PlainText,
@@ -60,9 +61,7 @@ print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries
 
 if os.getenv("USE_COSTLY", "False") == "False":
     # Set up global warning filter
-    warnings.filterwarnings(
-        "ignore", message=".*`cost_log` is None for the function:.*"
-    )
+    warnings.filterwarnings("ignore", category=CostlyWarning)
 
 
 if os.getenv("OPENAI_JSON_STRICT") == "True":
