@@ -1,0 +1,90 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.162,
+    "avg_platt_brier_score": 0.128,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 35.2,
+    "avg_platt_brier_score_scaled": 48.9,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 0.708,
+    "platt_scaling_factor": 1.464,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.038,
+        "resolution": 0.036
+    },
+    "calibration_error": 0.159,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95,
+            0.97,
+            0.99
+        ],
+        "bin_accuracies": [
+            0.024,
+            0.089,
+            0.043,
+            0.088,
+            0.099,
+            0.181,
+            0.27,
+            0.15,
+            0.333,
+            0.5,
+            0.769,
+            0.862,
+            0.75,
+            1.0
+        ],
+        "bin_confidences": [
+            0.008,
+            0.023,
+            0.05,
+            0.15,
+            0.25,
+            0.347,
+            0.436,
+            0.566,
+            0.688,
+            0.849,
+            0.917,
+            0.95,
+            0.98,
+            0.995
+        ],
+        "num_samples": [
+            82,
+            56,
+            116,
+            228,
+            81,
+            83,
+            37,
+            40,
+            195,
+            34,
+            13,
+            29,
+            4,
+            2
+        ],
+        "calibration_error": 0.159
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "anthropic/claude-3.5-sonnet",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}

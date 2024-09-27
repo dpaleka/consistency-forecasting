@@ -1,0 +1,90 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.15,
+    "avg_platt_brier_score": 0.15,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 40.0,
+    "avg_platt_brier_score_scaled": 40.1,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 1.621,
+    "platt_scaling_factor": 0.705,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.042,
+        "resolution": 0.017
+    },
+    "calibration_error": 0.195,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.97,
+            0.99
+        ],
+        "bin_accuracies": [
+            0.144,
+            0.0,
+            0.105,
+            0.218,
+            0.207,
+            0.307,
+            0.36,
+            0.722,
+            0.455,
+            0.643,
+            0.8,
+            0.0,
+            1.0,
+            0.0
+        ],
+        "bin_confidences": [
+            0.0,
+            0.022,
+            0.05,
+            0.113,
+            0.203,
+            0.314,
+            0.414,
+            0.5,
+            0.577,
+            0.696,
+            0.82,
+            0.9,
+            0.98,
+            0.999
+        ],
+        "num_samples": [
+            298,
+            5,
+            296,
+            55,
+            184,
+            75,
+            25,
+            18,
+            22,
+            14,
+            5,
+            1,
+            1,
+            1
+        ],
+        "calibration_error": 0.195
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}

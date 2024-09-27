@@ -1,0 +1,11 @@
+{
+    "default": {
+        "avg_violation": 0.0111685
+    },
+    "frequentist": {
+        "avg_violation": 0.10888
+    },
+    "default_scaled": {
+        "avg_violation": 0.0055305
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.185,
+    "avg_platt_brier_score": 0.138,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 25.9,
+    "avg_platt_brier_score_scaled": 44.7,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 0.801,
+    "platt_scaling_factor": 1.682,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.031,
+        "resolution": 0.02
+    },
+    "calibration_error": 0.194,
+    "calibration_error_data": {
+        "bins": [
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.6,
+            0.7,
+            0.8
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.076,
+            0.124,
+            0.138,
+            0.16,
+            0.423,
+            0.8
+        ],
+        "bin_confidences": [
+            0.05,
+            0.146,
+            0.247,
+            0.322,
+            0.407,
+            0.6,
+            0.659,
+            0.84
+        ],
+        "num_samples": [
+            1,
+            36,
+            92,
+            421,
+            181,
+            25,
+            239,
+            5
+        ],
+        "calibration_error": 0.194
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}
