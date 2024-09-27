@@ -1,5 +1,7 @@
 import os
 import sys
+import copy
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -479,10 +481,10 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             str(self.consistency_checks)
         )
 
-        self.preface = preface or DEFAULT_PREFACE
-        self.user_prompts = user_prompts or DEFAULT_PROMPTS
+        self.preface = preface or copy.deepcopy(DEFAULT_PREFACE)
+        self.user_prompts = user_prompts or copy.deepcopy(DEFAULT_PROMPTS)
 
-        self.examples = examples or DEFAULT_EXAMPLES
+        self.examples = examples or copy.deepcopy(DEFAULT_EXAMPLES)
 
     def generate_all_questions(self, sentence: ForecastingQuestion):
         """# alternate way to gen questions
@@ -505,13 +507,6 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             for k, v in cons_tuple.items():
                 self.forecasting_questions[k] = v
 
-        file_path = "prompted_neg_debug.txt"
-        if not os.path.exists(file_path):
-            open(file_path, "w").close()
-
-        with open(file_path, "a") as f:
-            f.write(str(ForecastingQuestion) + "\n")
-            f.write(str(self.forecasting_questions) + "\n\n")
         return self.forecasting_questions
 
     async def generate_all_questions_async(self, sentence: ForecastingQuestion):
@@ -535,34 +530,35 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             for k, v in cons_tuple.items():
                 self.forecasting_questions[k] = v
 
-        file_path = "prompted_neg_debug.txt"
-        if not os.path.exists(file_path):
-            open(file_path, "w").close()
-
-        with open(file_path, "a") as f:
-            f.write(str(ForecastingQuestion) + "\n")
-            f.write(str(self.forecasting_questions) + "\n\n")
         return self.forecasting_questions
 
     def generate_user_prompts(self, questions_dict):
         first_str = "QUESTIONS: {}".format(questions_dict)
+        user_prompts = copy.deepcopy(self.user_prompts)
 
-        if self.user_prompts[0][:9] == "QUESTIONS":
-            return self.user_prompts
+        if user_prompts[0][:9] == "QUESTIONS":
+            assert False
+            return user_prompts
 
-        self.user_prompts.insert(0, first_str)
+        user_prompts.insert(0, first_str)
 
-        return self.user_prompts
+        return user_prompts
 
     def prep_call(self, ForecastingQuestion):
-        self.generate_all_questions(ForecastingQuestion)
-        self.generate_user_prompts(self.forecasting_questions)
+        prompts = self.generate_user_prompts(
+            self.generate_all_questions(ForecastingQuestion)
+        )
+
+        return prompts
 
     async def prep_call_async(self, ForecastingQuestion):
-        await self.generate_all_questions_async(ForecastingQuestion)
-        self.generate_user_prompts(self.forecasting_questions)
+        prompts = self.generate_user_prompts(
+            await self.generate_all_questions_async(ForecastingQuestion)
+        )
 
-    """
+        return prompts
+
+    """prompts
     @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
@@ -574,17 +570,16 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         return super().call_async(self.user_prompts, self.examples, include_metadata)"""
 
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
-        self.prep_call(ForecastingQuestion)
-        result = super().call(self.user_prompts, self.examples, include_metadata)
+        input = self.prep_call(ForecastingQuestion)
+        result = super().call(input, self.examples, include_metadata)
 
         return result
 
     async def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
         try:
-            await self.prep_call_async(ForecastingQuestion)
-            result = await super().call_async(
-                self.user_prompts, self.examples, include_metadata
-            )
+            input = await self.prep_call_async(ForecastingQuestion)
+            result = await super().call_async(input, self.examples, include_metadata)
+
             return result
         except Exception as e:
             raise e
