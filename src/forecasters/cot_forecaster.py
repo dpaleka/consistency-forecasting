@@ -242,6 +242,7 @@ class CoT_multistep_Forecaster(Forecaster):
             }
 
         self.result = result
+
         if include_metadata:
             self.result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),

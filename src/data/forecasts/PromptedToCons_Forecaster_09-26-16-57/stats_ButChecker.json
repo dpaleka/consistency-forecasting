@@ -1,0 +1,3 @@
+{
+    "error": "generate_questions_from_question does not have synchronous versionplease use --async"
+}
