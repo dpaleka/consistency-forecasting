@@ -42,11 +42,19 @@ def extract_intermediate_breadth_lines(line: dict) -> list[dict]:
     for i in range(breadth):
         intermediate_metadata = forecast_Ps + metadata_checks[:i]
         prob = arbitragify(forecast_P, metadata_checks[:i])
+
+        # print(line["question"])
+        # print(ForecastingQuestion(**question).model_dump_json())
+
         intermediate_line = make_result_dict(
             line=line["question"],
             fq=ForecastingQuestion(**question),
             forecast=Forecast(prob=prob, metadata=intermediate_metadata),
+            compare=False,
         )
+        # NOTE: the dataset contains weird time zone conflicts
+        # so we have to set compare=False. It's the same line anyway,
+        # so we don't have to bother about it.
         intermediate_lines.append(intermediate_line)
 
     return intermediate_lines

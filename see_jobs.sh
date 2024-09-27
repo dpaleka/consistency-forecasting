@@ -45,7 +45,7 @@ wc -l $DIR/*.jsonl
 # # DIR="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped" # DONE
 # # DIR="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi" # DONE
 # DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped" # last: 751
-# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 601
+# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 651
 
 # for f in $DIR/*.jsonl; do
 #     stat "$f"

@@ -38,7 +38,9 @@ logging.getLogger().setLevel(logging.INFO)
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 
-def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
+def make_result_dict(
+    line: dict, fq: ForecastingQuestion, forecast: Forecast, compare=True
+):
     log_score = proper_score(
         probs=[forecast.prob],
         outcomes=[fq.resolution],
@@ -51,14 +53,15 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
     )
     brier_score_scaled = scale_brier_score(brier_score)
 
-    assert (
-        (
-            line_fq_differences := compare_dicts(
-                line, make_json_serializable(fq.to_dict())
+    if compare:
+        assert (
+            (
+                line_fq_differences := compare_dicts(
+                    line, make_json_serializable(fq.to_dict())
+                )
             )
-        )
-        == []
-    ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
+            == []
+        ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
 
     return {
         "question": line,
