@@ -284,7 +284,7 @@ def process_check(
             )
 
             results = existing_results
-            batch_size = 10
+            batch_size = 50
             for start_batch in range(start_index, len(checker_tuples), batch_size):
                 end_batch = min(start_batch + batch_size, len(checker_tuples))
                 batch_tuples = checker_tuples[start_batch:end_batch]

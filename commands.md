@@ -12,12 +12,11 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 ```
 -> [`src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json)
 
-**Missing aggregated value, forecaster config, and the field 'num_samples_including_errors' for each checker**
 - [x] evaluation
 ```
 python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster -o p=0.4 -k all --num_lines 500 --run --async
 ```
--> [`src/data/evaluation/BaselineForecaster_09-23-14-12/stats_summary.json`](src/data/forecasts/BaselineForecaster_09-23-14-12/stats_summary.json)
+-> [`src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped/stats_summary.json`](src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped/stats_summary.json)
 
 
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-huge-128k-online model (with OpenRouter)
