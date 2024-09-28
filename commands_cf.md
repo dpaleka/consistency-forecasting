@@ -88,13 +88,13 @@ TODO: add synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped](src/data/forecasts/ConsistentForecaster_NP4_scraped)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
--> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
+-> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
--> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
+-> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
 
 - [ ] consistency evaluation - synthetic
 
