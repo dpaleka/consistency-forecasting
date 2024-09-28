@@ -580,3 +580,36 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi
 
 ## ConsistentForecaster jobs
 
+
+## PromptedToCons_Forecaster jobs
+
+### PromptedToCons_Forecaster with gpt-4o-mini-2024-07-18 model
+- [x] ground_truth_run
+```
+python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 100 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815
+```
+-> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_20240501_20240815/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 100 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json)
+
+
+
+### PromptedToCons_Forecaster with gpt-4o-mini-2024-07-18 model
+- [] ground_truth_run
+```
+python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831
+```
+-> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json)
+
+- [ ] evaluation
+```
+OUTPUT_DIRNAME="PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_newsapi"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+
+
