@@ -248,7 +248,35 @@
         }
     },
     "CondCondChecker": {
-        "error": "RetryError[<Future at 0x7f94505544d0 state=finished raised TypeError>]"
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 82,
+                "avg_violation": 0.045465,
+                "avg_violation_no_outliers": 0.04322,
+                "median_violation": 0.003892
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 125,
+                "avg_violation": 0.23701,
+                "avg_violation_no_outliers": 0.233449,
+                "median_violation": 0.184319
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 69,
+                "avg_violation": 0.011366,
+                "avg_violation_no_outliers": 0.010805,
+                "median_violation": 0.000973
+            }
+        }
     },
     "ExpectedEvidenceChecker": {
         "overall": {
@@ -283,13 +311,13 @@
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.08279077777777778
+            "avg_violation": 0.0790582
         },
         "frequentist": {
-            "avg_violation": 0.296311
+            "avg_violation": 0.29038090000000005
         },
         "default_scaled": {
-            "avg_violation": 0.030454777777777775
+            "avg_violation": 0.028545899999999996
         }
     },
     "forecaster": "CoT_ForecasterTextBeforeParsing",
