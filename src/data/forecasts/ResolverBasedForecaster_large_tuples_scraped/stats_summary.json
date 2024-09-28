@@ -31,7 +31,35 @@
         }
     },
     "AndChecker": {
-        "error": "Expecting value: line 429 column 1 (char 2354)"
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 29,
+                "avg_violation": 0.279649,
+                "avg_violation_no_outliers": 0.254583,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 31,
+                "avg_violation": 0.841071,
+                "avg_violation_no_outliers": 0.757511,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 29,
+                "avg_violation": 0.093216,
+                "avg_violation_no_outliers": 0.084861,
+                "median_violation": 0.0
+            }
+        }
     },
     "OrChecker": {
         "overall": {
@@ -283,13 +311,13 @@
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.5238491111111111
+            "avg_violation": 0.49942909999999996
         },
         "frequentist": {
-            "avg_violation": 1.5871507777777776
+            "avg_violation": 1.5125427999999999
         },
         "default_scaled": {
-            "avg_violation": 0.1808047777777778
+            "avg_violation": 0.17204590000000003
         }
     },
     "forecaster": "ResolverBasedForecaster",
@@ -303,7 +331,7 @@
             "prompt": "\nYou are acting as an administrator for a forecasting platform.\nGiven the full data of a forecasting question, you must determine whether the question resolves YES or NO.\nIf YES, your final output should be 1. If NO, your final output should be 0.\n\nToday's date is 15 September 2024 or later. You can search for events that have happened before this date.\nThe question has resolved before your knowledge cutoff date; if there is evidence of a certain event happening, you should be able to find it.\nPlease do not make up events that have not been observed. \n\nIf you are unsure on the resolution of the question, output a probability between 0 and 1 based on your reasoning.\n\nThink everything through step-by-step before coming to a conclusion.\n",
             "parsing_model": "gpt-4o-mini-2024-07-18",
             "examples": [
-                "Example(user=ForecastingQuestion(id=UUID('74005cad-4929-405f-b20a-df312ac1bd01'), title='Who will be the Democratic nominee for the 2020 US Presidential Election? (Hillary Clinton)', body='This question will resolve as **Yes** for the candidate below who is selected by the Democratic National Convention as the nominee for the 2020 US Presidential Election.  All other candidates will resolve as **No**.  This question is not restricted to the candidates currently below; other options may be added in the future.\\n\\nFor this question, it is not relevant who recieves the Democratic nomination on the day of the 2020 US election, it is solely determined by who is selected by the delegates of the [Democratic National Convention](https://en.wikipedia.org/wiki/Democratic_National_Convention).', resolution_date=datetime.datetime(2020, 8, 1, 4, 0), question_type='binary', data_source='metaculus', created_date=datetime.datetime(2019, 2, 22, 23, 40, 52), url=None, metadata=None, resolution=None), assistant=\"\\nLet's rephrase the resolution criteria: \\n- The question resolves as **Yes** if Hillary Clinton is selected as the Democratic nominee for the 2020 US Presidential Election;\\n- The question resolves as **No** otherwise.\\n\\nMy search says Joe Biden was selected as the Democratic nominee for the 2020 US Presidential Election.\\nThus, the question resolves as **No**, hence my final output is 0.\\n\")"
+                "Example(user=ForecastingQuestion(id=UUID('ac778310-cef6-4ac5-9dbd-30bf25369f11'), title='Who will be the Democratic nominee for the 2020 US Presidential Election? (Hillary Clinton)', body='This question will resolve as **Yes** for the candidate below who is selected by the Democratic National Convention as the nominee for the 2020 US Presidential Election.  All other candidates will resolve as **No**.  This question is not restricted to the candidates currently below; other options may be added in the future.\\n\\nFor this question, it is not relevant who recieves the Democratic nomination on the day of the 2020 US election, it is solely determined by who is selected by the delegates of the [Democratic National Convention](https://en.wikipedia.org/wiki/Democratic_National_Convention).', resolution_date=datetime.datetime(2020, 8, 1, 4, 0), question_type='binary', data_source='metaculus', created_date=datetime.datetime(2019, 2, 22, 23, 40, 52), url=None, metadata=None, resolution=None), assistant=\"\\nLet's rephrase the resolution criteria: \\n- The question resolves as **Yes** if Hillary Clinton is selected as the Democratic nominee for the 2020 US Presidential Election;\\n- The question resolves as **No** otherwise.\\n\\nMy search says Joe Biden was selected as the Democratic nominee for the 2020 US Presidential Election.\\nThus, the question resolves as **No**, hence my final output is 0.\\n\")"
             ]
         }
     }
