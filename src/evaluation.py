@@ -1,6 +1,5 @@
 import sys
 import io
-import os
 import json
 import warnings
 import asyncio
@@ -25,6 +24,7 @@ from evaluation_utils.utils import (
     write_to_dirs,
 )
 from evaluation_utils.common_options import common_options, get_forecaster_config
+from typing import Any
 
 BASE_TUPLES_PATH: Path = get_data_path() / "tuples_scraped/"
 # BASE_TUPLES_PATH: Path = get_data_path() / "tuples_newsapi/"
@@ -207,6 +207,13 @@ def aggregate_stats(all_stats: dict) -> dict:
     return aggregate_stats
 
 
+def load_existing_results(output_file: Path) -> list[dict[str, Any]]:
+    if output_file.exists():
+        with open(output_file, "r", encoding="utf-8") as f:
+            return [json.loads(line) for line in f]
+    return []
+
+
 def process_check(
     check_name: str,
     checkers: dict[str, Checker],
@@ -217,6 +224,7 @@ def process_check(
     most_recent_directory: Path,
     load_dir: Path,
     run: bool,
+    continue_run: bool,
     eval_by_source: bool,
     do_check: bool,
     num_lines: int | None = None,
@@ -224,25 +232,10 @@ def process_check(
 ) -> dict:
     print(f"Debug: Starting process_check for {check_name}")
     try:
-        if run:
-            print("Checker: ", check_name)
-            with open(checkers[check_name].path, "r", encoding="utf-8") as f:
-                print(f"Path: {checkers[check_name].path}")
-                all_tuples = [json.loads(line) for line in f]
-        else:
-            print("Checker: ", check_name)
-            checker_path = load_dir / f"{check_name}.jsonl"
-            if not os.path.exists(checker_path):
-                warnings.warn(
-                    f"You have not collected data for {check_name}. Ignoring."
-                )
-                return None
-            with open(checker_path, "r", encoding="utf-8") as f:
-                all_results = [json.loads(line) for line in f]
-                all_tuples = [result["line"] for result in all_results]
-                # all_violation_data = [
-                #     result["violation_data"] for result in all_results
-                # ]
+        print("Checker: ", check_name)
+        with open(checkers[check_name].path, "r", encoding="utf-8") as f:
+            print(f"Path: {checkers[check_name].path}")
+            all_tuples = [json.loads(line) for line in f]
 
         if eval_by_source:
             # TODO does this ignore num_lines? if yes, raise if num_lines is not None
@@ -272,23 +265,30 @@ def process_check(
 
         keys = [key for key in checkers[check_name].TupleFormat.model_fields]
         print(f"Debug: keys: {keys}")
-        print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
+        print(f"Debug: Number of tuples loaded from dataset: {len(checker_tuples)}")
 
         dirs_to_write = [output_directory, most_recent_directory]
+        output_file = output_directory / f"{check_name}.jsonl"
 
         if run:
-            # clear the file
-            print(f"Clearing {check_name}.jsonl")
-            for dir in dirs_to_write:
-                if Path(dir / f"{check_name}.jsonl").exists():
-                    os.remove(dir / f"{check_name}.jsonl")
+            existing_results = []
+            if continue_run and output_file.exists():
+                existing_results = load_existing_results(output_file)
+                print(
+                    f"Loaded {len(existing_results)} existing results for {check_name}"
+                )
 
-            results = []
-            batch_size = 50
-            for start in range(0, len(checker_tuples), batch_size):
-                end = min(start + batch_size, len(checker_tuples))
-                batch_tuples = checker_tuples[start:end]
+            start_index = len(existing_results)
+            print(
+                f"Number of checker_tuples to run: {len(checker_tuples) - start_index}"
+            )
 
+            results = existing_results
+            batch_size = 10
+            for start_batch in range(start_index, len(checker_tuples), batch_size):
+                end_batch = min(start_batch + batch_size, len(checker_tuples))
+                batch_tuples = checker_tuples[start_batch:end_batch]
+                print(f"Number of batch_tuples: {len(batch_tuples)}")
                 if is_async:
                     reset_global_semaphore()
                     results_batch = asyncio.run(
@@ -310,53 +310,17 @@ def process_check(
                 print(f"results_batch: {results_batch}")
                 print(f"len(results_batch): {len(results_batch)}")
                 print(f"len(batch_tuples): {len(batch_tuples)}")
-                assert len(results_batch) == len(
-                    batch_tuples
-                ), "results must be of the same length as the batch"
+                assert len(results_batch) == len(batch_tuples)
                 assert all(validate_result(result, keys) for result in results_batch)
 
-                write_to_dirs(results_batch, f"{check_name}.jsonl", dirs_to_write)
                 results.extend(results_batch)
+                write_to_dirs(
+                    results, f"{check_name}.jsonl", dirs_to_write, overwrite=True
+                )
 
             print(f"Debug: Number of results after run: {len(results)}")
-            print(f"Debug: Number of checker_tuples: {len(checker_tuples)}")
-
-            if len(results) != len(checker_tuples):
-                print(
-                    "Warning: Number of results does not match number of checker_tuples"
-                )
-                print(f"Results: {len(results)}, Checker tuples: {len(checker_tuples)}")
-
-            # Ensure results match checker_tuples
-            for i, (result, checker_tuple) in enumerate(zip(results, checker_tuples)):
-                for key in keys:
-                    print(
-                        f"Debug: Checking key {key}. It is {checker_tuple[key].keys()}"
-                    )
-                    try:
-                        assert (
-                            result["line"][key]["question"]["id"]
-                            == checker_tuple[key]["id"]
-                        ), (
-                            f"ID mismatch for key {key} at index {i}: "
-                            f"result ID {result['line'][key]['question']['id']} != checker tuple ID {checker_tuple[key]['id']}"
-                        )
-                        assert (
-                            result["line"][key]["question"]["title"]
-                            == checker_tuple[key]["title"]
-                        ), (
-                            f"Title mismatch for key {key} at index {i}: "
-                            f"result title {result['line'][key]['question']['title']} != checker tuple title {checker_tuple[key]['title']}"
-                        )
-                    except AssertionError as e:
-                        print(f"Assertion failed: {str(e)}")
-                        print(f"Result: {result}")
-                        print(f"Checker tuple: {checker_tuple}")
-                        raise
         else:
-            results = all_results[: len(checker_tuples)]
-            assert all(validate_result(result, keys) for result in results)
-            print(f"Debug: Number of results loaded: {len(results)}")
+            results = load_existing_results(load_dir / f"{check_name}.jsonl")
 
         data = [result["line"] for result in results]
         all_answers = [
@@ -455,12 +419,20 @@ def process_check(
     default=False,
     help="Simulate the evaluation",
 )
+@click.option(
+    "--continue",
+    "continue_run",
+    is_flag=True,
+    default=False,
+    help="Continue from the last processed line when --run is used",
+)
 def main(
     forecaster_class: str | None,
     custom_path: str | None,
     config_path: str | None,
     forecaster_options: list[str] | None,
     run: bool,
+    continue_run: bool,
     load_dir: str | None,
     tuples_per_source: int,
     relevant_checks: list[str],
@@ -560,6 +532,7 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
+                continue_run=continue_run,
                 eval_by_source=eval_by_source,
                 do_check=do_check,
                 cost_log=cl,
@@ -585,6 +558,7 @@ def main(
                 most_recent_directory=most_recent_directory,
                 load_dir=load_dir,
                 run=run,
+                continue_run=continue_run,
                 eval_by_source=eval_by_source,
                 do_check=do_check,
                 cost_log=cl,
@@ -592,6 +566,14 @@ def main(
             )
             if stats is not None:
                 all_stats[check_name] = stats
+
+    # Recompute final stats
+    for check_name, stats in all_stats.items():
+        if check_name in ["forecaster", "full_forecaster_config", "aggregated"]:
+            continue
+        results = load_existing_results(output_directory / f"{check_name}.jsonl")
+        recomputed_stats = get_stats(results, label=check_name)
+        all_stats[check_name]["overall"] = recomputed_stats
 
     all_stats["aggregated"] = aggregate_stats(all_stats)
     if run:
@@ -604,10 +586,10 @@ def main(
     print(cl.totals_by_model)
     print("---------------")
 
-    with open(output_directory / "stats_summary.json", "a", encoding="utf-8") as f:
+    with open(output_directory / "stats_summary.json", "w", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)
     with open(
-        most_recent_directory / "stats_summary.json", "a", encoding="utf-8"
+        most_recent_directory / "stats_summary.json", "w", encoding="utf-8"
     ) as f2:
         # TODO: this one append on old data if it exists in the dir
         json.dump(all_stats, f2, indent=4)
