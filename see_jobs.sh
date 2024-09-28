@@ -8,9 +8,9 @@ fi
 
 # Set the directory based on the argument
 if [ "$1" == "scraped" ]; then
-    DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped" # last: 601
+    DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped" # last: 2001
 elif [ "$1" == "newsapi" ]; then
-    DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 451
+    DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 1901
 else
     echo "Invalid argument. Use 'scraped' or 'newsapi'."
     exit 1
@@ -44,8 +44,8 @@ wc -l $DIR/*.jsonl
 # # DIR="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi" # DONE
 # # DIR="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped" # DONE
 # # DIR="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi" # DONE
-# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped" # last: 951
-# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 751
+# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped" # last: 1001
+# DIR="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi" # last: 801
 
 # for f in $DIR/*.jsonl; do
 #     stat "$f"
