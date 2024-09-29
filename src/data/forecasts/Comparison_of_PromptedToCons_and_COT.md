@@ -17,16 +17,6 @@
 | brier_score_decomposition.resolution | 0.048 | 0.034 | 0.014 |
 | calibration_error | 0.237 | 0.148 | 0.089 |
 
-### Key Differences
-
-- COT has a significantly higher number of total questions (242) compared to PromptedToCons (100).
-- PromptedToCons has a higher average Brier score (0.25) compared to COT (0.227), indicating a lower overall performance.
-- COT has a lower calibration error (0.148) compared to PromptedToCons (0.24), suggesting better calibration.
-- PromptedToCons has a higher average log score (0.999) compared to COT (0.921), indicating better overall performance in terms of log scores.
-- The Platt scaling factor is higher for PromptedToCons (1.308) compared to COT (1.072).
-- The brier_score_decomposition.reliability is lower for PromptedToCons (0.096) compared to COT (0.125), suggesting better reliability for PromptedToCons.
-
-Overall, the data suggests that COT has a higher number of questions and better calibration, while PromptedToCons has a slightly better average log score and reliability. However, it's important to consider the specific use case and requirements to determine which model performs better for a given task.
 
 
 
