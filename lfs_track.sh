@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# to use a list of directories:
+# while IFS= read -r dir; do
+#     ./lfs_track.sh "$dir"
+# done < dirs_to_track.txt
+
+
 # Check if the correct number of arguments are provided
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 <directory> [--migrate]"
