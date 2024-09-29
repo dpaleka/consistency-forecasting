@@ -480,6 +480,21 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi
 
 
 
+## 2028 data
+### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model 
+
+# Run on 2028 data
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt-4o-2024-08-06_tuples_2028" &&
+python src/evaluation.py --tuple_dir src/data/tuples_2028 --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt-4o-2024-08-06_tuples_2028/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt-4o-2024-08-06_tuples_2028/stats_summary.json)
+
+
+
+
+
+
 ## Unused
 
 ### BasicForecaster with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
