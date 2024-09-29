@@ -74,3 +74,10 @@ src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi/CondChecker.jsonl filt
 src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi/ExpectedEvidenceChecker.jsonl filter=lfs diff=lfs merge=lfs -text
 src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi/AndOrChecker.jsonl filter=lfs diff=lfs merge=lfs -text
 src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi/AndChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/ButChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/OrChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/CondCondChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/CondChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/ExpectedEvidenceChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/AndOrChecker.jsonl filter=lfs diff=lfs merge=lfs -text
+src/data/forecasts/ConsistentForecaster_P4_tuples_scraped/AndChecker.jsonl filter=lfs diff=lfs merge=lfs -text
