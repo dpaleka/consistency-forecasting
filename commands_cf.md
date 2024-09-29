@@ -30,7 +30,7 @@ TODO: add synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic)
 
@@ -52,7 +52,7 @@ TODO: add synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic](src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic)
 
@@ -74,7 +74,7 @@ TODO: add synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic](src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic)
 
@@ -96,9 +96,9 @@ TODO: add synthetic
 
 -> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
--> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic](src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic)
+-> [src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic](src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic)
 
 -----
 
