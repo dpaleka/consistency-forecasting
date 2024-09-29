@@ -12,6 +12,7 @@ src/data/forecasts/test*/
 scripts/references/
 src/*see_eval.txt
 *.log
+output_plots/
 .costly/
 src/.costly/
 
