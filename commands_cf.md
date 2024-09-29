@@ -10,8 +10,6 @@ I will also create the results for **_intermediate_ forecasters** (basically rep
 
 # Main runs
 
-TODO: add synthetic
-
 ## CF-4xEE1
 
 - [x] ground truth run - NewsAPI
@@ -88,13 +86,13 @@ TODO: add synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped](src/data/forecasts/ConsistentForecaster_NP4_scraped)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
--> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
+-> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
--> running in: [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
+-> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped)
 
 - [x] consistency evaluation - synthetic
 
