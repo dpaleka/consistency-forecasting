@@ -388,4 +388,4 @@ if __name__ == "__main__":
 
 # Example command:
 # and  not --include_perplexity
-# python src/plot_consistency_vs_brier.py --gt_metric avg_brier_score -t frequentist -c avg_violation
+# python src/plot_consistency_vs_brier.py --all --gt_metric avg_brier_score -t frequentist -c avg_violation
