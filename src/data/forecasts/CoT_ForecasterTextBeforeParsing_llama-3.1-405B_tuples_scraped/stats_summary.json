@@ -124,7 +124,35 @@
         }
     },
     "ButChecker": {
-        "error": "Expecting value: line 691 column 1 (char 3795)"
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 124,
+                "avg_violation": 0.075608,
+                "avg_violation_no_outliers": 0.068444,
+                "median_violation": 0.019797
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 155,
+                "avg_violation": 0.337478,
+                "avg_violation_no_outliers": 0.326764,
+                "median_violation": 0.268062
+            },
+            "default_scaled": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 114,
+                "avg_violation": 0.025203,
+                "avg_violation_no_outliers": 0.022815,
+                "median_violation": 0.006599
+            }
+        }
     },
     "CondChecker": {
         "overall": {
@@ -220,7 +248,35 @@
         }
     },
     "CondCondChecker": {
-        "error": "RetryError[<Future at 0x7f30ad0c1310 state=finished raised TypeError>]"
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 71,
+                "avg_violation": 0.015993,
+                "avg_violation_no_outliers": 0.015178,
+                "median_violation": 0.003326
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 114,
+                "avg_violation": 0.177887,
+                "avg_violation_no_outliers": 0.176025,
+                "median_violation": 0.162559
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 49,
+                "avg_violation": 0.003998,
+                "avg_violation_no_outliers": 0.003795,
+                "median_violation": 0.000831
+            }
+        }
     },
     "ExpectedEvidenceChecker": {
         "overall": {
@@ -255,13 +311,13 @@
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.0299745
+            "avg_violation": 0.0331397
         },
         "frequentist": {
-            "avg_violation": 0.15869049999999998
+            "avg_violation": 0.17848889999999998
         },
         "default_scaled": {
-            "avg_violation": 0.01033325
+            "avg_violation": 0.011186699999999999
         }
     },
     "forecaster": "CoT_ForecasterTextBeforeParsing",

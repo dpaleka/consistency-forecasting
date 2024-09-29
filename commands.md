@@ -207,7 +207,6 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped" &&
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
-**Note: ButChecker and CondCondChecker failed, see the stats_summary.json for details.**
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped/stats_summary.json)
 
 
@@ -220,10 +219,9 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 
 - [x] evaluation
 ```
-OUTPUT_DIRNAME="BasicForecaster_llama-3.1-8B_tuples_scraped"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+OUTPUT_DIRNAME="BasicForecaster_llama-3.1-8B_tuples_scraped" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped --num_lines 200 --run --async --continue -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
-**Some checks failed, see the stats_summary.json for details. I recommend not reporting this model.**
 -> [`src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped/stats_summary.json)
 
 ### BasicForecaster with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)

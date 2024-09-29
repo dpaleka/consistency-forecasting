@@ -1,3 +1,31 @@
 {
-    "error": "RetryError[<Future at 0x7fa8b3a0c1d0 state=finished raised ValidationError>]"
+    "overall": {
+        "default": {
+            "label": "CondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 62,
+            "avg_violation": 0.040104,
+            "avg_violation_no_outliers": 0.037069,
+            "median_violation": 0.0
+        },
+        "frequentist": {
+            "label": "CondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 82,
+            "avg_violation": 0.149853,
+            "avg_violation_no_outliers": 0.146327,
+            "median_violation": 0.031718
+        },
+        "default_scaled": {
+            "label": "CondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 59,
+            "avg_violation": 0.013368,
+            "avg_violation_no_outliers": 0.012356,
+            "median_violation": 0.0
+        }
+    }
 }

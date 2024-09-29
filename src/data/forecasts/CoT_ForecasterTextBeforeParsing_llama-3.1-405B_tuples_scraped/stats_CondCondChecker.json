@@ -1,3 +1,31 @@
 {
-    "error": "RetryError[<Future at 0x7f30ad0c1310 state=finished raised TypeError>]"
+    "overall": {
+        "default": {
+            "label": "CondCondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 71,
+            "avg_violation": 0.015993,
+            "avg_violation_no_outliers": 0.015178,
+            "median_violation": 0.003326
+        },
+        "frequentist": {
+            "label": "CondCondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 114,
+            "avg_violation": 0.177887,
+            "avg_violation_no_outliers": 0.176025,
+            "median_violation": 0.162559
+        },
+        "default_scaled": {
+            "label": "CondCondChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 49,
+            "avg_violation": 0.003998,
+            "avg_violation_no_outliers": 0.003795,
+            "median_violation": 0.000831
+        }
+    }
 }
