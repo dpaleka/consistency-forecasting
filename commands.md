@@ -420,12 +420,11 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json)
 
-- [ ] evaluation
+- [x] evaluation
 ```
 OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi" &&
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
-> running eval_newsapi
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi/stats_summary.json)
 
 ### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
@@ -449,12 +448,11 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json)
 
-- [ ] evaluation
+- [x] evaluation
 ```
 OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_newsapi" &&
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
->running eval_llama
 
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-large-128k-online model (with OpenRouter)
 - [x] ground_truth_run
@@ -471,6 +469,9 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi
 -> [`src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json)
 
 ## ConsistentForecaster jobs
+
+
+
 
 ## Unused
 
