@@ -1,92 +1,323 @@
 {
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 146,
+                "avg_violation": 0.055412,
+                "avg_violation_no_outliers": 0.049792,
+                "median_violation": 0.009276
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 151,
+                "avg_violation": 0.213164,
+                "avg_violation_no_outliers": 0.204847,
+                "median_violation": 0.134352
+            },
+            "default_scaled": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 146,
+                "avg_violation": 0.027706,
+                "avg_violation_no_outliers": 0.024896,
+                "median_violation": 0.004638
+            }
+        }
+    },
+    "AndChecker": {
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 44,
+                "avg_violation": 0.007255,
+                "avg_violation_no_outliers": 0.006274,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 56,
+                "avg_violation": 0.056239,
+                "avg_violation_no_outliers": 0.053804,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 41,
+                "avg_violation": 0.002418,
+                "avg_violation_no_outliers": 0.002091,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 98,
+                "avg_violation": 0.019516,
+                "avg_violation_no_outliers": 0.018389,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 103,
+                "avg_violation": 0.113716,
+                "avg_violation_no_outliers": 0.111307,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 69,
+                "avg_violation": 0.006505,
+                "avg_violation_no_outliers": 0.00613,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 133,
+                "avg_violation": 0.023577,
+                "avg_violation_no_outliers": 0.022311,
+                "median_violation": 0.007145
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 151,
+                "avg_violation": 0.170859,
+                "avg_violation_no_outliers": 0.168739,
+                "median_violation": 0.132337
+            },
+            "default_scaled": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 97,
+                "avg_violation": 0.005894,
+                "avg_violation_no_outliers": 0.005578,
+                "median_violation": 0.001786
+            }
+        }
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 192,
+                "avg_violation": 0.062004,
+                "avg_violation_no_outliers": 0.060336,
+                "median_violation": 0.021376
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 249,
+                "avg_violation": 0.327265,
+                "avg_violation_no_outliers": 0.325606,
+                "median_violation": 0.30134
+            },
+            "default_scaled": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 173,
+                "avg_violation": 0.020668,
+                "avg_violation_no_outliers": 0.020112,
+                "median_violation": 0.007125
+            }
+        }
+    },
     "CondChecker": {
         "overall": {
             "default": {
                 "label": "CondChecker",
-                "num_samples_including_errors": 400,
-                "num_samples": 400,
-                "num_violations": 293,
-                "avg_violation": 0.042245,
-                "avg_violation_no_outliers": 0.041507,
-                "median_violation": 0.025622
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 221,
+                "avg_violation": 0.042088,
+                "avg_violation_no_outliers": 0.041102,
+                "median_violation": 0.026988
             },
             "frequentist": {
                 "label": "CondChecker",
-                "num_samples_including_errors": 400,
-                "num_samples": 400,
-                "num_violations": 315,
-                "avg_violation": 0.253079,
-                "avg_violation_no_outliers": 0.251903,
-                "median_violation": 0.229118
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 236,
+                "avg_violation": 0.255295,
+                "avg_violation_no_outliers": 0.253739,
+                "median_violation": 0.233197
             },
             "default_scaled": {
                 "label": "CondChecker",
-                "num_samples_including_errors": 400,
-                "num_samples": 400,
-                "num_violations": 268,
-                "avg_violation": 0.014082,
-                "avg_violation_no_outliers": 0.013836,
-                "median_violation": 0.008541
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 204,
+                "avg_violation": 0.014029,
+                "avg_violation_no_outliers": 0.013701,
+                "median_violation": 0.008996
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 16,
+                "avg_violation": 0.002663,
+                "avg_violation_no_outliers": 0.002229,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 17,
+                "avg_violation": 0.019059,
+                "avg_violation_no_outliers": 0.017393,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 16,
+                "avg_violation": 0.001331,
+                "avg_violation_no_outliers": 0.001115,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 107,
+                "avg_violation": 0.017286,
+                "avg_violation_no_outliers": 0.015855,
+                "median_violation": 0.002854
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 117,
+                "avg_violation": 0.112818,
+                "avg_violation_no_outliers": 0.110403,
+                "median_violation": 0.075507
+            },
+            "default_scaled": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 107,
+                "avg_violation": 0.008643,
+                "avg_violation_no_outliers": 0.007928,
+                "median_violation": 0.001427
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 210,
+                "avg_violation": 0.048345,
+                "avg_violation_no_outliers": 0.047895,
+                "median_violation": 0.035996
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 269,
+                "avg_violation": 0.294542,
+                "avg_violation_no_outliers": 0.294164,
+                "median_violation": 0.288243
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 194,
+                "avg_violation": 0.012086,
+                "avg_violation_no_outliers": 0.011974,
+                "median_violation": 0.008999
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 92,
+                "avg_violation": 0.020888,
+                "avg_violation_no_outliers": 0.016079,
+                "median_violation": 1.5e-05
+            },
+            "frequentist": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 151,
+                "avg_violation": 0.176771,
+                "avg_violation_no_outliers": 0.16708,
+                "median_violation": 0.129919
+            },
+            "default_scaled": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 300,
+                "num_samples": 300,
+                "num_violations": 68,
+                "avg_violation": 0.005222,
+                "avg_violation_no_outliers": 0.00402,
+                "median_violation": 4e-06
             }
         }
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.042245
+            "avg_violation": 0.029903400000000004
         },
         "frequentist": {
-            "avg_violation": 0.253079
+            "avg_violation": 0.1739728
         },
         "default_scaled": {
-            "avg_violation": 0.014082
-        }
-    },
-    "forecaster": "CoT_ForecasterTextBeforeParsing",
-    "full_forecaster_config": {
-        "model": "gpt-4o-2024-08-06",
-        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
-        "examples": null
-    }
-}{
-    "NegChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "AndChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "OrChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "AndOrChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "ButChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "CondChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "ConsequenceChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "ParaphraseChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "CondCondChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "ExpectedEvidenceChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
-    },
-    "aggregated": {
-        "default": {
-            "avg_violation": NaN
-        },
-        "frequentist": {
-            "avg_violation": NaN
-        },
-        "default_scaled": {
-            "avg_violation": NaN
+            "avg_violation": 0.010450200000000002
         }
     },
     "forecaster": "CoT_ForecasterTextBeforeParsing",

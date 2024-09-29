@@ -207,10 +207,12 @@ def aggregate_stats(all_stats: dict) -> dict:
     return aggregate_stats
 
 
-def load_existing_results(output_file: Path) -> list[dict[str, Any]]:
+def load_existing_results(
+    output_file: Path, max_lines: int | None = None
+) -> list[dict[str, Any]]:
     if output_file.exists():
         with open(output_file, "r", encoding="utf-8") as f:
-            return [json.loads(line) for line in f]
+            return [json.loads(line) for line in f][:max_lines]
     return []
 
 
@@ -273,7 +275,9 @@ def process_check(
         if run:
             existing_results = []
             if continue_run and output_file.exists():
-                existing_results = load_existing_results(output_file)
+                existing_results = load_existing_results(
+                    output_file, max_lines=num_lines
+                )
                 print(
                     f"Loaded {len(existing_results)} existing results for {check_name}"
                 )
