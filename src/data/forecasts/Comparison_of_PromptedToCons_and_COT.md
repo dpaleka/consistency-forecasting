@@ -4,18 +4,18 @@
 | Metric | PromptedToCons | COT | Difference |
 |--------|-----------------|-----|------------|
 | total_questions | 100 | 242 | -142 |
-| avg_brier_score | 0.25 | 0.227 | 0.023 |
-| avg_platt_brier_score | 0.211 | 0.201 | 0.01 |
+| avg_brier_score | 0.24 | 0.227 | 0.013 |
+| avg_platt_brier_score | 0.207 | 0.201 | 0.006 |
 | tuned_brier_baseline | 0.228 | 0.227 | 0.001 |
-| avg_brier_score_scaled | 0.0 | 9.3 | -9.3 |
-| avg_platt_brier_score_scaled | 15.6 | 19.8 | -4.2 |
+| avg_brier_score_scaled | 4.1 | 9.3 | -5.2 |
+| avg_platt_brier_score_scaled | 17.1 | 19.8 | -2.7 |
 | tuned_brier_baseline_scaled | 9.0 | 9.3 | -0.3 |
-| avg_log_score | 0.999 | 0.921 | 0.078 |
-| platt_scaling_factor | 1.308 | 1.072 | 0.236 |
+| avg_log_score | 0.97 | 0.921 | 0.049 |
+| platt_scaling_factor | 1.352 | 1.072 | 0.28 |
 | brier_score_decomposition.uncertainty | 0.227 | 0.227 | 0.0 |
-| brier_score_decomposition.reliability | 0.096 | 0.125 | -0.029 |
-| brier_score_decomposition.resolution | 0.034 | 0.034 | 0.0 |
-| calibration_error | 0.24 | 0.148 | 0.092 |
+| brier_score_decomposition.reliability | 0.138 | 0.125 | 0.013 |
+| brier_score_decomposition.resolution | 0.048 | 0.034 | 0.014 |
+| calibration_error | 0.237 | 0.148 | 0.089 |
 
 ### Key Differences
 
