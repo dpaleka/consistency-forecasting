@@ -517,7 +517,7 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 ```
 -> [`src/data/forecasts/BasicForecaster_llama-3.1-70B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-70B_20240701_20240831/ground_truth_summary.json)
 
-- [0] evaluation
+- [ ] evaluation
 ```
 OUTPUT_DIRNAME="BasicForecaster_llama-3.1-70B_tuples_newsapi"
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
