@@ -1,0 +1,190 @@
+{
+    "NegChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=313675265.5869489, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "AndChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=633446.6124144049, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "OrChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=1857450.9859700343, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "AndOrChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=7454.30367044048, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 127,
+                "avg_violation": 0.051958,
+                "avg_violation_no_outliers": 0.050916,
+                "median_violation": 0.028688
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 158,
+                "avg_violation": 0.293541,
+                "avg_violation_no_outliers": 0.292369,
+                "median_violation": 0.271572
+            },
+            "default_scaled": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 121,
+                "avg_violation": 0.017319,
+                "avg_violation_no_outliers": 0.016972,
+                "median_violation": 0.009563
+            }
+        }
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 132,
+                "avg_violation": 0.028283,
+                "avg_violation_no_outliers": 0.027612,
+                "median_violation": 0.018496
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 146,
+                "avg_violation": 0.21794,
+                "avg_violation_no_outliers": 0.216703,
+                "median_violation": 0.207462
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 110,
+                "avg_violation": 0.009428,
+                "avg_violation_no_outliers": 0.009204,
+                "median_violation": 0.006165
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=1216260.7281617867, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "ParaphraseChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=23.597736797218367, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 142,
+                "avg_violation": 0.034528,
+                "avg_violation_no_outliers": 0.034006,
+                "median_violation": 0.027414
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 181,
+                "avg_violation": 0.293077,
+                "avg_violation_no_outliers": 0.292702,
+                "median_violation": 0.288734
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 112,
+                "avg_violation": 0.008632,
+                "avg_violation_no_outliers": 0.008502,
+                "median_violation": 0.006853
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=37.64298002779004, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.03825633333333333
+        },
+        "frequentist": {
+            "avg_violation": 0.268186
+        },
+        "default_scaled": {
+            "avg_violation": 0.011793
+        }
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+            "examples": []
+        },
+        "checks": [
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            },
+            {
+                "name": "ExpectedEvidenceChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    }
+}

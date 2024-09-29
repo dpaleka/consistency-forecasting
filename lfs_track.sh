@@ -23,12 +23,12 @@ fi
 echo "The following files larger than 10MB were found:"
 echo "$FILES"
 echo
-read -p "Do you want to proceed with tracking these files with Git LFS? (y/n) " CONFIRM
+# read -p "Do you want to proceed with tracking these files with Git LFS? (y/n) " CONFIRM
 
-if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
-    echo "Operation canceled by the user."
-    exit 0
-fi
+# if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
+#     echo "Operation canceled by the user."
+#     exit 0
+# fi
 
 # Track files with Git LFS
 echo "$FILES" | while read -r FILE; do
