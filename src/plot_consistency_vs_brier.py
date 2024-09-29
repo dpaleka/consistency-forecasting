@@ -40,6 +40,18 @@ def parse_arguments() -> argparse.Namespace:
         help="Include perplexity in the plots",
     )
     parser.add_argument(
+        "--only_cfcaster",
+        action="store_true",
+        default=False,
+        help="Only include consistent forecasters in the plots",
+    )
+    parser.add_argument(
+        "--include_cfcaster",
+        action="store_true",
+        default=False,
+        help="Include consistent forecasters in the plots",
+    )
+    parser.add_argument(
         "--include_baseline",
         action="store_true",
         help="Include baseline in the plots",
@@ -276,24 +288,289 @@ forecaster_pairs_scraped: list[ForecasterPair] = [
     ),
 ]
 
+consistentforecaster_pairs_newsapi: list[ForecasterPair] = [
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1",
+        short_name="CF-4xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4",
+        short_name="CF-N4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_20240701_20240831",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4",
+        short_name="CF-P4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_20240701_20240831",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4",
+        short_name="CF-NP4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi",
+    ),
+    # Intermediate forecasters
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_3x",
+        short_name="CF-3xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_3x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_3x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_2x",
+        short_name="CF-2xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_2x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_2x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_1x",
+        short_name="CF-1xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_1x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_1x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_0x",
+        short_name="CF-0xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_0x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_0x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_3",
+        short_name="CF-N3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_2",
+        short_name="CF-N2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_1",
+        short_name="CF-N1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_0",
+        short_name="CF-N0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_0",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_3",
+        short_name="CF-P3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_2",
+        short_name="CF-P2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_1",
+        short_name="CF-P1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_0",
+        short_name="CF-P0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_0",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_3",
+        short_name="CF-NP3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_2",
+        short_name="CF-NP2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_1",
+        short_name="CF-NP1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_0",
+        short_name="CF-NP0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_0",
+    ),
+]
+
+consistentforecaster_pairs_scraped: list[ForecasterPair] = [
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1",
+        short_name="CF-4xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_scraped",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4",
+        short_name="CF-N4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_scraped",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4",
+        short_name="CF-P4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_scraped",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4",
+        short_name="CF-NP4",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_scraped",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped",
+    ),
+    # Intermediate forecasters
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_3x",
+        short_name="CF-3xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_scraped_3x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_3x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_2x",
+        short_name="CF-2xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_scraped_2x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_2x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_1x",
+        short_name="CF-1xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_scraped_1x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_1x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_4xEE1_0x",
+        short_name="CF-0xEE1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_4xEE1_scraped_0x",
+        eval_dir="src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_0x",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_3",
+        short_name="CF-N3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_scraped_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_2",
+        short_name="CF-N2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_scraped_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_1",
+        short_name="CF-N1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_scraped_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_N4_0",
+        short_name="CF-N0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_N4_scraped_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_0",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_3",
+        short_name="CF-P3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_scraped_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_2",
+        short_name="CF-P2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_scraped_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_1",
+        short_name="CF-P1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_scraped_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_P4_0",
+        short_name="CF-P0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_P4_scraped_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_0",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_3",
+        short_name="CF-NP3",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_scraped_3",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_3",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_2",
+        short_name="CF-NP2",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_scraped_2",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_2",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_1",
+        short_name="CF-NP1",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_scraped_1",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_1",
+    ),
+    ForecasterPair(
+        name="ConsistentForecaster_NP4_0",
+        short_name="CF-NP0",
+        ground_truth_dir="src/data/forecasts/ConsistentForecaster_NP4_scraped_0",
+        eval_dir="src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_0",
+    ),
+]
+
 
 def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
     if args.all:
-        match args.dataset:
-            case "newsapi":
-                forecaster_pairs = forecaster_pairs_newsapi
-            case "scraped":
-                forecaster_pairs = forecaster_pairs_scraped
-            case _:
-                raise ValueError(f"Invalid dataset: {args.dataset}")
-        if not args.include_perplexity:
-            forecaster_pairs = [
-                pair for pair in forecaster_pairs if pair["short_name"] != "Perplexity"
-            ]
-        if not args.include_baseline:
-            forecaster_pairs = [
-                pair for pair in forecaster_pairs if pair["short_name"] != "Baseline"
-            ]
+        if args.only_cfcaster:
+            match args.dataset:
+                case "newsapi":
+                    forecaster_pairs = consistentforecaster_pairs_newsapi
+                case "scraped":
+                    forecaster_pairs = consistentforecaster_pairs_scraped
+                case _:
+                    raise ValueError(f"Invalid dataset: {args.dataset}")
+        else:
+            match args.dataset:
+                case "newsapi":
+                    forecaster_pairs = forecaster_pairs_newsapi
+                    if args.include_cfcaster:
+                        forecaster_pairs += consistentforecaster_pairs_newsapi
+                case "scraped":
+                    forecaster_pairs = forecaster_pairs_scraped
+                    if args.include_cfcaster:
+                        forecaster_pairs += consistentforecaster_pairs_scraped
+                case _:
+                    raise ValueError(f"Invalid dataset: {args.dataset}")
+            if not args.include_perplexity:
+                forecaster_pairs = [
+                    pair
+                    for pair in forecaster_pairs
+                    if pair["short_name"] != "Perplexity"
+                ]
+            if not args.include_baseline:
+                forecaster_pairs = [
+                    pair
+                    for pair in forecaster_pairs
+                    if pair["short_name"] != "Baseline"
+                ]
         return forecaster_pairs
 
     elif args.directories:
