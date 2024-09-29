@@ -258,56 +258,6 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 # Run ground_truth_run.py on [20240701_20240831.jsonl](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl) and the corresponding [tuples_news_api](src/data/tuples_news_api/)
 (There is a slight distribution shift between the ground truth data and what was used for tuple generation, see README.md for details, but that's OK, we are interested in generalization here.)
 
-```
-# BaselineForecaster with p=0.4
-OUTPUT_DIRNAME="BaselineForecaster_p0.4_tuples_newsapi"
-#python src/evaluation.py --tuple_dir src/data/tuples_newsapi -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 --num_lines 400 --run --async -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-#Summary written to /Users/daniel/code/consistency-forecasting/src/data/forecasts/A_UniformRandomForecaster_most_recent/ground_truth_summary.json
-# UniformRandomForecaster with n_buckets=100
-OUTPUT_DIRNAME="UniformRandomForecaster_n_buckets100_tuples_newsapi"
-python src/evaluation.py --tuple_dir src/data/tuples_newsapi -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 300 --run --async -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# BasicForecaster with gpt-4o-2024-08-06 model
-OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# BasicForecaster with gpt-4o-2024-05-13 model
-OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-05-13_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=gpt-4o-2024-05-13 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# BasicForecaster with gpt-4o-mini-2024-07-18 model
-OUTPUT_DIRNAME="BasicForecaster_gpt4o_mini_2024-07-18_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# BasicForecaster with anthropic/claude-3.5-sonnet model (with OpenRouter)
-OUTPUT_DIRNAME="BasicForecaster_claude-3.5-sonnet_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with o1-mini model
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with o1-preview model
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi"
-python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 50 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi" 
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with anthropic/claude-3.5-sonnet model (with OpenRouter)
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-
-# CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
 
 ### BaselineForecaster with p=0.4
 - [x] ground_truth_run
@@ -325,10 +275,10 @@ python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_gener
 ```
 -> [`src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831/ground_truth_summary.json)
 
-**Separated in two json object, ConcCond in one, and the others in other.**
 - [x] evaluation
 ```
-python src/evaluation.py --tuple_dir src/data/tuples_newsapi -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 2 --run --async --output_dir src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi
+OUTPUT_DIRNAME="UniformRandomForecaster_n_buckets100_tuples_newsapi" &&
+python src/evaluation.py --tuple_dir src/data/tuples_newsapi -p src/forecasters/various.py::UniformRandomForecaster --forecaster_options n_buckets=100 --num_lines 300 --run --async --continue --output_dir src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi
 ```
 -> [`src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi/stats_summary.json`](src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi/stats_summary.json)
 
@@ -339,11 +289,10 @@ USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/syn
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json)
 
-**Not valid json, two objects, one with CondCond, and one with everything else (including CondCond)**
 - [x] evaluation
 ```
-OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-08-06_tuples_newsapi" &&
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f BasicForecaster -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json)
 
@@ -354,11 +303,10 @@ python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_gener
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_20240701_20240831/ground_truth_summary.json)
 
-**Two json objects with two sets of results**
 - [x] evaluation
 ```
-OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-05-13_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=gpt-4o-2024-05-13 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+OUTPUT_DIRNAME="BasicForecaster_gpt4o_2024-05-13_tuples_newsapi" &&
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f BasicForecaster -o model=gpt-4o-2024-05-13 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_newsapi/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_newsapi/stats_summary.json) 
 
@@ -390,6 +338,142 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi
 ```
 -> [`src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_newsapi/stats_summary.json`](src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_newsapi/stats_summary.json) 
 
+### CoT_ForecasterTextBeforeParsing with o1-mini model
+- [x] ground_truth_run
+```
+USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi"
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi/stats_summary.json)   
+
+### CoT_ForecasterTextBeforeParsing with o1-preview model
+- [x] ground_truth_run
+```
+USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831/ground_truth_summary.json)
+
+
+- [x] evaluation
+
+(we run 50 per check because it is really expensive)
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi" &&
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 50 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=o1-preview -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi/stats_summary.json)   
+
+
+### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
+- [x] ground_truth_run
+```
+python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi" &&
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json)
+
+### CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
+- [x] ground_truth_run
+```
+python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi" &&
+USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi/stats_summary.json)
+
+
+### CoT_ForecasterTextBeforeParsing with anthropic/claude-3.5-sonnet model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi 2>&1 | tee logs/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi/stats_summary.json)
+
+### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json)
+
+- [ ] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+> running eval_newsapi
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi/stats_summary.json)
+
+### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_newsapi" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_newsapi/stats_summary.json)
+
+### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-405B-Instruct model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831
+```
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json)
+
+- [ ] evaluation
+```
+OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_newsapi" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+>running eval_llama
+
+### ResolverBasedForecaster with perplexity/llama-3.1-sonar-large-128k-online model (with OpenRouter)
+- [x] ground_truth_run
+```
+USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 --num_lines 1000 --run --async --output_dir src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831
+```
+-> [`src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="ResolverBasedForecaster_large_tuples_newsapi" &&
+USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json)
+
+## ConsistentForecaster jobs
+
+## Unused
+
 ### BasicForecaster with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
@@ -410,7 +494,7 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synt
 ```
 -> [`src/data/forecasts/BasicForecaster_llama-3.1-70B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-70B_20240701_20240831/ground_truth_summary.json)
 
-- [ ] evaluation
+- [0] evaluation
 ```
 OUTPUT_DIRNAME="BasicForecaster_llama-3.1-70B_tuples_newsapi"
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
@@ -429,143 +513,7 @@ OUTPUT_DIRNAME="BasicForecaster_llama-3.1-405B_tuples_newsapi"
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
 ```
 
-### CoT_ForecasterTextBeforeParsing with o1-mini model
-- [x] ground_truth_run
-```
-USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831/ground_truth_summary.json)
 
-**Two Json objects, one with CondCond, and another with all the checkers**
-- [x] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi/stats_summary.json)   
-
-### CoT_ForecasterTextBeforeParsing with o1-preview model
-- [x] ground_truth_run
-```
-USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831/ground_truth_summary.json)
-
-
-- [ ] evaluation
-
-(we run 50 per check because it is really expensive)
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 50 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-**NOTE: some checks in this file have failed due to lack of credits, need to rerun these checks, look in the file**
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi/stats_summary.json)   
-
-
-### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
-- [x] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-**NOTE: some checks in this file have failed due to lack of credits, need to rerun these checks, look in the file**
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi/stats_summary.json)
-
-### CoT_ForecasterTextBeforeParsing with gpt-4o-mini-2024-07-18 model
-- [x] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-**NOTE: some checks in this file have failed due to lack of credits, need to rerun these checks, look in the file**
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi/stats_summary.json)
-
-
-### CoT_ForecasterTextBeforeParsing with anthropic/claude-3.5-sonnet model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet -k all --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi 2>&1 | tee logs/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi_$(date +%Y%m%d_%H%M).log || true
-```
-**NOTE: some checks in this file have failed due to unknown reasons, need to rerun those checks, look in the file**
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi/stats_summary.json)
-
-### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-8B-Instruct model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-
-### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-70B-Instruct model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-
-### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-405B-Instruct model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct --output_dir src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831
-```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
-
-### ResolverBasedForecaster with perplexity/llama-3.1-sonar-large-128k-online model (with OpenRouter)
-- [x] ground_truth_run
-```
-USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 --num_lines 1000 --run --async --output_dir src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831
-```
--> [`src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831/ground_truth_summary.json)
-
-- [x] evaluation
-**NOTE: NegChecker and ConsequenceChecker incomplete due to errors, need to rerun these checks, look in the file**
-```
-OUTPUT_DIRNAME="ResolverBasedForecaster_large_tuples_newsapi"
-USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
--> [`src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi/stats_summary.json)
-
-## ConsistentForecaster jobs
-
-## Unused
 
 ### ResolverBasedForecaster with perplexity/llama-3.1-sonar-huge-128k-online model (with OpenRouter)
 - [x] ground_truth_run

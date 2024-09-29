@@ -1,53 +1,4 @@
 {
-    "CondChecker": {
-        "overall": {
-            "default": {
-                "label": "CondChecker",
-                "num_samples_including_errors": 50,
-                "num_samples": 50,
-                "num_violations": 32,
-                "avg_violation": 0.089106,
-                "avg_violation_no_outliers": 0.045193,
-                "median_violation": 0.012996
-            },
-            "frequentist": {
-                "label": "CondChecker",
-                "num_samples_including_errors": 50,
-                "num_samples": 50,
-                "num_violations": 34,
-                "avg_violation": 0.280837,
-                "avg_violation_no_outliers": 0.210612,
-                "median_violation": 0.169541
-            },
-            "default_scaled": {
-                "label": "CondChecker",
-                "num_samples_including_errors": 50,
-                "num_samples": 50,
-                "num_violations": 24,
-                "avg_violation": 0.029702,
-                "avg_violation_no_outliers": 0.015064,
-                "median_violation": 0.004332
-            }
-        }
-    },
-    "aggregated": {
-        "default": {
-            "avg_violation": 0.089106
-        },
-        "frequentist": {
-            "avg_violation": 0.280837
-        },
-        "default_scaled": {
-            "avg_violation": 0.029702
-        }
-    },
-    "forecaster": "CoT_ForecasterTextBeforeParsing",
-    "full_forecaster_config": {
-        "model": "o1-preview",
-        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
-        "examples": null
-    }
-}{
     "NegChecker": {
         "overall": {
             "default": {
@@ -297,20 +248,76 @@
         }
     },
     "CondCondChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 15,
+                "avg_violation": 0.011263,
+                "avg_violation_no_outliers": 0.009782,
+                "median_violation": 0.000139
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 18,
+                "avg_violation": 0.108809,
+                "avg_violation_no_outliers": 0.10551,
+                "median_violation": 0.091701
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 9,
+                "avg_violation": 0.002816,
+                "avg_violation_no_outliers": 0.002446,
+                "median_violation": 3.5e-05
+            }
+        }
     },
     "ExpectedEvidenceChecker": {
-        "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
+        "overall": {
+            "default": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 14,
+                "avg_violation": 0.032769,
+                "avg_violation_no_outliers": 0.010912,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 24,
+                "avg_violation": 0.178816,
+                "avg_violation_no_outliers": 0.140185,
+                "median_violation": 0.118969
+            },
+            "default_scaled": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 50,
+                "num_samples": 50,
+                "num_violations": 8,
+                "avg_violation": 0.008192,
+                "avg_violation_no_outliers": 0.002728,
+                "median_violation": 0.0
+            }
+        }
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.042105625
+            "avg_violation": 0.0380877
         },
         "frequentist": {
-            "avg_violation": 0.170464125
+            "avg_violation": 0.1651338
         },
         "default_scaled": {
-            "avg_violation": 0.017072875
+            "avg_violation": 0.014759100000000002
         }
     },
     "forecaster": "CoT_ForecasterTextBeforeParsing",

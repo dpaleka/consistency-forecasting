@@ -1,3 +1,31 @@
 {
-    "error": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
+    "overall": {
+        "default": {
+            "label": "ExpectedEvidenceChecker",
+            "num_samples_including_errors": 50,
+            "num_samples": 50,
+            "num_violations": 14,
+            "avg_violation": 0.032769,
+            "avg_violation_no_outliers": 0.010912,
+            "median_violation": 0.0
+        },
+        "frequentist": {
+            "label": "ExpectedEvidenceChecker",
+            "num_samples_including_errors": 50,
+            "num_samples": 50,
+            "num_violations": 24,
+            "avg_violation": 0.178816,
+            "avg_violation_no_outliers": 0.140185,
+            "median_violation": 0.118969
+        },
+        "default_scaled": {
+            "label": "ExpectedEvidenceChecker",
+            "num_samples_including_errors": 50,
+            "num_samples": 50,
+            "num_violations": 8,
+            "avg_violation": 0.008192,
+            "avg_violation_no_outliers": 0.002728,
+            "median_violation": 0.0
+        }
+    }
 }

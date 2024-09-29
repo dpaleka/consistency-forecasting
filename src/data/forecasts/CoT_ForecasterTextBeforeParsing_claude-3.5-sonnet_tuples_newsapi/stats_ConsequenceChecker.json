@@ -1,3 +1,31 @@
 {
-    "error": "Expecting value: line 213 column 1 (char 1166)"
+    "overall": {
+        "default": {
+            "label": "ConsequenceChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 34,
+            "avg_violation": 0.007229,
+            "avg_violation_no_outliers": 0.005749,
+            "median_violation": 0.0
+        },
+        "frequentist": {
+            "label": "ConsequenceChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 34,
+            "avg_violation": 0.036556,
+            "avg_violation_no_outliers": 0.03322,
+            "median_violation": 0.0
+        },
+        "default_scaled": {
+            "label": "ConsequenceChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 34,
+            "avg_violation": 0.003614,
+            "avg_violation_no_outliers": 0.002875,
+            "median_violation": 0.0
+        }
+    }
 }
