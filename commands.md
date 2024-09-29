@@ -14,7 +14,7 @@ python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.j
 
 - [x] evaluation
 ```
-python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster -o p=0.4 -k all --num_lines 500 --run --async
+python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -p src/forecasters/various.py::BaselineForecaster -o p=0.4 -k all --num_lines 500 --run --async --continue --output_dir src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped
 ```
 -> [`src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped/stats_summary.json`](src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped/stats_summary.json)
 
@@ -265,6 +265,13 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 --num_lines 1000 --run --async --output_dir src/data/forecasts/BaselineForecaster_p0.4_20240701_20240831
 ```
 -> [`src/data/forecasts/BaselineForecaster_p0.4_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_p0.4_20240701_20240831/ground_truth_summary.json)
+
+- [x] evaluation
+```
+OUTPUT_DIRNAME="BaselineForecaster_p0.4_tuples_newsapi" &&
+python src/evaluation.py --tuple_dir src/data/tuples_newsapi --num_lines 300 --run --async --continue -p src/forecasters/various.py::BaselineForecaster -o p=0.4 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
+```
+-> [`src/data/forecasts/BaselineForecaster_p0.4_tuples_newsapi/stats_summary.json`](src/data/forecasts/BaselineForecaster_p0.4_tuples_newsapi/stats_summary.json)
 
 
 ### UniformRandomForecaster with n_buckets=100
