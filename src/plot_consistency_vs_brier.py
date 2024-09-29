@@ -40,6 +40,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Include perplexity in the plots",
     )
     parser.add_argument(
+        "--include_baseline",
+        action="store_true",
+        help="Include baseline in the plots",
+    )
+    parser.add_argument(
         "-m",
         "--gt_metric",
         choices=[
@@ -70,7 +75,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--dataset",
-        choices=["newsapi", "scrape"],
+        choices=["newsapi", "scraped"],
         default="newsapi",
         help="Choose the dataset to use: newsapi or scrape",
     )
@@ -141,6 +146,12 @@ forecaster_pairs_newsapi: list[ForecasterPair] = [
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi",
     ),
     ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_llama-3.1-8B",
+        short_name="CoT-L3-8B",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi",
+    ),
+    ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_llama-3.1-70B",
         short_name="CoT-L3-70B",
         ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831",
@@ -160,29 +171,131 @@ forecaster_pairs_newsapi: list[ForecasterPair] = [
     ),
 ]
 
-forecaster_pairs_scrape: list[ForecasterPair] = []
+forecaster_pairs_scraped: list[ForecasterPair] = [
+    ForecasterPair(
+        name="BaselineForecaster_p0.4",
+        short_name="Baseline",
+        ground_truth_dir="src/data/forecasts/BaselineForecaster_09-23-13-41",
+        eval_dir="src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="ResolverBasedForecaster_large",
+        short_name="Perplexity",
+        ground_truth_dir="src/data/forecasts/ResolverBasedForecaster_09-23-21-55",
+        eval_dir="src/data/forecasts/ResolverBasedForecaster_large_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_gpt4o_2024-08-06",
+        short_name="Basic-GPT-4o-08",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-23-13-46",
+        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_gpt4o_2024-05-13",
+        short_name="Basic-GPT-4o-05",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-23-30",
+        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_gpt4o_mini_2024-07-18",
+        short_name="Basic-GPT-4o-mini",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-10",
+        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06",
+        short_name="CoT-GPT-4o-08",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18",
+        short_name="CoT-GPT-4o-mini",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_o1-mini",
+        short_name="CoT-o1-mini",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_o1-preview",
+        short_name="CoT-o1-preview",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_claude-3.5-sonnet",
+        short_name="Basic-Sonnet",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-09",
+        eval_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet",
+        short_name="CoT-Sonnet",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_llama-3.1-8B",
+        short_name="CoT-L3-8B",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_llama-3.1-70B",
+        short_name="CoT-L3-70B",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_llama-3.1-405B",
+        short_name="CoT-L3-405B",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25",
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_llama-3.1-8B",
+        short_name="Basic-L3-8B",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-12",
+        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_llama-3.1-70B",
+        short_name="Basic-L3-70B",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-29",
+        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-70B_tuples_scraped",
+    ),
+    ForecasterPair(
+        name="BasicForecaster_llama-3.1-405B",
+        short_name="Basic-L3-405B",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-22-40",
+        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-405B_tuples_scraped",
+    ),
+]
 
 
 def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
     if args.all:
+        match args.dataset:
+            case "newsapi":
+                forecaster_pairs = forecaster_pairs_newsapi
+            case "scraped":
+                forecaster_pairs = forecaster_pairs_scraped
+            case _:
+                raise ValueError(f"Invalid dataset: {args.dataset}")
         if not args.include_perplexity:
-            if args.dataset == "newsapi":
-                return [
-                    pair
-                    for pair in forecaster_pairs_newsapi
-                    if pair["short_name"] != "Perplexity"
-                ]
-            else:
-                return [
-                    pair
-                    for pair in forecaster_pairs_scrape
-                    if pair["short_name"] != "Perplexity"
-                ]
-        else:
-            if args.dataset == "newsapi":
-                return forecaster_pairs_newsapi
-            else:
-                return forecaster_pairs_scrape
+            forecaster_pairs = [
+                pair for pair in forecaster_pairs if pair["short_name"] != "Perplexity"
+            ]
+        if not args.include_baseline:
+            forecaster_pairs = [
+                pair for pair in forecaster_pairs if pair["short_name"] != "Baseline"
+            ]
+        return forecaster_pairs
+
     elif args.directories:
         return [
             ForecasterPair(
@@ -192,6 +305,7 @@ def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
             )
             for gt_dir, eval_dir in zip(args.directories[::2], args.directories[1::2])
         ]
+
     elif args.file:
         try:
             with open(args.file, "r") as file:
@@ -281,6 +395,7 @@ def extract_metrics(
 def plot_metrics(
     data: list[tuple[str, float, dict[str, float]]],
     output_dir: str,
+    dataset_key: str,
     gt_metric_key: str,
     cons_metric_type: str,
     cons_metric_key: str,
@@ -318,9 +433,9 @@ def plot_metrics(
             plt.xlabel(f"{gt_metric_key}")
             plt.ylabel(f"{cons_metric_key}")
             plt.title(
-                f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key}"
+                f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
-            plt.grid(True)
+            plt.grid(False)
 
             # Add trend line
             z = np.polyfit(x, y, 1)
@@ -338,7 +453,7 @@ def plot_metrics(
 
             plot_path = os.path.join(
                 output_dir,
-                f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}.png",
+                f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
             )
             plt.savefig(plot_path, dpi=300, bbox_inches="tight")
             plt.close()
@@ -376,9 +491,10 @@ def main() -> None:
     plot_metrics(
         metrics_data,
         args.output_dir,
-        args.gt_metric,
-        args.cons_metric_type,
-        args.cons_metric,
+        dataset_key=args.dataset,
+        gt_metric_key=args.gt_metric,
+        cons_metric_type=args.cons_metric_type,
+        cons_metric_key=args.cons_metric,
     )
 
 
