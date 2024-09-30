@@ -174,5 +174,6 @@
             "simulate": false
         },
         "call_kwargs": {}
-    }
+    },
+    "loaded_forecasts": "src/data/forecasts/ConsistentForecaster_P4_scraped/ground_truth_results.jsonl"
 }
