@@ -557,7 +557,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 100 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815
 ```
--> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_20240501_20240815/ground_truth_summary.json)
+-> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
