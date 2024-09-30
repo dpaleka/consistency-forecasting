@@ -10,6 +10,7 @@ src/data/forecasts/A_*_most_recent/
 src/data/forecasts/*_test/
 src/data/forecasts/test*/
 scripts/references/
+output_tables/
 src/*see_eval.txt
 *.log
 output_plots/

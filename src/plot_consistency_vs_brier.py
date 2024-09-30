@@ -1,16 +1,17 @@
 import argparse
-import json
 import os
-from typing import List, Dict, TypedDict
+from typing import List
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+from tqdm import tqdm
 
-
-class ForecasterPair(TypedDict):
-    name: str
-    short_name: str
-    ground_truth_dir: str
-    eval_dir: str
+from forecaster_metrics import (
+    ForecasterPair,
+    get_forecaster_pairs,
+    extract_all_metrics,
+    get_cons_metric_label,
+)
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -50,11 +51,10 @@ def parse_arguments() -> argparse.Namespace:
         choices=[
             "avg_brier_score",
             "avg_platt_brier_score",
-            "tuned_brier_baseline",
             "avg_brier_score_scaled",
             "avg_platt_brier_score_scaled",
-            "tuned_brier_baseline_scaled",
             "avg_log_score",
+            "calibration_error",
         ],
         default="avg_brier_score",
         help="Ground truth metric to use",
@@ -69,9 +69,26 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-c",
         "--cons_metric",
-        choices=["avg_violation", "avg_violation_no_outliers", "median_violation"],
+        choices=[
+            "avg_violation",
+            "avg_violation_no_outliers",
+            "median_violation",
+            "frac_violations",
+        ],
         default="avg_violation",
         help="Consistency metric to use",
+    )
+    parser.add_argument(
+        "--remove_gt_outlier",
+        type=float,
+        default=None,
+        help="Remove ground truth outlier from the plots, specify the outlier threshold in the ground truth metric.",
+    )
+    parser.add_argument(
+        "--remove_cons_outlier",
+        type=float,
+        default=None,
+        help="Remove consistency metric outlier from the plots, specify the outlier threshold in the consistency metric.",
     )
     parser.add_argument(
         "--dataset",
@@ -82,210 +99,9 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# TODO: check ground truth dirs
-forecaster_pairs_newsapi: list[ForecasterPair] = [
-    ForecasterPair(
-        name="BaselineForecaster_p0.4",
-        short_name="Baseline",
-        ground_truth_dir="src/data/forecasts/BaselineForecaster_p0.4_20240701_20240831",
-        eval_dir="src/data/forecasts/BaselineForecaster_p0.4_tuples_newsapi",
-    ),
-    # ForecasterPair(name="UniformRandomForecaster_n_buckets100", short_name="Uniform", ground_truth_dir="src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831", eval_dir="src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi"),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_2024-08-06",
-        short_name="GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_20240701_20240831",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_2024-05-13",
-        short_name="GPT-4o-05",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_20240701_20240831",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_mini_2024-07-18",
-        short_name="GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_20240701_20240831",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_claude-3.5-sonnet",
-        short_name="Sonnet",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240701_20240831",
-        eval_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_o1-mini",
-        short_name="CoT-o1-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_o1-preview",
-        short_name="CoT-o1-preview",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06",
-        short_name="CoT-GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18",
-        short_name="CoT-GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet",
-        short_name="CoT-Sonnet",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-8B",
-        short_name="CoT-L3-8B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-70B",
-        short_name="CoT-L3-70B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-405B",
-        short_name="CoT-L3-405B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240701_20240831",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_newsapi",
-    ),
-    ForecasterPair(
-        name="ResolverBasedForecaster_large",
-        short_name="Perplexity",
-        ground_truth_dir="src/data/forecasts/ResolverBasedForecaster_large_20240701_20240831",
-        eval_dir="src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi",
-    ),
-]
-
-forecaster_pairs_scraped: list[ForecasterPair] = [
-    ForecasterPair(
-        name="BaselineForecaster_p0.4",
-        short_name="Baseline",
-        ground_truth_dir="src/data/forecasts/BaselineForecaster_09-23-13-41",
-        eval_dir="src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="ResolverBasedForecaster_large",
-        short_name="Perplexity",
-        ground_truth_dir="src/data/forecasts/ResolverBasedForecaster_09-23-21-55",
-        eval_dir="src/data/forecasts/ResolverBasedForecaster_large_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_2024-08-06",
-        short_name="Basic-GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-23-13-46",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_2024-05-13",
-        short_name="Basic-GPT-4o-05",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-23-30",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_gpt4o_mini_2024-07-18",
-        short_name="Basic-GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-10",
-        eval_dir="src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06",
-        short_name="CoT-GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18",
-        short_name="CoT-GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_o1-mini",
-        short_name="CoT-o1-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_o1-preview",
-        short_name="CoT-o1-preview",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_claude-3.5-sonnet",
-        short_name="Basic-Sonnet",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-09",
-        eval_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet",
-        short_name="CoT-Sonnet",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-8B",
-        short_name="CoT-L3-8B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-70B",
-        short_name="CoT-L3-70B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="CoT_ForecasterTextBeforeParsing_llama-3.1-405B",
-        short_name="CoT-L3-405B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25",
-        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_llama-3.1-8B",
-        short_name="Basic-L3-8B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-12",
-        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_llama-3.1-70B",
-        short_name="Basic-L3-70B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-29",
-        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-70B_tuples_scraped",
-    ),
-    ForecasterPair(
-        name="BasicForecaster_llama-3.1-405B",
-        short_name="Basic-L3-405B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-22-40",
-        eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-405B_tuples_scraped",
-    ),
-]
-
-
 def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
     if args.all:
-        match args.dataset:
-            case "newsapi":
-                forecaster_pairs = forecaster_pairs_newsapi
-            case "scraped":
-                forecaster_pairs = forecaster_pairs_scraped
-            case _:
-                raise ValueError(f"Invalid dataset: {args.dataset}")
+        forecaster_pairs = get_forecaster_pairs(args.dataset)
         if not args.include_perplexity:
             forecaster_pairs = [
                 pair for pair in forecaster_pairs if pair["short_name"] != "Perplexity"
@@ -326,140 +142,144 @@ def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
         exit(1)
 
 
-def load_json_file(file_path: str) -> Dict:
-    try:
-        with open(file_path, "r") as file:
-            return json.load(file)
-    except json.JSONDecodeError:
-        print(f"Error: Failed to decode JSON from {file_path}.")
-        return {}
-    except FileNotFoundError:
-        print(f"Error: File {file_path} not found.")
-        return {}
-    except Exception as e:
-        print(f"Unexpected error when loading {file_path}: {str(e)}")
-        return {}
-
-
-def extract_metrics(
-    forecaster_pair: ForecasterPair,
-    gt_metric_key: str,
-    cons_metric_type: str,
-    cons_metric_key: str,
-) -> tuple[str, float, dict[str, float]]:
-    ground_truth_path = os.path.join(
-        forecaster_pair["ground_truth_dir"], "ground_truth_summary.json"
-    )
-    stats_path = os.path.join(forecaster_pair["eval_dir"], "stats_summary.json")
-
-    ground_truth_data = load_json_file(ground_truth_path)
-    stats_data = load_json_file(stats_path)
-
-    if not ground_truth_data or not stats_data:
-        print(
-            f"Warning: Missing or empty data for {forecaster_pair['ground_truth_dir']} or {forecaster_pair['eval_dir']}"
-        )
-        return "", 0.0, {}
-
-    avg_brier_score = ground_truth_data.get(gt_metric_key, 0.0)
-
-    checker_metrics = {}
-    if isinstance(stats_data, dict):
-        for checker, data in stats_data.items():
-            if checker != "aggregated" and isinstance(data, dict):
-                overall = data.get("overall", {})
-                if isinstance(overall, dict):
-                    match cons_metric_type:
-                        case "default":
-                            metric_dict = overall.get("default", {})
-                        case "frequentist":
-                            metric_dict = overall.get("frequentist", {})
-                        case "default_scaled":
-                            metric_dict = overall.get("default_scaled", {})
-                        case _:
-                            raise ValueError(
-                                f"Invalid consistency metric type: {cons_metric_type}"
-                            )
-
-                    avg_violation = metric_dict.get(cons_metric_key)
-                    if avg_violation is not None:
-                        checker_metrics[checker] = avg_violation
-    else:
-        print(
-            f"Warning: stats_data is not a dictionary for {forecaster_pair['eval_dir']}"
-        )
-
-    return forecaster_pair["short_name"], avg_brier_score, checker_metrics
-
-
 def plot_metrics(
-    data: list[tuple[str, float, dict[str, float]]],
+    data: list[tuple[str, dict[str, float]]],
     output_dir: str,
     dataset_key: str,
     gt_metric_key: str,
     cons_metric_type: str,
     cons_metric_key: str,
+    remove_gt_outlier: float = None,
+    remove_cons_outlier: float = None,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     # Identify all checker names
-    checker_names = set()
-    for _, _, metrics in data:
-        checker_names.update(metrics.keys())
+    checker_names = [
+        "NegChecker",
+        "ParaphraseChecker",
+        "CondCondChecker",
+        "ExpectedEvidenceChecker",
+        "ConsequenceChecker",
+        "AndChecker",
+        "OrChecker",
+        "AndOrChecker",
+        "ButChecker",
+        "CondChecker",
+        "aggregated",
+    ]
 
-    for checker in checker_names:
+    fig, axs = plt.subplots(
+        nrows=int(math.ceil(len(checker_names) / 3)),
+        ncols=3,
+        figsize=(30, 25),
+        layout="constrained",
+    )
+    if len(checker_names) == 1:
+        axs = [axs]  # Ensure axs is a list even if there's only one subplot
+
+    for idx, checker in tqdm(enumerate(checker_names), desc="Plotting checkers"):
         x = []
         y = []
         labels = []
-        for short_name, brier_score, checker_metrics in data:
-            if checker in checker_metrics:
-                x.append(brier_score)
-                y.append(checker_metrics[checker])
+        for short_name, metrics in data:
+            cons_metric_label = get_cons_metric_label(
+                checker, cons_metric_type, cons_metric_key
+            )
+            if cons_metric_label in metrics:
+                if remove_gt_outlier is not None:
+                    if metrics[gt_metric_key] > remove_gt_outlier:
+                        continue
+                if remove_cons_outlier is not None:
+                    if metrics[cons_metric_label] > remove_cons_outlier:
+                        continue
+                x.append(metrics[gt_metric_key])
+                y.append(metrics[cons_metric_label])
                 labels.append(short_name)
 
+        i, j = divmod(idx, 3)
         if x and y:
-            plt.figure(figsize=(12, 8))
-            plt.scatter(x, y)
-            for i, label in enumerate(labels):
-                plt.annotate(
+            axs[i, j].scatter(x, y)
+            for idx, label in enumerate(labels):
+                axs[i, j].annotate(
                     label,
-                    (x[i], y[i]),
+                    (x[idx], y[idx]),
                     textcoords="offset points",
                     xytext=(0, 5),
                     ha="center",
                 )
 
-            plt.xlabel(f"{gt_metric_key}")
-            plt.ylabel(f"{cons_metric_key}")
-            plt.title(
+            axs[i, j].set_xlabel(f"{gt_metric_key}")
+            axs[i, j].set_ylabel(f"{cons_metric_key}")
+            axs[i, j].set_title(
                 f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
-            plt.grid(False)
+            axs[i, j].grid(False)
 
-            # Add trend line
             z = np.polyfit(x, y, 1)
             p = np.poly1d(z)
-            plt.plot(x, p(x), "r--", alpha=0.8)
+            axs[i, j].plot(x, p(x), "r--", alpha=0.8)
 
-            # Add correlation coefficient
             correlation = np.corrcoef(x, y)[0, 1]
+            axs[i, j].text(
+                0.05,
+                0.95,
+                f"Correlation: {correlation:.2f}",
+                transform=axs[i, j].transAxes,
+            )
+
+            # Now the mini figure
+            plt.figure(figsize=(12, 8))
+            plt.scatter(x, y)
+            for idx, label in enumerate(labels):
+                plt.annotate(
+                    label,
+                    (x[idx], y[idx]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                )
+
+            plt.plot(x, p(x), "r-", alpha=0.3)
             plt.text(
                 0.05,
                 0.95,
                 f"Correlation: {correlation:.2f}",
                 transform=plt.gca().transAxes,
             )
-
-            plot_path = os.path.join(
-                output_dir,
-                f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+            plt.xlabel(f"{gt_metric_key}")
+            plt.ylabel(f"{cons_metric_key}")
+            plt.title(
+                f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
-            plt.savefig(plot_path, dpi=300, bbox_inches="tight")
+            plt.grid(False)
+            plt.savefig(
+                os.path.join(
+                    output_dir,
+                    f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+                ),
+                dpi=300,
+                bbox_inches="tight",
+            )
+            print(
+                f"Plot saved to {os.path.join(output_dir, f'{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
+            )
             plt.close()
-            print(f"Plot saved to {plot_path}")
-        else:
-            print(f"No data available for checker {checker}.")
+
+    plt.savefig(
+        os.path.join(
+            output_dir,
+            f"all_checkers_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+        ),
+        dpi=300,
+        bbox_inches="tight",
+    )
+    plt.close()
+    print(
+        f"Plot saved to {os.path.join(output_dir, f'all_checkers_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}\n"
+    )
+    exit(0)
 
 
 def main() -> None:
@@ -475,14 +295,9 @@ def main() -> None:
                 f"Warning: {forecaster_pair['ground_truth_dir']} or {forecaster_pair['eval_dir']} is not a directory. Skipping."
             )
             continue
-        short_name, brier_score, checker_metrics = extract_metrics(
-            forecaster_pair,
-            gt_metric_key=args.gt_metric,
-            cons_metric_type=args.cons_metric_type,
-            cons_metric_key=args.cons_metric,
-        )
-        if brier_score != 0.0 and checker_metrics:
-            metrics_data.append((short_name, brier_score, checker_metrics))
+        metrics = extract_all_metrics(forecaster_pair)
+        if metrics:
+            metrics_data.append((forecaster_pair["short_name"], metrics))
 
     if not metrics_data:
         print("No valid metric data found. Exiting.")
@@ -495,6 +310,8 @@ def main() -> None:
         gt_metric_key=args.gt_metric,
         cons_metric_type=args.cons_metric_type,
         cons_metric_key=args.cons_metric,
+        remove_gt_outlier=args.remove_gt_outlier,
+        remove_cons_outlier=args.remove_cons_outlier,
     )
 
 
@@ -503,5 +320,4 @@ if __name__ == "__main__":
 
 
 # Example command:
-# and  not --include_perplexity
-# python src/plot_consistency_vs_brier.py --all --gt_metric avg_brier_score -t frequentist -c avg_violation
+# python src/plot_consistency_vs_brier.py --all --dataset newsapi --gt_metric avg_platt_brier_score -t frequentist -c avg_violation --remove_gt_outlier 0.25
