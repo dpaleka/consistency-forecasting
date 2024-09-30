@@ -46,6 +46,11 @@ def parse_arguments() -> argparse.Namespace:
         help="Include baseline in the plots",
     )
     parser.add_argument(
+        "--cfcasters",
+        nargs="*",
+        help="N, P, NP, EE, O, others",
+    )
+    parser.add_argument(
         "-m",
         "--gt_metric",
         choices=[
@@ -99,6 +104,36 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def match_cfcaster_names(short_name: str, cfcasters: list[str]) -> bool:
+    if not cfcasters:
+        return not short_name.startswith("CF-")
+    if short_name in cfcasters:
+        return True
+    if short_name.startswith("CF-") and short_name[3:] in cfcasters:
+        return True
+    if (
+        "N" in cfcasters
+        and short_name.startswith("CF-N")
+        and not short_name.startswith("CF-NP")
+    ):
+        return True
+    if "P" in cfcasters and short_name.startswith("CF-P"):
+        return True
+    if "NP" in cfcasters and short_name.startswith("CF-NP"):
+        return True
+    if "EE" in cfcasters and short_name.startswith("CF-") and "EE" in short_name:
+        return True
+    if "O" in cfcasters and short_name == "Basic-GPT-4o-mini":
+        return True
+    if "allcfs" in cfcasters and short_name.startswith("CF-"):
+        return True
+    if "others" in cfcasters and not short_name.startswith("CF-"):
+        return True
+    if "all" in cfcasters:
+        return True
+    return False
+
+
 def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
     if args.all:
         forecaster_pairs = get_forecaster_pairs(args.dataset)
@@ -110,6 +145,11 @@ def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
             forecaster_pairs = [
                 pair for pair in forecaster_pairs if pair["short_name"] != "Baseline"
             ]
+        forecaster_pairs = [
+            pair
+            for pair in forecaster_pairs
+            if match_cfcaster_names(pair["short_name"], args.cfcasters)
+        ]
         return forecaster_pairs
 
     elif args.directories:

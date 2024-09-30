@@ -144,349 +144,349 @@ python src/extract_intermediate_depth_cf_elicitations.py --input_dir src/data/fo
 
 ## CF-3xEE1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_3x](src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_3x)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_scraped_3x](src/data/forecasts/ConsistentForecaster_4xEE1_scraped_3x)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_3x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_3x)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_3x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_3x)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_3x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_3x)
 
 ## CF-2xEE1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_2x](src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_2x)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_scraped_2x](src/data/forecasts/ConsistentForecaster_4xEE1_scraped_2x)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_2x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_2x)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_2x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_2x)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_2x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_2x)
 
 ## CF-1xEE1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_1x](src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_1x)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_scraped_1x](src/data/forecasts/ConsistentForecaster_4xEE1_scraped_1x)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_1x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_1x)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_1x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_1x)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_1x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_1x)
 
 ## CF-0xEE1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_0x](src/data/forecasts/ConsistentForecaster_4xEE1_20240701_20240831_0x)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_scraped_0x](src/data/forecasts/ConsistentForecaster_4xEE1_scraped_0x)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_0x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_newsapi_0x)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_0x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped_0x)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_0x](src/data/forecasts/ConsistentForecaster_4xEE1_tuples_synthetic_0x)
 
 ## CF-N3
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_3](src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_3)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_scraped_3](src/data/forecasts/ConsistentForecaster_N4_scraped_3)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_3](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_3)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_3](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_3)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_3](src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_3)
 
 ## CF-N2
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_2](src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_2)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_scraped_2](src/data/forecasts/ConsistentForecaster_N4_scraped_2)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_2](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_2)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_2](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_2)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_2](src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_2)
 
 ## CF-N1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_1](src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_1)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_scraped_1](src/data/forecasts/ConsistentForecaster_N4_scraped_1)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_1](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_1)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_1](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_1)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_1](src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_1)
 
 ## CF-N0
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_0](src/data/forecasts/ConsistentForecaster_N4_20240701_20240831_0)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_scraped_0](src/data/forecasts/ConsistentForecaster_N4_scraped_0)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_0](src/data/forecasts/ConsistentForecaster_N4_tuples_newsapi_0)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_0](src/data/forecasts/ConsistentForecaster_N4_tuples_scraped_0)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_0](src/data/forecasts/ConsistentForecaster_N4_tuples_synthetic_0)
 
 ## CF-P3
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_3](src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_3)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_scraped_3](src/data/forecasts/ConsistentForecaster_P4_scraped_3)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_3](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_3)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_3](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_3)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_3](src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_3)
 
 ## CF-P2
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_2](src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_2)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_scraped_2](src/data/forecasts/ConsistentForecaster_P4_scraped_2)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_2](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_2)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_2](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_2)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_2](src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_2)
 
 ## CF-P1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_1](src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_1)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_scraped_1](src/data/forecasts/ConsistentForecaster_P4_scraped_1)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_1](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_1)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_1](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_1)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_1](src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_1)
 
 ## CF-P0
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_0](src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_0)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_scraped_0](src/data/forecasts/ConsistentForecaster_P4_scraped_0)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_0](src/data/forecasts/ConsistentForecaster_P4_tuples_newsapi_0)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_0](src/data/forecasts/ConsistentForecaster_P4_tuples_scraped_0)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_0](src/data/forecasts/ConsistentForecaster_P4_tuples_synthetic_0)
 
 ## CF-NP3
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_3](src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_3)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped_3](src/data/forecasts/ConsistentForecaster_NP4_scraped_3)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_3](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_3)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_3](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_3)
 
 ## CF-NP2
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_2](src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_2)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped_2](src/data/forecasts/ConsistentForecaster_NP4_scraped_2)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_2](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_2)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_2](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_2)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_2](src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_2)
 
 ## CF-NP1
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_1](src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_1)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped_1](src/data/forecasts/ConsistentForecaster_NP4_scraped_1)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_1](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_1)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_1](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_1)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_1](src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_1)
 
 ## CF-NP0
 
-- [ ] ground truth run - NewsAPI
+- [x] ground truth run - NewsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_0](src/data/forecasts/ConsistentForecaster_NP4_20240701_20240831_0)
 
-- [ ] ground truth run - scraped
+- [x] ground truth run - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_scraped_0](src/data/forecasts/ConsistentForecaster_NP4_scraped_0)
 
-- [ ] consistency evaluation - newsAPI
+- [x] consistency evaluation - newsAPI
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_0](src/data/forecasts/ConsistentForecaster_NP4_tuples_newsapi_0)
 
-- [ ] consistency evaluation - scraped
+- [x] consistency evaluation - scraped
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_0](src/data/forecasts/ConsistentForecaster_NP4_tuples_scraped_0)
 
-- [ ] consistency evaluation - synthetic
+- [x] consistency evaluation - synthetic
 
 -> [src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_0](src/data/forecasts/ConsistentForecaster_NP4_tuples_synthetic_0)
 

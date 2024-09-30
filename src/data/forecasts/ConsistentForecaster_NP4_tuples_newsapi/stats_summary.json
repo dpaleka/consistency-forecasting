@@ -248,7 +248,35 @@
         }
     },
     "CondCondChecker": {
-        "error": "RetryError[<Future at 0x7f69006cea10 state=finished raised ValidationError>]"
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 188,
+                "avg_violation": 0.11463,
+                "avg_violation_no_outliers": 0.114037,
+                "median_violation": 0.105954
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 200,
+                "avg_violation": 0.566731,
+                "avg_violation_no_outliers": 0.565905,
+                "median_violation": 0.554821
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 185,
+                "avg_violation": 0.028658,
+                "avg_violation_no_outliers": 0.028509,
+                "median_violation": 0.026488
+            }
+        }
     },
     "ExpectedEvidenceChecker": {
         "overall": {
@@ -283,167 +311,13 @@
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.022098666666666666
+            "avg_violation": 0.0313518
         },
         "frequentist": {
-            "avg_violation": 0.14690544444444445
+            "avg_violation": 0.188888
         },
         "default_scaled": {
-            "avg_violation": 0.007261
+            "avg_violation": 0.009400700000000001
         }
-    },
-    "forecaster": "ConsistentForecaster",
-    "full_forecaster_config": {
-        "hypocrite": {
-            "hypocrite": {
-                "hypocrite": {
-                    "hypocrite": {
-                        "model": "gpt-4o-mini-2024-07-18",
-                        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
-                        "examples": []
-                    },
-                    "checks": [
-                        {
-                            "name": "NegChecker",
-                            "default_tolerance": 0.01,
-                            "frequentist_hparams": {
-                                "sigma": 0.05,
-                                "gamma": 2.58,
-                                "beta": 0.001
-                            },
-                            "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
-                        },
-                        {
-                            "name": "ParaphraseChecker",
-                            "default_tolerance": 0.01,
-                            "frequentist_hparams": {
-                                "sigma": 0.05,
-                                "gamma": 2.58,
-                                "beta": 0.001
-                            },
-                            "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
-                        }
-                    ],
-                    "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
-                    "instantiation_kwargs": {
-                        "verify_before_instantiation": false,
-                        "model": "gpt-4o-mini-2024-07-18",
-                        "cost_log": null,
-                        "simulate": false
-                    },
-                    "bq_func_kwargs": {
-                        "model": "gpt-4o-mini-2024-07-18",
-                        "cost_log": null,
-                        "simulate": false
-                    },
-                    "call_kwargs": {}
-                },
-                "checks": [
-                    {
-                        "name": "NegChecker",
-                        "default_tolerance": 0.01,
-                        "frequentist_hparams": {
-                            "sigma": 0.05,
-                            "gamma": 2.58,
-                            "beta": 0.001
-                        },
-                        "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
-                    },
-                    {
-                        "name": "ParaphraseChecker",
-                        "default_tolerance": 0.01,
-                        "frequentist_hparams": {
-                            "sigma": 0.05,
-                            "gamma": 2.58,
-                            "beta": 0.001
-                        },
-                        "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
-                    }
-                ],
-                "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
-                "instantiation_kwargs": {
-                    "verify_before_instantiation": false,
-                    "model": "gpt-4o-mini-2024-07-18",
-                    "cost_log": null,
-                    "simulate": false
-                },
-                "bq_func_kwargs": {
-                    "model": "gpt-4o-mini-2024-07-18",
-                    "cost_log": null,
-                    "simulate": false
-                },
-                "call_kwargs": {}
-            },
-            "checks": [
-                {
-                    "name": "NegChecker",
-                    "default_tolerance": 0.01,
-                    "frequentist_hparams": {
-                        "sigma": 0.05,
-                        "gamma": 2.58,
-                        "beta": 0.001
-                    },
-                    "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
-                },
-                {
-                    "name": "ParaphraseChecker",
-                    "default_tolerance": 0.01,
-                    "frequentist_hparams": {
-                        "sigma": 0.05,
-                        "gamma": 2.58,
-                        "beta": 0.001
-                    },
-                    "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
-                }
-            ],
-            "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
-            "instantiation_kwargs": {
-                "verify_before_instantiation": false,
-                "model": "gpt-4o-mini-2024-07-18",
-                "cost_log": null,
-                "simulate": false
-            },
-            "bq_func_kwargs": {
-                "model": "gpt-4o-mini-2024-07-18",
-                "cost_log": null,
-                "simulate": false
-            },
-            "call_kwargs": {}
-        },
-        "checks": [
-            {
-                "name": "NegChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/NegChecker.jsonl"
-            },
-            {
-                "name": "ParaphraseChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
-            }
-        ],
-        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
-        "instantiation_kwargs": {
-            "verify_before_instantiation": false,
-            "model": "gpt-4o-mini-2024-07-18",
-            "cost_log": null,
-            "simulate": false
-        },
-        "bq_func_kwargs": {
-            "model": "gpt-4o-mini-2024-07-18",
-            "cost_log": null,
-            "simulate": false
-        },
-        "call_kwargs": {}
     }
 }

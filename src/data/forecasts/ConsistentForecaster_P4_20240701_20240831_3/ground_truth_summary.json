@@ -1,0 +1,67 @@
+{
+    "total_questions": 500,
+    "avg_brier_score": 0.174,
+    "avg_platt_brier_score": 0.136,
+    "tuned_brier_baseline": 0.159,
+    "avg_brier_score_scaled": 30.5,
+    "avg_platt_brier_score_scaled": 45.5,
+    "tuned_brier_baseline_scaled": 36.5,
+    "avg_log_score": 0.767,
+    "platt_scaling_factor": 1.678,
+    "brier_score_decomposition": {
+        "uncertainty": 0.159,
+        "reliability": 0.049,
+        "resolution": 0.04
+    },
+    "calibration_error": 0.195,
+    "calibration_error_data": {
+        "bins": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.048,
+            0.092,
+            0.103,
+            0.273,
+            0.328,
+            0.778,
+            1.0,
+            1.0
+        ],
+        "bin_confidences": [
+            0.139,
+            0.195,
+            0.308,
+            0.394,
+            0.5,
+            0.609,
+            0.675,
+            0.781,
+            0.864
+        ],
+        "num_samples": [
+            8,
+            21,
+            195,
+            117,
+            55,
+            64,
+            36,
+            3,
+            1
+        ],
+        "calibration_error": 0.195
+    },
+    "forecaster": null,
+    "full_forecaster_config": null,
+    "loaded_forecasts": "src/data/forecasts/ConsistentForecaster_P4_20240701_20240831_3/ground_truth_results.jsonl"
+}

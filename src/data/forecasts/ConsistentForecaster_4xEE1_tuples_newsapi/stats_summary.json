@@ -1,6 +1,34 @@
 {
     "NegChecker": {
-        "error": "1 validation error for Forecast\nprob\n  Value error, Probability must be between 0 and 1. [type=value_error, input_value=74.37904530274275, input_type=float64]\n    For further information visit https://errors.pydantic.dev/2.9/v/value_error"
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 106,
+                "avg_violation": 0.025025,
+                "avg_violation_no_outliers": 0.022455,
+                "median_violation": 0.011467
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 111,
+                "avg_violation": 0.171251,
+                "avg_violation_no_outliers": 0.16688,
+                "median_violation": 0.151694
+            },
+            "default_scaled": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 106,
+                "avg_violation": 0.012513,
+                "avg_violation_no_outliers": 0.011227,
+                "median_violation": 0.005733
+            }
+        }
     },
     "AndChecker": {
         "overall": {
@@ -283,76 +311,13 @@
     },
     "aggregated": {
         "default": {
-            "avg_violation": 0.016437444444444442
+            "avg_violation": 0.0172962
         },
         "frequentist": {
-            "avg_violation": 0.14435366666666669
+            "avg_violation": 0.1470434
         },
         "default_scaled": {
-            "avg_violation": 0.005044666666666666
+            "avg_violation": 0.0057915
         }
-    },
-    "forecaster": "ConsistentForecaster",
-    "full_forecaster_config": {
-        "hypocrite": {
-            "model": "gpt-4o-mini-2024-07-18",
-            "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
-            "examples": []
-        },
-        "checks": [
-            {
-                "name": "ExpectedEvidenceChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
-            },
-            {
-                "name": "ExpectedEvidenceChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
-            },
-            {
-                "name": "ExpectedEvidenceChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
-            },
-            {
-                "name": "ExpectedEvidenceChecker",
-                "default_tolerance": 0.01,
-                "frequentist_hparams": {
-                    "sigma": 0.05,
-                    "gamma": 2.58,
-                    "beta": 0.001
-                },
-                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ExpectedEvidenceChecker.jsonl"
-            }
-        ],
-        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
-        "instantiation_kwargs": {
-            "verify_before_instantiation": false,
-            "model": "gpt-4o-mini-2024-07-18",
-            "cost_log": null,
-            "simulate": false
-        },
-        "bq_func_kwargs": {
-            "model": "gpt-4o-mini-2024-07-18",
-            "cost_log": null,
-            "simulate": false
-        },
-        "call_kwargs": {}
     }
 }
