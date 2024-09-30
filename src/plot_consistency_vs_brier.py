@@ -6,6 +6,7 @@ import matplotlib
 import numpy as np
 import math
 from tqdm import tqdm
+from adjustText import adjust_text
 
 from forecaster_metrics import (
     ForecasterPair,
@@ -16,6 +17,21 @@ from forecaster_metrics import (
 
 matplotlib.rcParams["pdf.fonttype"] = 42
 matplotlib.rcParams["ps.fonttype"] = 42
+
+
+checker_names = [
+    "NegChecker",
+    "ParaphraseChecker",
+    "CondCondChecker",
+    "ExpectedEvidenceChecker",
+    "ConsequenceChecker",
+    "AndChecker",
+    "OrChecker",
+    "AndOrChecker",
+    "ButChecker",
+    "CondChecker",
+    "aggregated",
+]
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -210,19 +226,6 @@ def plot_metrics(
         os.makedirs(output_dir)
 
     # Identify all checker names
-    checker_names = [
-        "NegChecker",
-        "ParaphraseChecker",
-        "CondCondChecker",
-        "ExpectedEvidenceChecker",
-        "ConsequenceChecker",
-        "AndChecker",
-        "OrChecker",
-        "AndOrChecker",
-        "ButChecker",
-        "CondChecker",
-        "aggregated",
-    ]
 
     fig, axs = plt.subplots(
         nrows=int(math.ceil(len(checker_names) / 3)),
@@ -286,14 +289,9 @@ def plot_metrics(
             # Now the mini figure
             plt.figure(figsize=(12, 8))
             plt.scatter(x, y)
+            texts = []
             for idx, label in enumerate(labels):
-                plt.annotate(
-                    label,
-                    (x[idx], y[idx]),
-                    textcoords="offset points",
-                    xytext=(0, 5),
-                    ha="center",
-                )
+                texts.append(plt.text(x[idx], y[idx], label))
 
             plt.plot(x, p(x), "r-", alpha=0.3)
             plt.text(
@@ -309,6 +307,10 @@ def plot_metrics(
                 f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
             plt.grid(False)
+
+            # Use adjust_text to prevent overlapping labels
+            adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.5))
+
             plt.savefig(
                 os.path.join(
                     output_dir,
@@ -354,20 +356,6 @@ def plot_bar_chart(
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-
-    checker_names = [
-        "NegChecker",
-        "ParaphraseChecker",
-        "CondCondChecker",
-        "ExpectedEvidenceChecker",
-        "ConsequenceChecker",
-        "AndChecker",
-        "OrChecker",
-        "AndOrChecker",
-        "ButChecker",
-        "CondChecker",
-        "aggregated",
-    ]
 
     for checker in tqdm(checker_names, desc="Plotting bar charts"):
         labels = []
