@@ -2,6 +2,7 @@ import argparse
 import os
 from typing import List
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 import math
 from tqdm import tqdm
@@ -12,6 +13,9 @@ from forecaster_metrics import (
     extract_all_metrics,
     get_cons_metric_label,
 )
+
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -30,7 +34,10 @@ def parse_arguments() -> argparse.Namespace:
         help="Path to a file containing list of forecaster directory pairs.",
     )
     parser.add_argument(
-        "-o", "--output_dir", default="output_plots", help="Directory to save plots."
+        "-o",
+        "--output_dir",
+        default="src/data/output_plots",
+        help="Directory to save plots.",
     )
     parser.add_argument(
         "--all", action="store_true", help="Use all forecasters for a single dataset"
@@ -297,6 +304,7 @@ def plot_metrics(
             )
             plt.xlabel(f"{gt_metric_key}")
             plt.ylabel(f"{cons_metric_key}")
+            figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
             plt.title(
                 f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
@@ -304,14 +312,21 @@ def plot_metrics(
             plt.savefig(
                 os.path.join(
                     output_dir,
-                    f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+                    figure_name,
                 ),
                 dpi=300,
                 bbox_inches="tight",
             )
-            print(
-                f"Plot saved to {os.path.join(output_dir, f'{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
+            print(f"Plot saved to {os.path.join(output_dir, figure_name)}")
+            plt.savefig(
+                os.path.join(
+                    output_dir,
+                    figure_name.replace(".png", ".pdf"),
+                ),
+                dpi=300,
+                bbox_inches="tight",
             )
+
             plt.close()
 
     plt.savefig(

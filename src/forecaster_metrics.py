@@ -539,7 +539,6 @@ def extract_all_metrics(forecaster_pair: ForecasterPair) -> Dict[str, float]:
             for metric_type in get_consistency_metric_types():
                 metric_dict = overall.get(metric_type, {})
                 for cons_metric in get_consistency_metrics():
-                    print(f"cons_metric: {cons_metric}")
                     if cons_metric == "frac_violations":
                         value = (
                             metric_dict.get("num_violations", 0)
