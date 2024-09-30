@@ -11,9 +11,11 @@ src/data/forecasts/*_test/
 src/data/forecasts/test*/
 scripts/references/
 output_tables/
+src/data/output_tables/
+output_plots/
+src/data/output_plots/
 src/*see_eval.txt
 *.log
-output_plots/
 .costly/
 src/.costly/
 
