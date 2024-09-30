@@ -101,6 +101,13 @@ def parse_arguments() -> argparse.Namespace:
         default="newsapi",
         help="Choose the dataset to use: newsapi or scrape",
     )
+    parser.add_argument(
+        "-p",
+        "--plot_type",
+        choices=["correlation", "bar"],
+        default="correlation",
+        help="Type of plot to generate: correlation or bar chart of consistency violations.",
+    )
     return parser.parse_args()
 
 
@@ -322,6 +329,67 @@ def plot_metrics(
     exit(0)
 
 
+def plot_bar_chart(
+    data: list[tuple[str, dict[str, float]]],
+    output_dir: str,
+    dataset_key: str,
+    cons_metric_type: str,
+    cons_metric_key: str,
+    remove_cons_outlier: float = None,
+) -> None:
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    checker_names = [
+        "NegChecker",
+        "ParaphraseChecker",
+        "CondCondChecker",
+        "ExpectedEvidenceChecker",
+        "ConsequenceChecker",
+        "AndChecker",
+        "OrChecker",
+        "AndOrChecker",
+        "ButChecker",
+        "CondChecker",
+        "aggregated",
+    ]
+
+    for checker in tqdm(checker_names, desc="Plotting bar charts"):
+        labels = []
+        values = []
+        for short_name, metrics in data:
+            cons_metric_label = get_cons_metric_label(
+                checker, cons_metric_type, cons_metric_key
+            )
+            if cons_metric_label in metrics:
+                if remove_cons_outlier is not None:
+                    if metrics[cons_metric_label] > remove_cons_outlier:
+                        continue
+                labels.append(short_name)
+                values.append(metrics[cons_metric_label])
+
+        if labels and values:
+            plt.figure(figsize=(12, 8))
+            plt.bar(labels, values)
+            plt.xlabel("Forecasters")
+            plt.ylabel(f"{cons_metric_key}")
+            plt.title(f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})")
+            plt.xticks(rotation=90)
+            plt.tight_layout()
+            plt.savefig(
+                os.path.join(
+                    output_dir,
+                    f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+                ),
+                dpi=300,
+                bbox_inches="tight",
+            )
+            print(
+                f"Bar chart saved to {os.path.join(output_dir, f'{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
+            )
+            plt.close()
+
+
 def main() -> None:
     args = parse_arguments()
     directory_pairs = load_directory_pairs(args)
@@ -343,16 +411,26 @@ def main() -> None:
         print("No valid metric data found. Exiting.")
         exit(1)
 
-    plot_metrics(
-        metrics_data,
-        args.output_dir,
-        dataset_key=args.dataset,
-        gt_metric_key=args.gt_metric,
-        cons_metric_type=args.cons_metric_type,
-        cons_metric_key=args.cons_metric,
-        remove_gt_outlier=args.remove_gt_outlier,
-        remove_cons_outlier=args.remove_cons_outlier,
-    )
+    if args.plot_type == "correlation":
+        plot_metrics(
+            metrics_data,
+            args.output_dir,
+            dataset_key=args.dataset,
+            gt_metric_key=args.gt_metric,
+            cons_metric_type=args.cons_metric_type,
+            cons_metric_key=args.cons_metric,
+            remove_gt_outlier=args.remove_gt_outlier,
+            remove_cons_outlier=args.remove_cons_outlier,
+        )
+    elif args.plot_type == "bar":
+        plot_bar_chart(
+            metrics_data,
+            args.output_dir,
+            dataset_key=args.dataset,
+            cons_metric_type=args.cons_metric_type,
+            cons_metric_key=args.cons_metric,
+            remove_cons_outlier=args.remove_cons_outlier,
+        )
 
 
 if __name__ == "__main__":
