@@ -104,9 +104,9 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-p",
         "--plot_type",
-        choices=["correlation", "bar"],
+        choices=["correlation", "bar", "gt_bar"],
         default="correlation",
-        help="Type of plot to generate: correlation or bar chart of consistency violations.",
+        help="Type of plot to generate: correlation, bar chart of consistency violations, or bar chart of ground truth.",
     )
     return parser.parse_args()
 
@@ -390,6 +390,48 @@ def plot_bar_chart(
             plt.close()
 
 
+def plot_gt_bar_chart(
+    data: list[tuple[str, dict[str, float]]],
+    output_dir: str,
+    dataset_key: str,
+    gt_metric_key: str,
+    remove_gt_outlier: float = None,
+) -> None:
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    labels = []
+    values = []
+    for short_name, metrics in data:
+        if gt_metric_key in metrics:
+            if remove_gt_outlier is not None:
+                if metrics[gt_metric_key] > remove_gt_outlier:
+                    continue
+            labels.append(short_name)
+            values.append(metrics[gt_metric_key])
+
+    if labels and values:
+        plt.figure(figsize=(12, 8))
+        plt.bar(labels, values)
+        plt.xlabel("Forecasters")
+        plt.ylabel(f"{gt_metric_key}")
+        plt.title(f"Ground Truth Metric: {gt_metric_key} ({dataset_key})")
+        plt.xticks(rotation=90)
+        plt.tight_layout()
+        plt.savefig(
+            os.path.join(
+                output_dir,
+                f"gt_bar_{gt_metric_key}_{dataset_key}.png",
+            ),
+            dpi=300,
+            bbox_inches="tight",
+        )
+        print(
+            f"Ground truth bar chart saved to {os.path.join(output_dir, f'gt_bar_{gt_metric_key}_{dataset_key}.png')}"
+        )
+        plt.close()
+
+
 def main() -> None:
     args = parse_arguments()
     directory_pairs = load_directory_pairs(args)
@@ -430,6 +472,14 @@ def main() -> None:
             cons_metric_type=args.cons_metric_type,
             cons_metric_key=args.cons_metric,
             remove_cons_outlier=args.remove_cons_outlier,
+        )
+    elif args.plot_type == "gt_bar":
+        plot_gt_bar_chart(
+            metrics_data,
+            args.output_dir,
+            dataset_key=args.dataset,
+            gt_metric_key=args.gt_metric,
+            remove_gt_outlier=args.remove_gt_outlier,
         )
 
 
