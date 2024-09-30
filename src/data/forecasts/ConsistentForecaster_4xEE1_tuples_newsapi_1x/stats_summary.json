@@ -1,0 +1,323 @@
+{
+    "NegChecker": {
+        "overall": {
+            "default": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 103,
+                "avg_violation": 0.03004,
+                "avg_violation_no_outliers": 0.026734,
+                "median_violation": 0.010184
+            },
+            "frequentist": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 106,
+                "avg_violation": 0.182045,
+                "avg_violation_no_outliers": 0.177913,
+                "median_violation": 0.142602
+            },
+            "default_scaled": {
+                "label": "NegChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 103,
+                "avg_violation": 0.01502,
+                "avg_violation_no_outliers": 0.013367,
+                "median_violation": 0.005092
+            }
+        }
+    },
+    "AndChecker": {
+        "overall": {
+            "default": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 13,
+                "avg_violation": 0.002218,
+                "avg_violation_no_outliers": 0.002036,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 14,
+                "avg_violation": 0.032698,
+                "avg_violation_no_outliers": 0.031577,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "AndChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 10,
+                "avg_violation": 0.000739,
+                "avg_violation_no_outliers": 0.000679,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "OrChecker": {
+        "overall": {
+            "default": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 19,
+                "avg_violation": 0.003584,
+                "avg_violation_no_outliers": 0.00327,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 21,
+                "avg_violation": 0.037307,
+                "avg_violation_no_outliers": 0.035771,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "OrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 16,
+                "avg_violation": 0.001195,
+                "avg_violation_no_outliers": 0.00109,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "AndOrChecker": {
+        "overall": {
+            "default": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 85,
+                "avg_violation": 0.013521,
+                "avg_violation_no_outliers": 0.01314,
+                "median_violation": 0.006774
+            },
+            "frequentist": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 91,
+                "avg_violation": 0.134044,
+                "avg_violation_no_outliers": 0.133081,
+                "median_violation": 0.117607
+            },
+            "default_scaled": {
+                "label": "AndOrChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 52,
+                "avg_violation": 0.00338,
+                "avg_violation_no_outliers": 0.003285,
+                "median_violation": 0.001694
+            }
+        }
+    },
+    "ButChecker": {
+        "overall": {
+            "default": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 142,
+                "avg_violation": 0.040327,
+                "avg_violation_no_outliers": 0.039738,
+                "median_violation": 0.027206
+            },
+            "frequentist": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 169,
+                "avg_violation": 0.281134,
+                "avg_violation_no_outliers": 0.280611,
+                "median_violation": 0.296675
+            },
+            "default_scaled": {
+                "label": "ButChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 127,
+                "avg_violation": 0.013442,
+                "avg_violation_no_outliers": 0.013246,
+                "median_violation": 0.009069
+            }
+        }
+    },
+    "CondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 176,
+                "avg_violation": 0.048598,
+                "avg_violation_no_outliers": 0.047463,
+                "median_violation": 0.042012
+            },
+            "frequentist": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 183,
+                "avg_violation": 0.310625,
+                "avg_violation_no_outliers": 0.309046,
+                "median_violation": 0.315922
+            },
+            "default_scaled": {
+                "label": "CondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 163,
+                "avg_violation": 0.016199,
+                "avg_violation_no_outliers": 0.015821,
+                "median_violation": 0.014004
+            }
+        }
+    },
+    "ConsequenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 16,
+                "avg_violation": 0.002935,
+                "avg_violation_no_outliers": 0.002685,
+                "median_violation": 0.0
+            },
+            "frequentist": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 18,
+                "avg_violation": 0.034694,
+                "avg_violation_no_outliers": 0.033345,
+                "median_violation": 0.0
+            },
+            "default_scaled": {
+                "label": "ConsequenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 16,
+                "avg_violation": 0.001467,
+                "avg_violation_no_outliers": 0.001343,
+                "median_violation": 0.0
+            }
+        }
+    },
+    "ParaphraseChecker": {
+        "overall": {
+            "default": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 44,
+                "avg_violation": 0.007542,
+                "avg_violation_no_outliers": 0.007298,
+                "median_violation": 0.001862
+            },
+            "frequentist": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 53,
+                "avg_violation": 0.091735,
+                "avg_violation_no_outliers": 0.090836,
+                "median_violation": 0.060973
+            },
+            "default_scaled": {
+                "label": "ParaphraseChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 44,
+                "avg_violation": 0.003771,
+                "avg_violation_no_outliers": 0.003649,
+                "median_violation": 0.000931
+            }
+        }
+    },
+    "CondCondChecker": {
+        "overall": {
+            "default": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 164,
+                "avg_violation": 0.057356,
+                "avg_violation_no_outliers": 0.056915,
+                "median_violation": 0.054632
+            },
+            "frequentist": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 197,
+                "avg_violation": 0.398782,
+                "avg_violation_no_outliers": 0.399487,
+                "median_violation": 0.402549
+            },
+            "default_scaled": {
+                "label": "CondCondChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 155,
+                "avg_violation": 0.014339,
+                "avg_violation_no_outliers": 0.014229,
+                "median_violation": 0.013658
+            }
+        }
+    },
+    "ExpectedEvidenceChecker": {
+        "overall": {
+            "default": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 44,
+                "avg_violation": 0.007854,
+                "avg_violation_no_outliers": 0.007033,
+                "median_violation": 3.3e-05
+            },
+            "frequentist": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 77,
+                "avg_violation": 0.126397,
+                "avg_violation_no_outliers": 0.124082,
+                "median_violation": 0.093605
+            },
+            "default_scaled": {
+                "label": "ExpectedEvidenceChecker",
+                "num_samples_including_errors": 200,
+                "num_samples": 200,
+                "num_violations": 24,
+                "avg_violation": 0.001964,
+                "avg_violation_no_outliers": 0.001758,
+                "median_violation": 8e-06
+            }
+        }
+    },
+    "aggregated": {
+        "default": {
+            "avg_violation": 0.0213975
+        },
+        "frequentist": {
+            "avg_violation": 0.1629461
+        },
+        "default_scaled": {
+            "avg_violation": 0.007151599999999999
+        }
+    }
+}
