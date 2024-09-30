@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the backup directory
-backup_dir="../cf_backup"
+backup_dir="../cf_backup_2"
 
 # Create the backup directory if it doesn't exist
 mkdir -p "$backup_dir"
