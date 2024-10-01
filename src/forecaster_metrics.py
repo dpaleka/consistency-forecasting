@@ -480,7 +480,7 @@ def match_cfcaster_names(short_name: str, cfcasters: list[str]) -> bool:
         return True
     if "EE" in cfcasters and short_name.startswith("CF-") and "EE" in short_name:
         return True
-    if "O" in cfcasters and short_name == "Basic-GPT-4o-mini":
+    if "O" in cfcasters and short_name in ["Basic-GPT-4o-mini", "GPT-4o-mini"]:
         return True
     if "allcfs" in cfcasters and short_name.startswith("CF-"):
         return True
