@@ -355,14 +355,16 @@ def plot_bar_chart(
             )
             plt.figure(figsize=(12, 8))
             plt.bar(labels, values)
-            plt.xlabel("Forecasters", fontsize=16)  # Increased font size
-            plt.ylabel(f"{cons_metric_key}", fontsize=16)  # Increased font size
+            plt.xlabel("Forecasters", fontsize=20)  # Increased font size
+            plt.ylabel(f"{cons_metric_key}", fontsize=20)  # Increased font size
             plt.title(
                 f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})",
-                fontsize=18,
+                fontsize=20,
             )  # Increased font size
-            plt.xticks(rotation=90, fontsize=14)  # Increased font size
-            plt.yticks(fontsize=14)  # Increased font size
+            plt.xticks(
+                rotation=0, fontsize=20
+            )  # Changed rotation to 0 and increased font size
+            plt.yticks(fontsize=20)  # Increased font size
             plt.tight_layout()
             plt.savefig(
                 os.path.join(
@@ -410,10 +412,12 @@ def plot_gt_bar_chart(
         plt.xlabel("Forecasters", fontsize=16)  # Increased font size
         plt.ylabel(f"{gt_metric_key}", fontsize=16)  # Increased font size
         plt.title(
-            f"Ground Truth Metric: {gt_metric_key} ({dataset_key})", fontsize=18
+            f"Ground Truth Metric: {gt_metric_key} ({dataset_key})", fontsize=20
         )  # Increased font size
-        plt.xticks(rotation=90, fontsize=14)  # Increased font size
-        plt.yticks(fontsize=14)  # Increased font size
+        plt.xticks(
+            rotation=0, fontsize=20
+        )  # Changed rotation to 0 and increased font size
+        plt.yticks(fontsize=20)  # Increased font size
         plt.tight_layout()
         plt.savefig(
             os.path.join(
