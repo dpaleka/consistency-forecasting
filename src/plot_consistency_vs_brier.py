@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from tqdm import tqdm
+from PIL import Image
 
 from forecaster_metrics import (
     ForecasterPair,
@@ -104,7 +105,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-p",
         "--plot_type",
-        choices=["correlation", "bar", "gt_bar"],
+        choices=["correlation", "bar"],
         default="correlation",
         help="Type of plot to generate: correlation, bar chart of consistency violations, or bar chart of ground truth.",
     )
@@ -198,9 +199,11 @@ def plot_metrics(
     cons_metric_key: str,
     remove_gt_outlier: float = None,
     remove_cons_outlier: float = None,
-) -> None:
+) -> List[str]:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    generated_files = []
 
     # Identify all checker names
     checker_names = [
@@ -301,32 +304,24 @@ def plot_metrics(
                 f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
             )
             plt.grid(False)
-            plt.savefig(
-                os.path.join(
-                    output_dir,
-                    f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
-                ),
-                dpi=300,
-                bbox_inches="tight",
+            filename = os.path.join(
+                output_dir,
+                f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
             )
-            print(
-                f"Plot saved to {os.path.join(output_dir, f'{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
-            )
+            plt.savefig(filename, dpi=300, bbox_inches="tight")
+            generated_files.append(filename)
+            print(f"Plot saved to {filename}")
             plt.close()
 
-    plt.savefig(
-        os.path.join(
-            output_dir,
-            f"all_checkers_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
-        ),
-        dpi=300,
-        bbox_inches="tight",
+    filename = os.path.join(
+        output_dir,
+        f"all_checkers_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
     )
+    plt.savefig(filename, dpi=300, bbox_inches="tight")
+    generated_files.append(filename)
     plt.close()
-    print(
-        f"Plot saved to {os.path.join(output_dir, f'all_checkers_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}\n"
-    )
-    exit(0)
+    print(f"Plot saved to {filename}\n")
+    return generated_files
 
 
 def plot_bar_chart(
@@ -336,9 +331,11 @@ def plot_bar_chart(
     cons_metric_type: str,
     cons_metric_key: str,
     remove_cons_outlier: float = None,
-) -> None:
+) -> List[str]:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    generated_files = []
 
     checker_names = [
         "NegChecker",
@@ -376,18 +373,16 @@ def plot_bar_chart(
             plt.title(f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})")
             plt.xticks(rotation=90)
             plt.tight_layout()
-            plt.savefig(
-                os.path.join(
-                    output_dir,
-                    f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
-                ),
-                dpi=300,
-                bbox_inches="tight",
+            filename = os.path.join(
+                output_dir,
+                f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
             )
-            print(
-                f"Bar chart saved to {os.path.join(output_dir, f'{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
-            )
+            plt.savefig(filename, dpi=300, bbox_inches="tight")
+            generated_files.append(filename)
+            print(f"Bar chart saved to {filename}")
             plt.close()
+
+    return generated_files
 
 
 def plot_gt_bar_chart(
@@ -396,7 +391,7 @@ def plot_gt_bar_chart(
     dataset_key: str,
     gt_metric_key: str,
     remove_gt_outlier: float = None,
-) -> None:
+) -> str:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -418,18 +413,35 @@ def plot_gt_bar_chart(
         plt.title(f"Ground Truth Metric: {gt_metric_key} ({dataset_key})")
         plt.xticks(rotation=90)
         plt.tight_layout()
-        plt.savefig(
-            os.path.join(
-                output_dir,
-                f"gt_bar_{gt_metric_key}_{dataset_key}.png",
-            ),
-            dpi=300,
-            bbox_inches="tight",
+        filename = os.path.join(
+            output_dir,
+            f"gt_bar_{gt_metric_key}_{dataset_key}.png",
         )
-        print(
-            f"Ground truth bar chart saved to {os.path.join(output_dir, f'gt_bar_{gt_metric_key}_{dataset_key}.png')}"
-        )
+        plt.savefig(filename, dpi=300, bbox_inches="tight")
+        print(f"Ground truth bar chart saved to {filename}")
         plt.close()
+        return filename
+    return ""
+
+
+def concatenate_images(
+    output_dir: str, image_files: List[str], concat_image_path: str
+) -> None:
+    images = [Image.open(file) for file in image_files]
+    widths, heights = zip(*(img.size for img in images))
+
+    total_width = max(widths)
+    total_height = sum(heights)
+
+    concatenated_image = Image.new("RGB", (total_width, total_height))
+
+    y_offset = 0
+    for img in images:
+        concatenated_image.paste(img, (0, y_offset))
+        y_offset += img.height
+
+    concatenated_image.save(concat_image_path)
+    print(f"Concatenated image saved to {concat_image_path}")
 
 
 def main() -> None:
@@ -453,8 +465,10 @@ def main() -> None:
         print("No valid metric data found. Exiting.")
         exit(1)
 
+    generated_files = []
+
     if args.plot_type == "correlation":
-        plot_metrics(
+        generated_files = plot_metrics(
             metrics_data,
             args.output_dir,
             dataset_key=args.dataset,
@@ -465,7 +479,7 @@ def main() -> None:
             remove_cons_outlier=args.remove_cons_outlier,
         )
     elif args.plot_type == "bar":
-        plot_bar_chart(
+        generated_files = plot_bar_chart(
             metrics_data,
             args.output_dir,
             dataset_key=args.dataset,
@@ -473,13 +487,21 @@ def main() -> None:
             cons_metric_key=args.cons_metric,
             remove_cons_outlier=args.remove_cons_outlier,
         )
-    elif args.plot_type == "gt_bar":
-        plot_gt_bar_chart(
+        gt_bar_file = plot_gt_bar_chart(
             metrics_data,
             args.output_dir,
             dataset_key=args.dataset,
             gt_metric_key=args.gt_metric,
             remove_gt_outlier=args.remove_gt_outlier,
+        )
+        if gt_bar_file:
+            generated_files.append(gt_bar_file)
+
+    if generated_files:
+        concatenate_images(
+            args.output_dir,
+            generated_files,
+            os.path.join(args.output_dir, "concatenated_image.png"),
         )
 
 
