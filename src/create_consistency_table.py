@@ -48,6 +48,11 @@ def parse_arguments() -> argparse.Namespace:
         default=8,
         help="Maximum number of columns (forecasters) per table",
     )
+    parser.add_argument(
+        "--cfcasters",
+        nargs="*",
+        help="N, P, NP, EE, O, others",
+    )
     return parser.parse_args()
 
 
@@ -118,6 +123,7 @@ def create_consistency_table(
             )
         tables.append(df)
     else:
+        print(cons_metric_types)
         raise ValueError("Not implemented")
     return tables
 
@@ -137,7 +143,10 @@ def save_table_as_latex(df: pd.DataFrame, output_file: str) -> None:
 def main() -> None:
     args = parse_arguments()
     forecaster_pairs = load_dataset_directory_pairs(
-        args.dataset, include_perplexity=False, include_baseline=False, cfcasters=[]
+        args.dataset,
+        include_perplexity=False,
+        include_baseline=False,
+        cfcasters=args.cfcasters,
     )
     if args.forecasters:
         forecaster_pairs = [
