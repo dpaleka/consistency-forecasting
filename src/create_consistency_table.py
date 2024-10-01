@@ -18,7 +18,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--dataset",
-        choices=["newsapi", "scraped"],
+        choices=["newsapi", "scraped", "2028"],
         default="newsapi",
         help="Choose the dataset to use: newsapi or scraped",
     )
@@ -180,13 +180,6 @@ def main() -> None:
 
     all_metrics_data = []
     for forecaster_pair in tqdm(forecaster_pairs, desc="Extracting metrics"):
-        if not os.path.isdir(forecaster_pair["ground_truth_dir"]) or not os.path.isdir(
-            forecaster_pair["eval_dir"]
-        ):
-            print(
-                f"Warning: {forecaster_pair['ground_truth_dir']} or {forecaster_pair['eval_dir']} is not a directory. Skipping."
-            )
-            continue
         metrics = extract_all_metrics(forecaster_pair)
         if metrics:
             all_metrics_data.append((forecaster_pair["short_name"], metrics))

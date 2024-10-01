@@ -203,6 +203,17 @@ forecaster_pairs_scraped: list[ForecasterPair] = [
     ),
 ]
 
+
+forecaster_pairs_2028 = [
+    ForecasterPair(
+        name="CoT_ForecasterTextBeforeParsing_gpt-4o-2024-08-06",
+        short_name="CoT-GPT-4o-08",
+        ground_truth_dir=None,
+        eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt-4o-2024-08-06_tuples_2028",
+    ),
+]
+
+
 consistentforecaster_pairs_newsapi: list[ForecasterPair] = [
     # ForecasterPair(
     #     name="ConsistentForecaster_4xEE1_0x",
@@ -456,6 +467,8 @@ def get_forecaster_pairs(dataset: str) -> List[ForecasterPair]:
             return forecaster_pairs_newsapi + consistentforecaster_pairs_newsapi
         case "scraped":
             return forecaster_pairs_scraped + consistentforecaster_pairs_scraped
+        case "2028":
+            return forecaster_pairs_2028
         case _:
             raise ValueError(f"Invalid dataset: {dataset}")
 
@@ -558,23 +571,28 @@ def get_cons_metric_label(
 
 
 def extract_all_metrics(forecaster_pair: ForecasterPair) -> Dict[str, float]:
-    ground_truth_path = os.path.join(
-        forecaster_pair["ground_truth_dir"], "ground_truth_summary.json"
+    ground_truth_path = (
+        os.path.join(forecaster_pair["ground_truth_dir"], "ground_truth_summary.json")
+        if forecaster_pair["ground_truth_dir"] is not None
+        else None
     )
+
     stats_path = os.path.join(forecaster_pair["eval_dir"], "stats_summary.json")
 
     ground_truth_data = load_json_file(ground_truth_path)
     stats_data = load_json_file(stats_path)
 
-    if not ground_truth_data or not stats_data:
-        print(
-            f"Warning: Missing or empty data for {forecaster_pair['ground_truth_dir']} or {forecaster_pair['eval_dir']}"
-        )
+    if not stats_data:
+        print(f"Warning: Missing or empty data for {forecaster_pair['eval_dir']}")
         return {}
 
     metrics = {}
     for brier_metric in get_brier_score_metrics():
-        metrics[brier_metric] = ground_truth_data.get(brier_metric, 0.0)
+        metrics[brier_metric] = (
+            ground_truth_data.get(brier_metric, 0.0)
+            if ground_truth_data is not None
+            else None
+        )
 
     if isinstance(stats_data, dict):
         for checker, data in stats_data.items():

@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from forecaster_metrics import (
-    get_forecaster_pairs,
+    load_dataset_directory_pairs,
     get_brier_score_metrics,
     extract_all_metrics,
 )
@@ -17,7 +17,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--dataset",
-        choices=["newsapi", "scraped"],
+        choices=["newsapi", "scraped", "2028"],
         default="newsapi",
         help="Choose the dataset to use: newsapi or scraped",
     )
@@ -27,14 +27,46 @@ def parse_arguments() -> argparse.Namespace:
         default="src/data/output_tables",
         help="Directory to save the correlation table.",
     )
+    parser.add_argument(
+        "--include_perplexity",
+        action="store_true",
+        help="Include perplexity in the analysis.",
+    )
+    parser.add_argument(
+        "--include_baseline",
+        action="store_true",
+        help="Include baseline in the analysis.",
+    )
+    parser.add_argument(
+        "--cfcasters",
+        nargs="+",
+        choices=["all", "others", "cf-all", "cf-others"],
+        help="Choose the cfcasters to include in the analysis.",
+    )
+    parser.add_argument(
+        "--remove_gt_outlier",
+        type=float,
+        default=None,
+        help="Remove ground truth outlier from the plots, specify the outlier threshold in the ground truth metric.",
+    )
     return parser.parse_args()
 
 
-def create_correlation_table(data: List[Dict[str, float]]) -> pd.DataFrame:
+def create_correlation_table(
+    data: List[Dict[str, float]], remove_gt_outlier: float = None
+) -> pd.DataFrame:
     df = pd.DataFrame(data)
 
     brier_metrics = get_brier_score_metrics()
     consistency_metrics = [col for col in df.columns if col not in brier_metrics]
+
+    if remove_gt_outlier is not None:
+        print(f"Removing ground truth outliers greater than {remove_gt_outlier}")
+        print(df)
+        outlier_indices = df["avg_brier_score"] > remove_gt_outlier
+        for index in outlier_indices:
+            print(f"Removing {index}")
+        df = df[df["avg_brier_score"] <= remove_gt_outlier]
 
     correlation_table = pd.DataFrame(index=consistency_metrics, columns=brier_metrics)
 
@@ -56,8 +88,10 @@ def make_latex_table(df: pd.DataFrame) -> str:
 
     for index, row in df.iterrows():
         print(index)
-        if "frequentist" in index and "avg_violation" in index:
-            metric_name = index.replace("frequentist.", "").replace("avg_violation", "")
+        if "avg_violation" in index and "no_outliers" not in index:
+            if "default_scaled" in index:
+                continue
+            metric_name = index.replace("avg_violation", "")
             correlation = row["avg_brier_score"]
             latex_table += f"{metric_name} & {correlation:.2f} \\\\"
 
@@ -69,7 +103,9 @@ def make_latex_table(df: pd.DataFrame) -> str:
 
 def main() -> None:
     args = parse_arguments()
-    forecaster_pairs = get_forecaster_pairs(args.dataset)
+    forecaster_pairs = load_dataset_directory_pairs(
+        args.dataset, include_perplexity=False, include_baseline=False, cfcasters=[]
+    )
 
     all_metrics_data = []
     for forecaster_pair in tqdm(forecaster_pairs, desc="Extracting metrics"):
@@ -88,7 +124,9 @@ def main() -> None:
         print("No valid metric data found. Exiting.")
         exit(1)
 
-    correlation_table = create_correlation_table(all_metrics_data)
+    correlation_table = create_correlation_table(
+        all_metrics_data, remove_gt_outlier=args.remove_gt_outlier
+    )
 
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)

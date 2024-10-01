@@ -128,7 +128,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--dataset",
-        choices=["newsapi", "scraped"],
+        choices=["newsapi", "scraped", "2028"],
         default="newsapi",
         help="Choose the dataset to use: newsapi or scrape",
     )
