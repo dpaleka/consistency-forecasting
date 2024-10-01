@@ -24,7 +24,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-o",
         "--output_dir",
-        default="output_tables",
+        default="src/data/output_tables",
         help="Directory to save the correlation table.",
     )
     return parser.parse_args()

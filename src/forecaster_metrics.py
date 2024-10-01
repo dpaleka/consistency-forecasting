@@ -461,6 +461,56 @@ def get_forecaster_pairs(dataset: str) -> List[ForecasterPair]:
             raise ValueError(f"Invalid dataset: {dataset}")
 
 
+def match_cfcaster_names(short_name: str, cfcasters: list[str]) -> bool:
+    if not cfcasters:
+        return not short_name.startswith("CF-")
+    if short_name in cfcasters:
+        return True
+    if short_name.startswith("CF-") and short_name[3:] in cfcasters:
+        return True
+    if (
+        "N" in cfcasters
+        and short_name.startswith("CF-N")
+        and not short_name.startswith("CF-NP")
+    ):
+        return True
+    if "P" in cfcasters and short_name.startswith("CF-P"):
+        return True
+    if "NP" in cfcasters and short_name.startswith("CF-NP"):
+        return True
+    if "EE" in cfcasters and short_name.startswith("CF-") and "EE" in short_name:
+        return True
+    if "O" in cfcasters and short_name == "Basic-GPT-4o-mini":
+        return True
+    if "allcfs" in cfcasters and short_name.startswith("CF-"):
+        return True
+    if "others" in cfcasters and not short_name.startswith("CF-"):
+        return True
+    if "all" in cfcasters:
+        return True
+    return False
+
+
+def load_dataset_directory_pairs(
+    dataset: str, include_perplexity: bool, include_baseline: bool, cfcasters: list[str]
+) -> list[ForecasterPair]:
+    forecaster_pairs = get_forecaster_pairs(dataset)
+    if not include_perplexity:
+        forecaster_pairs = [
+            pair for pair in forecaster_pairs if pair["short_name"] != "Perplexity"
+        ]
+    if not include_baseline:
+        forecaster_pairs = [
+            pair for pair in forecaster_pairs if pair["short_name"] != "Baseline"
+        ]
+    forecaster_pairs = [
+        pair
+        for pair in forecaster_pairs
+        if match_cfcaster_names(pair["short_name"], cfcasters)
+    ]
+    return forecaster_pairs
+
+
 def get_brier_score_metrics() -> List[str]:
     return [
         "avg_brier_score",
@@ -539,7 +589,6 @@ def extract_all_metrics(forecaster_pair: ForecasterPair) -> Dict[str, float]:
             for metric_type in get_consistency_metric_types():
                 metric_dict = overall.get(metric_type, {})
                 for cons_metric in get_consistency_metrics():
-                    print(f"cons_metric: {cons_metric}")
                     if cons_metric == "frac_violations":
                         value = (
                             metric_dict.get("num_violations", 0)
