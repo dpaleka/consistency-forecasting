@@ -1,6 +1,5 @@
 import argparse
 import os
-from typing import List
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
@@ -10,13 +9,22 @@ from adjustText import adjust_text
 
 from forecaster_metrics import (
     ForecasterPair,
-    get_forecaster_pairs,
+    load_dataset_directory_pairs,
     extract_all_metrics,
     get_cons_metric_label,
 )
 
 matplotlib.rcParams["pdf.fonttype"] = 42
 matplotlib.rcParams["ps.fonttype"] = 42
+
+
+def rename_cons_metric_type(cons_metric_type: str) -> str:
+    if cons_metric_type == "default":
+        return "arbitrage"
+    elif cons_metric_type == "default_scaled":
+        return "arbitrage_scaled"
+    else:
+        return cons_metric_type
 
 
 checker_names = [
@@ -131,56 +139,23 @@ def parse_arguments() -> argparse.Namespace:
         default="correlation",
         help="Type of plot to generate: correlation, bar chart of consistency violations, or bar chart of ground truth.",
     )
+    parser.add_argument(
+        "--fontsize",
+        type=int,
+        default=13,
+        help="Font size for the plots",
+    )
     return parser.parse_args()
 
 
-def match_cfcaster_names(short_name: str, cfcasters: list[str]) -> bool:
-    if not cfcasters:
-        return not short_name.startswith("CF-")
-    if short_name in cfcasters:
-        return True
-    if short_name.startswith("CF-") and short_name[3:] in cfcasters:
-        return True
-    if (
-        "N" in cfcasters
-        and short_name.startswith("CF-N")
-        and not short_name.startswith("CF-NP")
-    ):
-        return True
-    if "P" in cfcasters and short_name.startswith("CF-P"):
-        return True
-    if "NP" in cfcasters and short_name.startswith("CF-NP"):
-        return True
-    if "EE" in cfcasters and short_name.startswith("CF-") and "EE" in short_name:
-        return True
-    if "O" in cfcasters and short_name == "Basic-GPT-4o-mini":
-        return True
-    if "allcfs" in cfcasters and short_name.startswith("CF-"):
-        return True
-    if "others" in cfcasters and not short_name.startswith("CF-"):
-        return True
-    if "all" in cfcasters:
-        return True
-    return False
-
-
-def load_directory_pairs(args: argparse.Namespace) -> List[ForecasterPair]:
+def load_directory_pairs(args: argparse.Namespace) -> list[ForecasterPair]:
     if args.all:
-        forecaster_pairs = get_forecaster_pairs(args.dataset)
-        if not args.include_perplexity:
-            forecaster_pairs = [
-                pair for pair in forecaster_pairs if pair["short_name"] != "Perplexity"
-            ]
-        if not args.include_baseline:
-            forecaster_pairs = [
-                pair for pair in forecaster_pairs if pair["short_name"] != "Baseline"
-            ]
-        forecaster_pairs = [
-            pair
-            for pair in forecaster_pairs
-            if match_cfcaster_names(pair["short_name"], args.cfcasters)
-        ]
-        return forecaster_pairs
+        return load_dataset_directory_pairs(
+            args.dataset,
+            include_perplexity=args.include_perplexity,
+            include_baseline=args.include_baseline,
+            cfcasters=args.cfcasters,
+        )
 
     elif args.directories:
         return [
@@ -221,6 +196,7 @@ def plot_metrics(
     cons_metric_key: str,
     remove_gt_outlier: float = None,
     remove_cons_outlier: float = None,
+    fontsize: int = 12,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -291,7 +267,7 @@ def plot_metrics(
             plt.scatter(x, y)
             texts = []
             for idx, label in enumerate(labels):
-                texts.append(plt.text(x[idx], y[idx], label))
+                texts.append(plt.text(x[idx], y[idx], label, fontsize=fontsize))
 
             plt.plot(x, p(x), "r-", alpha=0.3)
             plt.text(
@@ -299,12 +275,14 @@ def plot_metrics(
                 0.95,
                 f"Correlation: {correlation:.2f}",
                 transform=plt.gca().transAxes,
+                fontsize=fontsize,
             )
-            plt.xlabel(f"{gt_metric_key}")
-            plt.ylabel(f"{cons_metric_key}")
+            plt.xlabel(f"{gt_metric_key}", fontsize=fontsize)
+            plt.ylabel(f"{cons_metric_key}", fontsize=fontsize)
             figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
             plt.title(
-                f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
+                f"{checker}.{rename_cons_metric_type(cons_metric_type)}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})",
+                fontsize=fontsize,
             )
             plt.grid(False)
 
@@ -466,6 +444,7 @@ def main() -> None:
             cons_metric_key=args.cons_metric,
             remove_gt_outlier=args.remove_gt_outlier,
             remove_cons_outlier=args.remove_cons_outlier,
+            fontsize=args.fontsize,
         )
     elif args.plot_type == "bar":
         plot_bar_chart(
