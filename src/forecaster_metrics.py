@@ -10,7 +10,6 @@ class ForecasterPair(TypedDict):
     eval_dir: str
 
 
-# TODO: check ground truth dirs
 forecaster_pairs_newsapi: list[ForecasterPair] = [
     ForecasterPair(
         name="BaselineForecaster_p0.4",
@@ -18,7 +17,6 @@ forecaster_pairs_newsapi: list[ForecasterPair] = [
         ground_truth_dir="src/data/forecasts/BaselineForecaster_p0.4_20240701_20240831",
         eval_dir="src/data/forecasts/BaselineForecaster_p0.4_tuples_newsapi",
     ),
-    # ForecasterPair(name="UniformRandomForecaster_n_buckets100", short_name="Uniform", ground_truth_dir="src/data/forecasts/UniformRandomForecaster_n_buckets100_20240701_20240831", eval_dir="src/data/forecasts/UniformRandomForecaster_n_buckets100_tuples_newsapi"),
     ForecasterPair(
         name="BasicForecaster_gpt4o_2024-08-06",
         short_name="GPT-4o-08",
@@ -98,41 +96,6 @@ forecaster_pairs_newsapi: list[ForecasterPair] = [
         eval_dir="src/data/forecasts/ResolverBasedForecaster_large_tuples_newsapi",
     ),
 ]
-
-"""
-mv src/data/forecasts/ResolverBasedForecaster_09-23-21-55 src/data/forecasts/ResolverBasedForecaster_llama-3.1-sonar-large-128k_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-23-13-46 src/data/forecasts/BasicForecaster_gpt4o-2024-08-06_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-23-30 src/data/forecasts/BasicForecaster_gpt4o-2024-05-13_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-19-10 src/data/forecasts/BasicForecaster_gpt4o-mini-2024-07-18_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-19-09 src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42 src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815
-
-mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-19-12 src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-19-29 src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815
-
-mv src/data/forecasts/BasicForecaster_09-24-22-40 src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815
-
-"""
 
 
 forecaster_pairs_scraped: list[ForecasterPair] = [
