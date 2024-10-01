@@ -350,6 +350,9 @@ def plot_bar_chart(
                 values.append(metrics[cons_metric_label])
 
         if labels and values:
+            figure_name = (
+                f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
+            )
             plt.figure(figsize=(12, 8))
             plt.bar(labels, values)
             plt.xlabel("Forecasters")
@@ -360,13 +363,19 @@ def plot_bar_chart(
             plt.savefig(
                 os.path.join(
                     output_dir,
-                    f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png",
+                    figure_name,
                 ),
                 dpi=300,
                 bbox_inches="tight",
             )
-            print(
-                f"Bar chart saved to {os.path.join(output_dir, f'{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png')}"
+            print(f"Bar chart saved to {os.path.join(output_dir, figure_name)}")
+            plt.savefig(
+                os.path.join(
+                    output_dir,
+                    figure_name.replace(".png", ".pdf"),
+                ),
+                dpi=300,
+                bbox_inches="tight",
             )
             plt.close()
 
