@@ -53,6 +53,20 @@ def parse_arguments() -> argparse.Namespace:
         nargs="*",
         help="N, P, NP, EE, O, others",
     )
+    parser.add_argument(
+        "-g",
+        "--gt_metric",
+        choices=[
+            "avg_brier_score",
+            "avg_platt_brier_score",
+            "avg_brier_score_scaled",
+            "avg_platt_brier_score_scaled",
+            "avg_log_score",
+            "calibration_error",
+        ],
+        default="avg_brier_score",
+        help="Ground truth metric to use",
+    )
     return parser.parse_args()
 
 
@@ -60,6 +74,7 @@ def create_consistency_table(
     data: List[Tuple[str, Dict[str, float]]],
     max_columns: int,
     cons_metric_types: List[str],
+    gt_metric: str,
 ) -> List[pd.DataFrame]:
     forecasters = [item[0] for item in data]
 
@@ -109,6 +124,15 @@ def create_consistency_table(
 
                 table_data.append(row)
 
+            # Add ground truth row
+            ground_truth_row = ["Ground Truth"]
+            for forecaster in current_forecasters:
+                metrics = next(item[1] for item in data if item[0] == forecaster)
+                ground_truth_row.append(metrics.get(gt_metric, float("nan")))
+                ground_truth_row.append("")  # No percentage for ground truth
+
+            table_data.append(ground_truth_row)
+
             df = pd.DataFrame(
                 table_data,
                 columns=["Check"]
@@ -121,7 +145,7 @@ def create_consistency_table(
                     for forecaster in current_forecasters
                 ],
             )
-        tables.append(df)
+            tables.append(df)
     else:
         print(cons_metric_types)
         raise ValueError("Not implemented")
@@ -172,7 +196,7 @@ def main() -> None:
         exit(1)
 
     consistency_tables = create_consistency_table(
-        all_metrics_data, args.max_columns, args.cons_metric_types
+        all_metrics_data, args.max_columns, args.cons_metric_types, args.gt_metric
     )
     joint_table = pd.concat(consistency_tables, ignore_index=True)
 
