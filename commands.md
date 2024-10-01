@@ -10,7 +10,7 @@ We also name the dirs in a meaningful way, like `src/data/forecasts/BasicForecas
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -p src/forecasters/various.py::BaselineForecaster --forecaster_options p=0.4 --num_lines 242 --run --async
 ```
--> [`src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_09-23-13-41/ground_truth_summary.json)
+-> [`src/data/forecasts/BaselineForecaster_p0.4_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BaselineForecaster_p0.4_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -25,7 +25,7 @@ python src/evaluation.py --tuple_dir src/data/tuples_scraped/ -p src/forecasters
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 --num_lines 242 --run --async
 ```
--> [`src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_09-23-21-55/ground_truth_summary.json)
+-> [`src/data/forecasts/ResolverBasedForecaster_llama-3.1-sonar-large-128k_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/ResolverBasedForecaster_llama-3.1-sonar-large-128k_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -34,12 +34,13 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 -> [`src/data/forecasts/ResolverBasedForecaster_large_tuples_scraped/stats_summary.json`](src/data/forecasts/ResolverBasedForecaster_large_tuples_scraped/stats_summary.json)
 
+
 ### BasicForecaster with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
 ```
 USE_OPENROUTER=False python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-08-06
 ```
--> [`src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-23-13-46/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_gpt4o-2024-08-06_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o-2024-08-06_20240501_20240815/ground_truth_summary.json)
 
 
 - [x] evaluation
@@ -49,12 +50,13 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 ```
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped/stats_summary.json)
 
+
 ### BasicForecaster with gpt-4o-2024-05-13 model
 - [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-2024-05-13
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-23-30/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-23-30/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_gpt4o-2024-05-13_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o-2024-05-13_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -64,12 +66,13 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 -> [`src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped/stats_summary.json)
 
 
+
 ### BasicForecaster with gpt-4o-mini-2024-07-18 model
 - [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=gpt-4o-mini-2024-07-18
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-10/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-10/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_gpt4o-mini-2024-07-18_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_gpt4o-mini-2024-07-18_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -79,12 +82,36 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 -> [`src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json`](src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json)
 
 
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-09 src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42 src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-12 src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-29 src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-22-40 src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815
+
 ### CoT_ForecasterTextBeforeParsing with gpt-4o-2024-08-06 model
 - [x] ground_truth_run
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -98,7 +125,7 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -112,7 +139,7 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-mini
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -127,7 +154,7 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=o1-preview
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -143,7 +170,7 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_scrape
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=anthropic/claude-3.5-sonnet
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-09/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -157,7 +184,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -171,7 +198,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815/ground_truth_summary.json)
 
 
 - [x] evaluation
@@ -186,7 +213,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -195,12 +222,13 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 -> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped/stats_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped/stats_summary.json)
 
+
 ### CoT_ForecasterTextBeforeParsing with meta-llama/Meta-Llama-3.1-405B-Instruct model (with OpenRouter)
 - [x] ground_truth_run
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct
 ```
--> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25/ground_truth_summary.json)
+-> [`src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -215,7 +243,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-12/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -229,7 +257,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-19-29/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```
@@ -243,7 +271,7 @@ USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples_scraped
 ```
 USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 242 --run --async -f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct
 ```
--> [`src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_09-24-22-40/ground_truth_summary.json)
+-> [`src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815/ground_truth_summary.json)
 
 - [x] evaluation
 ```

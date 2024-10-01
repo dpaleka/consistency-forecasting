@@ -99,107 +99,143 @@ forecaster_pairs_newsapi: list[ForecasterPair] = [
     ),
 ]
 
+"""
+mv src/data/forecasts/ResolverBasedForecaster_09-23-21-55 src/data/forecasts/ResolverBasedForecaster_llama-3.1-sonar-large-128k_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-23-13-46 src/data/forecasts/BasicForecaster_gpt4o-2024-08-06_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-23-30 src/data/forecasts/BasicForecaster_gpt4o-2024-05-13_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-10 src/data/forecasts/BasicForecaster_gpt4o-mini-2024-07-18_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44 src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12 src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-09 src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42 src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815
+
+mv src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25 src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-12 src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-19-29 src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815
+
+mv src/data/forecasts/BasicForecaster_09-24-22-40 src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815
+
+"""
+
+
 forecaster_pairs_scraped: list[ForecasterPair] = [
     ForecasterPair(
         name="BaselineForecaster_p0.4",
         short_name="Baseline",
-        ground_truth_dir="src/data/forecasts/BaselineForecaster_09-23-13-41",
+        ground_truth_dir="src/data/forecasts/BaselineForecaster_p0.4_20240501_20240815",
         eval_dir="src/data/forecasts/BaselineForecaster_p0.4_tuples_scraped",
     ),
     ForecasterPair(
         name="ResolverBasedForecaster_large",
         short_name="Perplexity",
-        ground_truth_dir="src/data/forecasts/ResolverBasedForecaster_09-23-21-55",
+        ground_truth_dir="src/data/forecasts/ResolverBasedForecaster_llama-3.1-sonar-large-128k_20240501_20240815",
         eval_dir="src/data/forecasts/ResolverBasedForecaster_large_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_gpt4o_2024-08-06",
         short_name="Basic-GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-23-13-46",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o-2024-08-06_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-08-06_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_gpt4o_2024-05-13",
         short_name="Basic-GPT-4o-05",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-23-30",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o-2024-05-13_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_gpt4o_2024-05-13_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_gpt4o_mini_2024-07-18",
         short_name="Basic-GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-10",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_gpt4o-mini-2024-07-18_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_gpt4o_mini_2024-07-18_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06",
         short_name="CoT-GPT-4o-08",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-30",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-2024-08-06_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_2024-08-06_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18",
         short_name="CoT-GPT-4o-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-44",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o-mini-2024-07-18_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_gpt4o_mini_2024-07-18_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_o1-mini",
         short_name="CoT-o1-mini",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-23-22-25",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-mini_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_o1-preview",
         short_name="CoT-o1-preview",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-19-12",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_o1-preview_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_claude-3.5-sonnet",
         short_name="Basic-Sonnet",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-09",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_claude-3.5-sonnet_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet",
         short_name="CoT-Sonnet",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-22-42",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_claude-3.5-sonnet_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_llama-3.1-8B",
         short_name="CoT-L3-8B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-36",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-8B_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_llama-3.1-70B",
         short_name="CoT-L3-70B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-09",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-70B_tuples_scraped",
     ),
     ForecasterPair(
         name="CoT_ForecasterTextBeforeParsing_llama-3.1-405B",
         short_name="CoT-L3-405B",
-        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_09-24-23-25",
+        ground_truth_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_20240501_20240815",
         eval_dir="src/data/forecasts/CoT_ForecasterTextBeforeParsing_llama-3.1-405B_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_llama-3.1-8B",
         short_name="Basic-L3-8B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-12",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_llama-3.1-8B_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-8B_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_llama-3.1-70B",
         short_name="Basic-L3-70B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-19-29",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_llama-3.1-70B_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-70B_tuples_scraped",
     ),
     ForecasterPair(
         name="BasicForecaster_llama-3.1-405B",
         short_name="Basic-L3-405B",
-        ground_truth_dir="src/data/forecasts/BasicForecaster_09-24-22-40",
+        ground_truth_dir="src/data/forecasts/BasicForecaster_llama-3.1-405B_20240501_20240815",
         eval_dir="src/data/forecasts/BasicForecaster_llama-3.1-405B_tuples_scraped",
     ),
 ]
