@@ -142,7 +142,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--fontsize",
         type=int,
-        default=13,
+        default=14,
         help="Font size for the plots",
     )
     return parser.parse_args()
