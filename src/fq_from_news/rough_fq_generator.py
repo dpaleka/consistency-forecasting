@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from common.llm_utils import answer_sync, answer
+from common.llm_utils import answer
 from common.datatypes import ValidationResult
 from common.path_utils import get_src_path
 from .fq_from_news_datatypes import ForecastingQuestion_stripped_with_resolution_list
@@ -20,6 +20,13 @@ class NewsApiRoughForecastingQuestionGenerator:
 
     @classmethod
     def set_save_directory(cls, directory_path: str):
+        """
+        Sets the directory where rough forecasting question data will be saved. If no directory path is provided,
+        it defaults to the class's predefined save directory. Also ensures the directory exists by creating it if necessary.
+        
+        Args:
+            directory_path (str): The path to the directory where rough FQ data should be saved. If None or empty, defaults to a predefined directory.
+        """
         if directory_path is None or len(directory_path.strip()) == 0:
             cls.news_api_rough_fq_save_dir = cls.news_api_rough_fq_default_save_dir
         else:
@@ -350,7 +357,6 @@ The following are examples of high-quality forecasting questions. They not only 
         article: dict,
         end_date: datetime,
         pose_date: datetime,
-        article_validation_reason: str,
     ) -> tuple[str, str]:
         """
         Forms the forecasting prompt and preface for generating the rough forecasting question.
@@ -359,7 +365,6 @@ The following are examples of high-quality forecasting questions. They not only 
             article (dict): Dictionary containing article information with keys 'title', 'description', and 'content'.
             end_date (datetime): The end date used to set context for the forecasting question.
             pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
-            article_validation_reason (str): reason why the article was validated in the earlier step.
 
         Returns:
             tuple[str, str]: A tuple containing the forecasting preface and prompt as strings.
@@ -507,7 +512,6 @@ The following are examples of high-quality forecasting questions. They not only 
             article_valid_information["article"],
             end_date,
             pose_date,
-            article_valid_information["validation_reasoning"],
         )
 
         generated_stripped_forecasting_questions = await answer(
@@ -520,41 +524,6 @@ The following are examples of high-quality forecasting questions. They not only 
         return cls._form_rough_fq_from_llm_return_val(
             article_valid_information["article"],
             generated_stripped_forecasting_questions,
-        )
-
-    @classmethod
-    def article_to_rough_forecasting_question_sync(
-        cls, article: dict, model_name: str, end_date: datetime, pose_date: datetime
-    ) -> list[dict]:
-        """
-        Class method to create rough forecasting question data from a given article synchronously.
-
-        Args:
-            article (dict): Dictionary containing article information with keys 'title', 'description', 'content', 'url', and 'publishedAt'.
-            model_name (str): The model used to generate the rough forecasting question.
-            end_date (datetime): The end date used to set context for the forecasting question.
-            pose_date (datetime): The day that the forecaster thinks that the question has been posed at.
-
-        Returns:
-            list[dict]: A list of dictionaries containing either rejected or accepted rough forecasting questions.
-        """
-        raise NotImplementedError
-        (
-            forecasting_preface,
-            forecasting_prompt,
-        ) = cls._rough_fq_generation_prompt_and_preface_formation(
-            article, end_date, pose_date
-        )
-
-        generated_stripped_forecasting_questions = answer_sync(
-            prompt=forecasting_prompt,
-            preface=forecasting_preface,
-            model=model_name,
-            response_model=ForecastingQuestion_stripped_with_resolution_list,
-        )
-
-        return cls._form_rough_fq_from_llm_return_val(
-            article, generated_stripped_forecasting_questions
         )
 
     @classmethod
