@@ -14,7 +14,17 @@ from .rough_fq_generator import NewsApiRoughForecastingQuestionGenerator
 # *************************************************************************************************************************
 
 
-def set_save_directories(rough_fq_save_directory: str, final_fq_save_directory: str):
+def set_save_directories(rough_fq_save_directory: str, final_fq_save_directory: str) -> None:
+    """
+    Sets the save directories for rough and final forecasting question generators.
+
+    Args:
+        rough_fq_save_directory (str): The directory path for saving rough forecasting questions.
+        final_fq_save_directory (str): The directory path for saving final forecasting questions.
+
+    Returns:
+        None
+    """
     NewsApiRoughForecastingQuestionGenerator.set_save_directory(rough_fq_save_directory)
     NewsApiFinalForecastingQuestionGenerator.set_save_directory(final_fq_save_directory)
 
@@ -31,10 +41,21 @@ def _rough_forecasting_data_save_path(
     should_exist: bool = False,
 ) -> str:
     """
-    Returns the path to save the rough fq data.
-    Raises an error if the save path already exists.
+    Returns the path to save the rough forecasting question data.
 
-    :returns: str
+    Raises an error if the save path already exists and should_exist is False, or if 
+    the save path does not exist but should_exist is True.
+
+    Args:
+        start_date (datetime): The start date for fetching articles.
+        end_date (datetime): The end date for fetching articles.
+        num_pages (int): The number of pages to fetch.
+        num_articles (int): The number of articles to fetch.
+        rough_fq_gen_model_name (str): The name of the model used to generate rough forecasting questions.
+        should_exist (bool, optional): Whether the save path should already exist. Defaults to False.
+
+    Returns:
+        str: The save path for the rough forecasting questions.
     """
     # check if the save path for the rough forecasting questions already exists
     rough_fq_save_path = NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question_download_path(
@@ -55,53 +76,6 @@ def _rough_forecasting_data_save_path(
 
     return rough_fq_save_path
 
-
-def generate_rough_forecasting_data_sync(
-    articles_download_path: str,
-    start_date: datetime,
-    end_date: datetime,
-    num_pages: int,
-    num_articles: int,
-    rough_fq_gen_model_name: str,
-    pose_date: datetime,
-) -> None:
-    """
-    Wrapper for calling functionality to generate rough forecasting questions data in a sync manner.
-
-    :returns: None
-    """
-    rough_fq_save_path = _rough_forecasting_data_save_path(
-        start_date,
-        end_date,
-        num_pages,
-        num_articles,
-        rough_fq_gen_model_name,
-    )
-
-    articles = load_jsonl(articles_download_path)
-
-    num_articles_processed = 0
-    rough_forecasting_question_data = []
-
-    for article in articles:
-        if num_articles_processed >= num_articles:
-            break
-
-        rough_forecasting_questions = NewsApiRoughForecastingQuestionGenerator.article_to_rough_forecasting_question_sync(
-            article, rough_fq_gen_model_name, end_date, pose_date
-        )
-
-        num_articles_processed += 1
-
-        # Append the data as dicts
-        for rough_forecasting_question in rough_forecasting_questions:
-            rough_forecasting_question_data.append(rough_forecasting_question)
-
-    write_jsonl(rough_fq_save_path, rough_forecasting_question_data)
-
-    print(f"Rough forecasting question data has been saved to {rough_fq_save_path}")
-
-
 async def generate_rough_forecasting_data(
     articles_download_path: str,
     start_date: datetime,
@@ -112,9 +86,19 @@ async def generate_rough_forecasting_data(
     pose_date: datetime,
 ) -> None:
     """
-    Wrapper for calling functionality to generate rough forecasting questions data in an async manner.
+    Generates rough forecasting questions asynchronously from the provided articles.
 
-    :returns: None
+    Args:
+        articles_download_path (str): Path to the downloaded articles.
+        start_date (datetime): The start date for fetching articles.
+        end_date (datetime): The end date for fetching articles.
+        num_pages (int): Number of pages to process.
+        num_articles (int): Number of articles to process.
+        rough_fq_gen_model_name (str): Model name for generating rough forecasting questions.
+        pose_date (datetime): Date when the forecasting questions are posed.
+
+    Returns:
+        None
     """
     rough_fq_save_path = _rough_forecasting_data_save_path(
         start_date,
@@ -176,7 +160,16 @@ async def generate_rough_forecasting_data(
     print(f"Rough forecasting question data has been saved to {rough_fq_save_path}")
 
 
-def _check_if_rough_fq_was_rejected(rough_fq: dict):
+def _check_if_rough_fq_was_rejected(rough_fq: dict) -> bool:
+    """
+    Checks if a rough forecasting question was rejected.
+
+    Args:
+        rough_fq (dict): The rough forecasting question dictionary.
+
+    Returns:
+        bool: True if the rough forecasting question was rejected, False otherwise.
+    """
     return "fqRejectionReason" in rough_fq
 
 
@@ -193,10 +186,22 @@ def _final_forecasting_questions_save_path(
     should_exist: bool = False,
 ) -> str:
     """
-    Returns the path to save the final fq data.
-    Raises an error if the save path already exists.
+    Returns the path to save the final forecasting questions data.
 
-    :returns: str
+    Raises an error if the save path already exists and should_exist is False, or if 
+    the save path does not exist but should_exist is True.
+
+    Args:
+        start_date (datetime): The start date for fetching articles.
+        end_date (datetime): The end date for fetching articles.
+        num_pages (int): The number of pages to fetch.
+        num_articles (int): The number of articles to fetch.
+        final_fq_gen_model_name (str): The model used to generate the final forecasting questions.
+        be_lax_in_resolution_checking (bool): Whether to use lax resolution checking.
+        should_exist (bool, optional): Whether the save path should already exist. Defaults to False.
+
+    Returns:
+        str: The save path for the final forecasting questions.
     """
     # check if the save path for the final forecasting questions already exists
     final_fq_save_path = (
@@ -223,56 +228,18 @@ def _final_forecasting_questions_save_path(
 def _save_forecasting_question_in_jsonl(
     forecasting_question: ForecastingQuestion, fq_save_path: str
 ) -> None:
+    """
+    Saves a forecasting question to a JSONL file if it is not None.
+
+    Args:
+        forecasting_question (ForecastingQuestion): The forecasting question object to be saved.
+        fq_save_path (str): The file path where the forecasting question will be appended in JSONL format.
+
+    Returns:
+        None
+    """
     if forecasting_question is not None:
         append_question(forecasting_question, fq_save_path)
-
-
-def generate_final_forecasting_questions_sync(
-    start_date: datetime,
-    end_date: datetime,
-    num_pages: int,
-    num_articles: int,
-    rough_fq_gen_model_name: str,
-    final_fq_gen_model_name: str,
-    pose_date: datetime,
-) -> None:
-    """
-    Wrapper for calling functionality to generate final forecasting questions in a sync manner.
-
-    :returns: None
-    """
-    final_fq_save_path = _final_forecasting_questions_save_path(
-        start_date,
-        end_date,
-        num_pages,
-        num_articles,
-        final_fq_gen_model_name,
-    )
-
-    rough_fq_save_path = _rough_forecasting_data_save_path(
-        start_date,
-        end_date,
-        num_pages,
-        num_articles,
-        rough_fq_gen_model_name,
-        should_exist=True,
-    )
-
-    rough_fqs = load_jsonl(rough_fq_save_path)
-    for rough_fq in rough_fqs:
-        if not _check_if_rough_fq_was_rejected(rough_fq):
-            final_forecasting_question = (
-                NewsApiFinalForecastingQuestionGenerator.rough_fq_to_final_fq_sync(
-                    rough_fq, final_fq_gen_model_name, end_date, pose_date
-                )
-            )
-
-            _save_forecasting_question_in_jsonl(
-                final_forecasting_question, final_fq_save_path
-            )
-
-    print(f"Final forecasting questions have been saved to {final_fq_save_path}")
-
 
 async def generate_final_forecasting_questions(
     start_date: datetime,
@@ -286,9 +253,21 @@ async def generate_final_forecasting_questions(
     be_lax_in_resolution_checking: bool,
 ) -> None:
     """
-    Wrapper for calling functionality to generate final forecasting questions in an async manner.
+    Generates final forecasting questions asynchronously by processing rough forecasting questions.
 
-    :returns: None
+    Args:
+        start_date (datetime): The start date for the news articles to generate questions for.
+        end_date (datetime): The end date for the news articles to generate questions for.
+        num_pages (int): The number of pages to fetch from the news API.
+        num_articles (int): The number of articles to process for generating forecasting questions.
+        rough_fq_gen_model_name (str): The model name used for generating rough forecasting questions.
+        final_fq_gen_model_name (str): The model name used for generating final forecasting questions.
+        pose_date (datetime): The date on which the forecasting question was posed.
+        creation_date (datetime): The date on which the forecasting question was created.
+        be_lax_in_resolution_checking (bool): Whether to be lax or strict in the resolution checking process.
+
+    Returns:
+        None
     """
     final_fq_save_path = _final_forecasting_questions_save_path(
         start_date,
@@ -335,7 +314,17 @@ async def generate_final_forecasting_questions(
 # *************************************************************************************************************************
 #                                                   Verified Final FQ Generation
 # *************************************************************************************************************************
-def _final_verified_questions_save_dir(news_source, given_directory_path):
+def _final_verified_questions_save_dir(news_source, given_directory_path) -> str:
+    """
+    Determines the directory path to save the final verified forecasting questions.
+
+    Args:
+        news_source (str): The source of the news, currently only "NewsAPI" is supported.
+        given_directory_path (str): The directory path provided by the user, if any.
+
+    Returns:
+        str: The directory path where the final verified forecasting questions will be saved.
+    """
     if news_source == "NewsAPI":
         if given_directory_path is None or len(given_directory_path.strip()) == 0:
             dir_path = os.path.join(
@@ -360,10 +349,23 @@ def _final_verified_forecasting_questions_save_path(
     verified_fq_save_directory: str,
 ) -> str:
     """
-    Returns the path to save the final fq data.
-    Raises an error if the save path already exists.
+    Constructs and returns the file path to save the final verified forecasting questions.
 
-    :returns: str
+    Args:
+        start_date (datetime): The start date for the forecasting questions.
+        end_date (datetime): The end date for the forecasting questions.
+        num_pages (int): The number of pages processed from the news API.
+        num_articles (int): The number of articles processed for the forecasting questions.
+        final_fq_verification_model_name (str): The model used for verification of final forecasting questions.
+        news_source (str): The source of the news, e.g., "NewsAPI".
+        was_lax_in_resolution_checking (bool): Whether lax resolution checking was applied.
+        verified_fq_save_directory (str): The directory where the verified forecasting questions will be saved.
+
+    Returns:
+        str: The file path for saving the final verified forecasting questions.
+
+    Raises:
+        RuntimeError: If the save path already exists.
     """
     num_pages_str = "all" if num_pages == -1 else str(num_pages)
     num_articles_str = (
@@ -408,6 +410,16 @@ def _final_verified_forecasting_questions_save_path(
 async def _verify_final_fq(
     question: ForecastingQuestion, model_name: str
 ) -> ForecastingQuestion:
+    """
+    Verifies a single forecasting question using a specified model.
+
+    Args:
+        question (ForecastingQuestion): The forecasting question to verify.
+        model_name (str): The name of the model used for verification.
+
+    Returns:
+        ForecastingQuestion: The original question if valid; otherwise, None.
+    """
     result = await verify_question(question=question, model=model_name)
 
     if result.valid:
@@ -427,9 +439,21 @@ async def verify_final_forecasting_questions(
     verified_fq_save_directory: str,
 ) -> None:
     """
-    Verifies the generated final forecasting questions and saved them to the ./data/fq/synthetic directory.
+    Verifies and saves final forecasting questions.
 
-    :returns: None
+    Args:
+        start_date (datetime): The start date for the forecasting questions.
+        end_date (datetime): The end date for the forecasting questions.
+        num_pages (int): The number of pages fetched from the news API.
+        num_articles (int): The number of articles processed for forecasting questions.
+        final_fq_gen_model_name (str): The model used for generating final forecasting questions.
+        final_fq_verification_model_name (str): The model used for verifying final forecasting questions.
+        news_source (str): The source of the news, e.g., "NewsAPI".
+        was_lax_in_resolution_checking (bool): Whether lax resolution checking was applied.
+        verified_fq_save_directory (str): The directory where the verified forecasting questions will be saved.
+
+    Returns:
+        None
     """
     final_fq_save_path = _final_forecasting_questions_save_path(
         start_date,

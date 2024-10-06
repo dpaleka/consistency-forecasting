@@ -11,8 +11,6 @@ from fq_from_news.fq_from_news_utils import (
     set_save_directories,
     generate_rough_forecasting_data,
     generate_final_forecasting_questions,
-    generate_rough_forecasting_data_sync,
-    generate_final_forecasting_questions_sync,
     verify_final_forecasting_questions,
 )
 from fq_from_news.date_utils import (
@@ -22,39 +20,6 @@ from fq_from_news.date_utils import (
 )
 
 load_dotenv()
-
-
-def generate_forecasting_questions_from_news_sync(articles_download_path, args):
-    raise NotImplementedError
-    # Generating the rough intermediate forecasting questions
-    if args.gen_rough:
-        generate_rough_forecasting_data_sync(
-            articles_download_path,
-            args.start_date,
-            args.end_date,
-            args.num_pages,
-            args.num_articles,
-            args.rough_fq_gen_model_name,
-            args.pose_date,
-        )
-
-    # Generating the final forecasting questions
-    if args.gen_final:
-        generate_final_forecasting_questions_sync(
-            args.start_date,
-            args.end_date,
-            args.num_pages,
-            args.num_articles,
-            args.rough_fq_gen_model_name,
-            args.final_fq_gen_model_name,
-            args.pose_date,
-        )
-
-    if args.verify_fqs:
-        raise NotImplementedError(
-            "Cannot verify final forecasting questions in a sync manner!"
-        )
-
 
 async def generate_forecasting_questions(articles_download_path, args):
     # Set the save directories for rough and final FQ generation
@@ -132,7 +97,7 @@ def main(args: argparse.Namespace) -> None:
         args.end_date,
         args.num_pages,
         args.news_new_threshold,
-        args.processsed_news_save_directory,
+        args.processed_news_save_directory,
     )
 
     # If asked to only download news, return here
@@ -151,17 +116,7 @@ def main(args: argparse.Namespace) -> None:
     if args.final_fq_verification_model_name == "":
         args.final_fq_verification_model_name = args.model_name
 
-    if args.sync:
-        raise RuntimeError(
-            "Added to ensure that the user understands that\
-                           some functionality may be missing."
-        )
-        # Not a warning as it's not visible due to large output after this warning
-        generate_forecasting_questions_from_news_sync(
-            processed_news_articles_path, args
-        )
-    else:
-        asyncio.run(generate_forecasting_questions(processed_news_articles_path, args))
+    asyncio.run(generate_forecasting_questions(processed_news_articles_path, args))
 
 
 def get_args() -> argparse.Namespace:
@@ -216,14 +171,6 @@ def get_args() -> argparse.Namespace:
         "--be-lax-in-res-checking",
         action="store_true",
         help="Should the Final Generator be lax while checking the resolution",
-    )
-
-    # Sync enabling argument (cannot be used with verify)
-    parser.add_argument(
-        "--sync",
-        action="store_true",
-        help="Set to True if FQs should be generated WITHOUT leveraging async (parallel) behaviour.",
-        default=False,
     )
 
     # Pose Date of the forecaster
@@ -308,7 +255,7 @@ def get_args() -> argparse.Namespace:
         default="",
     )
     parser.add_argument(
-        "--processsed-news-save-directory",
+        "--processed-news-save-directory",
         type=str,
         help="""
         Directory where to store the processed news. If left empty, defaults to `data/news_feed_fq_generation/news_api/news_feed_data_dump`
@@ -368,9 +315,8 @@ def get_args() -> argparse.Namespace:
             help="The threshold used to designate an article as a duplicate while processing",
             default=0.25,
         )
-
     else:
-        raise NotImplementedError("Sentinel scraping has not been implemented yet")
+        raise NotImplementedError("Only NewsAPI support exists.")
 
     args = parser.parse_args()
 
@@ -397,7 +343,7 @@ if __name__ == "__main__":
         )
     else:
         raise RuntimeError(
-            "You must provide either start and end dates or a news month and year."
+            "You must provide either (start and end dates) or (a news month and year)."
         )
 
     main(args)
