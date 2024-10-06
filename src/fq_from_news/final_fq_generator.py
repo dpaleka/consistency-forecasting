@@ -4,7 +4,7 @@ from datetime import datetime
 from uuid import uuid4
 import pytz
 from common.datatypes import ForecastingQuestion
-from common.llm_utils import answer_sync, answer
+from common.llm_utils import answer
 from common.path_utils import get_src_path
 from .fq_from_news_datatypes import (
     ForecastingQuestion_stripped_with_resolution,
@@ -27,6 +27,13 @@ class NewsApiFinalForecastingQuestionGenerator:
 
     @classmethod
     def set_save_directory(cls, directory_path: str):
+        """
+        Sets the directory where final forecasting questions (FQs) will be saved. If no directory path is provided,
+        it defaults to the class's predefined save directory. Also ensures the directory exists by creating it if necessary.
+        
+        Args:
+            directory_path (str): The path to the directory where FQs should be saved. If None or empty, defaults to a predefined directory.
+        """
         if directory_path is None or len(directory_path.strip()) == 0:
             cls.news_api_final_fq_save_dir = cls.news_api_final_fq_default_save_dir
         else:
@@ -245,7 +252,17 @@ Please provide a brief justification for your answer, citing specific details fr
     }
 
     @classmethod
-    def check_if_fq_was_rejected(cls, fq: ForecastingQuestion_stripped_with_resolution):
+    def check_if_fq_was_rejected(cls, fq: ForecastingQuestion_stripped_with_resolution) -> bool:
+        """
+        Checks whether a forecasting question (FQ) was rejected based on its content. An FQ is considered rejected 
+        if it is None or if its title is empty or consists of only whitespace.
+        
+        Args:
+            fq (ForecastingQuestion_stripped_with_resolution): A stripped forecasting question object to check.
+            
+        Returns:
+            bool: True if the FQ was rejected (None or empty title), False otherwise.
+        """
         return fq is None or fq.title.strip() == ""
 
     @classmethod
@@ -310,7 +327,20 @@ Please provide a brief justification for your answer, citing specific details fr
         use_lax,
     ) -> tuple[str, str]:
         """
-        Forms the resolution checking forecasting prompt and preface from rough forecasting question data.
+        Forms the resolution-checking prompt and preface from rough forecasting question data. Uses either a 
+        strict or lax prompt template based on the `use_lax` flag.
+        
+        Args:
+            article_title (str): The title of the article related to the forecasting question.
+            article_description (str): A brief description of the article.
+            article_content (str): The full content of the article.
+            article_date (str): The date when the article was published.
+            res_unchecked_fq_title (str): The title of the unresolved forecasting question.
+            res_unchecked_fq_body (str): The body of the unresolved forecasting question.
+            use_lax (bool): Whether to use a lax prompt template for the resolution check.
+            
+        Returns:
+            tuple[str, str]: A tuple containing the forecasting preface and the forecasting prompt.
         """
         if use_lax:
             unformatted_forecasting_prompt = cls.resolution_checker_prompt_lax
@@ -381,48 +411,6 @@ Please provide a brief justification for your answer, citing specific details fr
         )
 
     @classmethod
-    def rough_fq_to_final_fq_sync(
-        cls,
-        rough_fq_data: dict,
-        model_name: str,
-        end_date: datetime,
-        pose_date: datetime,
-    ) -> ForecastingQuestion:
-        """
-        Class method to create the final ForecastingQuestion from rough forecasting question data synchronously.
-
-        Args:
-            rough_fq_data (dict): The rough intermediate forecasting question data.
-            model_name (str): The model being used to create the rough forecasting question.
-            end_date (datetime): Used to set context of the current date for the model.
-            pose_date (datetime): The date assumed to be the knowledge cutoff for the forecaster.
-
-        Returns:
-            ForecastingQuestion: Validated and possibly modified ForecastingQuestion, or None if the title is empty.
-        """
-        raise NotImplementedError("Use async!")
-        (
-            forecasting_preface,
-            forecasting_prompt,
-        ) = cls._rough_fq_validation_prompt_and_preface_formation(
-            cls._processed_rough_fq_data(rough_fq_data), end_date, pose_date
-        )
-
-        generated_stripped_final_forecasting_question = answer_sync(
-            prompt=forecasting_prompt,
-            preface=forecasting_preface,
-            model=model_name,
-            response_model=ForecastingQuestion_stripped_with_resolution,
-        )
-
-        return cls._form_final_fq_from_llm_return_val(
-            rough_fq_data,
-            generated_stripped_final_forecasting_question,
-            end_date,
-            pose_date,
-        )
-
-    @classmethod
     async def _rough_fq_to_resolution_unchecked_final_stripped_fq(
         cls,
         rough_fq_data: dict,
@@ -430,6 +418,19 @@ Please provide a brief justification for your answer, citing specific details fr
         end_date: datetime,
         pose_date: datetime,
     ) -> ForecastingQuestion_stripped_with_resolution:
+        """
+        Takes raw rough forecasting question data and attempts to generate an initial stripped forecasting question 
+        with its resolution unchecked, using an external model for validation and processing.
+        
+        Args:
+            rough_fq_data (dict): The raw data of the rough forecasting question.
+            model_name (str): The name of the model used to validate and process the forecasting question.
+            end_date (datetime): The end date of the forecasting question.
+            pose_date (datetime): The date the question was posed.
+            
+        Returns:
+            ForecastingQuestion_stripped_with_resolution: The stripped forecasting question with the resolution unchecked.
+        """
         (
             forecasting_preface,
             forecasting_prompt,
@@ -455,7 +456,21 @@ Please provide a brief justification for your answer, citing specific details fr
         final_resolution_unchecked_forecasting_question: ForecastingQuestion_stripped_with_resolution,
         be_lax_in_resolution_checking: bool,
     ) -> ForecastingQuestion_stripped_with_resolution:
-        # If the FQ is already deemed invalid, return None
+        """
+        Takes a resolution-unchecked forecasting question and attempts to validate its resolution by using 
+        an external model. If the resolution matches, returns the validated forecasting question, otherwise returns None.
+        
+        Args:
+            rough_fq_data (dict): The raw data of the rough forecasting question.
+            model_name (str): The name of the model used for resolution checking.
+            final_resolution_unchecked_forecasting_question (ForecastingQuestion_stripped_with_resolution): 
+                The forecasting question with an unchecked resolution.
+            be_lax_in_resolution_checking (bool): Whether to use a lax resolution checking method.
+            
+        Returns:
+            ForecastingQuestion_stripped_with_resolution: The final stripped forecasting question with checked resolution,
+            or None if the resolution was rejected.
+        """
         if cls.check_if_fq_was_rejected(
             final_resolution_unchecked_forecasting_question
         ):

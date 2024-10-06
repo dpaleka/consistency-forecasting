@@ -268,6 +268,7 @@ def _ner_news_processing(
     Args:
         sorted_news_articles (list): sorted news articles
         ner_threshold (float): The threshold used to designate an article as a duplicate
+
     Returns:
         list: Processed news without duplicates
     """
