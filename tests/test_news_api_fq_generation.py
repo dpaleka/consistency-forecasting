@@ -60,38 +60,38 @@ commands = [
     """
     python src/generate_fqs_from_news.py \
     --start-date 2024-09-01 --end-date 2024-09-04 \
-    --rough-fq-gen-model-name gpt-4o-2024-05-13 \
+    --rough-fq-gen-model-name gpt-4o-2024-08-06 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
-    --final-fq-verification-model-name gpt-4o-2024-05-13 \
+    --final-fq-verification-model-name gpt-4o-2024-08-06 \
     -lax \
     --rough-fq-save-directory src/data/news_api_test/rough \
     --final-fq-save-directory src/data/news_api_test/final \
     --verified-fq-save-directory src/data/news_api_test/fq \
-    --processsed-news-save-directory src/data/news_api_test/news
+    --processed-news-save-directory src/data/news_api_test/news
     """,
     """
     python src/generate_fqs_from_news.py \
     --start-date 2024-09-01 --end-date 2024-09-04 \
-    --rough-fq-gen-model-name gpt-4o-2024-05-13 \
+    --rough-fq-gen-model-name gpt-4o-2024-08-06 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
-    --final-fq-verification-model-name gpt-4o-2024-05-13 \
+    --final-fq-verification-model-name gpt-4o-2024-08-06 \
     --only-gen-final\
     --rough-fq-save-directory src/data/news_api_test/rough \
     --final-fq-save-directory src/data/news_api_test/final \
     --verified-fq-save-directory src/data/news_api_test/fq \
-    --processsed-news-save-directory src/data/news_api_test/news
+    --processed-news-save-directory src/data/news_api_test/news
     """,
     """
     python src/generate_fqs_from_news.py \
     --start-date 2024-09-01 --end-date 2024-09-04 \
-    --rough-fq-gen-model-name gpt-4o-2024-05-13 \
+    --rough-fq-gen-model-name gpt-4o-2024-08-06 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
-    --final-fq-verification-model-name gpt-4o-2024-05-13 \
+    --final-fq-verification-model-name gpt-4o-2024-08-06 \
     --only-verify-fq \
     --rough-fq-save-directory src/data/news_api_test/rough \
     --final-fq-save-directory src/data/news_api_test/final \
     --verified-fq-save-directory src/data/news_api_test/fq \
-    --processsed-news-save-directory src/data/news_api_test/news
+    --processed-news-save-directory src/data/news_api_test/news
     """,
 ]
 
@@ -99,10 +99,10 @@ commands = [
 # Expected files
 def expected_files(test_exist: bool = False):
     files = [
-        "src/data/news_api_test/rough/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/rough_fq_data.jsonl",
-        "src/data/news_api_test/rough/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/validated_articles.jsonl",
-        "src/data/news_api_test/fq/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/strict_res_checking_fqs.jsonl",
-        "src/data/news_api_test/fq/gpt-4o-2024-05-13/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/lax_res_checking_fqs.jsonl",
+        "src/data/news_api_test/rough/gpt-4o-2024-08-06/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/rough_fq_data.jsonl",
+        "src/data/news_api_test/rough/gpt-4o-2024-08-06/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/validated_articles.jsonl",
+        "src/data/news_api_test/fq/gpt-4o-2024-08-06/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/strict_res_checking_fqs.jsonl",
+        "src/data/news_api_test/fq/gpt-4o-2024-08-06/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/lax_res_checking_fqs.jsonl",
         "src/data/news_api_test/news/processed_news_api_from_2024-09-01_to_2024-09-04_num_pages_1.jsonl",
         "src/data/news_api_test/final/anthropic__claude-3.5-sonnet/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/strict_res_checking_fqs.jsonl",
         "src/data/news_api_test/final/anthropic__claude-3.5-sonnet/2024-09-01_to_2024-09-04/num_pages_1/num_articles_all/lax_res_checking_fqs.jsonl",
