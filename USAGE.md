@@ -110,3 +110,17 @@ Again, `-k all` may be replaced with a specific list of consistency checks.
 (TODO: add description of `instantiate_related` option)
 
 Then proceed to the Step 2 (evaluation) of “Typical usage”.
+
+## Re-evaluation
+
+If whatever reason you have elicited forecasts for each tuple but not the actual inconsistency metrics (similarly, if you have elicited forecasts for each forecasting question but not the actual ground truth metrics), or you want to just recalculate those metrics—
+
+—both `evaluation`  and `ground_truth_run` provide a `--load_dir` option to simply load existing forecasts and recalculate metrics cheaply, writing them back into their respective files.
+
+```bash
+python evaluation.py --load_dir="consistency-forecasting/src/data/forecasts/ConsistentForecaster_4xEE1_tuples_scraped/" -k all
+```
+
+```bash
+python consistency-forecasting/src/ground_truth_run.py --load_dir="consistency-forecasting/src/data/forecasts/recalc_test/groundtruth/"
+```
