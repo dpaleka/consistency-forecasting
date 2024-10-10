@@ -176,7 +176,7 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
                 "avg_violation_no_outliers",
                 "median_violation",
             ]:
-                overall[metric][key] /= checker_count
+                overall[metric][key] = round(overall[metric][key] / checker_count, 6)
 
             overall[metric]["label"] = f"Overall_{source}"
 
