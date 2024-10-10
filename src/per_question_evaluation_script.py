@@ -25,7 +25,7 @@ def main():
     parser.add_argument(
         "--eval_dir",
         # required=True,
-        default="src/data/forecasts/experiment",
+        default="src/data/forecasts/per-question-experiment",
         help="Directory to store evaluation files",
     )
 
