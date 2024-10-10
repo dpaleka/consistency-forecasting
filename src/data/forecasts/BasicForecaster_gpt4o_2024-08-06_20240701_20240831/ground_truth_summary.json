@@ -1,0 +1,82 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.136,
+    "avg_platt_brier_score": 0.126,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 45.5,
+    "avg_platt_brier_score_scaled": 49.7,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 0.617,
+    "platt_scaling_factor": 1.275,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.063,
+        "resolution": 0.038
+    },
+    "calibration_error": 0.113,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.024,
+            0.055,
+            0.13,
+            0.183,
+            0.196,
+            0.355,
+            0.417,
+            0.912,
+            0.75,
+            1.0
+        ],
+        "bin_confidences": [
+            0.007,
+            0.02,
+            0.05,
+            0.133,
+            0.226,
+            0.318,
+            0.412,
+            0.597,
+            0.674,
+            0.838,
+            0.9,
+            0.95
+        ],
+        "num_samples": [
+            13,
+            3,
+            84,
+            275,
+            146,
+            208,
+            51,
+            62,
+            115,
+            34,
+            4,
+            5
+        ],
+        "calibration_error": 0.113
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "gpt-4o-2024-08-06",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}

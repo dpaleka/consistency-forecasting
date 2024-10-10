@@ -1,0 +1,31 @@
+{
+    "overall": {
+        "default": {
+            "label": "ButChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 192,
+            "avg_violation": 0.062004,
+            "avg_violation_no_outliers": 0.060336,
+            "median_violation": 0.021376
+        },
+        "frequentist": {
+            "label": "ButChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 249,
+            "avg_violation": 0.327265,
+            "avg_violation_no_outliers": 0.325606,
+            "median_violation": 0.30134
+        },
+        "default_scaled": {
+            "label": "ButChecker",
+            "num_samples_including_errors": 300,
+            "num_samples": 300,
+            "num_violations": 173,
+            "avg_violation": 0.020668,
+            "avg_violation_no_outliers": 0.020112,
+            "median_violation": 0.007125
+        }
+    }
+}

@@ -1,5 +1,7 @@
 import os
 import sys
+import copy
+
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -129,22 +131,21 @@ def gen_or_tuple(og_question_1, og_question_2):
 
 DEFAULT_PROMPTS = [
     """
-    GENERAL: Output your general reasoning and thought process.  Here you can be as detailed as you want, mentioning the reasoning of your predictions and how / why each prediction obeys the given consistency rules.  For each prediction, you are welcome to be as verbose as you want. If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.    """,
-    """PROB: Output your probability estimates of each of the variables (P, Q, not_P, etc.).  Here, ONLY output the labels and their associated predictions and NOTHING ELSE. Your output MUST look and be formatted as follows.
+    GENERAL: Output your general reasoning and thought process.  Here you can be as detailed as you want, mentioning the reasoning of your predictions and how / why each prediction obeys the given consistency rules.  If there are multiple questions P, Q, you can also make comments on their independence or relationship with each other.""",
+    """PROB: Output your probability estimates of each of the variables (P, Q, not_P, etc.).  Here, ONLY output the labels, their associated predictions, and NOTHING ELSE. Your output MUST look and be formatted as follows.
     P: 0.xx,
     not_P: 0.xx,
     P_or_Q: 0.xx,
     ...""",
-    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print the mathematical rule and the associated numbers associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. Your output MUST look and be formatted as follows.
+    """CHECK: Go through each rule in CONSISTENCY RULES and check whether each rule is obeyed with your given predictions.  For each rule, first print the mathematical rule and the associated predicted values associated with it.  Then think VERY carefully about whether the outputs obey the mathematical rule. Then output whether it obeys the rule. At the end, print out a summary on whether all of the rules passed, or which ones failed. Your output MUST look and be formatted as follows.
     neg: P = 1- not_P, EQUATION is EVALUATION, 
     andor: P = P_or_Q + P_and_Q - Q, EQUATION is EVALUATION, 
     and:  max(P + Q - 1, 0) <= P_and_Q <= min(P, Q), EQUATION is EVALUATION,
     ...
     {ALL consistency checks passed!} OR {failed_check_1, failed_check_2 ... consistency checks failed!""",
-    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occurred before.
-        Note that changing the probability of one given variable for one consistency check will also affect consistency rules for others.  It is IMPERATIVE that all changes  
-        your correction needs to ENSURE that it still passes other consistency checks too.
-        If there were no violations found then simply output the same dict again.  Your output MUST look like and be formatted like the following.
+    """PROB: Now again output your probability estimates of each variable in a dict like format like before, but taking account and correcting any consistency violations that occurred.
+        Note that changing the predicted probability of one value to satisfy one consistency rule will also affect consistency rules for others.  It is IMPERATIVE that any changes made still ensure all other consistency checks pass too.
+        If there were no violations found, then simply output the same dict again.  Your output MUST look like and be formatted as follows.
         P: 0.xx,
         not_P: 0.xx,
         P_or_Q: 0.xx,
@@ -480,10 +481,10 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             str(self.consistency_checks)
         )
 
-        self.preface = preface or DEFAULT_PREFACE
-        self.user_prompts = user_prompts or DEFAULT_PROMPTS
+        self.preface = preface or copy.deepcopy(DEFAULT_PREFACE)
+        self.user_prompts = user_prompts or copy.deepcopy(DEFAULT_PROMPTS)
 
-        self.examples = examples or DEFAULT_EXAMPLES
+        self.examples = examples or copy.deepcopy(DEFAULT_EXAMPLES)
 
     def generate_all_questions(self, sentence: ForecastingQuestion):
         """# alternate way to gen questions
@@ -533,23 +534,31 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
 
     def generate_user_prompts(self, questions_dict):
         first_str = "QUESTIONS: {}".format(questions_dict)
+        user_prompts = copy.deepcopy(self.user_prompts)
 
-        if self.user_prompts[0][:9] == "QUESTIONS":
-            return self.user_prompts
+        if user_prompts[0][:9] == "QUESTIONS":
+            assert False
+            return user_prompts
 
-        self.user_prompts.insert(0, first_str)
+        user_prompts.insert(0, first_str)
 
-        return self.user_prompts
+        return user_prompts
 
     def prep_call(self, ForecastingQuestion):
-        self.generate_all_questions(ForecastingQuestion)
-        self.generate_user_prompts(self.forecasting_questions)
+        prompts = self.generate_user_prompts(
+            self.generate_all_questions(ForecastingQuestion)
+        )
+
+        return prompts
 
     async def prep_call_async(self, ForecastingQuestion):
-        await self.generate_all_questions_async(ForecastingQuestion)
-        self.generate_user_prompts(self.forecasting_questions)
+        prompts = self.generate_user_prompts(
+            await self.generate_all_questions_async(ForecastingQuestion)
+        )
 
-    """
+        return prompts
+
+    """prompts
     @costly()
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
         self.prep_call(ForecastingQuestion)
@@ -561,17 +570,16 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
         return super().call_async(self.user_prompts, self.examples, include_metadata)"""
 
     def call(self, ForecastingQuestion, include_metadata=True, **kwargs):
-        self.prep_call(ForecastingQuestion)
-        result = super().call(self.user_prompts, self.examples, include_metadata)
+        input = self.prep_call(ForecastingQuestion)
+        result = super().call(input, self.examples, include_metadata)
 
         return result
 
     async def call_async(self, ForecastingQuestion, include_metadata=True, **kwargs):
         try:
-            await self.prep_call_async(ForecastingQuestion)
-            result = await super().call_async(
-                self.user_prompts, self.examples, include_metadata
-            )
+            input = await self.prep_call_async(ForecastingQuestion)
+            result = await super().call_async(input, self.examples, include_metadata)
+
             return result
         except Exception as e:
             raise e
@@ -581,6 +589,7 @@ class PromptedToCons_Forecaster(CoT_multistep_Forecaster):
             **super().dump_config(),
             # "related_questions": self.forecasting_questions.__str__(),
             "checks": self.consistency_checks.__str__(),
+            #'forecasting_questions': make_json_serializable(self.forecasting_questions),
         }
 
 

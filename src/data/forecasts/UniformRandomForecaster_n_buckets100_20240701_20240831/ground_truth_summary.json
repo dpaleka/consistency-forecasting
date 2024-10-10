@@ -1,0 +1,92 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.339,
+    "avg_platt_brier_score": 0.184,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": -35.5,
+    "avg_platt_brier_score_scaled": 26.3,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 1.688,
+    "platt_scaling_factor": 2.679,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.312,
+        "resolution": 0.002
+    },
+    "calibration_error": 0.398,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95,
+            0.97,
+            0.99
+        ],
+        "bin_accuracies": [
+            0.353,
+            0.28,
+            0.25,
+            0.145,
+            0.212,
+            0.203,
+            0.149,
+            0.138,
+            0.167,
+            0.193,
+            0.198,
+            0.217,
+            0.213,
+            0.333,
+            0.176
+        ],
+        "bin_confidences": [
+            0.004,
+            0.03,
+            0.06,
+            0.113,
+            0.205,
+            0.308,
+            0.407,
+            0.504,
+            0.593,
+            0.701,
+            0.81,
+            0.891,
+            0.946,
+            0.976,
+            0.995
+        ],
+        "num_samples": [
+            17,
+            25,
+            28,
+            83,
+            85,
+            128,
+            87,
+            87,
+            96,
+            109,
+            101,
+            69,
+            47,
+            21,
+            17
+        ],
+        "calibration_error": 0.398
+    },
+    "forecaster": "UniformRandomForecaster",
+    "full_forecaster_config": {
+        "buckets": 100
+    }
+}

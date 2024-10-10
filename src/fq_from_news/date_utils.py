@@ -43,7 +43,7 @@ def parse_datetime(date_str: str):
         )
 
 
-def parse_date(date_str: str):
+def parse_date(date_str: str) -> datetime.date:
     """
     Given a date in the format YYYY-MM-DD, returns the corresponding date object.
     Has validation for the correct type.
@@ -103,7 +103,16 @@ def last_datetime_of_previous_month(dt: datetime) -> datetime:
     )
 
 
-def format_news_range_date(date: datetime):
+def format_news_range_date(date: datetime) -> str:
+    """
+    Formats a given datetime object into a string representation in the form of Month-Day-Year.
+    
+    Args:
+        date (datetime): A datetime object to be formatted.
+        
+    Returns:
+        str: A string in the format 'Month-Day-Year', where the month is spelled out (e.g., 'January-5-2024').
+    """
     months = [
         "January",
         "February",

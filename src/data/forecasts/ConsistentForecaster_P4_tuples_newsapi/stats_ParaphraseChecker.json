@@ -1,0 +1,31 @@
+{
+    "overall": {
+        "default": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 6,
+            "avg_violation": 0.001771,
+            "avg_violation_no_outliers": 0.001661,
+            "median_violation": 0.000462
+        },
+        "frequentist": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 11,
+            "avg_violation": 0.043406,
+            "avg_violation_no_outliers": 0.042704,
+            "median_violation": 0.030359
+        },
+        "default_scaled": {
+            "label": "ParaphraseChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 6,
+            "avg_violation": 0.000885,
+            "avg_violation_no_outliers": 0.000831,
+            "median_violation": 0.000231
+        }
+    }
+}

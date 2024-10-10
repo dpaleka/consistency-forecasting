@@ -235,3 +235,19 @@ def truncate_str(s: str, max_len: int = 80) -> str:
         return s[:pref] + "..." + s[-suf:]
     else:
         return s
+
+def read_json_or_jsonl(file_path: Path):
+    print(f"Reading file: {file_path}")
+    if not file_path.exists():
+        return []
+
+    if file_path.suffix == ".json":
+        with open(file_path, "r") as file:
+            return json.load(file)
+    elif file_path.suffix == ".jsonl":
+        with open(file_path, "r") as file:
+            return [json.loads(line) for line in file]
+    else:
+        raise ValueError(
+            "Unsupported file format. Only '.json' and '.jsonl' files are supported."
+        )

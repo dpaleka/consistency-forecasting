@@ -1,0 +1,179 @@
+{
+    "total_questions": 500,
+    "avg_brier_score": 0.175,
+    "avg_platt_brier_score": 0.137,
+    "tuned_brier_baseline": 0.159,
+    "avg_brier_score_scaled": 29.9,
+    "avg_platt_brier_score_scaled": 45.3,
+    "tuned_brier_baseline_scaled": 36.5,
+    "avg_log_score": 0.772,
+    "platt_scaling_factor": 1.685,
+    "brier_score_decomposition": {
+        "uncertainty": 0.159,
+        "reliability": 0.046,
+        "resolution": 0.037
+    },
+    "calibration_error": 0.191,
+    "calibration_error_data": {
+        "bins": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.048,
+            0.108,
+            0.09,
+            0.211,
+            0.38,
+            0.758,
+            1.0,
+            1.0
+        ],
+        "bin_confidences": [
+            0.135,
+            0.198,
+            0.308,
+            0.389,
+            0.497,
+            0.603,
+            0.683,
+            0.789,
+            0.862
+        ],
+        "num_samples": [
+            7,
+            21,
+            186,
+            122,
+            57,
+            71,
+            33,
+            2,
+            1
+        ],
+        "calibration_error": 0.191
+    },
+    "forecaster": "ConsistentForecaster",
+    "full_forecaster_config": {
+        "hypocrite": {
+            "hypocrite": {
+                "hypocrite": {
+                    "hypocrite": {
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+                        "examples": []
+                    },
+                    "checks": [
+                        {
+                            "name": "ParaphraseChecker",
+                            "default_tolerance": 0.01,
+                            "frequentist_hparams": {
+                                "sigma": 0.05,
+                                "gamma": 2.58,
+                                "beta": 0.001
+                            },
+                            "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
+                        }
+                    ],
+                    "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+                    "instantiation_kwargs": {
+                        "verify_before_instantiation": false,
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "cost_log": null,
+                        "simulate": false
+                    },
+                    "bq_func_kwargs": {
+                        "model": "gpt-4o-mini-2024-07-18",
+                        "cost_log": null,
+                        "simulate": false
+                    },
+                    "call_kwargs": {}
+                },
+                "checks": [
+                    {
+                        "name": "ParaphraseChecker",
+                        "default_tolerance": 0.01,
+                        "frequentist_hparams": {
+                            "sigma": 0.05,
+                            "gamma": 2.58,
+                            "beta": 0.001
+                        },
+                        "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
+                    }
+                ],
+                "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+                "instantiation_kwargs": {
+                    "verify_before_instantiation": false,
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "cost_log": null,
+                    "simulate": false
+                },
+                "bq_func_kwargs": {
+                    "model": "gpt-4o-mini-2024-07-18",
+                    "cost_log": null,
+                    "simulate": false
+                },
+                "call_kwargs": {}
+            },
+            "checks": [
+                {
+                    "name": "ParaphraseChecker",
+                    "default_tolerance": 0.01,
+                    "frequentist_hparams": {
+                        "sigma": 0.05,
+                        "gamma": 2.58,
+                        "beta": 0.001
+                    },
+                    "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
+                }
+            ],
+            "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+            "instantiation_kwargs": {
+                "verify_before_instantiation": false,
+                "model": "gpt-4o-mini-2024-07-18",
+                "cost_log": null,
+                "simulate": false
+            },
+            "bq_func_kwargs": {
+                "model": "gpt-4o-mini-2024-07-18",
+                "cost_log": null,
+                "simulate": false
+            },
+            "call_kwargs": {}
+        },
+        "checks": [
+            {
+                "name": "ParaphraseChecker",
+                "default_tolerance": 0.01,
+                "frequentist_hparams": {
+                    "sigma": 0.05,
+                    "gamma": 2.58,
+                    "beta": 0.001
+                },
+                "path": "/home/abhim/consistency-forecasting/src/data/tuples/ParaphraseChecker.jsonl"
+            }
+        ],
+        "base_data_path": "/home/abhim/consistency-forecasting/src/data/fq/real/questions_cleaned_formatted.jsonl",
+        "instantiation_kwargs": {
+            "verify_before_instantiation": false,
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "bq_func_kwargs": {
+            "model": "gpt-4o-mini-2024-07-18",
+            "cost_log": null,
+            "simulate": false
+        },
+        "call_kwargs": {}
+    },
+    "loaded_forecasts": "src/data/forecasts/ConsistentForecaster_P4_20240701_20240831/ground_truth_results.jsonl"
+}

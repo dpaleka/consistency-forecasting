@@ -1,0 +1,86 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.184,
+    "avg_platt_brier_score": 0.195,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 26.4,
+    "avg_platt_brier_score_scaled": 22.0,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 0.783,
+    "platt_scaling_factor": 0.576,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.106,
+        "resolution": 0.045
+    },
+    "calibration_error": 0.061,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.97
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.111,
+            0.158,
+            0.306,
+            0.386,
+            0.529,
+            0.333,
+            0.522,
+            0.667,
+            0.75,
+            1.0,
+            1.0
+        ],
+        "bin_confidences": [
+            0.01,
+            0.022,
+            0.05,
+            0.131,
+            0.229,
+            0.334,
+            0.432,
+            0.5,
+            0.576,
+            0.683,
+            0.838,
+            0.9,
+            0.98
+        ],
+        "num_samples": [
+            10,
+            8,
+            27,
+            38,
+            36,
+            44,
+            17,
+            3,
+            23,
+            30,
+            4,
+            1,
+            1
+        ],
+        "calibration_error": 0.061
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "gpt-4o-2024-05-13",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}

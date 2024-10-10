@@ -38,7 +38,9 @@ logging.getLogger().setLevel(logging.INFO)
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 
-def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
+def make_result_dict(
+    line: dict, fq: ForecastingQuestion, forecast: Forecast, compare=True
+):
     log_score = proper_score(
         probs=[forecast.prob],
         outcomes=[fq.resolution],
@@ -51,14 +53,15 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
     )
     brier_score_scaled = scale_brier_score(brier_score)
 
-    assert (
-        (
-            line_fq_differences := compare_dicts(
-                line, make_json_serializable(fq.to_dict())
+    if compare:
+        assert (
+            (
+                line_fq_differences := compare_dicts(
+                    line, make_json_serializable(fq.to_dict())
+                )
             )
-        )
-        == []
-    ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
+            == []
+        ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
 
     return {
         "question": line,
@@ -76,7 +79,7 @@ def make_result_dict(line: dict, fq: ForecastingQuestion, forecast: Forecast):
 @click.option(
     "--input_file",
     type=click.Path(exists=True),
-    required=True,
+    required=False,
     help="Path to the input JSONL file containing Forecasting Questions",
 )
 @click.option(
@@ -90,68 +93,75 @@ def main(
     custom_path: str | None,
     config_path: str | None,
     forecaster_options: list[str] | None,
-    input_file: str,
     num_lines: int,
     run: bool,
+    input_file: str | None = None,
     load_dir: str | None = None,
     is_async: bool = False,
     output_dir: str | None = None,
     platt_scaling_factor: float | None = None,
 ):
-    forecaster_config = get_forecaster_config(config_path, forecaster_options)
+    # IMPORTANT!!! If you remove this, it will prune your data down to 3 lines.
+    if num_lines == -1 or not run:
+        num_lines = None
 
-    forecaster = make_forecaster(
-        forecaster_class=forecaster_class,
-        custom_path=custom_path,
-        forecaster_config=forecaster_config,
-    )
-
-    # Print arguments
-    print("Arguments:")
-    print(f"  forecaster_class: {forecaster_class}")
-    print(f"  custom_path: {custom_path}")
-    print(f"  forecaster_config: {forecaster_config}")
-    print(f"  input_file: {input_file}")
-    print(f"  num_lines: {num_lines}")
-    print(f"  run: {run}")
-    print(f"  load_dir: {load_dir}")
-    print(f"  is_async: {is_async}")
-    print(f"  output_dir: {output_dir}")
-
-    output_directory, most_recent_directory = create_output_directory(
-        forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
-    )
-    dirs_to_write = [output_directory, most_recent_directory]
     output_filename = "ground_truth_results.jsonl"
 
-    with open(input_file, "r") as f:
-        data = [json.loads(line) for line in f]
-
-    forecasting_questions = [ForecastingQuestion.model_validate(line) for line in data]
-    print(f"Loaded {len(forecasting_questions)} forecasting questions")
-
-    data, forecasting_questions = zip(
-        *[
-            (line, fq)
-            for line, fq in zip(data, forecasting_questions)
-            if fq.resolution is not None
-        ]
-    )
-    assert len(data) == len(
-        forecasting_questions
-    ), "Data and forecasting questions have different lengths"
-    print(
-        f"Filtered to {len(forecasting_questions)}/{len(data)} questions with resolutions"
-    )
-
-    num_lines = min(num_lines, len(forecasting_questions))
-    results = []
     if run:
+        forecaster_config = get_forecaster_config(config_path, forecaster_options)
+
+        forecaster = make_forecaster(
+            forecaster_class=forecaster_class,
+            custom_path=custom_path,
+            forecaster_config=forecaster_config,
+        )
+
+        # Print arguments
+        print("Arguments:")
+        print(f"  forecaster_class: {forecaster_class}")
+        print(f"  custom_path: {custom_path}")
+        print(f"  forecaster_config: {forecaster_config}")
+        print(f"  input_file: {input_file}")
+        print(f"  num_lines: {num_lines}")
+        print(f"  run: {run}")
+        print(f"  load_dir: {load_dir}")
+        print(f"  is_async: {is_async}")
+        print(f"  output_dir: {output_dir}")
+
+        output_directory, most_recent_directory = create_output_directory(
+            forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
+        )
+        dirs_to_write = [output_directory, most_recent_directory]
+        with open(input_file, "r") as f:
+            data = [json.loads(line) for line in f]
+        forecasting_questions = [
+            ForecastingQuestion.model_validate(line) for line in data
+        ]
+        print(f"Loaded {len(forecasting_questions)} forecasting questions")
+
+        data, forecasting_questions = zip(
+            *[
+                (line, fq)
+                for line, fq in zip(data, forecasting_questions)
+                if fq.resolution is not None
+            ]
+        )
+
+        print(
+            f"Filtered to {len(forecasting_questions)}/{len(data)} questions with resolutions"
+        )
+
+        assert len(data) == len(
+            forecasting_questions
+        ), "Data and forecasting questions have different lengths"
+        num_lines = min(num_lines, len(forecasting_questions))
+        results = []
         print(f"Running on {num_lines} questions")
         assert load_dir is None, "load_dir must be None when run is True"
 
         forecasts = []
         results = []
+
         batch_size = 20
         for start in tqdm(range(0, num_lines, batch_size)):
             end = min(start + batch_size, num_lines)
@@ -187,8 +197,35 @@ def main(
             raise ValueError(
                 "if --run argument is not set, load_dir must be provided and must contain ground_truth_results.jsonl"
             )
+        output_directory = Path(load_dir)
+        dirs_to_write = [output_directory]
+        input_file = load_dir / "ground_truth_results.jsonl"
+        with open(input_file, "r") as f:
+            lines = [json.loads(line) for line in f]
+        data = [line["question"] for line in lines]
+        forecasting_questions = [
+            ForecastingQuestion.model_validate(line) for line in data
+        ]
+        forecast_data = [line["forecast"] for line in lines]
+        forecasts = [Forecast.model_validate(forecast) for forecast in forecast_data]
+        print(
+            f"Loaded {len(forecasting_questions)} forecasting questions and forecasts"
+        )
 
-        with open(load_dir / "ground_truth_results.jsonl", "r", encoding="utf-8") as f:
+        data, forecasting_questions, forecasts = zip(
+            *[
+                (line, fq, forecast)
+                for line, fq, forecast in zip(data, forecasting_questions, forecasts)
+                if fq.resolution is not None
+            ]
+        )
+        print(
+            f"Filtered to {len(forecasting_questions)}/{len(data)} questions with resolutions"
+        )
+        num_lines = len(forecasting_questions)
+        results = []
+
+        with open(input_file, "r", encoding="utf-8") as f:
             results_loaded = [json.loads(line) for line in f]
             forecasts = [
                 Forecast.model_validate(results_loaded[i]["forecast"])
@@ -364,8 +401,6 @@ def main(
 if __name__ == "__main__":
     main()
 
-    # Example run command
-print("Example run command:")
-print(
-    "python ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file path/to/input.jsonl --output_dir path/to/output"
-)
+# Example run command
+# python ground_truth_run.py --forecaster_class BasicForecaster --forecaster_options model=gpt-4o-mini --input_file path/to/input.jsonl --output_dir path/to/output
+# python src/ground_truth_run.py --load_dir="src/data/forecasts/recalc_test/groundtruth/"

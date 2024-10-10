@@ -1,0 +1,1 @@
+python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples_2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18

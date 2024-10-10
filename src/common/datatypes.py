@@ -290,6 +290,7 @@ class SyntheticTagQuestion(BaseModel):
     fixed: Optional[bool] = False
     body: Optional[str] = None
     resolution_date: Optional[str] = None
+    created_date: Optional[str] = None
 
 
 register_model_for_cache(SyntheticTagQuestion)
@@ -311,7 +312,12 @@ class QuestionGenerationResponse(BaseModel):
     questions: list[SyntheticRelQuestion]
 
 
+class QuestionGenerationResponse_FQ(BaseModel):
+    questions: list[ForecastingQuestion_stripped]
+
+
 register_model_for_cache(QuestionGenerationResponse)
+register_model_for_cache(QuestionGenerationResponse_FQ)
 
 
 class QuestionGenerationResponse3(BaseModel):

@@ -1,0 +1,70 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.227,
+    "avg_platt_brier_score": 0.201,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": 9.3,
+    "avg_platt_brier_score_scaled": 19.8,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 0.921,
+    "platt_scaling_factor": 1.072,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.125,
+        "resolution": 0.034
+    },
+    "calibration_error": 0.148,
+    "calibration_error_data": {
+        "bins": [
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.125,
+            0.231,
+            0.353,
+            0.0,
+            0.5,
+            0.437,
+            0.8
+        ],
+        "bin_confidences": [
+            0.05,
+            0.132,
+            0.242,
+            0.34,
+            0.424,
+            0.5,
+            0.558,
+            0.682,
+            0.845
+        ],
+        "num_samples": [
+            1,
+            25,
+            24,
+            26,
+            17,
+            1,
+            12,
+            126,
+            10
+        ],
+        "calibration_error": 0.148
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}
