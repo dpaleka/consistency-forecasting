@@ -1,14 +1,14 @@
 {
   "Will a member of the Trump family be the Republican nominee for the US Presidency in 2024?": {
     "default": {
-      "avg_violation": 0.05063966666666666,
-      "num_violations": 13,
+      "avg_violation": 0.056153,
+      "num_violations": 12,
       "num_samples": 18,
-      "violation_rate": 0.7222222222222222,
-      "weighted_violations": 0.7916666666666666
+      "violation_rate": 0.6666666666666666,
+      "weighted_violations": 0.75
     },
     "frequentist": {
-      "avg_violation": 0.2997648333333333,
+      "avg_violation": 0.311235,
       "num_violations": 14,
       "num_samples": 18,
       "violation_rate": 0.7777777777777778,
@@ -17,34 +17,34 @@
   },
   "Will Donald Trump be the Republican nominee for the 2024 US Presidential Election?": {
     "default": {
-      "avg_violation": 0.023393333333333335,
+      "avg_violation": 0.024481,
+      "num_violations": 10,
+      "num_samples": 18,
+      "violation_rate": 0.5555555555555556,
+      "weighted_violations": 0.5416666666666666
+    },
+    "frequentist": {
+      "avg_violation": 0.213606,
       "num_violations": 12,
       "num_samples": 18,
       "violation_rate": 0.6666666666666666,
-      "weighted_violations": 0.75
-    },
-    "frequentist": {
-      "avg_violation": 0.2240136666666667,
-      "num_violations": 15,
-      "num_samples": 18,
-      "violation_rate": 0.8333333333333334,
-      "weighted_violations": 0.875
+      "weighted_violations": 0.625
     }
   },
   "Will Tucker Carlson be the Republican nominee for the 2024 US Presidential Election?": {
     "default": {
-      "avg_violation": 0.015605666666666665,
+      "avg_violation": 0.011145,
       "num_violations": 8,
       "num_samples": 18,
       "violation_rate": 0.4444444444444444,
       "weighted_violations": 0.3333333333333333
     },
     "frequentist": {
-      "avg_violation": 0.17179999999999998,
-      "num_violations": 12,
+      "avg_violation": 0.140334,
+      "num_violations": 13,
       "num_samples": 18,
-      "violation_rate": 0.6666666666666666,
-      "weighted_violations": 0.5
+      "violation_rate": 0.7222222222222222,
+      "weighted_violations": 0.5416666666666666
     }
   }
 }
