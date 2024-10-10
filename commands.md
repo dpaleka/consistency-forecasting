@@ -610,3 +610,26 @@ USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples_newsap
 ```
 
 
+
+
+## TODO: ConsistentForecaster jobs
+
+## Per Question Evaluation
+Step 1: Question Generation, Tuple Instantiation. Do this by running per_question_instantiation_script.py
+
+```python src/per_question_instantiation_script.py --input_file src/data/fq/real/20240501_20240815.jsonl --tuple_dir src/data/tuples_experiment/ --num_source 3 --related_questions 7```
+
+-> [src\data\tuples_experiment](src/data/tuples_experiment)
+
+
+
+Step 2: Run Per Question Evaluation on the instantiated tuples
+
+```python src/per_question_evaluation_script.py --tuple_dir src/data/tuples_experiment/ --eval_dir src/data/forecasts/per-question-experiment --forecaster_options model=gpt-4o-mini```
+
+-> [src/data/forecasts/experiment](src/data/forecasts/per-question-experiment)
+Output directory has normal stats for each checker (which includes model forecasts),
+and stats_by_source_question.json, and per_question_consistency.jsonl.
+- avg_violation for each question is normalized by checker and number of samples, such that each checker is given equal weight regardless of how many samples it has. Note that we ensure each checker has at least 1 sample during instantiation.
+- weighted_violations is the average rate of violations for each check, so this is also normalized by the total number of samples and number of samples per checker.
+Adjust input argumnets for per_question_evaluation_script.py as needed for other models, same usage as evaluation.py
