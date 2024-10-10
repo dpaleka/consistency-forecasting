@@ -176,7 +176,7 @@ def aggregate_stats_by_source(all_stats: dict, output_directory: Path):
                 "avg_violation_no_outliers",
                 "median_violation",
             ]:
-                overall[metric][key] /= checker_count
+                overall[metric][key] = round(overall[metric][key] / checker_count, 6)
 
             overall[metric]["label"] = f"Overall_{source}"
 
@@ -197,12 +197,15 @@ def aggregate_stats(all_stats: dict) -> dict:
         aggregate_stats[metric] = {}
         tot_violation = 0.0
         n = 0
-        aggregate_stats[metric]["avg_violation"] = np.mean(
-            [
-                checker_stats["overall"][metric]["avg_violation"]
-                for checker_stats in all_stats.values()
-                if "overall" in checker_stats and metric in checker_stats["overall"]
-            ]
+        aggregate_stats[metric]["avg_violation"] = round(
+            np.mean(
+                [
+                    checker_stats["overall"][metric]["avg_violation"]
+                    for checker_stats in all_stats.values()
+                    if "overall" in checker_stats and metric in checker_stats["overall"]
+                ]
+            ),
+            6,
         )
     return aggregate_stats
 

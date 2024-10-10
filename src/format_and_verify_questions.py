@@ -1,6 +1,5 @@
 import asyncio
 import functools
-import json
 from typing import List, Optional, Union
 from common.datatypes import (
     ForecastingQuestion,
@@ -26,6 +25,10 @@ async def validate_and_format_question(
     model: str = "gpt-4o-mini-2024-07-18",
     fill_in_body: bool = False,
 ) -> Optional[ForecastingQuestion]:
+    if "source_question" in question:
+        metadata = {"source_question": question.get("source_question", None)}
+    else:
+        metadata = question.get("metadata", None)
     for i in range(2):
         forecasting_question = await fq_body_generator.from_string(
             question["title"],
@@ -33,7 +36,7 @@ async def validate_and_format_question(
             created_date=question.get("created_date", None),
             question_type=question.get("question_type"),
             url=question.get("url", None),
-            metadata=question.get("metadata", None),
+            metadata=metadata,
             body=question.get("body", None),
             resolution_date=question.get("resolution_date", None),
             resolution=question.get("resolution", None),
@@ -71,7 +74,9 @@ async def validate_and_format_synthetic_question(
         forecasting_question = await fq_body_generator.from_string(
             question.title,
             data_source="synthetic",
-            created_date=question.created_date if hasattr(question, "created_date") else None,
+            created_date=question.created_date
+            if hasattr(question, "created_date")
+            else None,
             question_type="binary",
             metadata=metadata,
             fill_in_body=fill_in_body,
@@ -219,6 +224,7 @@ async def main(
                 f"The file {output_path} already exists. Appending to it. If you want to overwrite, use the --overwrite flag."
             )
 
+    print("SYNTHETIC VALUE: ", synthetic)
     if synthetic:
         (
             forecasting_questions,
@@ -234,6 +240,7 @@ async def main(
         )
 
     else:
+        print("Processing real questions")
         forecasting_questions, none_count = await process_questions_from_file(
             file_path,
             max_questions=max_questions,
@@ -305,7 +312,7 @@ if __name__ == "__main__":
         "--synthetic",
         "-s",
         type=bool,
-        default=True,
+        default=False,  # This needs to be default False because of how CLI bool arguments are parsed
         help="Flag to indicate synthetic data processing",
     )
     parser.add_argument(
