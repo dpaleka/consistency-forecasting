@@ -24,9 +24,9 @@ If you wish the resolution to not be checked _strictly_ (whether the resolution 
 ```python
 python generate_fqs_from_news.py \
 --news-month 7 \
---rough-fq-gen-model-name gpt-4o-2024-05-13 \
+--rough-fq-gen-model-name gpt-4o-2024-08-06 \
 --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
---final-fq-verification-model-name gpt-4o-2024-05-13
+--final-fq-verification-model-name gpt-4o-2024-08-06
 ```
 
 If you wish to be slightly leninent in the resolution checking (generated more number of final forecasting questions), add the `-lax` argument.
@@ -38,9 +38,9 @@ If you had already run the entire command once before _without_ the `-lax` argum
     ```python
     python generate_fqs_from_news.py \
     --news-month 7 \
-    --rough-fq-gen-model-name gpt-4o-2024-05-13 \
+    --rough-fq-gen-model-name gpt-4o-2024-08-06 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
-    --final-fq-verification-model-name gpt-4o-2024-05-13 \
+    --final-fq-verification-model-name gpt-4o-2024-08-06 \
     --only-gen-final \
     -lax
     ```
@@ -50,9 +50,9 @@ If you had already run the entire command once before _without_ the `-lax` argum
     ```python
     python generate_fqs_from_news.py \
     --news-month 7 \
-    --rough-fq-gen-model-name gpt-4o-2024-05-13 \
+    --rough-fq-gen-model-name gpt-4o-2024-08-06 \
     --final-fq-gen-model-name anthropic/claude-3.5-sonnet \
-    --final-fq-verification-model-name gpt-4o-2024-05-13 \
+    --final-fq-verification-model-name gpt-4o-2024-08-06 \
     --only-verify-fq \
     -lax
     ```

@@ -1,0 +1,5 @@
+{
+    "model": "meta-llama/Meta-Llama-3.1-70B-Instruct",
+    "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+    "examples": []
+}

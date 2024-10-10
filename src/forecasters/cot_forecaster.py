@@ -160,17 +160,19 @@ class CoT_multistep_Forecaster(Forecaster):
         self.result = result
 
         if include_metadata:
-            result["metadata"] = {
+            self.result["metadata"] = {
                 "model": kwargs.get("model", self.model),
                 "timestamp": datetime.now().isoformat(),
                 "user_prompts": user_prompts_lists,
-                "chain_of_thought": result["chain_of_thought"],
+                "chain_of_thought": self.result["chain_of_thought"],
                 "steps": self.steps,
             }
 
-            return Forecast(prob=result["response"].prob, metadata=result["metadata"])
+            return Forecast(
+                prob=self.result["response"].prob, metadata=self.result["metadata"]
+            )
 
-        return Forecast(prob=result["response"].prob)
+        return Forecast(prob=self.result["response"].prob)
 
     async def call_async(
         self,
@@ -230,28 +232,38 @@ class CoT_multistep_Forecaster(Forecaster):
             ),
             "response": response,
         }
-
-        if include_metadata:
-            result["metadata"] = {
-                "model": kwargs.get("model", "default_model"),
-                "timestamp": datetime.now().isoformat(),
-                "user_prompts": user_prompts_lists,
-                "steps": self.steps,
-            }
-
         self.result = result
+
+        import os
+
+        file_path = "debug_adam.txt"
+
+        if os.path.exists(file_path):
+            with open(file_path, "a") as f:
+                f.write("\n\n")
+        else:
+            open(file_path, "w").close()
+
+        with open(file_path, "a") as f:
+            f.write("ADAM" + "\n")
+            f.write("\n\n".join(u for u in user_prompts_lists) + "\n\n\n")
+            f.write(str(self.result["chain_of_thought"]) + "\n")
+            f.write(str(self.result["response"].prob) + "\n")
+
         if include_metadata:
-            result["metadata"] = {
+            self.result["metadata"] = {
                 "model": kwargs.get("model", "default_model"),
                 "timestamp": datetime.now().isoformat(),
                 "user_prompts": user_prompts_lists,
-                "chain_of_thought": result["chain_of_thought"],
+                "chain_of_thought": self.result["chain_of_thought"],
                 "steps": self.steps,
             }
 
-            return Forecast(prob=result["response"].prob, metadata=result["metadata"])
+            return Forecast(
+                prob=self.result["response"].prob, metadata=self.result["metadata"]
+            )
 
-        return Forecast(prob=result["response"].prob)
+        return Forecast(prob=self.result["response"].prob)
 
     def dump_config(self):
         return {

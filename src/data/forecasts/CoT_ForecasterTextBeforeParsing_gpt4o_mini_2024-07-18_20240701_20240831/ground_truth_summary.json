@@ -1,0 +1,78 @@
+{
+    "total_questions": 1000,
+    "avg_brier_score": 0.248,
+    "avg_platt_brier_score": 0.14,
+    "tuned_brier_baseline": 0.156,
+    "avg_brier_score_scaled": 0.7,
+    "avg_platt_brier_score_scaled": 43.9,
+    "tuned_brier_baseline_scaled": 37.7,
+    "avg_log_score": 0.99,
+    "platt_scaling_factor": 2.432,
+    "brier_score_decomposition": {
+        "uncertainty": 0.156,
+        "reliability": 0.226,
+        "resolution": 0.018
+    },
+    "calibration_error": 0.248,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95
+        ],
+        "bin_accuracies": [
+            0.0,
+            0.0,
+            0.018,
+            0.05,
+            0.13,
+            0.114,
+            0.108,
+            0.265,
+            0.85,
+            0.0,
+            1.0
+        ],
+        "bin_confidences": [
+            0.01,
+            0.05,
+            0.145,
+            0.244,
+            0.345,
+            0.426,
+            0.564,
+            0.673,
+            0.848,
+            0.9,
+            0.95
+        ],
+        "num_samples": [
+            1,
+            4,
+            56,
+            100,
+            154,
+            140,
+            37,
+            486,
+            20,
+            1,
+            1
+        ],
+        "calibration_error": 0.248
+    },
+    "forecaster": "CoT_ForecasterTextBeforeParsing",
+    "full_forecaster_config": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following question resolving YES. If you think it is likely the question resolves YES, the probability should be large; if you think it is unlikely the question resolves NO, the probability should be small. I want you to first provide a detailed reasoning for your answer, and then give me the probability. Your answer should be in the format: 'Reasoning: [your reasoning here] Probability: [float between 0 and 1]'",
+        "examples": null
+    }
+}

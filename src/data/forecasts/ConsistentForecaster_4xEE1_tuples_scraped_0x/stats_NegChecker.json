@@ -1,0 +1,31 @@
+{
+    "overall": {
+        "default": {
+            "label": "NegChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 114,
+            "avg_violation": 0.039627,
+            "avg_violation_no_outliers": 0.034868,
+            "median_violation": 0.011062
+        },
+        "frequentist": {
+            "label": "NegChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 114,
+            "avg_violation": 0.210258,
+            "avg_violation_no_outliers": 0.202885,
+            "median_violation": 0.148906
+        },
+        "default_scaled": {
+            "label": "NegChecker",
+            "num_samples_including_errors": 200,
+            "num_samples": 200,
+            "num_violations": 114,
+            "avg_violation": 0.019814,
+            "avg_violation_no_outliers": 0.017434,
+            "median_violation": 0.005531
+        }
+    }
+}

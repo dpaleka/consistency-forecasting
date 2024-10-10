@@ -1,0 +1,86 @@
+{
+    "total_questions": 242,
+    "avg_brier_score": 0.291,
+    "avg_platt_brier_score": 0.236,
+    "tuned_brier_baseline": 0.227,
+    "avg_brier_score_scaled": -16.3,
+    "avg_platt_brier_score_scaled": 5.6,
+    "tuned_brier_baseline_scaled": 9.3,
+    "avg_log_score": 3.822,
+    "platt_scaling_factor": 0.054,
+    "brier_score_decomposition": {
+        "uncertainty": 0.227,
+        "reliability": 0.101,
+        "resolution": 0.013
+    },
+    "calibration_error": 0.219,
+    "calibration_error_data": {
+        "bins": [
+            0.01,
+            0.03,
+            0.05,
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5,
+            0.6,
+            0.7,
+            0.8,
+            0.9,
+            0.95
+        ],
+        "bin_accuracies": [
+            0.341,
+            0.0,
+            0.174,
+            0.4,
+            0.5,
+            0.438,
+            0.5,
+            0.381,
+            0.5,
+            0.333,
+            0.25,
+            0.5,
+            1.0
+        ],
+        "bin_confidences": [
+            0.001,
+            0.03,
+            0.05,
+            0.103,
+            0.21,
+            0.303,
+            0.45,
+            0.5,
+            0.575,
+            0.706,
+            0.813,
+            0.9,
+            0.95
+        ],
+        "num_samples": [
+            91,
+            1,
+            46,
+            15,
+            30,
+            16,
+            2,
+            21,
+            4,
+            9,
+            4,
+            2,
+            1
+        ],
+        "calibration_error": 0.219
+    },
+    "forecaster": "BasicForecaster",
+    "full_forecaster_config": {
+        "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+        "preface": "You are an informed and well-calibrated forecaster. I need you to give me your best probability estimate for the following sentence or question resolving YES. Your answer should be a float between 0 and 1, with nothing else in your response.",
+        "examples": []
+    }
+}
