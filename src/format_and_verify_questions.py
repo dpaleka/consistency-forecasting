@@ -312,7 +312,7 @@ if __name__ == "__main__":
         "--synthetic",
         "-s",
         type=bool,
-        default=True,
+        default=False,  # This needs to be default False because of how CLI bool arguments are parsed
         help="Flag to indicate synthetic data processing",
     )
     parser.add_argument(

@@ -197,12 +197,15 @@ def aggregate_stats(all_stats: dict) -> dict:
         aggregate_stats[metric] = {}
         tot_violation = 0.0
         n = 0
-        aggregate_stats[metric]["avg_violation"] = np.mean(
-            [
-                checker_stats["overall"][metric]["avg_violation"]
-                for checker_stats in all_stats.values()
-                if "overall" in checker_stats and metric in checker_stats["overall"]
-            ]
+        aggregate_stats[metric]["avg_violation"] = round(
+            np.mean(
+                [
+                    checker_stats["overall"][metric]["avg_violation"]
+                    for checker_stats in all_stats.values()
+                    if "overall" in checker_stats and metric in checker_stats["overall"]
+                ]
+            ),
+            6,
         )
     return aggregate_stats
 
