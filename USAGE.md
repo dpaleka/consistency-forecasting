@@ -4,7 +4,9 @@ In the vast majority of cases, what you want to do is:
 
 1. subclass our `Forecaster` class to use your system to produce forecasts on the `ForecastingQuestion` datatype
 2. generate forecasts on our datasets in `src/data/tuples_...`
-3. measure and report violations. This is described under ***Typical usage***.
+3. measure and report violations.
+
+This is described under ***Typical usage***.
 
 In some situations you might also like to measure consistency violations on your own custom data set. This is described under ***Bring your own data***.
 
