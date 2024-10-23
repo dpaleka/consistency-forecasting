@@ -142,7 +142,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--fontsize",
         type=int,
-        default=14,
+        default=15,
         help="Font size for the plots",
     )
     return parser.parse_args()
@@ -196,11 +196,12 @@ def plot_metrics(
     cons_metric_key: str,
     remove_gt_outlier: float = None,
     remove_cons_outlier: float = None,
-    fontsize: int = 12,
+    fontsize: int | None = None,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    print(f"Fontsize: {fontsize}")
     # Identify all checker names
 
     fig, axs = plt.subplots(
