@@ -6,8 +6,6 @@ import asyncio
 from pathlib import Path
 import click
 import logging
-import functools
-import concurrent.futures
 from costly import Costlog
 import numpy as np
 from forecasters import Forecaster
@@ -26,7 +24,7 @@ from evaluation_utils.utils import (
 from evaluation_utils.common_options import common_options, get_forecaster_config
 from typing import Any
 
-BASE_TUPLES_PATH: Path = get_data_path() / "tuples_scraped/"
+# BASE_TUPLES_PATH: Path = get_data_path() / "tuples_scraped/"
 # BASE_TUPLES_PATH: Path = get_data_path() / "tuples_newsapi/"
 BASE_FORECASTS_OUTPUT_PATH: Path = get_data_path() / "forecasts"
 
@@ -373,6 +371,7 @@ def process_check(
         return stats
     except Exception as e:
         print(f"Debug: Error in process_check for {check_name}: {str(e)}")
+        raise e
         import traceback
 
         traceback.print_exc()
@@ -393,13 +392,6 @@ def process_check(
     multiple=True,
     default=["all"],
     help='Relevant checks to perform. In case of "all", all checkers are used.',
-)
-@click.option(
-    "--threads",
-    "use_threads",
-    is_flag=True,
-    default=False,
-    help="Use threads to run the forecaster on different checks",
 )
 @click.option(
     "--tuple_dir",
@@ -444,15 +436,35 @@ def main(
     tuples_per_source: int,
     relevant_checks: list[str],
     is_async: bool,
-    use_threads: bool,
     num_lines: int,
     tuple_dir: str | None = None,
     output_dir: str | None = None,
     eval_by_source: bool = False,
     skip_check: bool = False,
     simulate: bool = False,
+    load: str | None = None,
 ):
     do_check = not skip_check
+
+    # Handle --load shorthand
+    if load is not None:
+        load_dir = Path(load)
+        tuple_dir = Path(load)  # Set tuple_dir to the same directory
+
+        # Find all .jsonl files in the directory that match checker names
+        from static_checks.Checker import checker_classes
+
+        checker_names = [c[0] for c in checker_classes]
+        present_checkers = []
+
+        for checker_name in checker_names:
+            if Path(load).joinpath(f"{checker_name}.jsonl").exists():
+                present_checkers.append(checker_name)
+
+        if not present_checkers:
+            raise click.UsageError(f"No checker files found in directory {load}")
+
+        relevant_checks = present_checkers
 
     # IMPORTANT!!! If you remove this, it will prune your data down to 3 lines.
     if num_lines == -1 or not run:
@@ -467,11 +479,12 @@ def main(
     print(f"  load_dir: {load_dir}")
     print(f"  is_async: {is_async}")
     print(f"  output_dir: {output_dir}")
+    print(f"  tuple_dir: {tuple_dir}")
     cl = Costlog(mode="jsonl")
 
     if run:
         forecaster_config = get_forecaster_config(config_path, forecaster_options)
-        print(f"  forecaster_config: {forecaster_config}")
+        print(f"DEBUG: Final forecaster_config: {forecaster_config}")
 
         forecaster = make_forecaster(
             forecaster_class=forecaster_class,
@@ -479,7 +492,7 @@ def main(
             forecaster_config=forecaster_config,
         )
         if tuple_dir is None:
-            tuple_dir = BASE_TUPLES_PATH
+            assert False, "Tuple directory is required"
         tuple_dir = Path(tuple_dir)
         if not tuple_dir.exists():
             assert tuple_dir.exists(), f"Tuple directory {tuple_dir} does not exist"
@@ -492,7 +505,6 @@ def main(
             "full_forecaster_config": forecaster.dump_config(),
             "checkers": [checker.dump_config() for name, checker in checkers.items()],
             "is_async": is_async,
-            "use_threads": use_threads,
             "run": run,
             "load_dir": str(load_dir),
             "relevant_checks": list(checkers.keys()),
@@ -514,6 +526,7 @@ def main(
             Path(load_dir),
         )
 
+        print(f"Debug: tuple_dir: {tuple_dir}")
         checkers: dict[str, Checker] = choose_checkers(relevant_checks, tuple_dir)
 
     # load_dir = validate_load_directory(run, load_dir, most_recent_directory)
@@ -523,56 +536,26 @@ def main(
     print(f"Output dir: {output_directory}")
 
     all_stats = {}
-    if use_threads:
-        print("Using threads")
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=len(checkers.keys())
-        ) as executor:
-            process_check_func = functools.partial(
-                process_check,
-                checkers=checkers,
-                forecaster=forecaster,
-                num_lines=num_lines,
-                tuples_per_source=tuples_per_source,
-                is_async=is_async,
-                output_directory=output_directory,
-                most_recent_directory=most_recent_directory,
-                load_dir=load_dir,
-                run=run,
-                continue_run=continue_run,
-                eval_by_source=eval_by_source,
-                do_check=do_check,
-                cost_log=cl,
-                simulate=simulate,
-            )
-            all_stats = {
-                check_name: stats
-                for check_name, stats in zip(
-                    checkers.keys(), executor.map(process_check_func, checkers.keys())
-                )
-                if stats is not None
-            }
-    else:
-        for check_name in checkers.keys():
-            stats = process_check(
-                check_name=check_name,
-                checkers=checkers,
-                forecaster=forecaster,
-                num_lines=num_lines,
-                tuples_per_source=tuples_per_source,
-                is_async=is_async,
-                output_directory=output_directory,
-                most_recent_directory=most_recent_directory,
-                load_dir=load_dir,
-                run=run,
-                continue_run=continue_run,
-                eval_by_source=eval_by_source,
-                do_check=do_check,
-                cost_log=cl,
-                simulate=simulate,
-            )
-            if stats is not None:
-                all_stats[check_name] = stats
+    for check_name in checkers.keys():
+        stats = process_check(
+            check_name=check_name,
+            checkers=checkers,
+            forecaster=forecaster,
+            num_lines=num_lines,
+            tuples_per_source=tuples_per_source,
+            is_async=is_async,
+            output_directory=output_directory,
+            most_recent_directory=most_recent_directory,
+            load_dir=load_dir,
+            run=run,
+            continue_run=continue_run,
+            eval_by_source=eval_by_source,
+            do_check=do_check,
+            cost_log=cl,
+            simulate=simulate,
+        )
+        if stats is not None:
+            all_stats[check_name] = stats
 
     # Recompute final stats
     for check_name, stats in all_stats.items():

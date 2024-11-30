@@ -33,6 +33,12 @@ def common_options(f):
             help="Forecaster to use.",
         ),
         click.option(
+            "--load",
+            type=str,
+            default=None,
+            help="Shorthand for using --load_dir and --tuple_dir to the same directory; and for evaluation, for -k to all that are present in the directory.",
+        ),
+        click.option(
             "-p",
             "--custom_path",
             type=str,
@@ -85,6 +91,7 @@ def common_options(f):
             help=f"Path to the output directory. Will default to timestamped directory in {BASE_FORECASTS_OUTPUT_PATH} otherwise",
         ),
     ]
+
     for option in reversed(options):
         f = option(f)
     return f
@@ -109,6 +116,13 @@ def parse_value(value: str) -> Any:
     value = value.strip("\"' ")
     if value.startswith("[") and value.endswith("]"):
         return [parse_value(item.strip()) for item in value[1:-1].split(",")]
+
+    # Handle boolean values
+    if value.lower() == "true":
+        return True
+    if value.lower() == "false":
+        return False
+
     try:
         return int(value)
     except ValueError:
