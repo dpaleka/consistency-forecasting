@@ -54,9 +54,8 @@ class Checker(ABC):
         self.frequentist_hparams = frequentist_hparams
         self.name = self.__class__.__name__
         if path is None:
-            self.path = get_data_path() / "tuples" / f"{self.name}.jsonl"
-        else:
-            self.path = path
+            assert False, "Tuple directory is required"
+        self.path = path
 
     def dump_config(self):
         return {

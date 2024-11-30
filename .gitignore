@@ -1,5 +1,5 @@
 # Project-specific
-src/data/test/*.jsonl
+src/data/test/*
 src/data/test/*/*.jsonl
 src/data/fq/test/*
 src/data/tuples*test/*

@@ -1,12 +1,15 @@
 """
 (1) Test consistency evaluation pipeline (per-question) end-to-end.
 
-(2) Test that LoadForecaster works on the output of a consistency evaluation pipeline. (TODO: not implemented fully yet, but we can live without it for now)
+(2) Test that LoadForecaster works on the output of a consistency evaluation pipeline.
+(3) Test LoadForecaster shorthand and skip_validation functionality.
 """
 
 import subprocess
 import pytest
 from pathlib import Path
+import json
+from src.common.path_utils import get_data_path
 
 
 def run_command(command):
@@ -114,6 +117,109 @@ def test_pipeline_end_to_end():
         run_pipeline_command(command)
 
     expected_files(test_exist=True)
+
+
+def test_load_shorthand():
+    # Create a test directory
+    temp_dir = get_data_path() / "test" / "load_forecaster_shorthand"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    expected_files = [
+        "NegChecker.jsonl",
+        "CondChecker.jsonl",
+        "stats_NegChecker.json",
+        "stats_CondChecker.json",
+        "stats_summary.json",
+    ]
+
+    print("\033[1mDeleting the following files:\033[0m")
+    for file_path in expected_files:
+        print(f"  {file_path}")
+
+    # Create a simple forecast file with P/Q format
+    simple_neg_forecasts = [
+        {
+            "line": {
+                "P": {
+                    "question": {"title": "Test Question 1 (P)"},
+                    "forecast": {"prob": 0.7},
+                },
+                "not_P": {
+                    "question": {"title": "Test Question 1 (not P)"},
+                    "forecast": {"prob": 0.3},
+                },
+            }
+        },
+        {
+            "line": {
+                "P": {
+                    "question": {"title": "Test Question 2 (P)"},
+                    "forecast": {"prob": 0.2},
+                },
+                "not_P": {
+                    "question": {"title": "Test Question 2 (not P)"},
+                    "forecast": {"prob": 0.5},
+                },
+            }
+        },
+    ]
+
+    simple_cond_forecasts = [
+        {
+            "line": {
+                "P": {
+                    "question": {"title": "Test Question 3 (P)"},
+                    "forecast": {"prob": 0.5},
+                },
+                "Q_given_P": {
+                    "question": {"title": "Test Question 3 (Q_given_P)"},
+                    "forecast": {"prob": 0.4},
+                },
+                "P_and_Q": {
+                    "question": {"title": "Test Question 3 (P_and_Q)"},
+                    "forecast": {"prob": 0.2},
+                },
+            }
+        },
+        {
+            "line": {
+                "P": {
+                    "question": {"title": "Test Question 4 (P)"},
+                    "forecast": {"prob": 0.3},
+                },
+                "Q_given_P": {
+                    "question": {"title": "Test Question 4 (Q_given_P)"},
+                    "forecast": {"prob": 0.6},
+                },
+                "P_and_Q": {
+                    "question": {"title": "Test Question 4 (P_and_Q)"},
+                    "forecast": {"prob": 0.3},
+                },
+            }
+        },
+    ]
+
+    data = {
+        "NegChecker.jsonl": simple_neg_forecasts,
+        "CondChecker.jsonl": simple_cond_forecasts,
+    }
+
+    for file_name, forecasts in data.items():
+        forecast_file = temp_dir / file_name
+        with open(forecast_file, "w") as f:
+            for forecast in forecasts:
+                f.write(json.dumps(forecast) + "\n")
+
+    # Test the --load shorthand (should work with minimal validation by default)
+    command = f"python src/evaluation.py --load {temp_dir} -t 2"
+    returncode, stdout, stderr = run_command(command)
+    print(f"STDOUT:\n{stdout}")
+    print(f"STDERR:\n{stderr}")
+    assert returncode == 0, f"Command failed with --load shorthand: {stderr}"
+
+    # Verify that specific output files were produced by the first command
+    for file in expected_files:
+        output_file = Path(temp_dir) / file
+        assert output_file.exists(), f"Expected output file {file} was not produced"
 
 
 if __name__ == "__main__":
