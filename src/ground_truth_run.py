@@ -9,9 +9,9 @@ import functools
 from tqdm import tqdm
 
 from common.path_utils import get_data_path
-from common.utils import make_json_serializable, compare_dicts
+from common.utils import make_json_serializable
 from common.llm_utils import parallelized_call, reset_global_semaphore
-from common.datatypes import ForecastingQuestion, Forecast
+from common.datatypes import ForecastingQuestion, Forecast, ForecastingQuestionForEval
 from forecasters.create import make_forecaster
 from evaluation_utils.utils import (
     create_output_directory,
@@ -39,7 +39,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 
 def make_result_dict(
-    line: dict, fq: ForecastingQuestion, forecast: Forecast, compare=True
+    line: dict, fq: ForecastingQuestion | ForecastingQuestionForEval, forecast: Forecast
 ):
     log_score = proper_score(
         probs=[forecast.prob],
@@ -52,16 +52,6 @@ def make_result_dict(
         scoring_function=scoring_functions["brier_score"],
     )
     brier_score_scaled = scale_brier_score(brier_score)
-
-    if compare:
-        assert (
-            (
-                line_fq_differences := compare_dicts(
-                    line, make_json_serializable(fq.to_dict())
-                )
-            )
-            == []
-        ), f"line and make_json_serializable(fq.to_dict()) are not equal, differences: {line_fq_differences}"
 
     return {
         "question": line,
@@ -100,7 +90,20 @@ def main(
     is_async: bool = False,
     output_dir: str | None = None,
     platt_scaling_factor: float | None = None,
+    load: str | None = None,
+    force_validate_if_loading: bool = True,
 ):
+    # Handle --load shorthand
+    if load is not None:
+        load_dir = Path(load)
+        input_file = str(Path(load) / "ground_truth_results.jsonl")
+        if not Path(input_file).exists():
+            raise click.UsageError(
+                f"No ground_truth_results.jsonl found in directory {load}"
+            )
+        run = False
+        force_validate_if_loading = False
+
     # IMPORTANT!!! If you remove this, it will prune your data down to 3 lines.
     if num_lines == -1 or not run:
         num_lines = None
@@ -203,14 +206,28 @@ def main(
         with open(input_file, "r") as f:
             lines = [json.loads(line) for line in f]
         data = [line["question"] for line in lines]
-        forecasting_questions = [
-            ForecastingQuestion.model_validate(line) for line in data
-        ]
-        forecast_data = [line["forecast"] for line in lines]
-        forecasts = [Forecast.model_validate(forecast) for forecast in forecast_data]
-        print(
-            f"Loaded {len(forecasting_questions)} forecasting questions and forecasts"
-        )
+        if force_validate_if_loading:
+            forecasting_questions = [
+                ForecastingQuestion.model_validate(line) for line in data
+            ]
+            forecast_data = [line["forecast"] for line in lines]
+            forecasts = [
+                Forecast.model_validate(forecast) for forecast in forecast_data
+            ]
+            print(
+                f"Loaded {len(forecasting_questions)} forecasting questions and forecasts"
+            )
+        else:
+            forecasting_questions = [
+                ForecastingQuestionForEval(
+                    title=line["title"], resolution=line["resolution"]
+                )
+                for line in data
+            ]
+            forecasts = [Forecast.model_validate(line["forecast"]) for line in lines]
+            print(
+                f"Loaded {len(forecasting_questions)} forecasting questions and forecasts"
+            )
 
         data, forecasting_questions, forecasts = zip(
             *[
