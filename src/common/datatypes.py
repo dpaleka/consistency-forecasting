@@ -200,6 +200,14 @@ class ForecastingQuestion(BaseModel):
 register_model_for_cache(ForecastingQuestion)
 
 
+class ForecastingQuestionForEval(BaseModel):
+    title: str
+    resolution: Optional[bool] = None
+
+
+register_model_for_cache(ForecastingQuestionForEval)
+
+
 class ForecastingQuestions(BaseModel):
     questions: list[ForecastingQuestion]
 

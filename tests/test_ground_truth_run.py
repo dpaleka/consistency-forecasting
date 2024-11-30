@@ -8,6 +8,9 @@ import subprocess
 import pytest
 from pathlib import Path
 import filecmp
+import json
+
+from common.path_utils import get_data_path
 
 
 def run_command(command):
@@ -109,6 +112,88 @@ def test_ground_truth_run(commands, output_dirs):
         run_ground_truth_command(command)
 
     expected_files(output_dirs, test_exist=True)
+
+
+def test_load_shorthand():
+    # Create a test directory
+    temp_dir = get_data_path() / "test" / "ground_truth_load_shorthand"
+    temp_dir.mkdir(parents=True, exist_ok=True)
+
+    expected_files = [
+        "ground_truth_results.jsonl",
+        "ground_truth_summary.json",
+        "calibration_plot_logit.png",
+        "calibration_plot_linear.png",
+    ]
+
+    # Delete any existing files
+    for file in expected_files:
+        (temp_dir / file).unlink(missing_ok=True)
+
+    # Create sample ground truth results
+    sample_resolutions_and_forecasts = [
+        (True, 0.7),
+        (True, 0.8),
+        (False, 0.5),
+        (False, 0.6),
+        (True, 0.3),
+        (False, 0.9),
+        (True, 0.6),
+        (True, 0.33),
+        (False, 0.38),
+        (False, 0.65),
+        (False, 0.15),
+        (True, 0.85),
+        (False, 0.45),
+        (False, 0.72),
+        (False, 0.25),
+        (False, 0.86),
+        (True, 0.5),
+        (True, 0.43),
+    ]
+    sample_titles = [
+        f"Test Question {i}" for i in range(len(sample_resolutions_and_forecasts))
+    ]
+    sample_results = [
+        {
+            "question": {
+                "title": title,
+                "resolution": resolution,
+            },
+            "forecast": {
+                "prob": prob,
+            },
+        }
+        for title, (resolution, prob) in zip(
+            sample_titles, sample_resolutions_and_forecasts
+        )
+    ]
+
+    # Write sample results to file
+    with open(temp_dir / "ground_truth_results.jsonl", "w") as f:
+        for result in sample_results:
+            f.write(json.dumps(result) + "\n")
+
+    # Test the --load shorthand
+    command = f"python src/ground_truth_run.py --load {temp_dir}"
+    returncode, stdout, stderr = run_command(command)
+    print(f"STDOUT:\n{stdout}")
+    print(f"STDERR:\n{stderr}")
+    assert returncode == 0, f"Command failed with --load shorthand: {stderr}"
+
+    # Verify that output files were produced
+    for file in expected_files:
+        output_file = Path(temp_dir) / file
+        assert output_file.exists(), f"Expected output file {file} was not produced"
+
+    # Verify the content of the summary file
+    with open(temp_dir / "ground_truth_summary.json", "r") as f:
+        summary = json.load(f)
+        assert "total_questions" in summary
+        assert summary["total_questions"] == len(sample_results)
+        assert "avg_brier_score" in summary
+        assert "avg_platt_brier_score" in summary
+        assert "tuned_brier_baseline" in summary
 
 
 if __name__ == "__main__":
