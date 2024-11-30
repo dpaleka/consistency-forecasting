@@ -1,4 +1,4 @@
-# Consistency & Forecasting
+# Development guide
 
 ## Installation requirements
 Create a virtual environment, and ensure it has Python 3.11 installed.
@@ -244,60 +244,3 @@ python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_f
 python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples_2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18
 ```
 
-## Experiments
-
-### Forecasters used for the experiments
-(Draft, for now)
-
-- `-p src/forecasters/various.py::BaselineForecaster -o p=0.4`
-- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-huge-128k-online -o model=perplexity/llama-3.1-sonar-huge-128k-online -o n_attempts=1` (with OpenRouter)
-- `-p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1` (with OpenRouter)
-- `-f BasicForecaster -o model=gpt-4o-2024-08-06`
-- `-f BasicForecaster -o model=gpt-4o-2024-05-13`
-- `-f BasicForecaster -o model=gpt-4o-mini-2024-07-18`
-- `-f BasicForecaster -o model=anthropic/claude-3.5-sonnet` (with OpenRouter)
-- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-8B-Instruct` (with OpenRouter)
-- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
-- `-f BasicForecaster -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
-- `-f CoT_ForecasterTextBeforeParsing -o model=o1-mini`
-- `-f CoT_ForecasterTextBeforeParsing -o model=o1-preview`
-- `-f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-2024-08-06`
-- `-f CoT_ForecasterTextBeforeParsing -o model=gpt-4o-mini-2024-07-18`
-- `-f CoT_ForecasterTextBeforeParsing -o model=anthropic/claude-3.5-sonnet` (with OpenRouter)
-- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-8B-Instruct` (with OpenRouter)
-- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-70B-Instruct` (with OpenRouter)
-- `-f CoT_ForecasterTextBeforeParsing -o model=meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo` (with OpenRouter)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml`](src/forecasters/forecaster_configs/advanced/cheap_haiku.yaml) (with OpenRouter)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml`](src/forecasters/forecaster_configs/advanced/cheap_gpt4o-mini.yaml)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-08-06.yaml)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml`](src/forecasters/forecaster_configs/advanced/default_gpt-4o-2024-05-13.yaml)
-- `-f AdvancedForecaster --config_path` [`src/forecasters/forecaster_configs/advanced/default_sonnet.yaml`](src/forecasters/forecaster_configs/advanced/default_sonnet.yaml) (with OpenRouter)
-- `-f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4`
-- `-f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1`
-
-"Intermediate" consistent forecasters (i.e. lower depth ones and fewer EE checks) will also be evaluated, but don't need to be run separately; we can extract their runs from the above with some logic.
-
-Forecasters that run a JSON mode call: `BasicForecaster`, `CoT_Forecaster`.
-The other forecasters ask native call(s) and then parse the answer into an output format with an LLM (or by other means, in case of `AdvancedForecaster`).
-The parsing model is always `gpt-4o-mini-2024-07-18`.
-
-### Evaluation
-
-```
-
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks NegChecker ParaphraseChecker --async #*
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[NegChecker, ParaphraseChecker]' -o depth=4 --run -n 100 --relevant_checks all --async #*
-
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
-python evaluation.py -f ConsistentForecaster -o model=gpt-4o-mini -o checks='[ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker, ExpectedEvidenceChecker]' -o depth=1 --run -n 100 --relevant_checks all --async
-```
-
-Those marked `#*` should then be evaluated with `rcf_evaluation.py`. 
-
-Presumably all the above are also exactly what we want to run ground truth evaluation on?

@@ -1,14 +1,156 @@
-Instructions for how to test your forecasting system (a function that takes in text questions and gives probabilities between 0 and 1) on our Consistency and Ground Truth benchmarks. 
+# TL;DR
 
-In the vast majority of cases, what you want to do is: 
+## Our consistency check datasets
+See [Important data files](README.md#consistency-tuple-files) for details on:
 
-1. subclass our `Forecaster` class to use your system to produce forecasts on the `ForecastingQuestion` datatype
-2. generate forecasts on our datasets in `src/data/tuples_...`
+- `tuples_2028`: consistency checks generated from the 2028 dataset
+- `tuples_scraped`: from questions scraped from the web
+- `tuples_newsapi`: questions generated from the NewsAPI
+
+## Measure consistency violations on a set of consistency checks
+Take a dataset of questions and forecast them in any way you want. Then dump the forecasts in the following format:
+```
+// Each line in the JSONL file is a JSON object with this structure:
+{
+  "line": {
+    // Keys vary by checker type
+    [component_key: string]: {
+      "question": {
+        "title": string,
+      },
+      "forecast": {
+        "prob": float,  // probability value between 0 and 1
+      }
+    }
+  }
+}
+```
+For example:
+```
+{
+    "line": {"P": {"question": {"title": "Test P"}, "forecast": {"prob": 0.7}}, "not_P": {"question": {"title": "Test not_P"}, "forecast": {"prob": 0.4}}}
+}
+```
+
+| Checker Type | Required Components |
+|--------------|-------------------|
+| NegChecker | `P`, `not_P` |
+| ParaphraseChecker | `P`, `Q` |
+| AndChecker | `P`, `Q`, `P_and_Q` |
+| OrChecker | `P`, `Q`, `P_or_Q` |
+| CondChecker | `P`, `Q_given_P`, `P_and_Q` |
+| CondCondChecker | `P`, `Q_given_P`, `R_given_P_and_Q`, `P_and_Q_and_R` |
+| AndOrChecker | `P`, `Q`, `P_and_Q`, `P_or_Q` |
+| ButChecker | `P`, `Q_and_not_P`, `P_or_Q` |
+| ConsequenceChecker | `P`, `Q`|
+| ExpectedEvidenceChecker | `P`, `Q`, `P_given_Q` , `P_given_not_Q` |
+
+
+The forecasts should be in a directory, with filenames corresponding to the checker type. Any subset of the following files is fine:
+
+```
+/path/to/forecasts/
+    /NegChecker.jsonl
+    /ParaphraseChecker.jsonl
+	/AndChecker.jsonl
+	/OrChecker.jsonl
+	/CondChecker.jsonl
+	/CondCondChecker.jsonl
+	/AndOrChecker.jsonl
+	/ButChecker.jsonl
+	/ConsequenceChecker.jsonl
+	/ExpectedEvidenceChecker.jsonl
+```
+
+Then run:
+```
+python consistency-forecasting/src/evaluation.py --load /path/to/forecasts
+```
+and look at the `stats_{CheckerType}.json` and 
+
+**This appends the consistency metrics in-place to the forecast files, without modifying the forecasts. The above command is idempotent.**
+
+## Measure forecasting accuracy on a set of questions with known resolution
+
+Evaluate on a set of questions with known resolution:
+
+The input file should be a JSONL file called `ground_truth_results.jsonl` where each line contains a JSON object with the following format:
+```json
+{
+    "question": {
+        "title": "Question title",
+        "resolution": true  // or false
+    },
+    "forecast": {
+        "prob": 0.7  // probability between 0 and 1
+    }
+}
+```
+
+Example:
+```json
+{"question": {"title": "Test Question 1", "resolution": true}, "forecast": {"prob": 0.7}}
+{"question": {"title": "Test Question 2", "resolution": false}, "forecast": {"prob": 0.5}}
+{"question": {"title": "Test Question 3", "resolution": true}, "forecast": {"prob": 0.8}}
+```
+
+Then run:
+```
+python consistency-forecasting/src/ground_truth_run.py --load /path/to/forecasts
+```
+
+**This appends the ground truth metrics in-place to the forecast files, without modifying the forecasts. The above command is idempotent.**
+
+## Create consistency checks from a set of questions
+If you have a dataset consisting of forecasting questions, and you want to generate consistency checks from them, then:
+
+- Transform it into a jsonl file where each line is a Forecasting Question (see our [scraped](src/data/fq/real/20240501_20240815.jsonl) dataset as an example) — this is critical because the instantiation process expects, and has only been optimally designed around the `ForecastingQuestion` data type.
+- Run the following to form logical tuples out of these questions:
+
+```bash
+FQ_FILE=/path/to/ForecastingQuestions.jsonl
+
+# model that generates the tuples
+MODEL_MAIN=gpt-4o-2024-08-06
+
+# model to check relevance of different questions to form tuples
+MODEL_RELEVANCE=gpt-4o-mini-2024-07-18
+
+# number of potential tuples to check if are worth making tuples of
+N_RELEVANCE=5000
+
+# number of tuples to create
+N_WRITE=500
+
+TUPLE_DIR=/dir/you/want/to/write/consistency/checks/to
+
+python consistency-forecasting/src/instantiation.py \
+--data-path FQ_FILE \
+--model_main=MODEL_MAIN \
+--model_relevance=MODEL_RELEVANCE \
+--n_relevance=N_RELEVANCE \
+--n_write=N_WRITE \
+--tuple_dir=TUPLE_DIR \
+--relevant_checks=all \
+--seed=42  
+```
+
+The parameter `--relevant_checks=all` may be replaced with a specific list of consistency checks; run `python src/instantiation.py --help` for more information.
+
+(TODO: add description of `instantiate_related` option)
+
+
+
+# Full writeup
+Here are the instructions for how to test your forecaster (a function that takes in text questions and gives probabilities between 0 and 1) on our consistency and ground truth benchmarks. 
+
+The typical usage is:
+
+1. take our datasets in `src/data/tuples_...`
+2. produce forecasts by subclassing our `Forecaster` class to use your system to produce forecasts on the `ForecastingQuestion` datatype
+  - or, dump your forecasts in the required format as described above
 3. measure and report violations.
 
-This is described under ***Typical usage***.
-
-In some situations you might also like to measure consistency violations on your own custom data set. This is described under ***Bring your own data***.
 
 
 ```bash
@@ -18,7 +160,7 @@ git clone https://github.com/dpaleka/consistency-forecasting.git
 pip install -r consistency-forecasting/requirements.txt
 ```
 
-## Typical usage
+## Implementing and evaluating a Forecaster
 
 
 1. Create a file `your_forecaster.py` like so:
@@ -45,8 +187,6 @@ class YourForecaster(Forecaster):
 
 ```bash
 TUPLE_DIR=consistency-forecasting/src/data/tuples_scraped
-# TUPLE_DIR=consistency-forecasting/src/data/tuples_newsapi
-# TUPLE_DIR=consistency-forecasting/src/data/tuples_2028
 
 FORECASTER_PATH=/path/to/your_forecaster.py
 # FORECASTER_PATH=/path/to/your_forecaster.py::YourForecaster
@@ -82,36 +222,6 @@ NUM_LINES=200 # max 242 for scraped, 1000 for newsAPI; will just generate the ma
 python consistency-forecasting/src/ground_truth_run.py --input_file FQ_FILE -p FORECASTER_PATH --num_lines 1000 --run --async --output_dir OUTPUT_DIR
 ```
 
-## Bring your own data
-
-Alternatively you might want to evaluate your forecaster for consistency on your own data. If you have a dataset consisting of forecasting questions, then:
-
-- First transform it into a jsonl file where each line is a Forecasting Question (see our [scraped](src/data/fq/real/20240501_20240815.jsonl) dataset as an example) — this is critical because the instantiation process expects, and has only been optimally designed around the `ForecastingQuestion` data type.
-- Run the following to form logical tuples out of these questions:
-
-```bash
-FQ_FILE=/path/to/ForecastingQuestions.jsonl
-
-# model that generates the tuples
-MODEL_MAIN=gpt-4o-2024-08-06
-# model that first checks if some questions are suitable to tuple up
-MODEL_RELEVANCE=gpt-4o-mini-2024-07-18
-
-# number of potential tuples to check if are worth making tuples of
-N_RELEVANCE=5000
-# number of tuples to create
-N_WRITE=500
-
-TUPLE_DIR=/dir/you/want/to/write/tuples/to
-
-python consistency-forecasting/src/instantiation.py --data-path FQ_FILE --model_main=MODEL_MAIN --model_relevance=MODEL_RELEVANCE --n_relevance=N_RELEVANCE --n_write=N_WRITE --tuple_dir=TUPLE_DIR -k all --seed=42  
-```
-
-Again, `-k all` may be replaced with a specific list of consistency checks.
-
-(TODO: add description of `instantiate_related` option)
-
-Then proceed to the Step 2 (evaluation) of “Typical usage”.
 
 ## Re-evaluation
 
