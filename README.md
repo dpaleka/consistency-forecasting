@@ -1,3 +1,9 @@
+# Usage of the benchmark
+See [USAGE.md](USAGE.md) for instructions on how to:
+1. evaluate your forecaster on our consistency benchmarks; or
+2. generate your own consistency benchmarks from a dataset of forecasting questions.
+
+
 # Development guide
 
 ## Installation requirements
@@ -20,21 +26,12 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 Copy the settings in [`.vscode/settings.example.json`](.vscode/settings.example.json) to your workspace `settings.json`,
 or just do `cp .vscode/settings.example.json .vscode/settings.json` if you have no other settings nor an existing workspace.
 
-## docs
-- [Meeting and Agenda doc](https://docs.google.com/document/d/1_amt7CQK_aadKciMJuNmedEyf07ubIAL_b5ru_mS0nw/edit)
-- [Datatypes and Pipeline doc](https://docs.google.com/document/d/19CDHfwKHfouttiXPc7UNp8iBeYE4KD3H1Hw8_kqnnL4/edit)
-- [Overleaf](https://www.overleaf.com/project/661ef8533d19f47ba8b0b3b6)
-- [Key considerations doc](https://docs.google.com/document/d/1VR39XE--JPel8dMpwnFxPhoqiMxQDzC9sDdqsjH4IoI/edit)
-- [Poster for ICML workshops](https://docs.google.com/presentation/d/1lWDL7pZcyjFtwLM6Gd9tw2uOPRyJHHoM1FLpQVDMcq8/edit#slide=id.p)
-- [April 16 writeup](https://docs.google.com/document/d/1849L5P9JNZEjBp4s4TsivJOG2iS98Ru6conx9jE0wPE/edit)
-- [Instructor vs BAML](https://docs.google.com/document/d/1x4uwVMZ9Dgf0Y6OxtKID9W-txCN7ya18z2QXWGV3rsA/edit)
 
 ## Coding guidelines
 
 ### Utils
-**Please read [LLM call utils](/src/common/README.md).**
+**Please read [LLM call utils](/src/common/README.md) and [.cursorrules](.cursorrules).**
 Feel free to add more utils in `utils.py`, `llm_utils.py`, or other files, as you need them.
-
 
 ### Running code
 The preferred way to test anything is either from `playground.py`, or creating a new file / Jupyter notebook in the `src` directory.
@@ -56,7 +53,7 @@ The following tests are skipped by default. You can run them by enabling the cor
 - [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
 - [`tests/test_verify_tuple.py`](tests/test_verify_tuple.py) checks that all consistency tuple verification works as expected. The flag is `TEST_TUPLE_VERIFICATION`.
 - [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
-- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
+- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster (ArbitrageForecaster in the paper) works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
 
 All other tests are enabled by default.
 
@@ -121,37 +118,6 @@ streamlit run feedback_form.py -- -f ../src/data/fq/synthetic/{filename}.jsonl
 ```
 It writes into `src/data/feedback/`.
 
-## Bot for the Metaculus competition
-We run the forecasters on the Metaculus [AI Forecasting Benchmark Series (July 2024)](https://www.metaculus.com/notebooks/25525/announcing-the-ai-forecasting-benchmark-series--july-8-120k-in-prizes/) (contact @amaster97 for details).
-The bot to call the forecasters is developed in `src/metaculus_competition_fast.py`.  If that doesn't "work" due to issues with concurrency, a similar fallback script `src/metaculus_competition_slow.py`
- can be substituted.  It can be run as a single job on [Modal](https://modal.com/) by doing:
-```
-python competition_bot/modal_daily_job.py
-```
-
-Furthermore, modal also allows the deployment of timed runs for the program (in this case daily).  To deploy a recurring job use:
-
-```
-modal deploy competition_bot/modal_daily_job.py
-```
-
-
-To set up, you need Modal credentials.
-Do not try to install `modal` in the main Python environment.
-Instead, make a new virtual environment and install the requirements with:
-```
-pip install -r competition_bot/modal_requirements.txt
-modal token new
-```
-and follow the instructions.
-
-In addition to the LLM API costs, each daily run costs Modal credits for the CPU time occupied. Modal gives $30 in credits to new users, and it should be enough for this competition.
-
-### Logs
-We store logs of both the question - submissions as well as any potential errors.
-In the modal app we have these stored at:
-LOG_FILE_PATH = "/mnt/logs/metaculus_submissions.log"
-ERROR_LOG_FILE_PATH = "/mnt/logs/metaculus_submission_errors.log"
 
 ## Entry points to the code
 
@@ -216,7 +182,8 @@ python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_f
 This list not include the entry points already mentioned in previous sections (feedback form, tests).
 
 ## Important data files
-### ForecastingQuestion files
+
+### ForecastingQuestion datasets
 - [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 257 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
 - [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) is close to a superset of the above, 627 questions, but not FQ-verified, and certain originally multiple-choice Metaculus question might have different wording. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
 
@@ -233,9 +200,9 @@ python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_f
 
 - [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl) is a file of 1000 synthetic ForecastingQuestions, each resolving by or in 2028, produced by [`src/generate_topic_questions.py`](src/generate_topic_questions.py). 
 
-### Consistency tuple files
+### Consistency benchmark datasets
 
-- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where the number is equal to the number of questions in the source if less than 500.
+- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where we restrict to the number of questions in the source if less than 500.
 
 - [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
 
