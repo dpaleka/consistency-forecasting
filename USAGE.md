@@ -146,7 +146,7 @@ Here are the instructions for how to test your forecaster (a function that takes
 
 The typical usage is:
 
-1. take our datasets in `src/data/tuples_...`
+1. take our datasets in `src/data/tuples/...`
 2. produce forecasts by subclassing our `Forecaster` class to use your system to produce forecasts on the `ForecastingQuestion` datatype
   - or, dump your forecasts in the required format as described above
 3. measure and report violations.
@@ -186,7 +186,7 @@ class YourForecaster(Forecaster):
 2. Evaluate its consistency on any one of the three data sets we provide (`tuples_scraped`, `tuples_newsapi`, `tuples_2028`), by running:
 
 ```bash
-TUPLE_DIR=consistency-forecasting/src/data/tuples_scraped
+TUPLE_DIR=consistency-forecasting/src/data/tuples/scraped
 
 FORECASTER_PATH=/path/to/your_forecaster.py
 # FORECASTER_PATH=/path/to/your_forecaster.py::YourForecaster

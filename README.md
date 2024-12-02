@@ -203,12 +203,12 @@ python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_f
 
 ### Consistency benchmark datasets
 
-- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where we restrict to the number of questions in the source if less than 500.
+- [`src/data/tuples/scraped/`](src/data/tuples/scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where we restrict to the number of questions in the source if less than 500.
 
-- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
+- [`src/data/tuples/newsapi/`](src/data/tuples/newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
 
-- [`src/data/tuples_2028`](src/data/tuples_2028) contains 300 tuples per check, generated from the 2028 FQs in [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl), using the following command:
+- [`src/data/tuples/2028`](src/data/tuples/2028) contains 300 tuples per check, generated from the 2028 FQs in [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl), using the following command:
 ```
-python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples_2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18
+python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples/2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18
 ```
 
