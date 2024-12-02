@@ -80,7 +80,7 @@ def main():
     parser.add_argument(
         "--tuple_dir",
         # required=True,
-        default="src/data/tuples_experiment/",
+        default="src/data/tuples/experiment/",
         help="Directory to store tuple files",
     )
 

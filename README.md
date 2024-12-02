@@ -122,7 +122,8 @@ It writes into `src/data/feedback/`.
 ## Entry points to the code
 
 - [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
-
+  - Note: verification is really aggressive (https://github.com/dpaleka/consistency-forecasting/issues/182, https://github.com/dpaleka/consistency-forecasting/issues/199), no matter the model used. It discards many questions with very slight or nonexistent flaws, with the corresponding benefit of a low false negative rate. There is no way to modify the decision boundary in the current implementation.
+  
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions, in the sense of having the correct data types. Does not write anything.
 
 - [`scripts/pipeline/scrape_question.py`](scripts/pipeline/scrape_question.py) runs pipeline to scrape a given data source for questions resolving in a given range, process and optionally verify them, and store them in `src/data/fq/real/`.  It is highly recommended to check the options given in the script before running it. Any part of this pipeline can be skipped, which is particularly useful if the data has already been scraped. Example command:
@@ -202,12 +203,12 @@ python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_f
 
 ### Consistency benchmark datasets
 
-- [`src/data/tuples_scraped/`](src/data/tuples_scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where we restrict to the number of questions in the source if less than 500.
+- [`src/data/tuples/scraped/`](src/data/tuples/scraped/) contains the tuples generated from the scraped Metaculus and Manifold FQs in [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl). There are 500 tuples per check, except for NegChecker and ParaphraseChecker, where we restrict to the number of questions in the source if less than 500.
 
-- [`src/data/tuples_newsapi/`](src/data/tuples_newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
+- [`src/data/tuples/newsapi/`](src/data/tuples/newsapi/) contains the tuples generated from the NewsAPI FQs in [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) described above. There are 500 tuples per check.
 
-- [`src/data/tuples_2028`](src/data/tuples_2028) contains 300 tuples per check, generated from the 2028 FQs in [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl), using the following command:
+- [`src/data/tuples/2028`](src/data/tuples/2028) contains 300 tuples per check, generated from the 2028 FQs in [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl), using the following command:
 ```
-python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples_2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18
+python src/instantiation.py -d src/data/fq/synthetic/questions_resolving_2028.jsonl --n_relevance=3000 --n_write=300 --seed=42 --tuple_dir=src/data/tuples/2028 -k all --model_main=gpt-4o-2024-08-06 --model_relevance=gpt-4o-mini-2024-07-18
 ```
 
