@@ -4,7 +4,6 @@
 # %%
 import os
 import logging
-import warnings
 from typing import Coroutine, Optional, List, Literal
 from openai import AsyncOpenAI, OpenAI
 import instructor
@@ -19,7 +18,6 @@ from mistralai.models.chat_completion import ChatMessage
 from anthropic import AsyncAnthropic, Anthropic
 import logfire
 from costly import CostlyResponse, costly, Costlog
-from costly.utils import CostlyWarning
 from costly.simulators.llm_simulator_faker import LLM_Simulator_Faker
 from .datatypes import (
     PlainText,
@@ -43,6 +41,9 @@ from .perscache import (
     ValueWrapperDictInspectArgs,
 )  # If no redis, use LocalFileStorage
 
+GLOBAL_COST_LOG = Costlog(mode="jsonl", discard_extras=True)
+SIMULATE = os.getenv("SIMULATE", "False").lower() == "true"
+DISABLE_COSTLY = os.getenv("DISABLE_COSTLY", "False").lower() == "true"
 
 CACHE_FLAGS = ["NO_CACHE", "NO_READ_CACHE", "NO_WRITE_CACHE", "LOCAL_CACHE"]
 print(f"LOCAL_CACHE: {os.getenv('LOCAL_CACHE')}")
@@ -58,11 +59,6 @@ os.environ.update(override_env_vars)
 
 max_concurrent_queries = int(os.getenv("MAX_CONCURRENT_QUERIES", 25))
 print(f"max_concurrent_queries set for global semaphore: {max_concurrent_queries}")
-
-if os.getenv("USE_COSTLY", "False") == "False":
-    # Set up global warning filter
-    warnings.filterwarnings("ignore", category=CostlyWarning)
-
 
 if os.getenv("OPENAI_JSON_STRICT") == "True":
     raise ValueError(
@@ -576,7 +572,7 @@ async def query_api_chat(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
-    cost_log: Costlog = None,  # need to give explicitly because of cache
+    cost_log: Costlog = GLOBAL_COST_LOG,  # need to give explicitly because of cache
     **kwargs,
 ) -> BaseModel:
     """
@@ -646,7 +642,7 @@ async def query_api_chat_native(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
-    cost_log: Costlog = None,  # need to give explicitly because of cache
+    cost_log: Costlog = GLOBAL_COST_LOG,  # need to give explicitly because of cache
     **kwargs,
 ) -> str:
     default_options = {
@@ -708,7 +704,7 @@ def query_api_chat_sync(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
-    cost_log: Costlog = None,  # need to give explicitly because of cache
+    cost_log: Costlog = GLOBAL_COST_LOG,  # need to give explicitly because of cache
     **kwargs,
 ) -> BaseModel:
     if not os.getenv("NO_CACHE"):
@@ -774,7 +770,7 @@ def query_api_chat_sync_native(
     messages: list[dict[str, str]],
     verbose=False,
     model: str | None = None,
-    cost_log: Costlog = None,  # need to give explicitly because of cache
+    cost_log: Costlog = GLOBAL_COST_LOG,  # need to give explicitly because of cache
     **kwargs,
 ) -> str:
     default_options = {
@@ -1033,7 +1029,7 @@ def answer_messages_sync(
 @costly(simulator=LLM_Simulator.simulate_llm_call)
 @logfire.instrument("query_api_text", extract_args=True)
 async def query_api_text(
-    model: str, text: str, verbose=False, cost_log: Costlog = None, **kwargs
+    model: str, text: str, verbose=False, cost_log: Costlog = GLOBAL_COST_LOG, **kwargs
 ) -> str:
     client, client_name = get_client_pydantic(model, use_async=True)
     response, completion = await client.completions.create_with_completion(
