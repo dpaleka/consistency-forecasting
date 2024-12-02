@@ -6,7 +6,6 @@ import asyncio
 from pathlib import Path
 import click
 import logging
-from costly import Costlog
 import numpy as np
 from forecasters import Forecaster
 from static_checks.Checker import (
@@ -413,12 +412,6 @@ def process_check(
     help="Compute and append violation data",
 )
 @click.option(
-    "--simulate",
-    is_flag=True,
-    default=False,
-    help="Simulate the evaluation",
-)
-@click.option(
     "--continue",
     "continue_run",
     is_flag=True,
@@ -441,7 +434,6 @@ def main(
     output_dir: str | None = None,
     eval_by_source: bool = False,
     skip_check: bool = False,
-    simulate: bool = False,
     load: str | None = None,
 ):
     do_check = not skip_check
@@ -480,7 +472,6 @@ def main(
     print(f"  is_async: {is_async}")
     print(f"  output_dir: {output_dir}")
     print(f"  tuple_dir: {tuple_dir}")
-    cl = Costlog(mode="jsonl")
 
     if run:
         forecaster_config = get_forecaster_config(config_path, forecaster_options)
@@ -551,8 +542,6 @@ def main(
             continue_run=continue_run,
             eval_by_source=eval_by_source,
             do_check=do_check,
-            cost_log=cl,
-            simulate=simulate,
         )
         if stats is not None:
             all_stats[check_name] = stats
@@ -569,12 +558,6 @@ def main(
     if run:
         all_stats["forecaster"] = forecaster.__class__.__name__
         all_stats["full_forecaster_config"] = forecaster.dump_config()
-
-    print("Cost log totals")
-    print("---------------")
-    print(cl.totals)
-    print(cl.totals_by_model)
-    print("---------------")
 
     with open(output_directory / "stats_summary.json", "w", encoding="utf-8") as f:
         json.dump(all_stats, f, indent=4)

@@ -30,7 +30,7 @@ from common.utils import (
     delist,
 )
 from common.path_utils import get_data_path
-from common.llm_utils import parallelized_call
+from common.llm_utils import parallelized_call, SIMULATE
 from .MiniInstantiator import (
     Neg,
     Or,
@@ -188,7 +188,7 @@ class Checker(ABC):
         results = await self.instantiate_with_metadata(
             base_sentences, supplied_metadata=supplied_metadata, **kwargs
         )
-        if results and not kwargs.get("simulate", False):
+        if results and not SIMULATE:
             json_list = [result.model_dump_json() for result in results]
             await write_jsonl_async_from_str(self.path, json_list, append=True)
         return results  # necessary to return for instantiate_and_write_many
@@ -209,7 +209,7 @@ class Checker(ABC):
             n_write: maximum number of tuples to actually make (usually less than len(base_sentencess)
                 because some will fail verification). If -1, will make as many as possible.
         """
-        if overwrite and not kwargs.get("simulate", False):
+        if overwrite and not SIMULATE:
             with open(self.path, "w", encoding="utf-8") as f:
                 f.write("")
 
