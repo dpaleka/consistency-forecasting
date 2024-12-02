@@ -122,7 +122,7 @@ It writes into `src/data/feedback/`.
 ## Entry points to the code
 
 - [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
-  - "verification is really aggressive, no matter the model, and it discards many questions with very slight or nonexistent flaws, with low false negative rate"
+  - Note: verification is really aggressive (https://github.com/dpaleka/consistency-forecasting/issues/182, https://github.com/dpaleka/consistency-forecasting/issues/199), no matter the model used. It discards many questions with very slight or nonexistent flaws, with the corresponding benefit of a low false negative rate. There is no way to modify the decision boundary in the current implementation.
   
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions, in the sense of having the correct data types. Does not write anything.
 
