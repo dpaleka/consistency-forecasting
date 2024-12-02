@@ -122,7 +122,8 @@ It writes into `src/data/feedback/`.
 ## Entry points to the code
 
 - [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
-
+  - "verification is really aggressive, no matter the model, and it discards many questions with very slight or nonexistent flaws, with low false negative rate"
+  
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions, in the sense of having the correct data types. Does not write anything.
 
 - [`scripts/pipeline/scrape_question.py`](scripts/pipeline/scrape_question.py) runs pipeline to scrape a given data source for questions resolving in a given range, process and optionally verify them, and store them in `src/data/fq/real/`.  It is highly recommended to check the options given in the script before running it. Any part of this pipeline can be skipped, which is particularly useful if the data has already been scraped. Example command:
