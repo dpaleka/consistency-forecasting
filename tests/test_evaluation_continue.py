@@ -57,11 +57,13 @@ def cleanup_test_output():
 
 def test_continue_feature(cleanup_test_output):
     # Step 1: Run the evaluation for a small number of lines
+    TUPLE_DIR = get_data_path() / "tuples" / "scraped"
     print(f"{TEST_OUTPUT_DIR=}")
     command1 = (
-        f"python src/evaluation.py -f BasicForecaster --run --async -n 2 "
-        f"-k NegChecker --output_dir {TEST_OUTPUT_DIR} "
-        f"-o model=gpt-4o-mini-2024-07-18"
+        "python src/evaluation.py -f BasicForecaster --run --async -n 2 "
+        f"-k NegChecker --tuple_dir {TUPLE_DIR} "
+        f"--output_dir {TEST_OUTPUT_DIR} "
+        "-o model=gpt-4o-mini-2024-07-18"
     )
     run_evaluation_command(command1)
 
@@ -75,9 +77,10 @@ def test_continue_feature(cleanup_test_output):
 
     # Step 2: Run the evaluation again with --continue flag and more lines
     command2 = (
-        f"python src/evaluation.py -f BasicForecaster --run --async --continue -n 5 "
-        f"-k NegChecker --output_dir {TEST_OUTPUT_DIR} "
-        f"-o model=gpt-4o-mini-2024-07-18"
+        "python src/evaluation.py -f BasicForecaster --run --async -n 5 "
+        f"-k NegChecker --tuple_dir {TUPLE_DIR} "
+        f"--output_dir {TEST_OUTPUT_DIR} "
+        "-o model=gpt-4o-mini-2024-07-18"
     )
     run_evaluation_command(command2)
 
