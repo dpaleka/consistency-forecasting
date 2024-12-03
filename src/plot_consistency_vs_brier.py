@@ -145,6 +145,26 @@ def parse_arguments() -> argparse.Namespace:
         default=15,
         help="Font size for the plots",
     )
+    parser.add_argument(
+        "--hide_names",
+        action="store_true",
+        help="Hide forecaster names in the plots",
+    )
+    parser.add_argument(
+        "--preview",
+        action="store_true",
+        help="Preview mode: hide all text except axis names and increase point sizes",
+    )
+    parser.add_argument(
+        "--axes",
+        type=str,
+        help='Custom axis names in format "x:name,y:name" (e.g. "x:Error,y:Consistency"). When used with --transpose, axis names are assigned before transposition.',
+    )
+    parser.add_argument(
+        "--transpose",
+        action="store_true",
+        help="Transpose the plot by swapping x and y axes. Applied after --axes, so custom axis names will also be transposed.",
+    )
     return parser.parse_args()
 
 
@@ -187,6 +207,25 @@ def load_directory_pairs(args: argparse.Namespace) -> list[ForecasterPair]:
         exit(1)
 
 
+def get_axis_names(
+    args: argparse.Namespace,
+    gt_metric_key: str,
+    cons_metric_key: str,
+) -> tuple[str, str]:
+    """Get x and y axis names based on command line args or defaults."""
+    if args.axes:
+        try:
+            # Parse the axes string (e.g. "x:Error,y:Consistency")
+            axes_dict = dict(pair.split(":") for pair in args.axes.split(","))
+            return axes_dict.get("x", gt_metric_key), axes_dict.get(
+                "y", cons_metric_key
+            )
+        except (ValueError, KeyError):
+            print("Warning: Invalid axes format. Using default names.")
+            return gt_metric_key, cons_metric_key
+    return gt_metric_key, cons_metric_key
+
+
 def plot_metrics(
     data: list[tuple[str, dict[str, float]]],
     output_dir: str,
@@ -197,9 +236,23 @@ def plot_metrics(
     remove_gt_outlier: float = None,
     remove_cons_outlier: float = None,
     fontsize: int | None = None,
+    hide_names: bool = False,
+    preview: bool = False,
+    axes: str | None = None,
+    transpose: bool = False,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    # Get axis names based on transpose setting
+    if transpose:
+        y_label, x_label = get_axis_names(
+            argparse.Namespace(axes=axes), gt_metric_key, cons_metric_key
+        )
+    else:
+        x_label, y_label = get_axis_names(
+            argparse.Namespace(axes=axes), gt_metric_key, cons_metric_key
+        )
 
     print(f"Fontsize: {fontsize}")
     # Identify all checker names
@@ -228,27 +281,49 @@ def plot_metrics(
                 if remove_cons_outlier is not None:
                     if metrics[cons_metric_label] > remove_cons_outlier:
                         continue
-                x.append(metrics[gt_metric_key])
-                y.append(metrics[cons_metric_label])
+                if transpose:
+                    y.append(metrics[gt_metric_key])
+                    x.append(metrics[cons_metric_label])
+                else:
+                    x.append(metrics[gt_metric_key])
+                    y.append(metrics[cons_metric_label])
                 labels.append(short_name)
 
         i, j = divmod(idx, 3)
         if x and y:
-            axs[i, j].scatter(x, y)
-            for idx, label in enumerate(labels):
-                axs[i, j].annotate(
-                    label,
-                    (x[idx], y[idx]),
-                    textcoords="offset points",
-                    xytext=(0, 5),
-                    ha="center",
-                )
+            # Determine point size based on preview mode
+            point_size = 100 if preview else 20
+            axs[i, j].scatter(x, y, s=point_size)
+            if not hide_names and not preview:
+                for idx, label in enumerate(labels):
+                    axs[i, j].annotate(
+                        label,
+                        (x[idx], y[idx]),
+                        textcoords="offset points",
+                        xytext=(0, 5),
+                        ha="center",
+                    )
 
-            axs[i, j].set_xlabel(f"{gt_metric_key}")
-            axs[i, j].set_ylabel(f"{cons_metric_key}")
-            axs[i, j].set_title(
-                f"{checker}.{cons_metric_type}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})"
-            )
+            axs[i, j].set_xlabel(x_label)
+            axs[i, j].set_ylabel(y_label)
+            if not preview:
+                title_parts = [
+                    checker,
+                    cons_metric_type,
+                    cons_metric_key,
+                    "vs",
+                    gt_metric_key,
+                ]
+                if transpose:
+                    # Swap the order in the title when transposed
+                    title_parts = [
+                        checker,
+                        gt_metric_key,
+                        "vs",
+                        cons_metric_type,
+                        cons_metric_key,
+                    ]
+                axs[i, j].set_title(f"{'.'.join(title_parts)} ({dataset_key})")
             axs[i, j].grid(False)
 
             z = np.polyfit(x, y, 1)
@@ -256,39 +331,70 @@ def plot_metrics(
             axs[i, j].plot(x, p(x), "r--", alpha=0.8)
 
             correlation = np.corrcoef(x, y)[0, 1]
-            axs[i, j].text(
-                0.05,
-                0.95,
-                f"Correlation: {correlation:.2f}",
-                transform=axs[i, j].transAxes,
-            )
+            if not preview:
+                axs[i, j].text(
+                    0.05,
+                    0.95,
+                    f"Correlation: {correlation:.2f}",
+                    transform=axs[i, j].transAxes,
+                )
+
+            if preview:
+                # Remove ticks in preview mode
+                axs[i, j].set_xticks([])
+                axs[i, j].set_yticks([])
 
             # Now the mini figure
             plt.figure(figsize=(12, 8))
-            plt.scatter(x, y)
+            plt.scatter(x, y, s=point_size)
             texts = []
-            for idx, label in enumerate(labels):
-                texts.append(plt.text(x[idx], y[idx], label, fontsize=fontsize))
+            if not hide_names and not preview:
+                for idx, label in enumerate(labels):
+                    texts.append(plt.text(x[idx], y[idx], label, fontsize=fontsize))
 
             plt.plot(x, p(x), "r-", alpha=0.3)
-            plt.text(
-                0.05,
-                0.95,
-                f"Correlation: {correlation:.2f}",
-                transform=plt.gca().transAxes,
-                fontsize=fontsize,
-            )
-            plt.xlabel(f"{gt_metric_key}", fontsize=fontsize)
-            plt.ylabel(f"{cons_metric_key}", fontsize=fontsize)
-            figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
-            plt.title(
-                f"{checker}.{rename_cons_metric_type(cons_metric_type)}.{cons_metric_key} vs {gt_metric_key} ({dataset_key})",
-                fontsize=fontsize,
-            )
+            if not preview:
+                plt.text(
+                    0.05,
+                    0.95,
+                    f"Correlation: {correlation:.2f}",
+                    transform=plt.gca().transAxes,
+                    fontsize=fontsize,
+                )
+            plt.xlabel(x_label, fontsize=fontsize)
+            plt.ylabel(y_label, fontsize=fontsize)
+            if not preview:
+                title_parts = [
+                    checker,
+                    cons_metric_type,
+                    cons_metric_key,
+                    "vs",
+                    gt_metric_key,
+                ]
+                if transpose:
+                    # Swap the order in the title when transposed
+                    title_parts = [
+                        checker,
+                        gt_metric_key,
+                        "vs",
+                        cons_metric_type,
+                        cons_metric_key,
+                    ]
+                title_str = ".".join(title_parts)
+                figure_name = f"{title_str}_{dataset_key}.png"
+                plt.title(
+                    f"{title_str} ({dataset_key})",
+                    fontsize=fontsize,
+                )
+            else:
+                figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}_preview.png"
+                plt.xticks([])
+                plt.yticks([])
             plt.grid(False)
 
-            # Use adjust_text to prevent overlapping labels
-            adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.5))
+            # Use adjust_text to prevent overlapping labels if names are shown
+            if not hide_names and not preview:
+                adjust_text(texts, arrowprops=dict(arrowstyle="-", color="k", lw=0.5))
 
             plt.savefig(
                 os.path.join(
@@ -332,9 +438,16 @@ def plot_bar_chart(
     cons_metric_type: str,
     cons_metric_key: str,
     remove_cons_outlier: float = None,
+    hide_names: bool = False,
+    preview: bool = False,
+    axes: str | None = None,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    _, y_label = get_axis_names(
+        argparse.Namespace(axes=axes), "Forecasters", cons_metric_key
+    )
 
     for checker in tqdm(checker_names, desc="Plotting bar charts"):
         labels = []
@@ -355,17 +468,19 @@ def plot_bar_chart(
                 f"{checker}_bar_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
             )
             plt.figure(figsize=(12, 8))
-            plt.bar(labels, values)
-            plt.xlabel("Forecasters", fontsize=20)  # Increased font size
-            plt.ylabel(f"{cons_metric_key}", fontsize=20)  # Increased font size
-            plt.title(
-                f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})",
-                fontsize=20,
-            )  # Increased font size
-            plt.xticks(
-                rotation=0, fontsize=20
-            )  # Changed rotation to 0 and increased font size
-            plt.yticks(fontsize=20)  # Increased font size
+            plt.bar(range(len(values)), values)
+            if not hide_names and not preview:
+                plt.xticks(range(len(labels)), labels, rotation=0, fontsize=20)
+            else:
+                plt.xticks([])
+            if preview:
+                plt.yticks([])
+            plt.ylabel(y_label, fontsize=20)  # Keep axis names
+            if not preview:
+                plt.title(
+                    f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})",
+                    fontsize=20,
+                )
             plt.tight_layout()
             plt.savefig(
                 os.path.join(
@@ -393,9 +508,16 @@ def plot_gt_bar_chart(
     dataset_key: str,
     gt_metric_key: str,
     remove_gt_outlier: float = None,
+    hide_names: bool = False,
+    preview: bool = False,
+    axes: str | None = None,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    _, y_label = get_axis_names(
+        argparse.Namespace(axes=axes), "Forecasters", gt_metric_key
+    )
 
     labels = []
     values = []
@@ -409,16 +531,18 @@ def plot_gt_bar_chart(
 
     if labels and values:
         plt.figure(figsize=(12, 8))
-        plt.bar(labels, values)
-        plt.xlabel("Forecasters", fontsize=16)  # Increased font size
-        plt.ylabel(f"{gt_metric_key}", fontsize=16)  # Increased font size
-        plt.title(
-            f"Ground Truth Metric: {gt_metric_key} ({dataset_key})", fontsize=20
-        )  # Increased font size
-        plt.xticks(
-            rotation=0, fontsize=20
-        )  # Changed rotation to 0 and increased font size
-        plt.yticks(fontsize=20)  # Increased font size
+        plt.bar(range(len(values)), values)
+        if not hide_names and not preview:
+            plt.xticks(range(len(labels)), labels, rotation=0, fontsize=20)
+        else:
+            plt.xticks([])
+        if preview:
+            plt.yticks([])
+        plt.ylabel(y_label, fontsize=16)  # Keep axis names
+        if not preview:
+            plt.title(
+                f"Ground Truth Metric: {gt_metric_key} ({dataset_key})", fontsize=20
+            )
         plt.tight_layout()
         plt.savefig(
             os.path.join(
@@ -466,6 +590,10 @@ def main() -> None:
             remove_gt_outlier=args.remove_gt_outlier,
             remove_cons_outlier=args.remove_cons_outlier,
             fontsize=args.fontsize,
+            hide_names=args.hide_names,
+            preview=args.preview,
+            axes=args.axes,
+            transpose=args.transpose,
         )
     elif args.plot_type == "bar":
         plot_bar_chart(
@@ -475,6 +603,9 @@ def main() -> None:
             cons_metric_type=args.cons_metric_type,
             cons_metric_key=args.cons_metric,
             remove_cons_outlier=args.remove_cons_outlier,
+            hide_names=args.hide_names,
+            preview=args.preview,
+            axes=args.axes,
         )
     elif args.plot_type == "gt_bar":
         plot_gt_bar_chart(
@@ -483,6 +614,9 @@ def main() -> None:
             dataset_key=args.dataset,
             gt_metric_key=args.gt_metric,
             remove_gt_outlier=args.remove_gt_outlier,
+            hide_names=args.hide_names,
+            preview=args.preview,
+            axes=args.axes,
         )
 
 
