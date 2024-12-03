@@ -14,6 +14,12 @@ from common.datatypes import ResolverOutput
 load_dotenv()
 
 
+pytest.mark.expensive = pytest.mark.skipif(
+    os.getenv("TEST_PERPLEXITY_RESOLVER", "False").lower() == "false",
+    reason="Skipping expensive perplexity resolver tests",
+)
+
+
 def og_use_openrouter():
     """
     Returns None if OPENROUTER_API_KEY is not available
@@ -55,6 +61,7 @@ def test_parse_xml_resolver_output_failure():
         parse_xml_resolver_output(test_input)
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_resolve_question_with_malformed_xml():
     original_use_openrouter = og_use_openrouter()
@@ -98,6 +105,7 @@ something
     os.environ["USE_OPENROUTER"] = original_use_openrouter
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_resolve_true_question():
     original_use_openrouter = og_use_openrouter()
@@ -121,7 +129,7 @@ This question will resolve Yes if Ireland wins 4 or more gold medals at the 2024
     # weaker assertions, it's an online model
     assert (
         result.can_resolve_question is True
-    ), "Our Perplexity pipeline thinks it can't resolve the question. This could be a bug, but can sometimes happen through no fault of our own because their model is online and performance varies."
+    ), "Our Perplexity pipeline did not find a resolution to the question. This could be a bug, but can sometimes happen through no fault of our own, because the model is online, the internals might be updated, and performance varies."
     assert (
         result.answer is True
     ), "Our Perplexity pipeline resolved the question incorrectly. This is bad."
@@ -129,6 +137,7 @@ This question will resolve Yes if Ireland wins 4 or more gold medals at the 2024
     os.environ["USE_OPENROUTER"] = original_use_openrouter
 
 
+@pytest.mark.expensive
 @pytest.mark.asyncio
 async def test_resolve_false_question():
     original_use_openrouter = og_use_openrouter()
@@ -148,7 +157,7 @@ This question will resolve Yes if Ireland wins 6 or more gold medals at the 2024
 
     assert (
         result.can_resolve_question is True
-    ), "Our Perplexity pipeline can't resolve the question. This could be a bug, but can sometimes happen through no fault of our own because their model is online and performance varies."
+    ), "Our Perplexity pipeline did not find a resolution to the question. This could be a bug, but can sometimes happen through no fault of our own, because the model is online, the internals might be updated, and performance varies."
     assert (
         result.answer is False
     ), "Our Perplexity pipeline resolved the question incorrectly. This is bad."
