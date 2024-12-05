@@ -18,6 +18,7 @@ src/*see_eval.txt
 *.log
 .costly/
 src/.costly/
+tests/fixtures/vcr_cassettes/
 
 .vscode/settings.json
 .vscode/launch.json
