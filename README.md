@@ -1,10 +1,14 @@
 # Usage of the benchmark
 See [USAGE.md](USAGE.md) for instructions on how to:
-1. evaluate your forecaster on our consistency benchmarks; or
+1. evaluate your AI forecasters on our consistency benchmarks; or
 2. generate your own consistency benchmarks from a dataset of forecasting questions.
+
+# Download the datasets
+The datasets used in the paper are also available on Hugging Face: [dpaleka/ccflmf](https://huggingface.co/datasets/dpaleka/ccflmf).
 
 
 # Development guide
+Note: this section is for if you want to extend or use our codebase in a way other than evaluating your LLM forecaster on the consistency benchmarks.
 
 ## Installation requirements
 Create a virtual environment, and ensure it has Python 3.11 installed.
@@ -25,6 +29,7 @@ Then, create your `.env` based on [`.env.example`](.env.example). By default, us
 ### VS Code / Cursor settings
 Copy the settings in [`.vscode/settings.example.json`](.vscode/settings.example.json) to your workspace `settings.json`,
 or just do `cp .vscode/settings.example.json .vscode/settings.json` if you have no other settings nor an existing workspace.
+Optionally, append the contents of `.cursorrules` to your LLM coding instructions.
 
 
 ## Coding guidelines
@@ -34,13 +39,13 @@ or just do `cp .vscode/settings.example.json .vscode/settings.json` if you have 
 Feel free to add more utils in `utils.py`, `llm_utils.py`, or other files, as you need them.
 
 ### Running code
-The preferred way to test anything is either from `playground.py`, or creating a new file / Jupyter notebook in the `src` directory.
+The preferred way to test functionality is via a test in `tests/`,  or creating a new file / Jupyter notebook in the `src` directory.
 Do not create scripts in subfolders of the `src` directory.
 Do not run files with actual logic (e.g. anything in `static_checks/` ) directly; this runs into Python import / path issues.
 
 ### Testing Before Submitting PRs
 Before submitting a pull request that deals with the core code in `src/`, please ensure that you run the test suite to check that your changes do not break any existing functionality. 
-You can run the tests with the following command from the root directory of the project:
+You can rerun the tests with the following command from the root directory of the project:
 ```
 NO_CACHE=True python -m pytest -s
 ```
@@ -52,8 +57,9 @@ The following tests are skipped by default. You can run them by enabling the cor
 
 - [`tests/test_verify_question.py`](tests/test_verify_question.py) checks that ForecastingQuestion verification works as expected. The flag is `TEST_FQ_VERIFICATION`.
 - [`tests/test_verify_tuple.py`](tests/test_verify_tuple.py) checks that all consistency tuple verification works as expected. The flag is `TEST_TUPLE_VERIFICATION`.
-- [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that AdvancedForecaster works as expected. The flag is `TEST_ADV_FORECASTER`.
-- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster (ArbitrageForecaster in the paper) works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
+- [`tests/test_adv_forecaster.py`](tests/test_adv_forecaster.py) checks that AdvancedForecaster (from [Halawi et al. 2024](https://arxiv.org/abs/2402.18563)) works as expected. The flag is `TEST_ADV_FORECASTER`.
+- [`tests/test_consistent_forecaster.py`](tests/test_consistent_forecaster.py) checks that ConsistentForecaster (called ArbitrageForecaster in the paper) works as expected. The flag is `TEST_CONSISTENT_FORECASTER`.
+- [`tests/test_perplexity_resolver.py`](tests/test_perplexity_resolver.py) checks that the automated Perplexity resolver of questions works as expected. The flag is `TEST_PERPLEXITY_RESOLVER`.
 
 All other tests are enabled by default.
 
@@ -69,16 +75,19 @@ import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 ```
 
 ### Validation of data
-(Note: *validation* is about data format, *verification* is about the semantics of the data.)
+(Note: in our terminology, *validation* is about data format, *verification* is about the semantics of the data.)
 
 Our base data directory is `src/data/`. Inside this, we have the following schema:
 ```
 src/data
 ├── fq
-│  ├── real             # ForecastingQuestions made from real scraped data. Formatting validated upon commit.
+│  ├── real             # ForecastingQuestions made from scraped Manifold and Metaculus questions. Formatting validated upon commit.
 │  └── synthetic        # ForecastingQuestions made from synthetic data. Formatting validated upon commit.
 ├── feedback            # Feedback data on real and synhetic questions. TODO Validate upon commit.
-├── tuple*              # Tuples of (question, answer) pairs. Formatting validated upon commit. TODO we need to expand this section and clean up where tuples go.
+├── tuples              # Consistency checks, consisting of named dicts of ForecastingQuestions. Formatting validated upon commit. 
+│   |- scraped           # From FQs scraped from Manifold and Metaculus.
+│   |- newsapi           # From news-generated synthetic FQs.
+│   |- 2028              # From synthetic FQs resolving in 2028.
 ├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated. TODO move some stuff out of here to somewhere where it makes sense.
 ├── check_tuple_logs    # Where forecasting of the already instantiated consistency checks + violation is logged. In .gitignore, do not commit. 
 ├── forecasts           # Where forecast results on tuples are saved. Not validated. Commit only full-fledged experimental results.
@@ -92,7 +101,6 @@ This schema is not final. In particular:
 
 TODO we need to fix this schema, too many things are in `data/other`.
 
-Please install `pre-commit`, so the validation hooks in `hooks/` can check that all data in the validated directories is in the correct format.
 The script that validates the data is [`hooks/validate_jsonls.py`](hooks/validate_jsonls.py). The pre-commit hooks runs this on everything that is changed in the commit. 
 To validate all data outside of the pre-commit hook process, execute the following command:
 ```
@@ -185,8 +193,8 @@ This list not include the entry points already mentioned in previous sections (f
 ## Important data files
 
 ### ForecastingQuestion datasets
-- [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 257 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
-- [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) is close to a superset of the above, 627 questions, but not FQ-verified, and certain originally multiple-choice Metaculus question might have different wording. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
+- [`src/data/fq/real/20240501_20240815.jsonl`](src/data/fq/real/20240501_20240815.jsonl) is a file of 242 scraped and FQ-verified questions from Manifold and Metaculus that were both scheduled to resolve *and* actually resolved between May 1, 2024 and August 15, 2024, inclusive.
+- [`src/data/fq/real/20240501_20240815_unverified.jsonl`](src/data/fq/real/20240501_20240815_unverified.jsonl) has 627 questions, but not FQ-verified. Certain originally multiple-choice Metaculus questions might have different wording in here and in the above file. May contain weird questions that are not answerable from general world knowledge, such as meta-questions about prediction markets, or joke questions.
 
 - [`src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl`](src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl) is a file of 2621 synthetic ForecastingQuestions generated from NewsAPI data and reference spanning, using gpt-4o and claude-3.5-sonnet, between July 1, 2024 and August 31, 2024, inclusive. The resolutions are all produced by the Perplexity resolver using the command:
 ```
@@ -199,7 +207,7 @@ and then merged using [`src/merge_fq_files.py`](src/merge_fq_files.py).
 python src/filter_fqs.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831_gpt-4o_spanned_resolved.jsonl --output_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --filter_score original --only_preference --random_sample 1000 
 ```
 
-- [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl) is a file of 1000 synthetic ForecastingQuestions, each resolving by or in 2028, produced by [`src/generate_topic_questions.py`](src/generate_topic_questions.py). 
+- [`src/data/fq/synthetic/questions_resolving_2028.jsonl`](src/data/fq/synthetic/questions_resolving_2028.jsonl) is a file of 900 FQ-verified synthetic ForecastingQuestions, each resolving by or in 2028, produced by [`src/generate_topic_questions.py`](src/generate_topic_questions.py). 
 
 ### Consistency benchmark datasets
 
