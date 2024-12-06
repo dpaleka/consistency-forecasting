@@ -9,9 +9,12 @@ The datasets used in the paper are also available on Hugging Face: [dpaleka/ccfl
 
 # Development guide
 Note: this section is for if you want to extend or use our codebase in a way other than evaluating your LLM forecaster on the consistency benchmarks.
+In case you just want to evaluate your forecaster, see [USAGE.md](USAGE.md).
 
 ## Installation requirements
-Create a virtual environment, and ensure it has Python 3.11 installed.
+We use `uv` to manage our Python environment. In case you use something else, just remove the `uv` prefix from any commands below.
+
+[Create a virtual environment](https://docs.astral.sh/uv/pip/environments/), and ensure it has Python 3.11 installed.
 
 ```python
 import sys
@@ -20,11 +23,13 @@ assert sys.version_info[:2] == (3, 11), "Python 3.11 is required."
 
 Then do:
 ```
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 pre-commit install
 ```
 
-Then, create your `.env` based on [`.env.example`](.env.example). By default, use `NO_CACHE=True`.
+
+Then, create your `.env` based on [`.env.example`](.env.example). By default, use `NO_CACHE=True`. If you want to reuse LLM calls, set `NO_CACHE=False` and e.g. `LOCAL_CACHE=.cache`.
+
 
 ### VS Code / Cursor settings
 Copy the settings in [`.vscode/settings.example.json`](.vscode/settings.example.json) to your workspace `settings.json`,
@@ -49,8 +54,10 @@ You can rerun the tests with the following command from the root directory of th
 ```
 NO_CACHE=True python -m pytest -s
 ```
-This will run all tests located in the `tests/` directory. Please fix any failing tests before submitting your PR.
+This will run all tests located in the `tests/` directory. 
 As `pytest` also runs all files named `test_*.py` or `*_test.py`, please do not name anything in `src/` like this if you don't think it should run on every PR.
+If you want to reuse the LLM calls you made in a previous test run, use the `LOCAL_CACHE=cache_dir` flag.
+Please fix any failing tests before submitting your PR.
 
 #### Skipping tests
 The following tests are skipped by default. You can run them by enabling the corresponding flags:
@@ -102,21 +109,20 @@ This schema is not final. In particular:
 TODO we need to fix this schema, too many things are in `data/other`.
 
 The script that validates the data is [`hooks/validate_jsonls.py`](hooks/validate_jsonls.py). The pre-commit hooks runs this on everything that is changed in the commit. 
-To validate all data outside of the pre-commit hook process, execute the following command:
+To validate all data without running pre-commit, execute the following command:
 ```
 VALIDATE_ALL=True python hooks/validate_jsonls.py
 ```
 
 
-
 ## Labeling tool for questions
 The streamlit app [`data_labeling/feedback_form.py`](data_labeling/feedback_form.py) is used to label questions.
 Do not try to install its dependencies in the main Python environment.
-Instead, make a new virtual environment and install the requirements with:
+The simplest way to run the labeling tool is to create a new virtual environment and install the requirements with:
 ```
-pip install -r data_labeling/streamlit_requirements.txt
+uv pip install -r data_labeling/streamlit_requirements.txt
 ```
-Alternatively, for now you can use [pipx](https://github.com/pypa/pipx), run `pipx install streamlit`, and continue to use the Python environment you have been using so far.
+Alternatively, you can use [pipx](https://github.com/pypa/pipx), run `pipx install streamlit`, and continue to use the Python environment you have been using so far.
 
 
 The feedback form app can be run with:
@@ -129,8 +135,8 @@ It writes into `src/data/feedback/`.
 
 ## Entry points to the code
 
-- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Thus, this should always be run on files containing a valid subset of ForecastingQuestion entries; it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *It is mandatory to read and understand all flags before running this script*. Writes to `src/data/fq/{appropiate_dir}...`
-  - Note: verification is really aggressive (https://github.com/dpaleka/consistency-forecasting/issues/182, https://github.com/dpaleka/consistency-forecasting/issues/199), no matter the model used. It discards many questions with very slight or nonexistent flaws, with the corresponding benefit of a low false negative rate. There is no way to modify the decision boundary in the current implementation.
+- [`src/format_and_verify_questions.py`](src/format_and_verify_questions.py) reads from a file with (potentially incomplete) ForecastingQuestions, optionally fills `body` and `resolution_date`, and verifies basic sanity checks on the `body` using a LLM call. It raises a ValidationError if the file contains incorrect data types, e.g. an invalid JSONL, or incorrect datetime for `resolution_date`, or non-string types where strings are needed. Hence, this script should always be run on files containing a valid subset of ForecastingQuestion entries, because it won't fix any formatting errors except missing `body` and `resolution_date` fields. If you want it to fill in the body (resolution criteria), use the `--fill_in_body` flag. *Please read and understand all the flags before running the script*. Writes to `src/data/fq/{appropriate_dir}...`
+  - Note: verification is really aggressive (https://github.com/dpaleka/consistency-forecasting/issues/182, https://github.com/dpaleka/consistency-forecasting/issues/199), no matter the model used. It discards many questions with very slight or nonexistent flaws, with the corresponding benefit of a low false negative rate. There is no way to move the decision boundary in the current implementation.
   
 - [`src/validate_fq_jsonl.py`](src/validate_fq_jsonl.py) Validates that a JSONL file contains only valid ForecastingQuestions, in the sense of having the correct data types. Does not write anything.
 
