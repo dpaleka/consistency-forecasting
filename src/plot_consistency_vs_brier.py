@@ -10,7 +10,10 @@ from adjustText import adjust_text
 from forecaster_metrics import (
     ForecasterPair,
     load_dataset_directory_pairs,
-    extract_all_metrics,
+    load_json_file,
+    get_brier_score_metrics,
+    get_consistency_metrics,
+    get_consistency_metric_types,
     get_cons_metric_label,
 )
 
@@ -164,6 +167,10 @@ def parse_arguments() -> argparse.Namespace:
         "--transpose",
         action="store_true",
         help="Transpose the plot by swapping x and y axes. Applied after --axes, so custom axis names will also be transposed.",
+    )
+    parser.add_argument(
+        "--consistency_csv",
+        help="Path to CSV file containing consistency scores in format: short_name,score",
     )
     return parser.parse_args()
 
@@ -558,9 +565,127 @@ def plot_gt_bar_chart(
         plt.close()
 
 
+def load_consistency_scores(csv_path: str) -> dict[str, float]:
+    """Load consistency scores from a CSV file."""
+    import csv
+
+    scores = {}
+    with open(csv_path, "r") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            if len(row) != 2:
+                continue
+            short_name, score = row
+            try:
+                scores[short_name] = float(score)
+            except ValueError:
+                continue
+    return scores
+
+
+def extract_all_metrics(
+    forecaster_pair: ForecasterPair, csv_scores: dict[str, float] | None = None
+) -> dict[str, float] | None:
+    """Extract all metrics for a forecaster pair, optionally using CSV scores for consistency."""
+    # If we're using CSV scores and this forecaster isn't in them, skip it
+    if csv_scores is not None and forecaster_pair["short_name"] not in csv_scores:
+        return None
+
+    ground_truth_path = (
+        os.path.join(forecaster_pair["ground_truth_dir"], "ground_truth_summary.json")
+        if forecaster_pair["ground_truth_dir"] is not None
+        else None
+    )
+
+    stats_path = os.path.join(forecaster_pair["eval_dir"], "stats_summary.json")
+
+    # Always load ground truth data for Brier scores
+    ground_truth_data = load_json_file(ground_truth_path)
+
+    metrics = {}
+
+    # Add ground truth metrics
+    for brier_metric in get_brier_score_metrics():
+        metrics[brier_metric] = (
+            ground_truth_data.get(brier_metric, 0.0)
+            if ground_truth_data is not None
+            else None
+        )
+
+    # If we have CSV scores, use those scores
+    if csv_scores is not None:
+        score = csv_scores[forecaster_pair["short_name"]]
+        for checker in checker_names:
+            for metric_type in get_consistency_metric_types():
+                for metric in get_consistency_metrics():
+                    key = get_cons_metric_label(checker, metric_type, metric)
+                    metrics[key] = score
+        return metrics
+
+    # Otherwise use the original extraction logic for consistency metrics
+    stats_data = load_json_file(stats_path)
+    if not stats_data:
+        print(f"Warning: Missing or empty data for {forecaster_pair['eval_dir']}")
+        return metrics if metrics else None
+
+    if isinstance(stats_data, dict):
+        for checker, data in stats_data.items():
+            if checker in ["forecaster", "full_forecaster_config"]:
+                continue
+            elif checker == "aggregated":
+                overall = data
+            elif isinstance(data, dict):
+                overall = data.get("overall", {})
+
+            for metric_type in get_consistency_metric_types():
+                metric_dict = overall.get(metric_type, {})
+                for cons_metric in get_consistency_metrics():
+                    if cons_metric == "frac_violations":
+                        value = (
+                            metric_dict.get("num_violations", 0)
+                            / metric_dict.get("num_samples", 1)
+                            if metric_dict.get("num_samples")
+                            else None
+                        )
+                    else:
+                        value = metric_dict.get(cons_metric)
+                    if value is not None:
+                        label = get_cons_metric_label(checker, metric_type, cons_metric)
+                        metrics[label] = value
+
+    return metrics
+
+
 def main() -> None:
     args = parse_arguments()
     directory_pairs = load_directory_pairs(args)
+
+    # Print all forecaster names we're looking for
+    print("\nLooking for scores for these forecasters:")
+    for pair in directory_pairs:
+        print(f"  {pair['short_name']}")
+    print()
+
+    # Load CSV scores if provided
+    csv_scores = None
+    if args.consistency_csv:
+        csv_scores = load_consistency_scores(args.consistency_csv)
+        if not csv_scores:
+            print("Warning: No valid scores found in CSV file")
+        else:
+            # Print which forecasters are missing from CSV
+            missing_forecasters = [
+                pair["short_name"]
+                for pair in directory_pairs
+                if pair["short_name"] not in csv_scores
+            ]
+            if missing_forecasters:
+                print(
+                    "Warning: The following forecasters are missing from the CSV file:"
+                )
+                for name in missing_forecasters:
+                    print(f"  {name}")
+                print()
 
     metrics_data = []
     for forecaster_pair in directory_pairs:
@@ -571,13 +696,19 @@ def main() -> None:
                 f"Warning: {forecaster_pair['ground_truth_dir']} or {forecaster_pair['eval_dir']} is not a directory. Skipping."
             )
             continue
-        metrics = extract_all_metrics(forecaster_pair)
+        metrics = extract_all_metrics(forecaster_pair, csv_scores)
         if metrics:
             metrics_data.append((forecaster_pair["short_name"], metrics))
 
     if not metrics_data:
         print("No valid metric data found. Exiting.")
         exit(1)
+
+    # Print which forecasters we're actually using
+    print(f"\nUsing data for {len(metrics_data)} forecasters:")
+    for name, _ in metrics_data:
+        print(f"  {name}")
+    print()
 
     if args.plot_type == "correlation":
         plot_metrics(
