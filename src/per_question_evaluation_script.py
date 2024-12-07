@@ -18,7 +18,7 @@ def main():
         "-t",
         "--tuple_dir",
         # required=True,
-        default="src/data/tuples/experiment/",
+        default="src/data/tuples/per-question-experiment/",
         help="Directory with tuple files",
     )
 
