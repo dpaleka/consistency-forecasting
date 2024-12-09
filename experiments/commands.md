@@ -578,43 +578,11 @@ USE_OPENROUTER=True python src/ground_truth_run.py --input_file src/data/fq/real
 USE_OPENROUTER=True python src/evaluation.py --tuple_dir src/data/tuples/scraped/ -p src/forecasters/various.py::ResolverBasedForecaster -o resolver_model=perplexity/llama-3.1-sonar-large-128k-online -o model=perplexity/llama-3.1-sonar-large-128k-online -o n_attempts=1 -k all --num_lines 500 --run --async
 ```
 
-## PromptedToCons_Forecaster jobs
-
-### PromptedToCons_Forecaster with gpt-4o-mini-2024-07-18 model
-- [x] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/real/20240501_20240815.jsonl --num_lines 100 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815
-```
--> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240501_20240815/ground_truth_summary.json)
-
-- [x] evaluation
-```
-OUTPUT_DIRNAME="PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples/scraped --num_lines 100 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
--> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_scraped/stats_summary.json)
-
-
-
-### PromptedToCons_Forecaster with gpt-4o-mini-2024-07-18 model
-- [] ground_truth_run
-```
-python src/ground_truth_run.py --input_file src/data/fq/synthetic/news_api_generated_fqs/20240701_20240831.jsonl --num_lines 1000 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 --output_dir src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831
-```
--> [`src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json`](src/data/forecasts/PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_20240701_20240831/ground_truth_summary.json)
-
-- [ ] evaluation
-```
-OUTPUT_DIRNAME="PromptedToCons_Forecaster_gpt4o_mini_2024-07-18_tuples_newsapi"
-USE_OPENROUTER=False python src/evaluation.py --tuple_dir src/data/tuples/newsapi --num_lines 300 --run --async -f PromptedToCons_Forecaster -o model=gpt-4o-mini-2024-07-18 -k all --output_dir src/data/forecasts/$OUTPUT_DIRNAME 2>&1 | tee logs/{$OUTPUT_DIRNAME}_$(date +%Y%m%d_%H%M).log || true
-```
 
 
 
 
-## TODO: ConsistentForecaster jobs
-
-## Per Question Evaluation
+## Per Question Evaluation (not in the paper)
 Step 1: Question Generation, Tuple Instantiation. Do this by running per_question_instantiation_script.py
 
 ```python src/per_question_instantiation_script.py --input_file src/data/fq/real/20240501_20240815.jsonl --tuple_dir src/data/tuples/per-question-experiment/ --num_source 3 --related_questions 7```
@@ -632,4 +600,4 @@ Output directory has normal stats for each checker (which includes model forecas
 and stats_by_source_question.json, and per_question_consistency.jsonl.
 - avg_violation for each question is normalized by checker and number of samples, such that each checker is given equal weight regardless of how many samples it has. Note that we ensure each checker has at least 1 sample during instantiation.
 - weighted_violations is the average rate of violations for each check, so this is also normalized by the total number of samples and number of samples per checker.
-Adjust input argumnets for per_question_evaluation_script.py as needed for other models, same usage as evaluation.py
+Adjust input arguments for per_question_evaluation_script.py as needed for other models, same usage as evaluation.py

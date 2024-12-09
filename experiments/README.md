@@ -1,0 +1,1 @@
+The commands in this directory are supposed to be run from the source of the repository.
