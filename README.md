@@ -88,25 +88,19 @@ Our base data directory is `src/data/`. Inside this, we have the following schem
 ```
 src/data
 ├── fq
-│  ├── real             # ForecastingQuestions made from scraped Manifold and Metaculus questions. Formatting validated upon commit.
-│  └── synthetic        # ForecastingQuestions made from synthetic data. Formatting validated upon commit.
+│  ├── real             # ForecastingQuestions (FQs) made from scraped Manifold and Metaculus questions. Formatting validated upon commit.
+│  └── synthetic        # ForecastingQuestions (FQs) made from synthetic data. Formatting validated upon commit.
 ├── feedback            # Feedback data on real and synhetic questions. TODO Validate upon commit.
 ├── tuples              # Consistency checks, consisting of named dicts of ForecastingQuestions. Formatting validated upon commit. 
 │   |- scraped           # From FQs scraped from Manifold and Metaculus.
 │   |- newsapi           # From news-generated synthetic FQs.
 │   |- 2028              # From synthetic FQs resolving in 2028.
-├── other               # All other data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated. TODO move some stuff out of here to somewhere where it makes sense.
+├── other               # All other non-final data, e.g. raw scrapes, or intermediate steps for synthetic questions. Not validated. 
 ├── check_tuple_logs    # Where forecasting of the already instantiated consistency checks + violation is logged. In .gitignore, do not commit. 
 ├── forecasts           # Where forecast results on tuples are saved. Not validated. Commit only full-fledged experimental results.
 ├── verification        # Logging question verification. In .gitignore, do not commit.
 └── test                # Where tests write data. In .gitignore, do not commit.
 ```
-
-This schema is not final. In particular:
-- We might add other directories, e.g. for forecasts, later. 
-- If we figure out a need for some data to be committed, we can remove the corresponding .gitignore entry.
-
-TODO we need to fix this schema, too many things are in `data/other`.
 
 The script that validates the data is [`hooks/validate_jsonls.py`](hooks/validate_jsonls.py). The pre-commit hooks runs this on everything that is changed in the commit. 
 To validate all data without running pre-commit, execute the following command:
@@ -150,8 +144,7 @@ python scrape_question.py -d manifold -s 20240501 -e 20240815 -n 500 -o cleaned_
   
 - [`src/generate_related_questions.py`](src/generate_related_questions.py) Generates "raw" synthetic questions from source questions. See [`tests/test_evaluation_pipeline.py`](tests/test_evaluation_pipeline.py) for an example command.
 
-- [`src/generate_fqs_from_news.py`](src/generate_fqs_from_news.py) generates FQs with ground-truth resolution using NewsAPI scraped data
-  - Usage has been described in [`src/fq_from_news/README.md`](src/fq_from_news/README.md)
+- [`src/generate_fqs_from_news.py`](src/generate_fqs_from_news.py) generates FQs with ground-truth resolution using NewsAPI scraped data. See  [`src/fq_from_news/README.md`](src/fq_from_news/README.md) for how to use it.
 
 - [`src/generate_fqs_using_reference_class.py`](src/generate_fqs_using_reference_class.py) Creates new forecasting questions from some source FQs following the same there and structure as the original questions.
 
@@ -166,12 +159,8 @@ python scrape_question.py -d manifold -s 20240501 -e 20240815 -n 500 -o cleaned_
 ### Forecasting and evaluation
 - [`src/evaluation.py`](src/evaluation.py) runs forecasters on checks and scores them. 
 Takes the JSONL files in `src/data/tuples/{self.__class__.__name__}.jsonl` (for each Checker class we have), feeds them their respective Checker.elicit methods.
-Please run `python src/evaluation.py --help` and read what it says before using this script.
-  - Run example (TODO unclear if this is working): 
-```
-python src/evaluation.py -f AdvancedForecaster -c src/forecasters/forecaster_configs/cheap_haiku.yaml -num_lines 3 --relevant_checks all [--run] [--load_dir src/data/forecasts/...] [--async] 
-```
-  - Run example on some directory: see the commands in [tests/test_evaluation_pipeline.py](tests/test_evaluation_pipeline.py). Those are working if the tests are passing.
+Please `python src/evaluation.py --help` and read what it says before using this script.
+  - Run example: see the commands in [tests/test_evaluation_pipeline.py](tests/test_evaluation_pipeline.py). If the tests are passing, similar commands should work.
 
 - [`src/reevaluation.py`](src/reevaluation.py) recomputes violation metrics from files of forecasts made with `src/evaluation.py`, 
 and aggregates metrics across multiple forecast files. The `forecasts/` directories it draws from are given in the file, edit them as needed.
@@ -187,11 +176,6 @@ For example:
 ```
 python src/ground_truth_run.py --input_file src/data/fq/real/metaculus_cleaned_formatted_20240501_20240815.jsonl --custom_path src/forecasters/basic_forecaster.py::BasicForecasterWithExamples --forecaster_options model=gpt-4o-mini --num_lines 10 --run --async
 ```
-
-### Misc
-- [`src/forecaster_demo.py`](src/forecaster_demo.py) is a method to run the strong LLM forecasters on a file of ForecastingQuestions. Does not write anything. Writes to `src/data/forecasts/stats_*.jsonl`.
-
-- [`src/playground.py`](src/playground.py) various testing and playing around.
 
 
 This list not include the entry points already mentioned in previous sections (feedback form, tests).
