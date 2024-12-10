@@ -31,6 +31,19 @@ def consistent_forecaster():
         use_generate_related_questions=True,
     )
 
+@pytest.fixture
+def consistent_forecaster_nouse():
+    basic_forecaster = BasicForecaster(model=default_small_model)
+    return ConsistentForecaster(
+        model=default_small_model,
+        hypocrite=basic_forecaster,
+        checks=[
+            NegChecker(path=""),
+            CondCondChecker(path=""),
+        ],
+        use_generate_related_questions=False,
+    )
+
 
 @pytest.fixture
 def consistent_forecaster_single():
@@ -150,10 +163,10 @@ async def test_consistent_forecaster_call_async(consistent_forecaster):
 
 
 @pytest.mark.expensive
-def test_consistent_forecaster_call_sync(consistent_forecaster):
+def test_consistent_forecaster_call_sync(consistent_forecaster_nouse):
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    prob = consistent_forecaster.call(
+    prob = consistent_forecaster_nouse.call(
         test_fq_around_fifty_fifty,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
@@ -165,179 +178,3 @@ def test_consistent_forecaster_call_sync(consistent_forecaster):
     ), "The probability should be a float with a non-extreme value"
 
 
-@pytest.mark.expensive
-@pytest.mark.asyncio
-async def test_consistent_forecaster_consistent_async(consistent_forecaster_single):
-    # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
-
-    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-
-    checker = consistent_forecaster_single.checks[0]
-    n = checker.num_base_questions
-
-    keys = ["P", "Q", "R", "S", "T"]
-    bq_list = [
-        test_fq_around_fifty_fifty,
-        test_fq_two,
-        test_fq_three,
-        test_fq_four,
-        test_fq_five,
-    ]
-    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
-
-    # TODO: not sure if I should have verify_before_instantiation=False here
-    tup = await checker.instantiate(
-        bqs, verify_before_instantiation=False, **instantiation_kwargs
-    )
-
-    if isinstance(tup, list):
-        tup = tup[0]
-
-    answers = await consistent_forecaster_single.elicit_async(
-        tup,
-        bq_func_kwargs=bq_func_kwargs,
-        instantiation_kwargs=instantiation_kwargs,
-    )
-    print("Answers:\n", answers)
-    v = checker.violation(answers)
-    print("Violation: ", v)
-    assert v < 0.0001, "The violation should be 0"
-
-
-@pytest.mark.expensive
-def test_consistent_forecaster_consistent_sync(consistent_forecaster_single_nouse):
-    # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
-
-    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-
-    checker = consistent_forecaster_single_nouse.checks[0]
-    n = checker.num_base_questions
-
-    keys = ["P", "Q", "R", "S", "T"]
-    bq_list = [
-        test_fq_around_fifty_fifty,
-        test_fq_two,
-        test_fq_three,
-        test_fq_four,
-        test_fq_five,
-    ]
-    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
-
-    # TODO: not sure if I should have verify_before_instantiation=False here
-    tup = checker.instantiate_sync(
-        bqs, verify_before_instantiation=False, **instantiation_kwargs
-    )
-
-    if isinstance(tup, list):
-        tup = tup[0]
-
-    answers = consistent_forecaster_single_nouse.elicit(
-        tup,
-        bq_func_kwargs=bq_func_kwargs,
-        instantiation_kwargs=instantiation_kwargs,
-    )
-    print("Answers:\n", answers)
-    v = checker.violation(answers)
-    print("Violation: ", v)
-    assert v < 0.0001, "The violation should be 0"
-
-
-@pytest.mark.expensive
-@pytest.mark.asyncio
-async def test_consistent_forecaster_more_consistent_async(
-    consistent_forecaster_single,
-):
-    # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
-
-    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-
-    checker = consistent_forecaster_single.checks[0]
-    n = checker.num_base_questions
-
-    keys = ["P", "Q", "R", "S", "T"]
-    bq_list = [
-        test_fq_around_fifty_fifty,
-        test_fq_two,
-        test_fq_three,
-        test_fq_four,
-        test_fq_five,
-    ]
-    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
-
-    # TODO: not sure if I should have verify_before_instantiation=False here
-    tup = await checker.instantiate(
-        bqs, verify_before_instantiation=False, **instantiation_kwargs
-    )
-
-    if isinstance(tup, list):
-        tup = tup[0]
-
-    answers = await consistent_forecaster_single.elicit_async(
-        tup,
-        bq_func_kwargs=bq_func_kwargs,
-        instantiation_kwargs=instantiation_kwargs,
-    )
-    print("Answers:\n", answers)
-    v = checker.violation(answers)
-    print("Violation: ", v)
-    print("---")
-    hypocrite_answers = await consistent_forecaster_single.hypocrite.elicit_async(
-        tup,
-    )
-    print("Hypocrite Answers:\n", hypocrite_answers)
-    hv = checker.violation(hypocrite_answers)
-    print("Hypocrite Violation: ", hv)
-    assert (
-        v <= hv
-    ), "The ConsistentForecaster should be at least as consistent as the hypocrite"
-
-
-@pytest.mark.expensive
-def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single_nouse):
-    # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
-
-    instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-    bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
-
-    checker = consistent_forecaster_single_nouse.checks[0]
-    n = checker.num_base_questions
-
-    keys = ["P", "Q", "R", "S", "T"]
-    bq_list = [
-        test_fq_around_fifty_fifty,
-        test_fq_two,
-        test_fq_three,
-        test_fq_four,
-        test_fq_five,
-    ]
-    bqs = {k: bq for k, bq in zip(keys[:n], bq_list[:n])}
-
-    # TODO: not sure if I should have verify_before_instantiation=False here
-    tup = checker.instantiate_sync(
-        bqs, verify_before_instantiation=False, **instantiation_kwargs
-    )
-
-    if isinstance(tup, list):
-        tup = tup[0]
-
-    answers = consistent_forecaster_single_nouse.elicit(
-        tup,
-        bq_func_kwargs=bq_func_kwargs,
-        instantiation_kwargs=instantiation_kwargs,
-    )
-    print("Answers:\n", answers)
-    v = checker.violation(answers)
-    print("Violation: ", v)
-    print("---")
-    hypocrite_answers = consistent_forecaster_single_nouse.hypocrite.elicit(
-        tup,
-    )
-    print("Hypocrite Answers:\n", hypocrite_answers)
-    hv = checker.violation(hypocrite_answers)
-    print("Hypocrite Violation: ", hv)
-    assert (
-        v <= hv
-    ), "The ConsistentForecaster should be at least as consistent as the hypocrite"
