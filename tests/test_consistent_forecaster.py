@@ -44,6 +44,18 @@ def consistent_forecaster_single():
         use_generate_related_questions=True,
     )
 
+@pytest.fixture
+def consistent_forecaster_single_nouse():
+    basic_forecaster = BasicForecaster(model=default_small_model)
+    return ConsistentForecaster(
+        model=default_small_model,
+        hypocrite=basic_forecaster,
+        checks=[
+            NegChecker(path=""),
+        ],
+        use_generate_related_questions=False,
+    )
+
 
 test_fq_around_fifty_fifty = ForecastingQuestion(
     id=uuid.uuid4(),
@@ -194,13 +206,13 @@ async def test_consistent_forecaster_consistent_async(consistent_forecaster_sing
 
 
 @pytest.mark.expensive
-def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
+def test_consistent_forecaster_consistent_sync(consistent_forecaster_single_nouse):
     # check that the ConsistentForecaster is actually consistent on the check that it is made consistent on
 
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
-    checker = consistent_forecaster_single.checks[0]
+    checker = consistent_forecaster_single_nouse.checks[0]
     n = checker.num_base_questions
 
     keys = ["P", "Q", "R", "S", "T"]
@@ -221,7 +233,7 @@ def test_consistent_forecaster_consistent_sync(consistent_forecaster_single):
     if isinstance(tup, list):
         tup = tup[0]
 
-    answers = consistent_forecaster_single.elicit(
+    answers = consistent_forecaster_single_nouse.elicit(
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
@@ -284,13 +296,13 @@ async def test_consistent_forecaster_more_consistent_async(
 
 
 @pytest.mark.expensive
-def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single):
+def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single_nouse):
     # check that the ConsistentForecaster is more consistent than the hypocrite it improves upon
 
     instantiation_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
     bq_func_kwargs = {"model": "gpt-4o-mini-2024-07-18"}
 
-    checker = consistent_forecaster_single.checks[0]
+    checker = consistent_forecaster_single_nouse.checks[0]
     n = checker.num_base_questions
 
     keys = ["P", "Q", "R", "S", "T"]
@@ -311,7 +323,7 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
     if isinstance(tup, list):
         tup = tup[0]
 
-    answers = consistent_forecaster_single.elicit(
+    answers = consistent_forecaster_single_nouse.elicit(
         tup,
         bq_func_kwargs=bq_func_kwargs,
         instantiation_kwargs=instantiation_kwargs,
@@ -320,7 +332,7 @@ def test_consistent_forecaster_more_consistent_sync(consistent_forecaster_single
     v = checker.violation(answers)
     print("Violation: ", v)
     print("---")
-    hypocrite_answers = consistent_forecaster_single.hypocrite.elicit(
+    hypocrite_answers = consistent_forecaster_single_nouse.hypocrite.elicit(
         tup,
     )
     print("Hypocrite Answers:\n", hypocrite_answers)
