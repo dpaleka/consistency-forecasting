@@ -48,6 +48,12 @@ write_verification = os.getenv("WRITE_VERIFICATION", "False") == "True"
 
 class Checker(ABC):
     def __init__(self, default_tolerance=0.01, frequentist_hparams=None, path=None):
+        """
+        Note: if you just want to use a checker to compute some violations interactively etc.,
+        just initialize it with the path set to "". We force you to do this to make sure that's
+        what you really intend, rather than just assuming there's a default path set.
+        """
+
         self.default_tolerance = default_tolerance
         if frequentist_hparams is None:
             frequentist_hparams = {"sigma": 0.05, "gamma": 2.58, "beta": 1e-3}

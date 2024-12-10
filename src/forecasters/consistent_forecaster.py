@@ -63,11 +63,11 @@ class ConsistentForecaster(Forecaster):
         self.model = model
         self.hypocrite = hypocrite or BasicForecaster(model)
         self.checks = checks or [
-            NegChecker(),
-            ParaphraseChecker(),
-            AndOrChecker(),
-            ButChecker(),
-            CondChecker(),
+            NegChecker(""),
+            ParaphraseChecker(""),
+            AndOrChecker(""),
+            ButChecker(""),
+            CondChecker(""),
         ]
         self.base_data_path = base_data_path
         self.coerce_nonbinary_qs = coerce_nonbinary_qs
