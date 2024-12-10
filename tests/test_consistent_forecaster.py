@@ -176,5 +176,3 @@ def test_consistent_forecaster_call_sync(consistent_forecaster_nouse):
     assert (
         isinstance(prob, float) and 0.1 <= prob <= 0.9
     ), "The probability should be a float with a non-extreme value"
-
-
