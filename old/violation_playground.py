@@ -14,17 +14,17 @@ from static_checks.Checker import (
     CondCondChecker,
 )
 
-neg_checker = NegChecker("")
-and_checker = AndChecker("")
-or_checker = OrChecker("")
-and_or_checker = AndOrChecker("")
-but_checker = ButChecker("")
-cond_checker = CondChecker("")
-consequence_checker = ConsequenceChecker("")
-para_checker = ParaphraseChecker("")
-sand_checker = SymmetryAndChecker("")
-sor_checker = SymmetryOrChecker("")
-cc_checker = CondCondChecker("")
+neg_checker = NegChecker(path="")
+and_checker = AndChecker(path="")
+or_checker = OrChecker(path="")
+and_or_checker = AndOrChecker(path="")
+but_checker = ButChecker(path="")
+cond_checker = CondChecker(path="")
+consequence_checker = ConsequenceChecker(path="")
+para_checker = ParaphraseChecker(path="")
+sand_checker = SymmetryAndChecker(path="")
+sor_checker = SymmetryOrChecker(path="")
+cc_checker = CondCondChecker(path="")
 
 # Nelder-Mead, L-BFGS-B, trust-exact -- often unreliable, as they are local optimization
 # basinhopping -- slow I think? at least for AndChecker, OrChecker, AndOrChecker

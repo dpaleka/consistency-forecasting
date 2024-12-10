@@ -25,8 +25,8 @@ def consistent_forecaster():
         model=default_small_model,
         hypocrite=basic_forecaster,
         checks=[
-            NegChecker(""),
-            CondCondChecker(""),
+            NegChecker(path=""),
+            CondCondChecker(path=""),
         ],
         use_generate_related_questions=True,
     )
@@ -39,7 +39,7 @@ def consistent_forecaster_single():
         model=default_small_model,
         hypocrite=basic_forecaster,
         checks=[
-            NegChecker(""),
+            NegChecker(path=""),
         ],
         use_generate_related_questions=True,
     )
