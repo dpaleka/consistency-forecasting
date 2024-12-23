@@ -1,8 +1,8 @@
-# Python utils library, specialized for the consistency forecasting project
-Feel free to add your own utils if you don't like the setup. You can also create PRs to modify the existing ones.
-Try not to add code that's very specific to the consistency forecasting project; in most cases a better place for that code is in the relevant directory of that part of the project.
+# Python utils
+This library provides reusable Python utilities and helper functions. While initially developed for the consistency forecasting project, it aims to be general-purpose and reusable across projects.
+Project-specific code should be placed in the relevant project directories rather than this common library.
 
-The licensing of this code is governed by [LICENSE](LICENSE).
+This code is licensed under the terms specified in [LICENSE](LICENSE).
 
 ## .env
 Create an .env file with your OPENAI_API_KEY, and other secrets, if necessary. Place it in the root of the project, similar to [.env.example](../../.env.example).
