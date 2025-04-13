@@ -146,7 +146,24 @@ def parse_arguments() -> argparse.Namespace:
         "--fontsize",
         type=int,
         default=15,
-        help="Font size for the plots",
+        help="Font size for axes and titles",
+    )
+    parser.add_argument(
+        "--point_fontsize",
+        type=int,
+        default=None,
+        help="Font size for data point labels (if not provided, uses --fontsize value)",
+    )
+    parser.add_argument(
+        "--corr_fontsize",
+        type=int,
+        default=None,
+        help="Font size for correlation text (if not provided, uses --fontsize value)",
+    )
+    parser.add_argument(
+        "--no_title",
+        action="store_true",
+        help="Do not display title on plots",
     )
     parser.add_argument(
         "--hide_names",
@@ -243,10 +260,13 @@ def plot_metrics(
     remove_gt_outlier: float = None,
     remove_cons_outlier: float = None,
     fontsize: int | None = None,
+    point_fontsize: int | None = None,
+    corr_fontsize: int | None = None,
     hide_names: bool = False,
     preview: bool = False,
     axes: str | None = None,
     transpose: bool = False,
+    no_title: bool = False,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -339,11 +359,16 @@ def plot_metrics(
 
             correlation = np.corrcoef(x, y)[0, 1]
             if not preview:
+                # Use corr_fontsize if provided, otherwise fall back to fontsize
+                correlation_fontsize = (
+                    corr_fontsize if corr_fontsize is not None else fontsize
+                )
                 axs[i, j].text(
                     0.05,
                     0.95,
                     f"Correlation: {correlation:.2f}",
                     transform=axs[i, j].transAxes,
+                    fontsize=correlation_fontsize,
                 )
 
             if preview:
@@ -356,21 +381,31 @@ def plot_metrics(
             plt.scatter(x, y, s=point_size)
             texts = []
             if not hide_names and not preview:
+                # Use point_fontsize if provided, otherwise fall back to fontsize
+                label_fontsize = (
+                    point_fontsize if point_fontsize is not None else fontsize
+                )
                 for idx, label in enumerate(labels):
-                    texts.append(plt.text(x[idx], y[idx], label, fontsize=fontsize))
+                    texts.append(
+                        plt.text(x[idx], y[idx], label, fontsize=label_fontsize)
+                    )
 
             plt.plot(x, p(x), "r-", alpha=0.3)
             if not preview:
+                # Use corr_fontsize if provided, otherwise fall back to fontsize
+                correlation_fontsize = (
+                    corr_fontsize if corr_fontsize is not None else fontsize
+                )
                 plt.text(
                     0.05,
                     0.95,
                     f"Correlation: {correlation:.2f}",
                     transform=plt.gca().transAxes,
-                    fontsize=fontsize,
+                    fontsize=correlation_fontsize,
                 )
             plt.xlabel(x_label, fontsize=fontsize)
             plt.ylabel(y_label, fontsize=fontsize)
-            if not preview:
+            if not preview and not no_title:
                 title_parts = [
                     checker,
                     cons_metric_type,
@@ -393,10 +428,13 @@ def plot_metrics(
                     f"{title_str} ({dataset_key})",
                     fontsize=fontsize,
                 )
-            else:
+            elif preview:
                 figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}_preview.png"
                 plt.xticks([])
                 plt.yticks([])
+            else:
+                # If we have no title but aren't in preview mode
+                figure_name = f"{checker}_vs_{gt_metric_key}_{cons_metric_type}_{cons_metric_key}_{dataset_key}.png"
             plt.grid(False)
 
             # Use adjust_text to prevent overlapping labels if names are shown
@@ -448,6 +486,7 @@ def plot_bar_chart(
     hide_names: bool = False,
     preview: bool = False,
     axes: str | None = None,
+    no_title: bool = False,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -483,7 +522,7 @@ def plot_bar_chart(
             if preview:
                 plt.yticks([])
             plt.ylabel(y_label, fontsize=20)  # Keep axis names
-            if not preview:
+            if not preview and not no_title:
                 plt.title(
                     f"{checker}.{cons_metric_type}.{cons_metric_key} ({dataset_key})",
                     fontsize=20,
@@ -518,6 +557,7 @@ def plot_gt_bar_chart(
     hide_names: bool = False,
     preview: bool = False,
     axes: str | None = None,
+    no_title: bool = False,
 ) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -546,7 +586,7 @@ def plot_gt_bar_chart(
         if preview:
             plt.yticks([])
         plt.ylabel(y_label, fontsize=16)  # Keep axis names
-        if not preview:
+        if not preview and not no_title:
             plt.title(
                 f"Ground Truth Metric: {gt_metric_key} ({dataset_key})", fontsize=20
             )
@@ -721,10 +761,13 @@ def main() -> None:
             remove_gt_outlier=args.remove_gt_outlier,
             remove_cons_outlier=args.remove_cons_outlier,
             fontsize=args.fontsize,
+            point_fontsize=args.point_fontsize,
+            corr_fontsize=args.corr_fontsize,
             hide_names=args.hide_names,
             preview=args.preview,
             axes=args.axes,
             transpose=args.transpose,
+            no_title=args.no_title,
         )
     elif args.plot_type == "bar":
         plot_bar_chart(
@@ -737,6 +780,7 @@ def main() -> None:
             hide_names=args.hide_names,
             preview=args.preview,
             axes=args.axes,
+            no_title=args.no_title,
         )
     elif args.plot_type == "gt_bar":
         plot_gt_bar_chart(
@@ -748,6 +792,7 @@ def main() -> None:
             hide_names=args.hide_names,
             preview=args.preview,
             axes=args.axes,
+            no_title=args.no_title,
         )
 
 
@@ -755,5 +800,8 @@ if __name__ == "__main__":
     main()
 
 
-# Example command:
+# Example commands:
 # python src/plot_consistency_vs_brier.py --all --dataset newsapi --gt_metric avg_platt_brier_score -t frequentist -c avg_violation --remove_gt_outlier 0.25
+# python src/plot_consistency_vs_brier.py --all --dataset scraped --gt_metric avg_brier_score -t default -c avg_violation --point_fontsize 12 --no_title
+# python src/plot_consistency_vs_brier.py --all --dataset scraped --gt_metric avg_brier_score -t default -c avg_violation --fontsize 14 --point_fontsize 10 --corr_fontsize 20
+# python src/plot_consistency_vs_brier.py --all --dataset scraped --gt_metric avg_brier_score -t default -c avg_violation --remove_gt_outlier 0.25 --axes "x:Brier score,y:Consistency violation" --transpose --fontsize 16 --point_fontsize 11 --corr_fontsize 13 --no_title
