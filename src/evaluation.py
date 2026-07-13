@@ -15,6 +15,7 @@ from static_checks.Checker import (
 from common.path_utils import get_data_path
 import common.llm_utils  # noqa
 from common.llm_utils import reset_global_semaphore
+from common.utils import open_data, data_exists
 from forecasters.create import make_forecaster
 from evaluation_utils.utils import (
     create_output_directory,
@@ -210,8 +211,8 @@ def aggregate_stats(all_stats: dict) -> dict:
 def load_existing_results(
     output_file: Path, max_lines: int | None = None
 ) -> list[dict[str, Any]]:
-    if output_file.exists():
-        with open(output_file, "r", encoding="utf-8") as f:
+    if data_exists(output_file):
+        with open_data(output_file, "r", encoding="utf-8") as f:
             return [json.loads(line) for line in f][:max_lines]
     return []
 
@@ -274,7 +275,7 @@ def process_check(
 
         if run:
             existing_results = []
-            if continue_run and output_file.exists():
+            if continue_run and data_exists(output_file):
                 existing_results = load_existing_results(
                     output_file, max_lines=num_lines
                 )
@@ -450,7 +451,7 @@ def main(
         present_checkers = []
 
         for checker_name in checker_names:
-            if Path(load).joinpath(f"{checker_name}.jsonl").exists():
+            if data_exists(Path(load).joinpath(f"{checker_name}.jsonl")):
                 present_checkers.append(checker_name)
 
         if not present_checkers:

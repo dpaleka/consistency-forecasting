@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 from ground_truth_run import make_result_dict
 from common.datatypes import ForecastingQuestion, Forecast
+from common.utils import open_data
 from static_checks import choose_checkers
 
 
@@ -82,7 +83,7 @@ def main(
     input_dir: str,
 ):
     input_file = Path(input_dir) / "ground_truth_results.jsonl"
-    with open(input_file, "r") as f:
+    with open_data(input_file, "r") as f:
         lines = [json.loads(line) for line in f]
 
     intermediate_liness_: list[list[dict]] = [

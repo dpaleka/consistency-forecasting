@@ -4,6 +4,7 @@ from src and I don't want to bother with that"""
 import json
 import click
 from static_checks.Checker import choose_checkers
+from common.utils import open_data
 
 
 @click.command()
@@ -31,7 +32,7 @@ def recalculate_violations(
     updated_data = []
     checker = choose_checkers([checker])[checker]
     # Load the JSONL file
-    with open(input_file, "r") as infile:
+    with open_data(input_file, "r") as infile:
         for line in infile:
             data = json.loads(line)
 

@@ -4,17 +4,19 @@ import json
 import os
 from collections import defaultdict
 
+from common.utils import open_data, data_exists
+
 
 def check_tuple_generation(tuple_dir, checkers):
     tuple_counts = defaultdict(lambda: defaultdict(int))
 
     for checker in checkers:
         tuple_file = os.path.join(tuple_dir, f"{checker}.jsonl")
-        if not os.path.exists(tuple_file):
+        if not data_exists(tuple_file):
             print(f"Warning: No tuple file found for {checker}")
             continue
 
-        with open(tuple_file, "r") as f:
+        with open_data(tuple_file, "r") as f:
             for line in f:
                 tuple_data = json.loads(line)
                 metadata = tuple_data.get("metadata", {})

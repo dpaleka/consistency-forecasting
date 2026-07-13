@@ -9,7 +9,7 @@ import functools
 from tqdm import tqdm
 
 from common.path_utils import get_data_path
-from common.utils import make_json_serializable
+from common.utils import make_json_serializable, open_data, data_exists
 from common.llm_utils import parallelized_call, reset_global_semaphore
 from common.datatypes import ForecastingQuestion, Forecast, ForecastingQuestionForEval
 from forecasters.create import make_forecaster
@@ -97,7 +97,7 @@ def main(
     if load is not None:
         load_dir = Path(load)
         input_file = str(Path(load) / "ground_truth_results.jsonl")
-        if not Path(input_file).exists():
+        if not data_exists(input_file):
             raise click.UsageError(
                 f"No ground_truth_results.jsonl found in directory {load}"
             )
@@ -135,7 +135,7 @@ def main(
             forecaster, BASE_FORECASTS_OUTPUT_PATH, output_dir
         )
         dirs_to_write = [output_directory, most_recent_directory]
-        with open(input_file, "r") as f:
+        with open_data(input_file, "r") as f:
             data = [json.loads(line) for line in f]
         forecasting_questions = [
             ForecastingQuestion.model_validate(line) for line in data
@@ -191,11 +191,8 @@ def main(
             results.extend(results_batch)
             write_to_dirs(results, output_filename, dirs_to_write, overwrite=True)
     else:
-        if (
-            load_dir is None
-            or not (
-                (load_dir := Path(load_dir)) / "ground_truth_results.jsonl"
-            ).exists()
+        if load_dir is None or not (
+            data_exists((load_dir := Path(load_dir)) / "ground_truth_results.jsonl")
         ):
             raise ValueError(
                 "if --run argument is not set, load_dir must be provided and must contain ground_truth_results.jsonl"
@@ -203,7 +200,7 @@ def main(
         output_directory = Path(load_dir)
         dirs_to_write = [output_directory]
         input_file = load_dir / "ground_truth_results.jsonl"
-        with open(input_file, "r") as f:
+        with open_data(input_file, "r") as f:
             lines = [json.loads(line) for line in f]
         data = [line["question"] for line in lines]
         if force_validate_if_loading:
@@ -242,7 +239,7 @@ def main(
         num_lines = len(forecasting_questions)
         results = []
 
-        with open(input_file, "r", encoding="utf-8") as f:
+        with open_data(input_file, "r", encoding="utf-8") as f:
             results_loaded = [json.loads(line) for line in f]
             forecasts = [
                 Forecast.model_validate(results_loaded[i]["forecast"])
@@ -365,12 +362,12 @@ def main(
     else:
         # load ground_truth_summary.json
         summary_path = Path(load_dir) / "ground_truth_summary.json"
-        if not summary_path.exists():
+        if not data_exists(summary_path):
             print(f"ground_truth_summary.json not found in {load_dir}")
             summary["forecaster"] = None
             summary["full_forecaster_config"] = None
         else:
-            summary_data = json.load(open(summary_path, "r"))
+            summary_data = json.load(open_data(summary_path, "r"))
             summary["forecaster"] = summary_data["forecaster"]
             summary["full_forecaster_config"] = summary_data["full_forecaster_config"]
         summary["loaded_forecasts"] = f"{load_dir}/ground_truth_results.jsonl"

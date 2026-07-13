@@ -1,3 +1,4 @@
+import gzip
 import json
 import aiofiles
 import os
@@ -70,6 +71,22 @@ def hash_params(*args, **kwargs):
     ]
 
 
+def open_data(path, mode: str = "r", **kwargs):
+    """Open a data file, transparently falling back to `<path>.gz` (gzip) when the
+    plain file is absent. The repo's historical data files are stored gzipped."""
+    path = str(path)
+    if "r" in mode and not os.path.exists(path) and os.path.exists(path + ".gz"):
+        gz_mode = mode if "b" in mode or "t" in mode else mode + "t"
+        return gzip.open(path + ".gz", gz_mode, **kwargs)
+    return open(path, mode, **kwargs)
+
+
+def data_exists(path) -> bool:
+    """True if `path` exists either as a plain file or as `<path>.gz`."""
+    path = str(path)
+    return os.path.exists(path) or os.path.exists(path + ".gz")
+
+
 def write_jsonl(path: str, data: List[dict], append: bool = False):
     with jsonlines.open(path, mode="a" if append else "w") as writer:
         for item in data:
@@ -77,7 +94,7 @@ def write_jsonl(path: str, data: List[dict], append: bool = False):
 
 
 def load_jsonl(path: str) -> list[dict]:
-    with open(path, "r") as f:
+    with open_data(path, "r") as f:
         jsonl_content = f.read()
     return [json.loads(jline) for jline in jsonl_content.splitlines()]
 
@@ -115,7 +132,7 @@ def shallow_dict(model: BaseModel) -> dict:
 
 
 def load_questions(path: str) -> list[ForecastingQuestion]:
-    with open(path, "r") as f:
+    with open_data(path, "r") as f:
         jsonl_content = f.read()
     return [
         ForecastingQuestion(**json.loads(jline)) for jline in jsonl_content.splitlines()
@@ -235,6 +252,7 @@ def truncate_str(s: str, max_len: int = 80) -> str:
         return s[:pref] + "..." + s[-suf:]
     else:
         return s
+
 
 def read_json_or_jsonl(file_path: Path):
     print(f"Reading file: {file_path}")

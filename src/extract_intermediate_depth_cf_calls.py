@@ -9,6 +9,7 @@ from pathlib import Path
 from evaluation_utils.utils import write_to_dirs
 from ground_truth_run import make_result_dict
 from common.datatypes import Forecast, ForecastingQuestion
+from common.utils import open_data
 
 
 def get_hypocrite_call(metadata: list) -> dict | None:
@@ -51,7 +52,7 @@ def main(
     input_dir: str,
 ):
     input_file = Path(input_dir) / "ground_truth_results.jsonl"
-    with open(input_file, "r") as f:
+    with open_data(input_file, "r") as f:
         lines = [json.loads(line) for line in f]
     questions = [line["question"] for line in lines]
     metadatas = [line["forecast"]["metadata"] for line in lines]

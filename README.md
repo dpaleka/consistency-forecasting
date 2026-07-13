@@ -6,6 +6,8 @@ See [USAGE.md](USAGE.md) for instructions on how to:
 # Download the datasets
 The datasets used in the paper are also available on Hugging Face: [dpaleka/ccflmf](https://huggingface.co/datasets/dpaleka/ccflmf).
 
+The historical forecast/checker result files under `src/data/forecasts/` are stored gzipped (`.jsonl.gz`) so the repo clones without Git LFS. The code reads them transparently via `open_data` in [`src/common/utils.py`](src/common/utils.py); to inspect one manually, use `zless file.jsonl.gz` or `gunzip -k file.jsonl.gz`.
+
 
 # Development guide
 Note: this section is for if you want to extend or use our codebase in a way other than evaluating your LLM forecaster on the consistency benchmarks.
